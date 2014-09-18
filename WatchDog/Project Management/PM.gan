@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="" company="" webLink="http://" view-date="2006-02-26" version="1.11">
+    <view zooming-state="default:6"/>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <calendar id="1" name="default">
+                <default-week sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+                <overriden-day-types/>
+                <days/>
+            </calendar>
+        </day-types>
+    </calendars>    <description>    </description>
+
+    <tasks color="#8cb6ce">
+        <task id="0" name="Project Startup" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-01" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+            <depend id="2" type="2"/>
+            <depend id="24" type="2"/>
+            <task id="1" name="Create Draft business Plan" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-01" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+                <notes>
+                    Create Draft business plan 
+                </notes>
+                <depend id="3" type="1"/>
+            </task>
+        </task>
+        <task id="2" name="Requirement Specification" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-02" duration="3" complete="0" fixed-start="false" priority="1" expand="false">
+            <depend id="7" type="2"/>
+            <task id="3" name="Draft requirement spec" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-01" duration="3" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="4" type="1"/>
+            </task>
+            <task id="4" name="Priority Check" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-01" duration="3" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="5" type="1"/>
+            </task>
+            <task id="5" name="Review and approve" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-01" duration="3" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="8" type="2"/>
+            </task>
+        </task>
+        <task id="7" name="Design" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-07" duration="15" complete="0" fixed-start="false" priority="1" expand="true">
+            <depend id="21" type="2"/>
+            <task id="8" name="Technical Feasibility" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-06" duration="2" complete="0" fixed-start="false" priority="1" expand="true">
+                <depend id="9" type="2"/>
+                <task id="9" name="Product specification" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-08" duration="2" complete="0" fixed-start="false" priority="1" expand="true">
+                    <depend id="14" type="2"/>
+                    <depend id="15" type="2"/>
+                </task>
+            </task>
+            <task id="14" name="Hardware  design" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-10" duration="3" complete="1" fixed-start="false" priority="1" expand="true">
+                <depend id="49" type="2"/>
+                <task id="15" name="Block Diagram" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-10" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+                    <notes>
+                        N&#47;A
+                    </notes>
+                    <depend id="16" type="2"/>
+                </task>
+                <task id="16" name="Schematic Design" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-13" duration="1" complete="2" fixed-start="false" priority="1" expand="true">
+                    <depend id="10" type="2"/>
+                    <depend id="17" type="2"/>
+                </task>
+                <task id="17" name="PCB Design" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-14" duration="1" complete="0" fixed-start="false" priority="1" expand="false"/>
+            </task>
+            <task id="10" name="Software design" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-14" duration="11" complete="0" fixed-start="false" priority="1" expand="true">
+                <task id="49" name="UML Diagraom" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-15" duration="10" complete="0" fixed-start="false" priority="1" expand="true"/>
+                <task id="51" name="Data Structure" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-15" duration="1" complete="0" fixed-start="false" priority="1" expand="true"/>
+                <task id="52" name="Algorithm" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-14" duration="1" complete="0" fixed-start="false" priority="1" expand="true"/>
+            </task>
+        </task>
+        <task id="20" name="Packaging Design" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-04-26" duration="1" complete="0" fixed-start="false" priority="1" expand="true">
+            <depend id="22" type="2"/>
+            <task id="48" name="Packag ing" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-04-26" duration="1" complete="0" fixed-start="false" priority="1" expand="true"/>
+        </task>
+        <task id="21" name="Develope and test" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-03-28" duration="40" complete="0" fixed-start="false" priority="1" expand="true">
+            <depend id="26" type="2"/>
+            <depend id="29" type="2"/>
+            <depend id="30" type="2"/>
+            <task id="22" name="Hardware prototype and testing" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-04-27" duration="1" complete="0" fixed-start="false" priority="1" expand="true">
+                <depend id="23" type="2"/>
+                <task id="53" name="Hardware prototype and testing_53" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-04-07" duration="1" complete="0" fixed-start="false" priority="1" expand="true"/>
+            </task>
+            <task id="23" name="Software development and test" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-04-28" duration="15" complete="0" fixed-start="false" priority="1" expand="true">
+                <depend id="24" type="2"/>
+            </task>
+            <task id="25" name="Integration Development and testing" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-05-22" duration="3" complete="0" fixed-start="false" priority="1" expand="true">
+                <depend id="27" type="2"/>
+            </task>
+        </task>
+        <task id="26" name="Deployment" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-05-23" duration="13" complete="0" fixed-start="false" priority="1" expand="true">
+            <depend id="33" type="2"/>
+            <task id="27" name="Material Procurement" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-05-25" duration="3" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="28" type="2"/>
+            </task>
+            <task id="28" name="Manufacturing and qa process" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-05-30" duration="10" complete="0" fixed-start="false" priority="1" expand="false"/>
+        </task>
+        <task id="29" name="Training and documentation" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-05-23" duration="34" complete="0" fixed-start="false" priority="1" expand="true">
+            <task id="30" name="User documentation" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-05-23" duration="30" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="31" type="2"/>
+            </task>
+            <task id="31" name="System documentation" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-04" duration="3" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="32" type="2"/>
+            </task>
+            <task id="32" name="Training to support and customer" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-07" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="34" type="2"/>
+            </task>
+        </task>
+        <task id="33" name="Changing improvement" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-06-09" duration="1" complete="0" fixed-start="false" priority="1" expand="true">
+            <task id="34" name="Product improvement collection" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-10" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="35" type="2"/>
+            </task>
+        </task>
+        <task id="35" name="Project close" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-11" duration="3" complete="0" fixed-start="false" priority="1" expand="true">
+            <depend id="36" type="1"/>
+            <task id="36" name="Clean all documents" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-11" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="37" type="2"/>
+            </task>
+            <task id="37" name="Backup data and documents" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-12" duration="1" complete="0" fixed-start="false" priority="1" expand="false">
+                <depend id="38" type="2"/>
+            </task>
+            <task id="38" name="Project close" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2006-07-13" duration="1" complete="0" fixed-start="false" priority="1" expand="false"/>
+        </task>
+    </tasks>
+
+    <resources>
+    </resources>
+
+    <allocations>
+    </allocations>
+
+
+    <roles roleset-name="Default"/>
+    <roles roleset-name="SoftwareDevelopment"/>
+</project>
