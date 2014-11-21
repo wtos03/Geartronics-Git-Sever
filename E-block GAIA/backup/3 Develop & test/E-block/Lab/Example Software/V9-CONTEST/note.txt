@@ -1,0 +1,21 @@
+File description
+================
+
+adc.c			read ADC
+adc.h
+backemf.c		Measure and Calulate backemf  (MAIN)
+backemf.h
+backemf.pnproj		Project file for WinAVR
+cpu.h			CPU port define
+DC_motor.c		DC motor control
+DC_motor.h
+Dual_7Segment.c		I/O SW and Dual 7 Segments
+Dual_7Segment.h
+E_uart.c		UART module
+E_uart.h
+ir_tv.c			Remote control detect
+ir_tv.h
+Makefile		Makefile for project
+note.txt		This file
+text_decode.c		Command line interpreter
+text_decode.h		

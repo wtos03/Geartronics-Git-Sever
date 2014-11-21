@@ -1,0 +1,667 @@
+   1               		.file	"io.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  71               	.global	delay
+  73               	delay:
+   1:io.c          **** /*
+   2:io.c          **** 
+   3:io.c          ****  Module 				:   IO Test Module
+   4:io.c          ****  Description 			:   IO  Test module for CHapter xxx
+   5:io.c          ****  Original written for 	:   ATMEGA32
+   6:io.c          ****  CPU port/tested		:   ATMEGA32
+   7:io.c          ****  Hardware use			:   Dual 7 Segments common cathode module
+   8:io.c          ****  Port use				:   E_PORTA (0-7), E_PORTB (0-1)
+   9:io.c          ****  Memory	FLASH			:   XXX
+  10:io.c          **** 		RAM				:   XXX
+  11:io.c          **** 		EEPROM			:   XXX
+  12:io.c          ****  Document				:   Document describe algorithm
+  13:io.c          ****  Written by 			:   Wichai  wichai@geartronics.net
+  14:io.c          ****  Date					:  	23/04/2006
+  15:io.c          ****   
+  16:io.c          ****  Update History
+  17:io.c          ****  
+  18:io.c          ****  Date			By 					Comments
+  19:io.c          ****  ----			--					---------
+  20:io.c          ****  
+  21:io.c          ****  
+  22:io.c          ****   */
+  23:io.c          **** 
+  24:io.c          **** #include <avr/interrupt.h>
+  25:io.c          **** #include <avr/io.h>
+  26:io.c          **** #include <avr/interrupt.h>
+  27:io.c          **** #include "Dual_7Segment.h"
+  28:io.c          **** #include "DC_motor.h"
+  29:io.c          **** #include "ir_tv.h"
+  30:io.c          **** 
+  31:io.c          **** // Global variable
+  32:io.c          **** 
+  33:io.c          **** uint8_t  g_mode1  = MOTOR_STOP;
+  34:io.c          **** uint8_t  g_mode2  = MOTOR_STOP;
+  35:io.c          **** 
+  36:io.c          **** void main(void);
+  37:io.c          **** 
+  38:io.c          **** void delay ( uint16_t  time)
+  39:io.c          **** {
+  74               	 end (size=0) */
+  75               	/* epilogue: frame size=0 */
+  76               		ret
+  77               	/* epilogue end (size=1) */
+  78               	/* function delay size 1 (0) */
+  80               	.Lscope0:
+  83               	.global	remote_decode
+  85               	remote_decode:
+  87               	.LM1:
+  88               	/* prologue: frame size=0 */
+  40:io.c          ****    uint16_t i;
+  41:io.c          ****    for (i = 0 ; i < time; i++);
+  42:io.c          **** 
+  43:io.c          **** }
+  44:io.c          **** 
+  45:io.c          **** 
+  46:io.c          **** /* This subroutine will handle IR remote decode by getting remote code from Interrupt handle for in
+  47:io.c          **** and will response  to each remote key. For other applications user can modified here for different 
+  48:io.c          **** However this routine support Sony remote control only
+  49:io.c          ****    global effect   g_irint;
+  50:io.c          **** */
+  51:io.c          **** 
+  52:io.c          **** uint8_t remote_decode ( uint16_t ircode)
+  53:io.c          **** { 
+  89               	 (size=0) */
+  91               	.LM2:
+  92               		ldi r18,hi8(2064)
+  54:io.c          ****   uint16_t pwm;
+  55:io.c          ****   uint8_t speed, found = 1;
+  56:io.c          ****   speed = 10;
+  57:io.c          ****   switch ( ircode)
+  93               	 r24,lo8(2064)
+  94               		cpc r25,r18
+  95 0002 28E0      		brne .+2
+  96 0004 8031      		rjmp .L12
+  98 0008 01F4      	.LM3:
+  99 000a 00C0      		ldi r18,hi8(2065)
+ 100               		cpi r24,lo8(2065)
+ 101               		cpc r25,r18
+ 102 000c 28E0      		brsh .L19
+ 103 000e 8131      		ldi r18,hi8(528)
+ 104 0010 9207      		cpi r24,lo8(528)
+ 105 0012 00F4      		cpc r25,r18
+ 106 0014 22E0      		brne .+2
+ 107 0016 8031      		rjmp .L8
+ 108 0018 9207      		ldi r18,hi8(529)
+ 109 001a 01F4      		cpi r24,lo8(529)
+ 110 001c 00C0      		cpc r25,r18
+ 111 001e 22E0      		brsh .L20
+ 112 0020 8131      		cpi r24,144
+ 113 0022 9207      		cpc r25,__zero_reg__
+ 114 0024 00F4      		brne .+2
+ 115 0026 8039      		rjmp .L6
+ 116 0028 9105      		ldi r18,hi8(272)
+ 117 002a 01F4      		cpi r24,lo8(272)
+ 118 002c 00C0      		cpc r25,r18
+ 119 002e 21E0      		brne .+2
+ 120 0030 8031      		rjmp .L7
+ 121 0032 9207      		sbiw r24,16
+ 122 0034 01F4      		breq .+2
+ 123 0036 00C0      		rjmp .L4
+ 124 0038 4097      		rjmp .L5
+ 125 003a 01F0      	.L20:
+ 126 003c 00C0      		ldi r18,hi8(1040)
+ 127 003e 00C0      		cpi r24,lo8(1040)
+ 128               		cpc r25,r18
+ 129 0040 24E0      		brne .+2
+ 130 0042 8031      		rjmp .L9
+ 131 0044 9207      		ldi r18,hi8(1041)
+ 132 0046 01F4      		cpi r24,lo8(1041)
+ 133 0048 00C0      		cpc r25,r18
+ 134 004a 24E0      		brsh .L21
+ 135 004c 8131      		subi r24,lo8(656)
+ 136 004e 9207      		sbci r25,hi8(656)
+ 137 0050 00F4      		breq .+2
+ 138 0052 8059      		rjmp .L4
+ 139 0054 9240      		rjmp .L7
+ 140 0056 01F0      	.L21:
+ 141 0058 00C0      		ldi r18,hi8(1168)
+ 142 005a 00C0      		cpi r24,lo8(1168)
+ 143               		cpc r25,r18
+ 144 005c 24E0      		brne .+2
+ 145 005e 8039      		rjmp .L10
+ 146 0060 9207      		subi r24,lo8(1552)
+ 147 0062 01F4      		sbci r25,hi8(1552)
+ 148 0064 00C0      		breq .+2
+ 149 0066 8051      		rjmp .L4
+ 150 0068 9640      		rjmp .L11
+ 151 006a 01F0      	.L19:
+ 152 006c 00C0      		ldi r18,hi8(2640)
+ 153 006e 00C0      		cpi r24,lo8(2640)
+ 154               		cpc r25,r18
+ 155 0070 2AE0      		brne .+2
+ 156 0072 8035      		rjmp .L7
+ 157 0074 9207      		ldi r18,hi8(2641)
+ 158 0076 01F4      		cpi r24,lo8(2641)
+ 159 0078 00C0      		cpc r25,r18
+ 160 007a 2AE0      		brsh .L22
+ 161 007c 8135      		ldi r18,hi8(2320)
+ 162 007e 9207      		cpi r24,lo8(2320)
+ 163 0080 00F4      		cpc r25,r18
+ 164 0082 29E0      		breq .L14
+ 165 0084 8031      		ldi r18,hi8(2576)
+ 166 0086 9207      		cpi r24,lo8(2576)
+ 167 0088 01F0      		cpc r25,r18
+ 168 008a 2AE0      		breq .L15
+ 169 008c 8031      		subi r24,lo8(2192)
+ 170 008e 9207      		sbci r25,hi8(2192)
+ 171 0090 01F0      		brne .L4
+ 172 0092 8059      		rjmp .L13
+ 173 0094 9840      	.L22:
+ 174 0096 01F4      		ldi r18,hi8(3088)
+ 175 0098 00C0      		cpi r24,lo8(3088)
+ 176               		cpc r25,r18
+ 177 009a 2CE0      		breq .L16
+ 178 009c 8031      		ldi r18,hi8(3089)
+ 179 009e 9207      		cpi r24,lo8(3089)
+ 180 00a0 01F0      		cpc r25,r18
+ 181 00a2 2CE0      		brsh .L23
+ 182 00a4 8131      		subi r24,lo8(2704)
+ 183 00a6 9207      		sbci r25,hi8(2704)
+ 184 00a8 00F4      		brne .L4
+ 185 00aa 8059      		rjmp .L7
+ 186 00ac 9A40      	.L23:
+ 187 00ae 01F4      		ldi r18,hi8(3216)
+ 188 00b0 00C0      		cpi r24,lo8(3216)
+ 189               		cpc r25,r18
+ 190 00b2 2CE0      		breq .L17
+ 191 00b4 8039      		subi r24,lo8(3600)
+ 192 00b6 9207      		sbci r25,hi8(3600)
+ 193 00b8 01F0      		brne .L4
+ 194 00ba 8051      		rjmp .L18
+ 195 00bc 9E40      	.L5:
+ 196 00be 01F4      		ldi r25,lo8(2)
+ 197 00c0 00C0      		rjmp .L24
+ 198               	.L12:
+ 200 00c4 00C0      	.LM4:
+ 201               		ldi r25,lo8(3)
+  58:io.c          **** 	   {
+  59:io.c          **** 	    case IR_TV_1:	
+  60:io.c          **** 			speed = 2;
+  61:io.c          **** 			 break;
+ 202               	6-remote_decode
+ 203               	.LM6:
+ 204 00c6 93E0      		ldi r25,lo8(5)
+ 205 00c8 00C0      		rjmp .L24
+ 206               	.L8:
+  62:io.c          **** 		case IR_TV_2:
+  63:io.c          **** 			speed = 3;
+  64:io.c          **** 			 break;
+ 207               	bn	68,0,70,.LM7-remote_decode
+ 208               	.LM7:
+ 209 00ca 94E0      		ldi r25,lo8(6)
+ 210 00cc 00C0      		rjmp .L24
+ 211               	.L15:
+  65:io.c          **** 	    case IR_TV_3:
+  66:io.c          **** 			speed = 4;
+  67:io.c          **** 			 break;
+ 212               	bn	68,0,73,.LM8-remote_decode
+ 213               	.LM8:
+ 214 00ce 95E0      		ldi r25,lo8(7)
+ 215 00d0 00C0      		rjmp .L24
+ 216               	.L11:
+  68:io.c          **** 		case IR_TV_4:
+  69:io.c          **** 			speed = 5;
+  70:io.c          **** 			 break;
+ 217               	bn	68,0,76,.LM9-remote_decode
+ 218               	.LM9:
+ 219 00d2 96E0      		ldi r25,lo8(8)
+ 220 00d4 00C0      		rjmp .L24
+ 221               	.L14:
+  71:io.c          **** 	    case IR_TV_5:
+  72:io.c          **** 			speed = 6;
+  73:io.c          **** 			 break;
+ 222               	bn	68,0,87,.LM10-remote_decode
+ 223               	.LM10:
+ 224 00d6 97E0      		sts g_mode1,__zero_reg__
+ 226               	.LM11:
+  74:io.c          **** 		case IR_TV_6:
+  75:io.c          **** 			speed = 7;
+  76:io.c          **** 			 break;
+ 227               	g_mode2,__zero_reg__
+ 228               		rjmp .L7
+ 229 00da 98E0      	.L6:
+ 231               	.LM12:
+  77:io.c          **** 	    case IR_TV_7:
+  78:io.c          **** 			speed = 8;
+  79:io.c          **** 			break;
+  80:io.c          **** 		case IR_TV_8:
+  81:io.c          **** 			speed = 9;
+  82:io.c          **** 			break;
+  83:io.c          **** 	    case IR_TV_9:
+  84:io.c          **** 			speed = 10;
+  85:io.c          **** 			break;
+  86:io.c          **** 		case IR_TV_0:
+  87:io.c          **** 			g_mode1  = MOTOR_STOP;
+ 232               	r24,lo8(1)
+ 233               		rjmp .L28
+ 234 00de 1092 0000 	.L13:
+  88:io.c          **** 			g_mode2  = MOTOR_STOP;
+ 235               	tabn	68,0,95,.LM13-remote_decode
+ 236               	.LM13:
+ 237 00e2 1092 0000 		ldi r24,lo8(2)
+ 238 00e6 00C0      	.L28:
+ 239               		sts g_mode1,r24
+  89:io.c          **** 			break;
+  90:io.c          **** 		case IR_TV_CHUP:							
+  91:io.c          ****         	g_mode1 = MOTOR_FORWARD;		
+ 240               	 .L27
+ 241               	.L10:
+ 243 00ea 00C0      	.LM14:
+ 244               		ldi r24,lo8(1)
+  92:io.c          **** 			g_mode2 = MOTOR_FORWARD;
+  93:io.c          **** 			break;
+  94:io.c          **** 		case IR_TV_CHDOWN:							
+  95:io.c          **** 			g_mode1 = MOTOR_BACKWARD;
+ 245               	g_mode1,r24
+ 247 00ec 82E0      	.LM15:
+ 248               		ldi r24,lo8(2)
+ 249 00ee 8093 0000 		rjmp .L27
+ 250 00f2 00C0      	.L17:
+  96:io.c          **** 			g_mode2 = MOTOR_BACKWARD;
+  97:io.c          **** 			break;
+  98:io.c          **** 		case IR_TV_TVMUTE:
+  99:io.c          **** 			break;
+ 100:io.c          **** 		case  IR_TV_TVPOWER:
+ 101:io.c          **** 		  	break;
+ 102:io.c          **** 		case   IR_TV_TVAV:
+ 103:io.c          **** 		    break;
+ 104:io.c          **** 		case  IR_TV_VOLUP:
+ 105:io.c          ****             g_mode1 = MOTOR_FORWARD;		
+ 252               		ldi r24,lo8(2)
+ 253               		sts g_mode1,r24
+ 255 00f6 8093 0000 	.LM17:
+ 106:io.c          **** 			g_mode2 = MOTOR_BACKWARD;
+ 256               	 r24,lo8(1)
+ 257               	.L27:
+ 258 00fa 82E0      		sts g_mode2,r24
+ 259 00fc 00C0      		rjmp .L7
+ 260               	.L4:
+ 107:io.c          **** 			break;
+ 108:io.c          **** 		case  IR_TV_VOLDOWN:                 			
+ 109:io.c          **** 			g_mode1 = MOTOR_BACKWARD;
+ 261               	bn	68,0,114,.LM18-remote_decode
+ 262               	.LM18:
+ 263 00fe 82E0      		sts g_mode1,__zero_reg__
+ 110:io.c          **** 			g_mode2 = MOTOR_FORWARD;
+ 265               	9:
+ 266               		sts g_mode2,__zero_reg__
+ 267 0104 81E0      		ldi r24,lo8(0)
+ 268               		rjmp .L25
+ 269 0106 8093 0000 	.L7:
+ 270 010a 00C0      		ldi r25,lo8(10)
+ 271               	.L24:
+ 111:io.c          **** 			break;
+ 112:io.c          **** 		default:
+ 113:io.c          **** 			found = 0;
+ 114:io.c          **** 			g_mode1  = MOTOR_STOP;
+ 272               		68,0,119,.LM20-remote_decode
+ 273               	.LM20:
+ 274 010c 1092 0000 		ldi r24,lo8(100)
+ 115:io.c          **** 			g_mode2  = MOTOR_STOP;
+ 275               	l r25,r24
+ 276               		movw r24,r0
+ 277 0110 1092 0000 		clr r1
+ 279 0116 00C0      	.LM21:
+ 280               		out (74)+1-0x20,r25
+ 281 0118 9AE0      		out 74-0x20,r24
+ 116:io.c          **** 			break;
+ 117:io.c          ****  	   }
+ 118:io.c          ****        if (found)
+ 119:io.c          **** 	   {	pwm = (speed * 100);             // Start from +  speed*2^4
+ 283               	out (72)+1-0x20,r25
+ 284               		out 72-0x20,r24
+ 285 011a 84E6      		ldi r24,lo8(1)
+ 286 011c 989F      		rjmp .L25
+ 287 011e C001      	.L18:
+ 288 0120 1124      		ldi r25,lo8(9)
+ 120:io.c          **** 			OCR1A = pwm;
+ 289               	.L24
+ 290               	.L25:
+ 292 0124 8ABD      	.LM23:
+ 121:io.c          **** 			OCR1B = pwm;
+ 293               	 r25
+ 294               	/* epilogue: frame size=0 */
+ 295 0126 99BD      		ret
+ 296 0128 88BD      	/* epilogue end (size=1) */
+ 297 012a 81E0      	/* function remote_decode size 160 (159) */
+ 122:io.c          **** 		}	
+ 123:io.c          **** 	   return found;
+ 124:io.c          **** 
+ 125:io.c          **** }
+ 303               	4,0,0,.Lscope1-remote_decode
+ 304               	.Lscope1:
+ 306               	.global	__vector_6
+ 308               	__vector_6:
+ 310               	.LM24:
+ 311               	/* prologue: frame size=0 */
+ 312               		push __zero_reg__
+ 313               		push __tmp_reg__
+ 314               		in __tmp_reg__,__SREG__
+ 315               		push __tmp_reg__
+ 316               		clr __zero_reg__
+ 317               		push r18
+ 318               		push r19
+ 319               		push r20
+ 320               		push r21
+ 126:io.c          **** 
+ 127:io.c          **** 
+ 128:io.c          ****  
+ 129:io.c          ****  
+ 130:io.c          **** /* Interrupt handle for Input Capture
+ 131:io.c          **** This routine will detect/ process the Sony IR remote command. Protocol using Sony remote control
+ 132:io.c          **** INPUT   :  Infrared signal from  ICP pin
+ 133:io.c          **** 		   Command table 
+ 134:io.c          **** 		  
+ 135:io.c          **** 
+ 136:io.c          **** OUTPUT 	: g_num  Number of message to display
+ 137:io.c          **** 		: g_control.display_mode   Display mode of message
+ 138:io.c          **** 		: g_start_bit
+ 139:io.c          **** 		
+ 140:io.c          **** 
+ 141:io.c          **** */
+ 142:io.c          **** SIGNAL(SIG_INPUT_CAPTURE1)
+ 143:io.c          **** {
+ 321               	3
+ 322               		push r24
+ 323               		push r25
+ 324 0136 1F92      		push r26
+ 325 0138 0F92      		push r27
+ 326 013a 0FB6      		push r30
+ 327 013c 0F92      		push r31
+ 328 013e 1124      	/* prologue end (size=17) */
+ 330 0142 3F93      	.LM25:
+ 331 0144 4F93      		in r24,70-0x20
+ 332 0146 5F93      		in r25,(70)+1-0x20
+ 334 014a 7F93      	.LM26:
+ 335 014c 8F93      	/* #APP */
+ 336 014e 9F93      		cli
+ 338 0152 BF93      	.LM27:
+ 339 0154 EF93      	/* #NOAPP */
+ 340 0156 FF93      		in r18,78-0x20
+ 341               		ori r18,lo8(64)
+ 144:io.c          **** 	uint16_t  ir_code;
+ 145:io.c          ****     ir_code = ICR1;
+ 342               	,.LM25-__vector_6
+ 343               	.LM25:
+ 344 0158 86B5      		in r24,70-0x20
+ 345 015a 97B5      		in r25,(70)+1-0x20
+ 146:io.c          **** 	cli(); 
+ 346               	ush r19
+ 347               		push r20
+ 348               		push r21
+ 349 015c F894      		push r22
+ 147:io.c          **** 
+ 148:io.c          ****     TCCR1B  |= _BV(ICES1);	     // Rising edge
+ 350               	ctor_6:
+ 352               	.LM24:
+ 353 015e 2EB5      	/* prologue: frame size=0 */
+ 354 0160 2064      		push __zero_reg__
+ 355 0162 2EBD      		push __tmp_reg__
+ 149:io.c          ****  	ir_code  = sony_ir_decode(ir_code);  
+ 356               	te_decode
+ 357               	.Lscope1:
+ 150:io.c          **** 
+ 151:io.c          **** 	if (ir_code)
+ 359               	obal	__vector_6
+ 361 0168 0097      	__vector_6:
+ 152:io.c          **** 	{       //End code dispatch command    
+ 153:io.c          ****  
+ 154:io.c          **** 		remote_decode (ir_code);
+ 363               	4:
+ 364               	/* prologue: frame size=0 */
+ 365 016c 0E94 0000 		push __zero_reg__
+ 155:io.c          **** // Return to falling edge for Start		
+ 156:io.c          **** 		TCCR1B  &= ~(_BV(ICES1));
+ 366               	4,0,0,.Lscope1-remote_decode
+ 367               	.Lscope1:
+ 369 0172 8F7B      	.global	__vector_6
+ 371               	__vector_6:
+ 157:io.c          **** 
+ 158:io.c          **** //Note if  SELFTEST is selected g_irint = 0;
+ 159:io.c          **** 	} 
+ 160:io.c          ****     sei();
+ 372               	n	68,0,143,.LM24-__vector_6
+ 373               	.LM24:
+ 374               	/* prologue: frame size=0 */
+ 375 0176 7894      		push __zero_reg__
+ 376               		push __tmp_reg__
+ 377               		in __tmp_reg__,__SREG__
+ 378 0178 FF91      		push __tmp_reg__
+ 379 017a EF91      		clr __zero_reg__
+ 380 017c BF91      		push r18
+ 381 017e AF91      		push r19
+ 382 0180 9F91      		push r20
+ 383 0182 8F91      		push r21
+ 384 0184 7F91      		push r22
+ 385 0186 6F91      		push r23
+ 386 0188 5F91      		push r24
+ 387 018a 4F91      		push r25
+ 388 018c 3F91      		push r26
+ 389 018e 2F91      		push r27
+ 390 0190 0F90      		push r30
+ 391 0192 0FBE      		push r31
+ 392 0194 0F90      	/* prologue end (size=17) */
+ 394 0198 1895      	.LM25:
+ 395               		in r24,70-0x20
+ 396               		in r25,(70)+1-0x20
+ 398               	.LM26:
+ 399               	/* #APP */
+ 400               		cli
+ 402               	.LM27:
+ 403               	/* #NOAPP */
+ 404               		in r18,78-0x20
+ 405               		ori r18,lo8(64)
+ 161:io.c          ****  
+ 162:io.c          **** }
+ 163:io.c          **** 
+ 164:io.c          **** 
+ 165:io.c          **** void main()
+ 166:io.c          **** {
+ 406               	,.LM25-__vector_6
+ 407               	.LM25:
+ 408               		in r24,70-0x20
+ 409 019a EF92      		in r25,(70)+1-0x20
+ 411 019e 0F93      	.LM26:
+ 412 01a0 1F93      	/* #APP */
+ 413 01a2 CF93      		cli
+ 415 01a6 CDB7      	.LM27:
+ 416 01a8 DEB7      	/* #NOAPP */
+ 417 01aa 2397      		in r18,78-0x20
+ 418 01ac 0FB6      		ori r18,lo8(64)
+ 419 01ae F894      		out 78-0x20,r18
+ 421 01b2 0FBE      	.LM28:
+ 422 01b4 CDBF      		call sony_ir_decode
+ 167:io.c          ****   uint8_t sw1,sw2;
+ 168:io.c          ****   uint16_t k;
+ 169:io.c          ****   int8_t d1,d2;
+ 170:io.c          ****   uint8_t show[3] = {0,'f','b'};
+ 425               	.LM27:
+ 426 01b6 DE01      	/* #NOAPP */
+ 427 01b8 1196      		in r18,78-0x20
+ 428 01ba E0E0      		ori r18,lo8(64)
+ 429 01bc F0E0      		out 78-0x20,r18
+ 431               	.LM28:
+ 432               		call sony_ir_decode
+ 434 01c0 0190      	.LM29:
+ 435 01c2 0D92      		sbiw r24,0
+ 436 01c4 8150      		breq .L30
+ 171:io.c          ****   
+ 172:io.c          ****   
+ 173:io.c          **** //  enum {MOTOR_STOP,MOTOR_FORWARD,MOTOR_BACKWARD,MOTOR_BRAKE};
+ 174:io.c          ****   d7segment_init();
+ 438               	0
+ 439               		ori r18,lo8(64)
+ 440 01c8 0E94 0000 		out 78-0x20,r18
+ 175:io.c          ****   init_ir();
+ 441               	.LM25:
+ 442               		in r24,70-0x20
+ 443 01cc 0E94 0000 		in r25,(70)+1-0x20
+ 176:io.c          ****   init_motor();
+ 444               	ush r19
+ 445               		push r20
+ 446 01d0 0E94 0000 		push r21
+ 177:io.c          ****   sei();
+ 447               	nction
+ 448               	__vector_6:
+ 450 01d4 7894      	.LM24:
+ 451               	/* prologue: frame size=0 */
+ 452 01d6 EE24      		push __zero_reg__
+ 453 01d8 FF24      		push __tmp_reg__
+ 454               		in __tmp_reg__,__SREG__
+ 178:io.c          ****   d1 = 0;
+ 179:io.c          ****   d2 = 0;
+ 180:io.c          ****   
+ 181:io.c          ****   while (1)
+ 182:io.c          ****   {
+ 183:io.c          ****    sw1 = _7SEGMENT_SW1_IN_PORT & _7SEGMENT_SW1; 
+ 184:io.c          ****    
+ 185:io.c          ****    if (!sw1) // SW1  Press
+ 455               	s	"__vector_6:F(0,15)",36,0,0,__vector_6
+ 456               	.global	__vector_6
+ 458 01dc 00C0      	__vector_6:
+ 186:io.c          ****     {   	
+ 187:io.c          **** 		d1++;
+ 459               	abn	68,0,143,.LM24-__vector_6
+ 460               	.LM24:
+ 461 01de E394      	/* prologue: frame size=0 */
+ 188:io.c          **** 	     if (d1 > MOTOR_BACKWARD)
+ 462               	te_decode
+ 464 01e0 82E0      	.Lscope1:
+ 466 01e4 04F4      	.global	__vector_6
+ 468               	__vector_6:
+ 189:io.c          **** 			d1 = MOTOR_STOP;
+ 190:io.c          **** 		for (k = 0; k < 500 ;k++)                         // Delay for key bounce
+ 191:io.c          **** 				delay(6000);						
+ 192:io.c          **** 		g_mode1 = d1;
+ 469               		68,0,143,.LM24-__vector_6
+ 470               	.LM24:
+ 471 01e8 E092 0000 	/* prologue: frame size=0 */
+ 472               		push __zero_reg__
+ 193:io.c          **** 
+ 194:io.c          **** 	}
+ 195:io.c          ****    
+ 196:io.c          ****    sw2 = _7SEGMENT_SW2_IN_PORT & _7SEGMENT_SW2; 
+ 197:io.c          ****    if (!sw2) // SW2 Press
+ 473               	4,0,0,.Lscope1-remote_decode
+ 474               	.Lscope1:
+ 476 01ee 00C0      	.global	__vector_6
+ 198:io.c          ****    {
+ 199:io.c          ****         d2++;
+ 477               	pe	__vector_6, @function
+ 478               	__vector_6:
+ 200:io.c          **** 		if (d2 > MOTOR_BACKWARD)
+ 480               	,24
+ 483 01f4 EF15      	.Lscope1:
+ 485 01f8 FF24      	.global	__vector_6
+ 201:io.c          **** 			d2 = MOTOR_STOP;
+ 202:io.c          ****  		for (k = 0; k < 500 ;k++)                         // Delay for key bounce		
+ 203:io.c          ****  				delay(6000);
+ 204:io.c          **** 		g_mode2 = d2;
+ 487               	r_6:
+ 489 01fa F092 0000 	.LM24:
+ 490               	/* prologue: frame size=0 */
+ 205:io.c          **** 	
+ 206:io.c          ****    }
+ 207:io.c          **** 
+ 208:io.c          ****   	motor_control(1, g_mode1);
+ 491               	te_decode
+ 493 01fe 6091 0000 	.Lscope1:
+ 495 0204 0E94 0000 	.global	__vector_6
+ 209:io.c          **** 	motor_control(2, g_mode2);
+ 496               	e	__vector_6, @function
+ 497               	__vector_6:
+ 499 020c 82E0      	.LM24:
+ 500 020e 0E94 0000 	/* prologue: frame size=0 */
+ 210:io.c          **** 	
+ 211:io.c          **** //  		for (k = 0; k < 10 ;k++)                         // Delay for key bounce
+ 212:io.c          **** //			delay (30000);
+ 213:io.c          **** //		motor_control (1, MOTOR_STOP);
+ 214:io.c          **** 
+ 215:io.c          ****    	d7segment_display(show[g_mode1],1);
+ 501               	te_decode
+ 503 0212 8091 0000 	.Lscope1:
+ 505 0218 0F5F      	.global	__vector_6
+ 507 021c F801      	__vector_6:
+ 509 0220 F11D      	.LM24:
+ 510 0222 61E0      	/* prologue: frame size=0 */
+ 511 0224 8081      		push __zero_reg__
+ 512 0226 0E94 0000 		push __tmp_reg__
+ 216:io.c          ****  			delay(12000);
+ 217:io.c          **** 	d7segment_display(show[g_mode2],2);
+ 513               	g__,__SREG__
+ 514               		push __tmp_reg__
+ 515 022a 8091 0000 		clr __zero_reg__
+ 516 022e 080F      		push r18
+ 517 0230 111D      		push r19
+ 518 0232 62E0      		push r20
+ 519 0234 F801      		push r21
+ 520 0236 8081      		push r22
+ 521 0238 0E94 0000 		push r23
+ 522 023c 00C0      		push r24
+ 523               		push r25
+ 524               		push r26
+ 525               		push r27
+ 526               		push r30
+ 527               		push r31
+ 528               	/* prologue end (size=17) */
+ 530               	.LM25:
+ 531               		in r24,70-0x20
+ 532               		in r25,(70)+1-0x20
+ 534               	.LM26:
+ 535               	/* #APP */
+ 536               		cli
+ 538               	.LM27:
+ 539               	/* #NOAPP */
+ 540 0000 00        		in r18,78-0x20
+ 541               		ori r18,lo8(64)
+ 542               		out 78-0x20,r18
+ 544               	.LM28:
+ 545               		call sony_ir_decode
+ 547               	.LM29:
+ 548               		sbiw r24,0
+ 549               		breq .L30
+ 551 0000 00        	.LM30:
+ 552 0001 66        		call remote_decode
+ 554               	.LM31:
+ 555               		in r24,78-0x20
+ 556               		andi r24,lo8(-65)
+ 557               		out 78-0x20,r24
+ 558               	.L30:
+DEFINED SYMBOLS
+                            *ABS*:00000000 io.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:73     .text:00000000 delay
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:88     .text:00000002 remote_decode
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:539    .bss:00000000 g_mode1
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:545    .bss:00000001 g_mode2
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:320    .text:00000136 __vector_6
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:405    .text:0000019a main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccHTubXh.s:550    .data:00000000 C.0.1369
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+sony_ir_decode
+d7segment_init
+init_ir
+init_motor
+motor_control
+d7segment_display

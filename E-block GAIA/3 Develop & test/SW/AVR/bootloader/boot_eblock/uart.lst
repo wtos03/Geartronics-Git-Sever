@@ -1,0 +1,286 @@
+   1               		.file	"uart.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  56               	.global	USART_Init
+  58               	USART_Init:
+   1:uart.c        **** 
+   2:uart.c        **** #include <avr/io.h>
+   3:uart.c        **** 
+   4:uart.c        **** /* most of the definitions borrowed from Peter Fleury's UART-Library 
+   5:uart.c        ****    extende for control-register C and ATmega169 */
+   6:uart.c        ****  
+   7:uart.c        **** #if  defined(__AVR_ATmega8__)  || defined(__AVR_ATmega16__) || defined(__AVR_ATmega32__) \
+   8:uart.c        ****   || defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) \
+   9:uart.c        ****   || defined(__AVR_ATmega323__) 
+  10:uart.c        ****   /* ATMega with one USART */
+  11:uart.c        ****  #define ATMEGA_USART
+  12:uart.c        ****  #define UART0_UBRR_HIGH  UBRRH
+  13:uart.c        ****  #define UART0_UBRR_LOW   UBRRL
+  14:uart.c        ****  #define UART0_RECEIVE_INTERRUPT   SIG_UART_RECV
+  15:uart.c        ****  #define UART0_TRANSMIT_INTERRUPT  SIG_UART_DATA
+  16:uart.c        ****  #define UART0_STATUS   UCSRA
+  17:uart.c        ****  #define UART0_CONTROL  UCSRB
+  18:uart.c        ****  #define UART0_DATA     UDR
+  19:uart.c        ****  #define UART0_UDRIE    UDRIE
+  20:uart.c        **** #elif defined(__AVR_ATmega162__)
+  21:uart.c        ****  /* ATMega with two USART */
+  22:uart.c        ****  #define ATMEGA_USART0
+  23:uart.c        ****  #define ATMEGA_USART1
+  24:uart.c        ****  #define UART0_UBRR_HIGH  UBRR0H
+  25:uart.c        ****  #define UART0_UBRR_LOW   UBRR0L
+  26:uart.c        ****  #define UART1_UBRR_HIGH  UBRR1H
+  27:uart.c        ****  #define UART1_UBRR_LOW   UBRR1L
+  28:uart.c        ****  #define UART0_RECEIVE_INTERRUPT   SIG_USART0_RECV
+  29:uart.c        ****  #define UART1_RECEIVE_INTERRUPT   SIG_USART1_RECV
+  30:uart.c        ****  #define UART0_TRANSMIT_INTERRUPT  SIG_USART0_DATA
+  31:uart.c        ****  #define UART1_TRANSMIT_INTERRUPT  SIG_USART1_DATA
+  32:uart.c        ****  #define UART0_STATUS    UCSR0A
+  33:uart.c        ****  #define UART0_CONTROL   UCSR0B
+  34:uart.c        ****  #define UART0_CONTROL2  UCSR0C
+  35:uart.c        ****  #define UART0_DATA     UDR0
+  36:uart.c        ****  #define UART0_UDRIE    UDRIE0
+  37:uart.c        ****  #define UART1_STATUS    UCSR1A
+  38:uart.c        ****  #define UART1_CONTROL   UCSR1B
+  39:uart.c        ****  #define UART1_CONTROL2  UCSR1C
+  40:uart.c        ****  #define UART1_DATA     UDR1
+  41:uart.c        ****  #define UART1_UDRIE    UDRIE1
+  42:uart.c        **** #elif defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__) 
+  43:uart.c        ****  /* ATMega with two USART */
+  44:uart.c        ****  #define ATMEGA_USART0
+  45:uart.c        ****  #define ATMEGA_USART1
+  46:uart.c        ****  #define UART0_UBRR_HIGH  UBRR0H
+  47:uart.c        ****  #define UART0_UBRR_LOW   UBRR0L
+  48:uart.c        ****  #define UART1_UBRR_HIGH  UBRR1H
+  49:uart.c        ****  #define UART1_UBRR_LOW   UBRR1L
+  50:uart.c        ****  #define UART0_RECEIVE_INTERRUPT   SIG_UART0_RECV
+  51:uart.c        ****  #define UART1_RECEIVE_INTERRUPT   SIG_UART1_RECV
+  52:uart.c        ****  #define UART0_TRANSMIT_INTERRUPT  SIG_UART0_DATA
+  53:uart.c        ****  #define UART1_TRANSMIT_INTERRUPT  SIG_UART1_DATA
+  54:uart.c        ****  #define UART0_STATUS    UCSR0A
+  55:uart.c        ****  #define UART0_CONTROL   UCSR0B
+  56:uart.c        ****  #define UART0_CONTROL2  UCSR0C
+  57:uart.c        ****  #define UART0_DATA     UDR0
+  58:uart.c        ****  #define UART0_UDRIE    UDRIE0
+  59:uart.c        ****  #define UART1_STATUS    UCSR1A
+  60:uart.c        ****  #define UART1_CONTROL   UCSR1B
+  61:uart.c        ****  #define UART1_CONTROL2  UCSR1C
+  62:uart.c        ****  #define UART1_DATA     UDR1
+  63:uart.c        ****  #define UART1_UDRIE    UDRIE1
+  64:uart.c        **** #elif defined(__AVR_ATmega169__)
+  65:uart.c        ****  #define ATMEGA_USART
+  66:uart.c        ****  #define UART0_UBRR_HIGH  UBRR0H
+  67:uart.c        ****  #define UART0_UBRR_LOW   UBRR0L
+  68:uart.c        ****  // TODO #define UART0_RECEIVE_INTERRUPT   SIG_UART_RECV
+  69:uart.c        ****  // TODO #define UART0_TRANSMIT_INTERRUPT  SIG_UART_DATA
+  70:uart.c        ****  #define UART0_STATUS     UCSR0A
+  71:uart.c        ****  #define UART0_CONTROL    UCSR0B
+  72:uart.c        ****  #define UART0_CONTROL2   UCSR0C
+  73:uart.c        ****  #define UART0_DATA       UDR0
+  74:uart.c        ****  #define UART0_DOUBLEAVAIL 
+  75:uart.c        **** 
+  76:uart.c        **** 
+  77:uart.c        **** 
+  78:uart.c        ****  // TODO #define UART0_UDRIE     UDRIE
+  79:uart.c        **** #else
+  80:uart.c        ****  #error "Processor type not supported in uart.c !"
+  81:uart.c        **** #endif
+  82:uart.c        **** 
+  83:uart.c        **** 
+  84:uart.c        **** void USART_Init(unsigned int baudrate, unsigned char doublespeed)
+  85:uart.c        **** {
+  60               	.LM1:
+  61               	/* prologue: frame size=0 */
+  62               	/* prologue end (size=0) */
+  63 0000 9C01      		movw r18,r24
+  86:uart.c        ****     // Set baud rate
+  87:uart.c        ****     UART0_UBRR_HIGH = (unsigned char)(baudrate>>8);
+  65               	.LM2:
+  66 0002 832F      		mov r24,r19
+  67 0004 9927      		clr r25
+  68 0006 80BD      		out 64-0x20,r24
+  88:uart.c        ****     UART0_UBRR_LOW  = (unsigned char)baudrate;
+  70               	.LM3:
+  71 0008 29B9      		out 41-0x20,r18
+  89:uart.c        **** 
+  90:uart.c        ****     // Enable 2x speed - TODO adopt to all uCs
+  91:uart.c        **** 	#ifdef UART0_DOUBLEAVAIL
+  92:uart.c        ****     if (doublespeed) UCSR0A = (1<<U2X0);
+  93:uart.c        **** 	#endif
+  94:uart.c        **** 
+  95:uart.c        **** #if defined (ATMEGA_USART)
+  96:uart.c        ****     /* Enable USART receiver and transmitter and disable interrupts */
+  97:uart.c        ****     UART0_CONTROL = (1<<RXEN)|(1<<TXEN)|(0<<RXCIE)|(0<<UDRIE);
+  73               	.LM4:
+  74 000a 88E1      		ldi r24,lo8(24)
+  75 000c 8AB9      		out 42-0x20,r24
+  98:uart.c        ****     /* Set frame format: asynchronous, 8data, no parity, 1stop bit */
+  99:uart.c        ****     #ifdef URSEL
+ 100:uart.c        ****     UCSRC = (1<<URSEL)|(3<<UCSZ0);
+  77               	.LM5:
+  78 000e 86E8      		ldi r24,lo8(-122)
+  79 0010 80BD      		out 64-0x20,r24
+  80               	/* epilogue: frame size=0 */
+  81 0012 0895      		ret
+  82               	/* epilogue end (size=1) */
+  83               	/* function USART_Init size 10 (9) */
+  85               	.Lscope0:
+  88               	.global	sendchar
+  90               	sendchar:
+ 101:uart.c        ****     #else
+ 102:uart.c        ****     UCSRC = (3<<UCSZ0);
+ 103:uart.c        ****     #endif 
+ 104:uart.c        ****     
+ 105:uart.c        **** #elif defined (ATMEGA_USART0 )
+ 106:uart.c        ****     /* Enable USART receiver and transmitter and disable interrupts */
+ 107:uart.c        ****     UART0_CONTROL = (1<<RXEN0)|(1<<TXEN0)|(0<<RXCIE0)|(0<<UDRIE0);
+ 108:uart.c        ****     /* Set frame format: asynchronous, 8data, no parity, 1stop bit */
+ 109:uart.c        ****     #ifdef URSEL0
+ 110:uart.c        ****     UCSR0C = (1<<URSEL0)|(3<<UCSZ00);
+ 111:uart.c        ****     #else
+ 112:uart.c        ****     UCSR0C = (3<<UCSZ00);
+ 113:uart.c        ****     #endif 
+ 114:uart.c        **** #endif
+ 115:uart.c        ****     
+ 116:uart.c        **** }
+ 117:uart.c        **** 
+ 118:uart.c        **** void sendchar(char data)
+ 119:uart.c        **** {
+  92               	.LM6:
+  93               	/* prologue: frame size=0 */
+  94               	/* prologue end (size=0) */
+ 120:uart.c        ****     int i = 0;
+  96               	.LM7:
+  97 0014 20E0      		ldi r18,lo8(0)
+  98 0016 30E0      		ldi r19,hi8(0)
+ 121:uart.c        ****     
+ 122:uart.c        ****     UART0_DATA  = data;
+ 100               	.LM8:
+ 101 0018 8CB9      		out 44-0x20,r24
+ 123:uart.c        ****     
+ 124:uart.c        ****     if(SREG & 0x80)
+ 103               	.LM9:
+ 104 001a 0FB6      		in __tmp_reg__,95-0x20
+ 105 001c 07FE      		sbrs __tmp_reg__,7
+ 106 001e 0BC0      		rjmp .L8
+ 125:uart.c        ****     {
+ 126:uart.c        **** 		while ( !(UART0_STATUS&0x40) && (i<10000) )
+ 127:uart.c        **** 		{
+ 128:uart.c        **** 			i++;
+ 108               	.LM10:
+ 109 0020 5E99      		sbic 43-0x20,6
+ 110 0022 0BC0      		rjmp .L7
+ 111               	.L6:
+ 112 0024 2F5F      		subi r18,lo8(-(1))
+ 113 0026 3F4F      		sbci r19,hi8(-(1))
+ 114 0028 5E99      		sbic 43-0x20,6
+ 115 002a 07C0      		rjmp .L7
+ 116 002c 87E2      		ldi r24,hi8(10000)
+ 117 002e 2031      		cpi r18,lo8(10000)
+ 118 0030 3807      		cpc r19,r24
+ 119 0032 C4F3      		brlt .L6
+ 120 0034 02C0      		rjmp .L7
+ 121               	.L8:
+ 129:uart.c        **** 		}
+ 130:uart.c        ****     }
+ 131:uart.c        ****     else 
+ 132:uart.c        ****         while( !(UART0_STATUS&0x40) );
+ 123               	.LM11:
+ 124 0036 5E9B      		sbis 43-0x20,6
+ 125 0038 FECF      		rjmp .L8
+ 126               	.L7:
+ 133:uart.c        ****         
+ 134:uart.c        ****     UART0_STATUS=UART0_STATUS|0x40;                             //delete TXCflag
+ 128               	.LM12:
+ 129 003a 5E9A      		sbi 43-0x20,6
+ 130               	/* epilogue: frame size=0 */
+ 131 003c 0895      		ret
+ 132               	/* epilogue end (size=1) */
+ 133               	/* function sendchar size 21 (20) */
+ 138               	.Lscope1:
+ 140               	.global	recchar
+ 142               	recchar:
+ 135:uart.c        **** }
+ 136:uart.c        **** 
+ 137:uart.c        **** 
+ 138:uart.c        **** char recchar(void)
+ 139:uart.c        **** {
+ 144               	.LM13:
+ 145               	/* prologue: frame size=0 */
+ 146               	/* prologue end (size=0) */
+ 140:uart.c        ****     int i = 0;
+ 148               	.LM14:
+ 149 003e 80E0      		ldi r24,lo8(0)
+ 150 0040 90E0      		ldi r25,hi8(0)
+ 141:uart.c        **** 
+ 142:uart.c        ****     
+ 143:uart.c        ****     if(SREG & 0x80)
+ 152               	.LM15:
+ 153 0042 0FB6      		in __tmp_reg__,95-0x20
+ 154 0044 07FE      		sbrs __tmp_reg__,7
+ 155 0046 0AC0      		rjmp .L18
+ 144:uart.c        ****     {
+ 145:uart.c        **** 		// while (!(UART0_STATUS & (1<<RXC0)) && (i<10000))
+ 146:uart.c        **** 		while (!(UART0_STATUS & 0x80) && (i<10000))
+ 147:uart.c        **** 		{
+ 148:uart.c        **** 			i++;
+ 157               	.LM16:
+ 158 0048 5F99      		sbic 43-0x20,7
+ 159 004a 0AC0      		rjmp .L17
+ 160               	.L16:
+ 161 004c 0196      		adiw r24,1
+ 162 004e 5F99      		sbic 43-0x20,7
+ 163 0050 07C0      		rjmp .L17
+ 164 0052 27E2      		ldi r18,hi8(10000)
+ 165 0054 8031      		cpi r24,lo8(10000)
+ 166 0056 9207      		cpc r25,r18
+ 167 0058 CCF3      		brlt .L16
+ 168 005a 02C0      		rjmp .L17
+ 169               	.L18:
+ 149:uart.c        **** 		}
+ 150:uart.c        ****     }
+ 151:uart.c        ****     else
+ 152:uart.c        ****         // while(!(UART0_STATUS & (1<<RXC0)));
+ 153:uart.c        **** 		while(!(UART0_STATUS & 0x80));
+ 171               	.LM17:
+ 172 005c 5F9B      		sbis 43-0x20,7
+ 173 005e FECF      		rjmp .L18
+ 174               	.L17:
+ 154:uart.c        **** 		
+ 155:uart.c        ****         
+ 156:uart.c        ****     return UART0_DATA ;
+ 176               	.LM18:
+ 177 0060 8CB1      		in r24,44-0x20
+ 157:uart.c        **** }
+ 179               	.LM19:
+ 180 0062 9927      		clr r25
+ 181               	/* epilogue: frame size=0 */
+ 182 0064 0895      		ret
+ 183               	/* epilogue end (size=1) */
+ 184               	/* function recchar size 20 (19) */
+ 189               	.Lscope2:
+ 190               		.text
+ 192               	Letext:
+ 193               	/* File "uart.c": code   51 = 0x0033 (  48), prologues   0, epilogues   3 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 uart.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccARaaaa.s:58     .text:00000000 USART_Init
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccARaaaa.s:90     .text:00000014 sendchar
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccARaaaa.s:142    .text:0000003e recchar
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccARaaaa.s:192    .text:00000066 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

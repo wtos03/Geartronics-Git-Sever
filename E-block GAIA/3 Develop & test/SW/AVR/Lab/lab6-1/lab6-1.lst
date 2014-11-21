@@ -1,0 +1,444 @@
+   1               		.file	"lab6-1.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  60               	.global	d7segment_display
+  62               	d7segment_display:
+   1:lab6-1.c      **** /*
+   2:lab6-1.c      ****  Program 			    :   lab6-1.c
+   3:lab6-1.c      ****  Description 			:   Basic Input/Output lab
+   4:lab6-1.c      ****  Specification			:   7 Segments increase from current to 9 when
+   5:lab6-1.c      **** 							press UP SW
+   6:lab6-1.c      **** 						:   7 Segment decrease to 0 when press down SW
+   7:lab6-1.c      ****  CPU port/tested		:   ATMEGA32
+   8:lab6-1.c      ****  Hardware use			:   E_Mega32, E_IO Module
+   9:lab6-1.c      ****  Port use				:   Port name / Function
+  10:lab6-1.c      **** 
+  11:lab6-1.c      ****  Written by 			:  wichai@geartronics.net
+  12:lab6-1.c      ****  Date					:  3/Sep/2007
+  13:lab6-1.c      ****   
+  14:lab6-1.c      ****  What we learn
+  15:lab6-1.c      **** 		-  Solve the debounce from SW
+  16:lab6-1.c      **** 		-  Autorepeat for SW
+  17:lab6-1.c      **** 		-  Output 7 segments 1 digit
+  18:lab6-1.c      **** 
+  19:lab6-1.c      ****  Try		-  Adjust delay time what happen
+  20:lab6-1.c      **** 		-  Remove delay for key bounce
+  21:lab6-1.c      ****  
+  22:lab6-1.c      ****  Improve
+  23:lab6-1.c      **** 		-  Cancel autorepeat mode 
+  24:lab6-1.c      **** 		-  More SW status  Press, Hold
+  25:lab6-1.c      **** 		-  Hold 2 keys simultaneous
+  26:lab6-1.c      **** 		
+  27:lab6-1.c      ****  Update History
+  28:lab6-1.c      ****  
+  29:lab6-1.c      ****  Date			By 					Comments
+  30:lab6-1.c      ****  ----			--					---------
+  31:lab6-1.c      **** 
+  32:lab6-1.c      **** */
+  33:lab6-1.c      **** /* Display numeric 0-9  on  digit 0 or 1 
+  34:lab6-1.c      ****   
+  35:lab6-1.c      **** 	INPUT
+  36:lab6-1.c      **** 	num		:	number to show
+  37:lab6-1.c      **** 	digit 	: 	Digit  to show
+  38:lab6-1.c      **** 	
+  39:lab6-1.c      **** 	OUTPUT	:	null
+  40:lab6-1.c      **** 	
+  41:lab6-1.c      **** */  
+  42:lab6-1.c      **** 
+  43:lab6-1.c      **** #include <stdio.h>
+  44:lab6-1.c      **** #include "Dual_7Segment.h"
+  45:lab6-1.c      **** 
+  46:lab6-1.c      **** // Display number 0 - 9
+  47:lab6-1.c      **** 
+  48:lab6-1.c      **** void d7segment_display( int8_t num)
+  49:lab6-1.c      **** {
+  64               	.LM1:
+  65               	/* prologue: frame size=0 */
+  66               	/* prologue end (size=0) */
+  50:lab6-1.c      ****  switch (num)
+  68               	.LM2:
+  69 0000 9927      		clr r25
+  70 0002 87FD      		sbrc r24,7
+  71 0004 9095      		com r25
+  72 0006 8630      		cpi r24,6
+  73 0008 9105      		cpc r25,__zero_reg__
+  74 000a 09F4      		brne .+2
+  75 000c 41C0      		rjmp .L14
+  77               	.LM3:
+  78 000e 8730      		cpi r24,7
+  79 0010 9105      		cpc r25,__zero_reg__
+  80 0012 8CF4      		brge .L16
+  81 0014 8230      		cpi r24,2
+  82 0016 9105      		cpc r25,__zero_reg__
+  83 0018 59F1      		breq .L5
+  84 001a 8330      		cpi r24,3
+  85 001c 9105      		cpc r25,__zero_reg__
+  86 001e 2CF4      		brge .L17
+  87 0020 0097      		sbiw r24,0
+  88 0022 11F1      		breq .L3
+  89 0024 0197      		sbiw r24,1
+  90 0026 11F1      		breq .L4
+  91 0028 37C0      		rjmp .L2
+  92               	.L17:
+  93 002a 8430      		cpi r24,4
+  94 002c 9105      		cpc r25,__zero_reg__
+  95 002e 21F1      		breq .L7
+  96 0030 0597      		sbiw r24,5
+  97 0032 24F5      		brge .L8
+  98 0034 1FC0      		rjmp .L6
+  99               	.L16:
+ 100 0036 8930      		cpi r24,9
+ 101 0038 9105      		cpc r25,__zero_reg__
+ 102 003a 31F1      		breq .L12
+ 103 003c 8A30      		cpi r24,10
+ 104 003e 9105      		cpc r25,__zero_reg__
+ 105 0040 34F4      		brge .L18
+ 106 0042 8730      		cpi r24,7
+ 107 0044 9105      		cpc r25,__zero_reg__
+ 108 0046 E1F0      		breq .L10
+ 109 0048 0897      		sbiw r24,8
+ 110 004a E1F0      		breq .L11
+ 111 004c 25C0      		rjmp .L2
+ 112               	.L18:
+ 113 004e 8236      		cpi r24,98
+ 114 0050 9105      		cpc r25,__zero_reg__
+ 115 0052 F1F0      		breq .L14
+ 116 0054 8336      		cpi r24,99
+ 117 0056 9105      		cpc r25,__zero_reg__
+ 118 0058 1CF4      		brge .L19
+ 119 005a 0A97      		sbiw r24,10
+ 120 005c D9F0      		breq .L15
+ 121 005e 1CC0      		rjmp .L2
+ 122               	.L19:
+ 123 0060 8636      		cpi r24,102
+ 124 0062 9105      		cpc r25,__zero_reg__
+ 125 0064 99F0      		breq .L13
+ 126 0066 18C0      		rjmp .L2
+ 127               	.L3:
+  51:lab6-1.c      ****  {
+  52:lab6-1.c      **** 	case 0:
+  53:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_0;
+ 129               	.LM4:
+ 130 0068 8FE3      		ldi r24,lo8(63)
+ 131 006a 15C0      		rjmp .L20
+ 132               	.L4:
+  54:lab6-1.c      **** 		break;
+  55:lab6-1.c      **** 	case 1:
+  56:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_1;
+ 134               	.LM5:
+ 135 006c 86E0      		ldi r24,lo8(6)
+ 136 006e 13C0      		rjmp .L20
+ 137               	.L5:
+  57:lab6-1.c      **** 		break;
+  58:lab6-1.c      **** 	case 2:
+  59:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_2;
+ 139               	.LM6:
+ 140 0070 8BE5      		ldi r24,lo8(91)
+ 141 0072 11C0      		rjmp .L20
+ 142               	.L6:
+  60:lab6-1.c      **** 		break;
+  61:lab6-1.c      **** 	case 3:
+  62:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_3;
+ 144               	.LM7:
+ 145 0074 8FE4      		ldi r24,lo8(79)
+ 146 0076 0FC0      		rjmp .L20
+ 147               	.L7:
+  63:lab6-1.c      **** 		break;
+  64:lab6-1.c      **** 	case 4:
+  65:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_4;
+ 149               	.LM8:
+ 150 0078 86E6      		ldi r24,lo8(102)
+ 151 007a 0DC0      		rjmp .L20
+ 152               	.L8:
+  66:lab6-1.c      **** 		break;
+  67:lab6-1.c      **** 	case 5:
+  68:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_5;
+ 154               	.LM9:
+ 155 007c 8DE6      		ldi r24,lo8(109)
+ 156 007e 0BC0      		rjmp .L20
+ 157               	.L10:
+  69:lab6-1.c      **** 		break;
+  70:lab6-1.c      **** 	case 6:
+  71:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_6;
+  72:lab6-1.c      **** 		break;
+  73:lab6-1.c      **** 	case 7:
+  74:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_7;
+ 159               	.LM10:
+ 160 0080 87E0      		ldi r24,lo8(7)
+ 161 0082 09C0      		rjmp .L20
+ 162               	.L11:
+  75:lab6-1.c      **** 		break;
+  76:lab6-1.c      **** 	case 8:
+  77:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_8;
+ 164               	.LM11:
+ 165 0084 8FE7      		ldi r24,lo8(127)
+ 166 0086 07C0      		rjmp .L20
+ 167               	.L12:
+  78:lab6-1.c      **** 		break;
+  79:lab6-1.c      **** 	case 9:
+  80:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_9;
+ 169               	.LM12:
+ 170 0088 87E6      		ldi r24,lo8(103)
+ 171 008a 05C0      		rjmp .L20
+ 172               	.L13:
+  81:lab6-1.c      **** 	    break;
+  82:lab6-1.c      **** 	case 'f':
+  83:lab6-1.c      **** 	    _7SEGMENT_PORT = _7SEGMENT_C_F;
+ 174               	.LM13:
+ 175 008c 81E7      		ldi r24,lo8(113)
+ 176 008e 03C0      		rjmp .L20
+ 177               	.L14:
+  84:lab6-1.c      **** 		break;
+  85:lab6-1.c      **** 	case 'b':
+  86:lab6-1.c      **** 	    _7SEGMENT_PORT = _7SEGMENT_C_B;
+ 179               	.LM14:
+ 180 0090 8CE7      		ldi r24,lo8(124)
+ 181 0092 01C0      		rjmp .L20
+ 182               	.L15:
+  87:lab6-1.c      **** 		break;
+  88:lab6-1.c      **** 	case DOT:
+  89:lab6-1.c      **** 		_7SEGMENT_PORT = _7SEGMENT_DOT;
+ 184               	.LM15:
+ 185 0094 80E8      		ldi r24,lo8(-128)
+ 186               	.L20:
+ 187 0096 88BB      		out 56-0x20,r24
+ 188               	.L2:
+  90:lab6-1.c      **** 		break;
+  91:lab6-1.c      ****  
+  92:lab6-1.c      ****  }
+  93:lab6-1.c      **** // Output  digit
+  94:lab6-1.c      **** // ON Digit 1 OFF  ( 1 Off  0 On)
+  95:lab6-1.c      **** 	   _7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT1);
+ 190               	.LM16:
+ 191 0098 AB98      		cbi 53-0x20,3
+  96:lab6-1.c      **** // OFF Digit 2 
+  97:lab6-1.c      **** 	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT2;
+ 193               	.LM17:
+ 194 009a AC9A      		sbi 53-0x20,4
+ 195               	/* epilogue: frame size=0 */
+ 196 009c 0895      		ret
+ 197               	/* epilogue end (size=1) */
+ 198               	/* function d7segment_display size 83 (82) */
+ 200               	.Lscope0:
+ 203               	.global	delay
+ 205               	delay:
+  98:lab6-1.c      ****  
+  99:lab6-1.c      **** }	
+ 100:lab6-1.c      **** 
+ 101:lab6-1.c      **** void delay ( uint16_t time)
+ 102:lab6-1.c      **** {
+ 207               	.LM18:
+ 208               	/* prologue: frame size=4 */
+ 209 009e CF93      		push r28
+ 210 00a0 DF93      		push r29
+ 211 00a2 CDB7      		in r28,__SP_L__
+ 212 00a4 DEB7      		in r29,__SP_H__
+ 213 00a6 2497      		sbiw r28,4
+ 214 00a8 0FB6      		in __tmp_reg__,__SREG__
+ 215 00aa F894      		cli
+ 216 00ac DEBF      		out __SP_H__,r29
+ 217 00ae 0FBE      		out __SREG__,__tmp_reg__
+ 218 00b0 CDBF      		out __SP_L__,r28
+ 219               	/* prologue end (size=10) */
+ 220 00b2 9C01      		movw r18,r24
+ 103:lab6-1.c      ****    volatile uint16_t  t1,t2;   // Prevent optimizer skip command
+ 104:lab6-1.c      ****    for (t1 = 0 ; t1 < time ; t1++)
+ 222               	.LM19:
+ 223 00b4 1982      		std Y+1,__zero_reg__
+ 224 00b6 1A82      		std Y+2,__zero_reg__
+ 225 00b8 8981      		ldd r24,Y+1
+ 226 00ba 9A81      		ldd r25,Y+2
+ 227 00bc 8217      		cp r24,r18
+ 228 00be 9307      		cpc r25,r19
+ 229 00c0 B8F4      		brsh .L31
+ 230               	.L29:
+ 105:lab6-1.c      ****    {
+ 106:lab6-1.c      **** 	   for (t2 = 0 ; t2 < 3000 ;t2++);		
+ 232               	.LM20:
+ 233 00c2 1B82      		std Y+3,__zero_reg__
+ 234 00c4 1C82      		std Y+4,__zero_reg__
+ 235               	.L34:
+ 236 00c6 8B81      		ldd r24,Y+3
+ 237 00c8 9C81      		ldd r25,Y+4
+ 238 00ca 885B      		subi r24,lo8(3000)
+ 239 00cc 9B40      		sbci r25,hi8(3000)
+ 240 00ce 30F4      		brsh .L33
+ 241 00d0 8B81      		ldd r24,Y+3
+ 242 00d2 9C81      		ldd r25,Y+4
+ 243 00d4 0196      		adiw r24,1
+ 244 00d6 8B83      		std Y+3,r24
+ 245 00d8 9C83      		std Y+4,r25
+ 246 00da F5CF      		rjmp .L34
+ 247               	.L33:
+ 249               	.LM21:
+ 250 00dc 8981      		ldd r24,Y+1
+ 251 00de 9A81      		ldd r25,Y+2
+ 252 00e0 0196      		adiw r24,1
+ 253 00e2 8983      		std Y+1,r24
+ 254 00e4 9A83      		std Y+2,r25
+ 255 00e6 8981      		ldd r24,Y+1
+ 256 00e8 9A81      		ldd r25,Y+2
+ 257 00ea 8217      		cp r24,r18
+ 258 00ec 9307      		cpc r25,r19
+ 259 00ee 48F3      		brlo .L29
+ 260               	.L31:
+ 261               	/* epilogue: frame size=4 */
+ 262 00f0 2496      		adiw r28,4
+ 263 00f2 0FB6      		in __tmp_reg__,__SREG__
+ 264 00f4 F894      		cli
+ 265 00f6 DEBF      		out __SP_H__,r29
+ 266 00f8 0FBE      		out __SREG__,__tmp_reg__
+ 267 00fa CDBF      		out __SP_L__,r28
+ 268 00fc DF91      		pop r29
+ 269 00fe CF91      		pop r28
+ 270 0100 0895      		ret
+ 271               	/* epilogue end (size=9) */
+ 272               	/* function delay size 51 (32) */
+ 278               	.Lscope1:
+ 280               	.global	main
+ 282               	main:
+ 107:lab6-1.c      ****    }
+ 108:lab6-1.c      **** }
+ 109:lab6-1.c      **** 
+ 110:lab6-1.c      **** void main (void)
+ 111:lab6-1.c      **** {
+ 284               	.LM22:
+ 285               	/* prologue: frame size=0 */
+ 286 0102 C0E0      		ldi r28,lo8(__stack - 0)
+ 287 0104 D0E0      		ldi r29,hi8(__stack - 0)
+ 288 0106 DEBF      		out __SP_H__,r29
+ 289 0108 CDBF      		out __SP_L__,r28
+ 290               	/* prologue end (size=4) */
+ 112:lab6-1.c      ****    uint8_t sw1,sw2;
+ 113:lab6-1.c      ****    int8_t digit = 0;
+ 292               	.LM23:
+ 293 010a 10E0      		ldi r17,lo8(0)
+ 114:lab6-1.c      **** 
+ 115:lab6-1.c      ****    
+ 116:lab6-1.c      ****    
+ 117:lab6-1.c      **** // Initial value for E_IO  7 Segment as output and SW as input
+ 118:lab6-1.c      **** 
+ 119:lab6-1.c      **** 	_7SEGMENT_DIGIT_DIR   = 0xFF;  // Set direction for output all to 1 for 7 Segment     
+ 295               	.LM24:
+ 296 010c 8FEF      		ldi r24,lo8(-1)
+ 297 010e 87BB      		out 55-0x20,r24
+ 120:lab6-1.c      **** 	_7SEGMENT_PORT_DIR	  |= _7SEGMENT_DIGIT1 | _7SEGMENT_DIGIT2; // Set output for 7 segments digit
+ 299               	.LM25:
+ 300 0110 84B3      		in r24,52-0x20
+ 301 0112 8861      		ori r24,lo8(24)
+ 302 0114 84BB      		out 52-0x20,r24
+ 121:lab6-1.c      ****  
+ 122:lab6-1.c      **** // Set direction for input for SW 
+ 123:lab6-1.c      **** 	_7SEGMENT_SW1_DIR	&=  ~(_7SEGMENT_SW1);   // Inverse to 1 except SW1
+ 304               	.LM26:
+ 305 0116 A598      		cbi 52-0x20,5
+ 124:lab6-1.c      **** 	_7SEGMENT_SW2_DIR	&=  ~(_7SEGMENT_SW2);   // Inverse to 1 except SW2
+ 307               	.LM27:
+ 308 0118 A298      		cbi 52-0x20,2
+ 125:lab6-1.c      **** 
+ 126:lab6-1.c      **** // Read value from SW, out 1 to input port for sync and nop 1 clock before read
+ 127:lab6-1.c      **** 	 _7SEGMENT_SW1_PORT   |= _7SEGMENT_SW1;  // Output 1 to port SW1, SW2 for enable internal pull up 
+ 310               	.LM28:
+ 311 011a AD9A      		sbi 53-0x20,5
+ 128:lab6-1.c      ****      _7SEGMENT_SW2_PORT   |= _7SEGMENT_SW2;
+ 313               	.LM29:
+ 314 011c AA9A      		sbi 53-0x20,2
+ 315               	.L36:
+ 129:lab6-1.c      **** 
+ 130:lab6-1.c      **** 
+ 131:lab6-1.c      **** // Enable pull up set PUD in SFIOR default = 0??
+ 132:lab6-1.c      ****    
+ 133:lab6-1.c      ****      
+ 134:lab6-1.c      ****   while (1)
+ 135:lab6-1.c      ****   {
+ 136:lab6-1.c      **** // NOP     
+ 137:lab6-1.c      **** 	 sw1 =  _7SEGMENT_SW1_IN_PORT;          // Get status for ALL input port 
+ 317               	.LM30:
+ 318 011e C3B3      		in r28,51-0x20
+ 138:lab6-1.c      **** 	 sw1 &=  (_7SEGMENT_SW1);				// Mask data for SW1
+ 320               	.LM31:
+ 321 0120 C072      		andi r28,lo8(32)
+ 139:lab6-1.c      **** 	 sw2 =  (_7SEGMENT_SW2_IN_PORT);      
+ 140:lab6-1.c      ****      sw2 &=  (_7SEGMENT_SW2);
+ 141:lab6-1.c      ****  
+ 142:lab6-1.c      **** 	
+ 143:lab6-1.c      **** 	 	
+ 144:lab6-1.c      ****      if (sw2 == 0)  // Press and release SW
+ 323               	.LM32:
+ 324 0122 9A99      		sbic 51-0x20,2
+ 325 0124 07C0      		rjmp .L38
+ 145:lab6-1.c      **** 	 {
+ 146:lab6-1.c      **** 	    delay(100);     // Protect Key bounce
+ 327               	.LM33:
+ 328 0126 84E6      		ldi r24,lo8(100)
+ 329 0128 90E0      		ldi r25,hi8(100)
+ 330 012a 0E94 0000 		call delay
+ 147:lab6-1.c      **** 	    if (digit < 9)
+ 332               	.LM34:
+ 333 012e 1930      		cpi r17,lo8(9)
+ 334 0130 0CF4      		brge .L38
+ 148:lab6-1.c      **** 			digit++;
+ 336               	.LM35:
+ 337 0132 1F5F      		subi r17,lo8(-(1))
+ 338               	.L38:
+ 149:lab6-1.c      **** 	 }
+ 150:lab6-1.c      **** 	   
+ 151:lab6-1.c      **** 	 	
+ 152:lab6-1.c      ****      if (sw1 == 0)  // Press and release SW
+ 340               	.LM36:
+ 341 0134 CC23      		tst r28
+ 342 0136 39F4      		brne .L40
+ 153:lab6-1.c      **** 	 {
+ 154:lab6-1.c      **** 	    delay(100);     // Protect Key bounce
+ 344               	.LM37:
+ 345 0138 84E6      		ldi r24,lo8(100)
+ 346 013a 90E0      		ldi r25,hi8(100)
+ 347 013c 0E94 0000 		call delay
+ 155:lab6-1.c      **** 	    if (digit > 0)
+ 349               	.LM38:
+ 350 0140 1116      		cp __zero_reg__,r17
+ 351 0142 0CF4      		brge .L40
+ 156:lab6-1.c      **** 			digit--;
+ 353               	.LM39:
+ 354 0144 1150      		subi r17,lo8(-(-1))
+ 355               	.L40:
+ 157:lab6-1.c      **** 	 }
+ 158:lab6-1.c      ****  
+ 159:lab6-1.c      **** // 	 
+ 160:lab6-1.c      ****   	d7segment_display(digit);
+ 357               	.LM40:
+ 358 0146 812F      		mov r24,r17
+ 359 0148 0E94 0000 		call d7segment_display
+ 360 014c E8CF      		rjmp .L36
+ 361               	/* epilogue: frame size=0 */
+ 362               	/* epilogue: noreturn */
+ 363               	/* epilogue end (size=0) */
+ 364               	/* function main size 38 (34) */
+ 370               	.Lscope2:
+ 371               		.text
+ 373               	Letext:
+ 374               	/* File "lab6-1.c": code  172 = 0x00ac ( 148), prologues  14, epilogues  10 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 lab6-1.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccI9aaaa.s:62     .text:00000000 d7segment_display
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccI9aaaa.s:205    .text:0000009e delay
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccI9aaaa.s:282    .text:00000102 main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccI9aaaa.s:373    .text:0000014e Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+__stack

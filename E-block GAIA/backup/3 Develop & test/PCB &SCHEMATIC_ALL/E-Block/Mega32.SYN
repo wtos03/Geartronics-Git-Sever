@@ -1,0 +1,71 @@
+Protel Synchronization report
+=========================================================================
+Date : 6-Feb-2007 
+Time : 10:19:22
+
+Reference document: Mega32.Sch
+Target document:    Mega32.PCB
+=========================================================================
+
+ERRORS: 11 macros can not be executed:
+-------------------------------------------------------------------------
+Macro 1: New Component
+Add new component SOCKET2
+Error: Footprint DB9-RA/F not found in library
+
+Macro 2: New Net
+Add new net NetSOCKET2_1
+Error: Net already exist
+
+Macro 3: New Net
+Add new net NetSOCKET2_7
+Error: Net already exist
+
+Macro 4: New Node
+Add node SOCKET2-5 to net GND
+Error: Component not found
+
+Macro 5: New Node
+Add node SOCKET2-3 to net NetU2_14
+Error: Component not found
+
+Macro 6: New Node
+Add node SOCKET2-2 to net NetSOCKET2_2
+Error: Component not found
+
+Macro 7: New Node
+Add node SOCKET2-1 to net NetSOCKET2_1
+Error: Component not found
+
+Macro 8: New Node
+Add node SOCKET2-6 to net NetSOCKET2_1
+Error: Component not found
+
+Macro 9: New Node
+Add node SOCKET2-4 to net NetSOCKET2_1
+Error: Component not found
+
+Macro 10: New Node
+Add node SOCKET2-7 to net NetSOCKET2_7
+Error: Component not found
+
+Macro 11: New Node
+Add node SOCKET2-8 to net NetSOCKET2_7
+Error: Component not found
+
+
+
+3 macros to be executed:
+-------------------------------------------------------------------------
+Macro 1: Redundant Net
+Remove redundant net NetSOCKET2_7
+
+
+Macro 2: Redundant Net
+Remove redundant net NetSOCKET2_1
+
+
+Macro 3: Add Component Class
+Add Component Class (Mega32)
+
+

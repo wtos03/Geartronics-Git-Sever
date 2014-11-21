@@ -1,0 +1,1067 @@
+<html><head><title>Serial streams shrink embedded-system designs:EDNAsia.com: Voice of the electronics engineer</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="DESCRIPTION" content="Mobile- and small-form-factor-product designers turn to fabric technology and off-the-shelf computer modules to beat the competition.;EDN Asia is the one-stop resource for the global electronics designer and provides the entire gamut of information essential for him in his day-to-day design tasks."><meta name="KEYWORDS" content="Serial streams shrink embedded-system designs,Analog ICs/Discretes, ADC, Amplifier, Analog IC, Attenuator, Converter, DAC, Data Acquisition, Discrete Semiconductor, Driver, DSP, Filter, Linear amplifier, Linear Function, MEMS, Mixed Signal, MMICs, Nonlinear function, Op Amp, Optoelectronics, Phase-Locked Loop, Physical-layer interface, Power Amp, Power IC, Regulator, RF, Communication functions, Encryption and security, Fibre Optic, LANs, MANs, Microwave, Network Processor, RF, Standard, WAN, Wired, Wireless, Components, Hardware, Interconnect, Board &amp; Module, Electromechanical device, Indicator, Microwave and RF component, Optoelectronics &amp; Display, Packaging and interconnect, Passive &amp; Discrete, Relay, Sensor,Switch, Computers, boards, buses, Single-board computer, Standard buss, Digital Den, Convergence, Digital ICs,  ASIC, ASSP, Logic IC, Memory IC, DSP, Compression Algorithm, Image Processing, Microprocessor, RTOS, Signal Chain, Software, Speech Recognition, EDA Tools &amp; IP Cores, Configurable Processor, Design Strategy, HDL, IP, Language, Reconfigurable and reuse, Schematic Capture, Simulation, SOC, Software Development Tool, Spice, Synthesis, System-level Design Language, Test Bench, Verification, Embedded Development Tools, C++, Co-verification, Compiler, Configurable Processor, Debugging, Embedded Linux, Java, Microcontroller, Oss, RTOS, SOC, Memory, Memory IC, Multimedia, Algorithms, Audio, Standards, Video, Network Processor, Network Processor, Peripherals, Data-entry device, Display system, Storage device, Output device, Power Sources/Controllers, Power component, Power supplies, Power, Processors &amp; Tools, Code development &amp; Debugging, Microcontroller, Microprocessor, Programmable Logic, Design for Reuse, HDL, IP, Programmable Analog, SOC, Synthesis, Verification, Signal Integrity, Best practices, Software, Libraries &amp; Algorithms, Simulation Software, Software, Test and Measurement, ATE, Automotive &amp; Aerospace Test, Bench &amp; Modular Instrument, Bench Instrument, Board &amp; System Test, Careers, Communication Test, Design for Test, Built-in Self-Test, EMC Test, Environmental Test, ESD Test &amp; Protection, Failure Analysis, Inspection, Instrument Buses &amp; Cards, Machine Vision &amp; Inspection, Semiconductor Test, Software, Standard"><meta name="robots" content="FOLLOW,INDEX"><meta name="revisit-after" content="1 days"><meta name="ROBOTS" content="NOARCHIVE"><link href="Serial_files/ednasia.css" rel="stylesheet" type="text/css"><link href="Serial_files/ednasia.css" rel="stylesheet" type="text/css"><link href="Serial_files/ednasia.css" rel="stylesheet" type="text/css"><style type="text/css">
+<!--
+body { margin-top: 0px; }
+-->
+</style></head>
+
+
+
+
+
+
+
+ 
+
+
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0">
+<table class="siteborder" align="center" border="0" cellpadding="0" cellspacing="0" width="774">
+  <tbody><tr>
+    <td colspan="4"><table align="center" border="0" cellpadding="0" cellspacing="0" width="772">
+  <tbody><tr align="center">
+    <td width="100%"><table border="0" cellpadding="0" cellspacing="0" width="772">
+        <tbody><tr>
+          <td width="215"><img src="Serial_files/logo.jpg" height="116" width="215"></td>
+          <td bgcolor="#6990af" width="17"><img src="Serial_files/pat.jpg" height="116" width="29"></td>
+          <td align="right" bgcolor="#6990af" valign="top" width="524"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody><tr>
+              <td class="headerWhite02" align="right" valign="top" width="530"><a href="http://www.ednindia.com/" target="_blank" class="headerWhite02">EDN India</a> <span class="headerWhite02"> | </span> <a href="http://www.ednkorea.com/" target="_blank" class="headerWhite02">EDN Korea</a> <span class="headerWhite02"> | </span> <a href="http://www.edntaiwan.com/" target="_blank" class="headerWhite02">EDN Taiwan</a> <span class="headerWhite02"> | </span> <a href="http://www.ednjapan.com/" target="_blank" class="headerWhite02">EDN Japan</a> <span class="headerWhite02"> | </span> <a href="http://www.ednchina.com/" target="_blank" class="headerWhite02">EDN China</a> <span class="headerWhite02"> | </span> <a href="http://www.edn.com/" target="_blank" class="headerWhite02">EDN</a> <span class="headerWhite02"> | </span> <a href="http://www.edn.com/index.asp?layout=siteinfo&amp;doc_id=123787" target="_blank" class="headerWhite02">EDN Europe</a> <span class="headerWhite02"> | </span> <a href="http://www.electronicsnews.com.au/" target="_blank" class="headerWhite02">EDN Australia</a> </td>
+            </tr>
+            <tr>
+              <td class="articledesc">&nbsp;</td>
+            </tr>
+            <tr>
+              <td class="articledesc" height="51"><img src="Serial_files/slogan.jpg" height="26" width="457"></td>
+            </tr>
+            <tr>
+              <td class="articledesc">&nbsp;</td>
+            </tr>
+            <tr>
+              <td class="articledesc" align="right" height="20" valign="bottom"><table border="0" cellpadding="0" cellspacing="0" width="483">
+                  <tbody><tr align="right" valign="middle">
+<script language="JavaScript">
+<!--
+  var Netscape, MSIE, Opera, Unknown;
+  var Win, Mac, Other;
+  var NetscapeVer, MSIEVer, OperaVer;
+  
+  Netscape = navigator.appName == "Netscape";
+  MSIE = navigator.appName == "Microsoft Internet Explorer";
+  Opera = navigator.userAgent.indexOf("Opera") > -1;
+  Unknown = !(Netscape || MSIE || Opera);
+  
+  Win = navigator.userAgent.indexOf("Win") > -1;
+  Mac = navigator.userAgent.indexOf("Mac") > -1;
+  Other = !(Win || Mac);
+  
+  if(Netscape) {
+    NetscapeVer = parseFloat(navigator.appVersion);
+  }
+  else if(MSIE) {
+    n = navigator.userAgent;
+    MSIEVer = n.substr(n.indexOf("MSIE ")+("MSIE ").length, 4);
+    MSIEVer = parseFloat(MSIEVer); 
+    
+    if(Opera) {
+      OperaVer = n.substr(n.indexOf("Opera ")+("Opera ").length, 4);
+      OperaVer = parseFloat(OperaVer);
+    }
+  }
+
+function bookmark() {
+  if(Opera) {
+    alert("Press Ctrl+T to bookmark this site!");
+  }
+  else if(Win && MSIE && MSIEVer >= 5) {
+    window.external.AddFavorite(
+      'http://www.ednasia.com', 
+      'EDNAsia.com: The design source for electronics engineers and managers worldwide webzine');
+  }
+  else {
+    alert("Press Ctrl+D to bookmark this site!");
+  }
+}
+function validateField(objForm)
+{
+	var srch = trimStr(objForm.Search.value);
+	if (srch.length < 2)
+	{
+		alert ('Please enter a keyword with at least 2 characters to search');
+		return false;	
+	} 
+	else
+	{
+		return true;
+	}
+}
+function trimStr(sStr)
+{
+		var retStr   = "" ;
+		var lLoop = true;
+		var first = -1;
+		var last  = sStr.length;
+		for(var i=0; i < sStr.length && lLoop; i++){
+			if(sStr.charAt(i) != " ") lLoop = false;
+			else	first = i;
+		}
+		lLoop = true;
+		for(var i=sStr.length-1; i>= 0 && lLoop; i--){
+			if(sStr.charAt(i) != " ") lLoop = false;
+			else	last = i;
+		}
+		for(var i=first+1; i<last; i++)
+			retStr += sStr.charAt(i);
+		return (retStr);
+}
+
+//-->
+</script>
+                    <td class="headerBookmark" align="right" valign="bottom" width="62"><img src="Serial_files/lightarrow.jpg" height="18" width="17"></td>
+                    <td class="headerBookmark" align="left" valign="bottom" width="176"><a onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://www.ednasia.com');" href="http://www.ednasia.com/" class="headerBookmark">Mark As Your Homepage</a> </td>
+                    <td class="headerBookmark" align="right" valign="bottom" width="17"><img src="Serial_files/lightarrow.jpg" height="18" width="17"></td>
+                    <td class="headerBookmark" align="left" valign="bottom" width="88"><a href="javascript:bookmark()" class="headerBookmark">Bookmark</a> </td>
+                    <td class="headerBookmark" align="right" valign="bottom" width="18"><img src="Serial_files/lightarrow.jpg" height="18" width="17"></td>
+                    <td class="headerBookmark" align="left" valign="bottom" width="122"><a href="http://www.edna-subn.com/" target="_blank" class="headerBookmark">Print Subscription</a> </td>
+                  </tr>
+              </tbody></table></td>
+            </tr>
+          </tbody></table></td>
+        </tr>
+        <tr>
+          <td class="headerborderTBL" align="center" bgcolor="#ac1d19"><span class="headerDate">&nbsp;Tuesday, April 18, 2006</span></td>
+          <td colspan="2" class="headerborderTBL" align="right" bgcolor="#ac1d19" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody><tr align="right" valign="middle">
+              <td class="headerborderRight" align="center" valign="middle" width="62"><a href="http://www.ednasia.com/index.asp" class="headerBookmark">Home</a></td>
+              <td class="headerborderRight" align="center" valign="middle" width="79"><a href="http://www.ednasia.com/aboutus.asp" class="headerBookmark">About Us</a></td>
+              <td class="headerborderRight" align="center" valign="middle" width="99"><a href="http://www.ednasia.com/toc.asp" class="headerBookmark">Current Issue</a></td>
+              <td class="headerborderRight" align="center" valign="middle" width="73"><a href="http://www.ednasia.com/archive.asp" class="headerBookmark">Archive</a></td>
+              <td class="headerborderRight" align="center" valign="middle" width="78"><a href="http://www.rbia-subn.com/ednasia/form.asp" target="_blank" class="headerBookmark">Subscribe</a></td>
+              <td class="headerborderRight" align="center" valign="middle" width="92"><a href="http://www.ednasia.com/tradeshow.asp" class="headerBookmark">Trade Show</a></td>
+              <td align="center" valign="middle" width="73"><a href="http://www.ednasia.com/sitemap.asp" class="headerBookmark">Site Map</a></td>
+            </tr>
+          </tbody></table></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#bbcddb" valign="middle"><a href="http://www.rbia-subn.com/ednasia/form.asp" target="_blank"><img src="Serial_files/subscription02.jpg" border="0" height="96" width="213"></a></td>
+          <td colspan="2" align="left" bgcolor="#ffffff" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="553">
+	
+		<tbody><tr>
+	    		
+            		<td rowspan="7" class="headerTechnical" align="left" valign="middle" width="87"><img src="Serial_files/technical_channel02.jpg" height="98" width="88"></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=1" class="headerTechnical">Analog ICs/Discretes</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=2" class="headerTechnical">Communication Functions</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=3" class="headerTechnical">Component/Hardware/Interconnect</a></td>
+		
+            	</tr>
+	
+		<tr>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=4" class="headerTechnical">Computers/Boards/Buses</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=5" class="headerTechnical">Digital Den</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=6" class="headerTechnical">Digital ICs</a></td>
+		
+            	</tr>
+	
+		<tr>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=7" class="headerTechnical">DSP</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=8" class="headerTechnical">EDA Tools and IP Cores</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=9" class="headerTechnical">Embedded Development Tools</a></td>
+		
+            	</tr>
+	
+		<tr>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=10" class="headerTechnical">Memory</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=11" class="headerTechnical">Multimedia</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=12" class="headerTechnical">Network Processors</a></td>
+		
+            	</tr>
+	
+		<tr>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=13" class="headerTechnical">Peripherals</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=14" class="headerTechnical">Power Sources/Controllers</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=15" class="headerTechnical">Processors &amp; Tools</a></td>
+		
+            	</tr>
+	
+		<tr>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=16" class="headerTechnical">Programmable Logic</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=17" class="headerTechnical">Signal Integrity</a></td>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=18" class="headerTechnical">Software </a></td>
+		
+            	</tr>
+	
+		<tr>
+		
+	     		<td class="headerTechnical" align="left" valign="top" width="155"><a href="http://www.ednasia.com/technical.asp?id=19" class="headerTechnical">Test &amp; Measurement</a></td>
+	
+              				<td colspan="2" class="headerTechnical" align="left" valign="top" width="155">&nbsp;</td>
+		
+          <!--  <tr>
+              <td align="left" valign="middle"><a href="http://www.ednasia.com/technical.asp?technicalid=4" target="_blank" class="headerTechnical">Computers/Boards/Buses</a></td>
+              <td align="left" valign="middle"><a href="http://www.ednasia.com/technical.asp?technicalid=5" target="_blank" class="headerTechnical">Digital Den</a></td>
+              <td align="left" valign="middle"><a href="http://www.ednasia.com/technical.asp?technicalid=6" target="_blank" class="headerTechnical">Digital ICs</a></td>
+            </tr>
+            <tr>
+              <td align="left" valign="middle"><a href="http://www.ednasia.com/technical.asp?technicalid=7" target="_blank" class="headerTechnical">DSP</a></td>
+              <td align="left" valign="middle"><a href="http://www.ednasia.com/technical.asp?technicalid=8" target="_blank" class="headerTechnical">EDA Tools and IP Cores</a></td>
+              <td align="left" valign="middle"><a href="http://www.ednasia.com/technical.asp?technicalid=9" target="_blank" class="headerTechnical">Embedded Development Tools</a></td>
+            </tr>
+            <tr>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=10" target="_blank" class="headerTechnical">Memory</a></td>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=11" target="_blank" class="headerTechnical">Multimedia</a></td>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=12" target="_blank" class="headerTechnical">Network Processors</a></td>
+              </tr>
+            <tr>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=13" target="_blank" class="headerTechnical">Peripherals</a></td>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=14" target="_blank" class="headerTechnical">Power Sources/Controllers</a></td>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=15" target="_blank" class="headerTechnical">Processors & Tools</a></td>
+              </tr>
+            <tr>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=16" target="_blank" class="headerTechnical">Programmable Logic</a></td>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=17" target="_blank" class="headerTechnical">Signal Integrity</a></td>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=18" target="_blank" class="headerTechnical">Software</a></td>
+              </tr>
+            <tr>
+              <td align="left" valign="top"><a href="http://www.ednasia.com/technical.asp?technicalid=19" target="_blank" class="headerTechnical">Test & Measurement</a></td>
+              <td align="left" valign="top">&nbsp;</td>
+              <td align="left" valign="top">&nbsp;</td>
+            </tr>-->
+          </tr></tbody></table></td>
+        </tr>
+        <tr><form name="form1" method="post" action="search.asp" onsubmit="return validateField(this);"></form>
+		  <td colspan="3" class="headerborderTop" align="left" bgcolor="#001f56" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="290">
+            <tbody><tr>
+              <td class="headerBookmark" align="left" valign="middle" width="22">&nbsp;</td>
+              <td class="headerBookmark" align="left" valign="middle" width="45">Search</td>
+              <td class="headerBookmark" align="left" valign="middle" width="132"><input name="Search" class="searchfield" type="text"></td>
+              <td class="headerBookmark" align="left" valign="middle" width="41"><input name="imageField" src="Serial_files/go.jpg" border="0" height="25" type="image" width="32"></td>
+              <td class="headerBookmark" align="left" valign="middle" width="50">&nbsp;</td>
+            </tr>
+          </tbody></table></td>
+          
+          
+        </tr>
+    </tbody></table></td>
+  </tr>
+</tbody></table>
+</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#becdd8" height="19" valign="top" width="8">&nbsp;</td>
+    <td align="center" bgcolor="#becdd8" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="89%">
+      <tbody><tr class="iconHeader">
+        <td width="4%"><img src="Serial_files/icon_subcri.gif" height="26" width="21"></td>
+        <td width="31%"><a href="http://www.rbia-subn.com/ednasia/form.asp" target="_blank" class="iconHeader">Free Print Subscription</a></td>
+        <td width="4%"><img src="Serial_files/icon_print.gif" height="26" width="21"></td>
+        <td width="29%"><a href="http://www.ednasia.com/print.asp?id=5987" target="_blank" class="iconHeader">Print-friendly Version</a></td>
+        <td width="4%"><img src="Serial_files/icon_email.gif" height="26" width="21"></td>
+        <td width="28%"><a href="#" onclick="window.open('sendtofriend.asp?id=5987','sendtofriend','noresizable,noscrollbars,width=345,height=362')" class="iconHeader">Email to a friend</a></td>
+      </tr>
+    </tbody></table></td>
+    <td align="left" bgcolor="#becdd8" valign="top">&nbsp;</td>
+    <td rowspan="20" align="center" bgcolor="#dde6ed" valign="top" width="144"> <!-- begin ad tag -->
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="132">
+  <tbody><tr>
+    <td width="137"><img src="Serial_files/spacer.gif" height="5" width="1"></td>
+  </tr>
+  <tr>
+    <td align="center"><span class="normalText">ADVERTISEMENT</span><br>
+	<p> 
+	
+		<iframe src="Serial_files/a.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="600" scrolling="no" width="120">
+&lt;script&gt;&lt;/script&gt;
+</iframe>
+<noscript>
+<A
+HREF="http://ad.hk.doubleclick.net/jump/ednasia.com/;sect=homepage;pos=rs1;sz=120x600;abr=!ie4;abr=!ie5;abr=!ie6;ord=627025783?"
+TARGET="_blank">
+<IMG
+SRC="http://ad.hk.doubleclick.net/ad/ednasia.com/;sect=homepage;pos=rs1;sz=120x600;abr=!ie4;abr=!ie5;abr=!ie6;ord=627025783?"
+WIDTH="120" HEIGHT="600" BORDER="0" ALT="click here">click here</A>
+</noscript>    
+	</p><p>
+ 
+  <br>
+  <a href="http://www.ednasia.com/ess-bangalore/" target="_blank"><img src="Serial_files/banneress.gif" border="0"></a><br>
+  <br>
+  <br>
+  <a href="http://www.ednkorea.com/pms2005/review/" target="_blank"><img src="Serial_files/banner-120x60.gif" border="0"></a>  
+  <!-- End ad tag -->
+  
+  </p></td></tr>
+</tbody></table>
+
+
+ </td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr>
+          <td align="left" height="43" valign="middle">&nbsp;
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+              <tbody><tr>
+                <td align="center" height="70"><!-- begin ad tag -->
+                    
+                    <iframe src="Serial_files/a_002.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="60" scrolling="no" width="600">
+                    &lt;script&gt;&lt;/script&gt;
+                    </iframe>
+                    <noscript>
+<A
+HREF="http://ad.doubleclick.net/jump/ednasia.com/;sect=home;pos=3;sz=600x60;abr=!ie4;abr=!ie5;abr=!ie6;ord=544166207?"
+TARGET="blank"><IMG
+SRC="http://ad.doubleclick.net/ad/ednasia.com/;sect=home;pos=3;sz=600x60;abr=!ie4;abr=!ie5;abr=!ie6;ord=544166207?"
+WIDTH="600" HEIGHT="60" BORDER="0" ALT="click here">click here</A> </noscript>
+                    <!-- End ad tag -->
+                </td>
+              </tr>
+            </tbody></table></td>
+        </tr>
+	<tr>
+		<td>
+		
+
+
+<script type="text/javascript"><!--
+	var google_adsArray = new Array();
+	var top_ads_limit = 2;	
+	function google_ad_request_done(google_ads) {
+		/*
+		* This function is required and is used to display
+		* the ads that are returned from the JavaScript
+		* request. You should modify the document.write
+		* commands so that the HTML they write out fits
+		* with your desired ad layout.
+		*/
+		var s = '';
+		var i;
+		
+		/*
+		* Verify that there are actually ads to display.
+		*/
+
+		if (google_ads.length == 0) 
+		{
+			return;
+		}
+		else
+		{
+			google_adsArray = google_ads;
+		}
+		return;
+	}
+
+	google_ad_client = 'ca-rbiasia_js';
+	google_ad_channel ="EdnAsia";
+	google_ad_output = 'js';
+	google_max_num_ads = 7;
+	google_language = 'en';
+	google_encoding = 'utf8';
+	google_safe = 'high';
+	google_adtest = 'off';
+	google_ad_type = 'text';
+	google_hints = '';
+	google_kw = ""
+	google_kw_type = 'broad';
+	google_contents = '';
+	google_ad_section = 's1';
+
+//--></script>
+<script type="text/javascript" src="Serial_files/show_ads">
+</script><script language="JavaScript1.1" src="Serial_files/ads"></script>
+
+		<table bgcolor="#dde6ed" border="0" cellpadding="1" cellspacing="1" width="100%">
+                	<tbody><tr><td bgcolor="#ffffff"><script type="text/javascript"><!--
+	
+		var s = '';
+		var i;
+
+		/*
+		* If an image ad is returned, then that ad should be
+		* displayed. Otherwise, build a string containing all of
+		* the ads and then use a document.write() command to
+		* print it when the string is complete.
+		*/
+	if (google_adsArray.length > 0)
+	{
+		if (google_adsArray[0].type == "image") {
+			s +=	'<a href="' + google_adsArray[0].url +
+				'" target="_top" title="go to ' + google_adsArray[0].visible_url +
+				'"><img border="0" src="' + google_adsArray[0].image_url +
+				'"width="' + google_adsArray[0].image_width +
+				'"height="' + google_adsArray[0].image_height + '" ></a>';
+		} else {
+			s +=	'<style type="text/css"> .ch{cursor:pointer;cursor:hand} </style><b>Ads by Google</b><br>';
+
+			/*
+			* For text ads, append each ad to the string.
+			*/
+			if (google_adsArray.length < top_ads_limit)
+				top_ads_limit = google_adsArray.length;
+
+			s = '<table width="100%"><tr><td class="articledesc">'
+			for(i=0; i < top_ads_limit; ++i) {
+			s +=	'<a href="' + google_adsArray[i].url + '" class="articleHeader02">' +
+				'<b>' + google_adsArray[i].line1 + '</b></a><br>' +
+				'<span onclick="document.location.href=\'' +
+				google_adsArray[i].url +
+				'\'" class="ch" onmouseover="window.status=\'go to ' +
+				google_adsArray[i].visible_url +
+				'\'" onmouseout="window.status=\'\'">' +
+				google_adsArray[i].line2 + '. ' + google_adsArray[i].line3 + '<br>' +
+				'<span>' +
+				google_adsArray[i].visible_url + '</span></span><br><br>';
+			}
+			s += '</td></tr>';
+			s += '<tr><td class="articledesc" align="right">Ads by Goooooogle</td></tr>';
+			s += '</table>';
+		}
+
+		document.write(s);
+	}
+		
+//--></script><table width="100%"><tbody><tr><td class="articledesc"><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=BIZMYrmBERK-ONY2apALz_KyTD9uV4RCRsvuMAcCNtwGAtRgQARgBIKTGxAMoB0DMFUiNOVCGxLHB_P____8BmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIhHUgK&amp;num=1&amp;adurl=http://www.smsc.com/main/catalog/ethernet.html&amp;client=ca-rbiasia_js" class="articleHeader02"><b>Non-PCI Embedded Ethernet</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BIZMYrmBERK-ONY2apALz_KyTD9uV4RCRsvuMAcCNtwGAtRgQARgBIKTGxAMoB0DMFUiNOVCGxLHB_P____8BmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIhHUgK&num=1&adurl=http://www.smsc.com/main/catalog/ethernet.html&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to www.smsc.com'" onmouseout="window.status=''">Add Ethernet connectivity easily. without needing a PCI bus<br><span>www.smsc.com</span></span><br><br><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=B2jOErmBERK-ONY2apALz_KyTD4j51wmurNCxAcCNtwHAojMQAhgCIKTGxAMoB0DMFUiIOVC-3aKc_P____8BmAGcSqABhquH_gOqAQdlZG5hc2lhsgEPd3d3LmVkbmFzaWEuY29tyAEB2gExaHR0cDovL3d3dy5lZG5hc2lhLmNvbS9hcnRpY2xlLmFzcD9hcnRpY2xlaWQ9NTk4N4ACAZUCGepICg&amp;num=2&amp;adurl=http://portwell.com/sbc.htm&amp;client=ca-rbiasia_js" class="articleHeader02"><b>Industrial PC SBC Board</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=B2jOErmBERK-ONY2apALz_KyTD4j51wmurNCxAcCNtwHAojMQAhgCIKTGxAMoB0DMFUiIOVC-3aKc_P____8BmAGcSqABhquH_gOqAQdlZG5hc2lhsgEPd3d3LmVkbmFzaWEuY29tyAEB2gExaHR0cDovL3d3dy5lZG5hc2lhLmNvbS9hcnRpY2xlLmFzcD9hcnRpY2xlaWQ9NTk4N4ACAZUCGepICg&num=2&adurl=http://portwell.com/sbc.htm&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to portwell.com/embedded.htm'" onmouseout="window.status=''">American Portwell Embedded MB Line. 3.5" 5.25" Micro ATX Embedded Board<br><span>portwell.com/embedded.htm</span></span><br><br></td></tr><tr><td class="articledesc" align="right">Ads by Goooooogle</td></tr></tbody></table>
+</td></tr>
+		</tbody></table>
+		</td>
+	</tr>
+    </tbody></table></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle"><!-- google_ad_section_start=s1 -->
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tbody><tr>
+                  <td valign="top" width="100%"><p>
+                    <span class="arttitle">Serial streams shrink embedded-system designs</span><br>
+                    <span class="artsubtitle">Mobile-
+and small-form-factor-product designers turn to fabric technology and
+off-the-shelf computer modules to beat the competition.</span><br>
+                    <span class="articleauthor02">by Warren Webb, Technical Editor, EDN</span>
+                    </p><p><span class="articledesc"><img src="Serial_files/ednaapr06pg28pic1.jpg" align="middle" border="0"><br><br>Anew
+wave of extremely compact embedded computing platforms is finding its
+way into industrial, medical, consumer, and other space-critical
+applications. Despite their compact size, these small, off the-shelf
+computing elements offer designers full processing performance and
+complete I/O features in both proprietary and standards-based form
+factors. These undersized but capable computer modules let designers
+skip the most complex portion of embedded product design and
+concentrate on the custom circuitry unique to their design and reduce
+hardware- and software-development schedules.<br><br>As systems shrink
+and clock speeds escalate, product designers face the daunting task of
+developing a high-performance, state-of-the-art processor section to
+drive their custom embedded circuitry and still meet footprint
+constraints. To bypass this complex design and beat the competition to
+market, many designers are turning to new, small-form-factor, plug-in
+modules that integrate the CPU and standard peripherals. These off-the
+shelf processor modules allow designers to trade substantial savings in
+NRE (non recurring engineering) charges for slightly higher recurring
+costs.<br><br>Plug-in processors, also known as COM
+(computer-on-module) processors or core modules, make sense in
+embedded-system designs in which a single pc board houses all
+electronics, including the CPU, processor peripheral interfaces, mass
+storage, and application specific circuitry. Single-board electronics
+typically find use in smaller or portable embedded systems, such as
+instrumentation, medical products, set-top boxes, kiosks, and game
+consoles. With a compatible baseboard design, you can purchase a large
+portion of the system’s computer and general purpose electronics on a
+replaceable plug-in module to shorten design schedules, ease system
+debugging, simplify upgrades, and reduce life-cycle costs.<br><br><img src="Serial_files/ednaapr06pg29pic1.jpg" align="middle" border="0"><br><br>A
+replaceable processor section provides several technical and economic
+advantages over traditional single-board designs. For example,
+designers can provide their embedded systems with a more sophisticated
+processor section to take advantage of advanced features, such as
+networking, graphical displays, complex software, and real-time
+operating systems, that would be difficult to implement on a restricted
+design budget. Instead of designing with an 8-bit processor with
+limited peripherals, processor and peripheral modules allow designers
+to easily step up to a 16- or 32-bit processor with a choice of
+state-of-the-art I/O.<br><br>Specifying an off-the-shelf processor
+section also affects the makeup of the embedded-system design team.
+Depending on the complexity of the processor section, you may be able
+to reduce the number of designers a project requires. The
+software-design team becomes a major beneficiary because a working CPU
+section becomes available long before the hardware debugging of
+application specific devices. Because most embedded-hardware-debugging
+problems occur in the more complicated CPU section, a module computer
+also bypasses many of the headaches of system checkout.<br><br><br><b><font color="#4cc417">Mezzanine movement</font></b><br>The
+plug-in-processor concept is not new; however, small-form factor
+designers have struggled to get the needed functions from existing
+modules. Along with numerous proprietary modules, the current PPMC
+(Processor PCI Mezzanine Card) and PC/104 standards provide
+off-the-shelf computing hardware to support plug-in-processor designs.
+PPMC is an extension of the original PMC (PCI Mezzanine Card) concept
+of providing replaceable I/O modules in embedded systems. VITA (VMEBus
+International Trade Association) maintains the PPMC specification,
+VITA32. With a connector arrangement meant for stacking boards without
+a card cage or backplane, a PC/104 computer board can also serve as a
+mezzanine processor on an embedded baseboard. These modules have the
+additional advantage of letting designers stack another I/O module on
+top of the processor if they run out of board space.<br><br>To increase
+bandwidth, reduce the number of connector pins, and reduce overall
+board area, module computer manufacturers are turning to
+switched-fabric technologies, such as Ethernet, PCI Express, Rapid I/O,
+and InfiniBand. Switched-fabric architectures eliminate many of the
+problems associated with parallel, multidrop bus schemes. Datapaths may
+change dynamically to support multiple simultaneous data transfers.
+Each connection is also a direct point-to-point data path, yielding
+better electrical characteristics and higher bandwidth than bus
+architectures. A sophisticated switched-fabric system can also increase
+system availability by routing around defective paths or nodes.<br><br>Because
+of its compatibility with driver and operating-system software, several
+module standards include PCI Express. The developers of PCI Express
+based it on LVDS (low-voltage differential signaling) for maximum
+bandwidth between nodes. The basic PCI Express link comprises two
+signal paths that use small differential voltage swings and
+constant-current line drivers to communicate at 2.5Gbps in each
+direction. Designers expect this data rate to increase to 10Gbps in
+each direction as silicon production technology improves. Low-voltage
+swings deliver low noise signals at low power consumption. You can
+easily increase the bandwidth of an individual PCI Express link by
+simply adding signal pairs, or “lanes,” until you reach the desired
+performance level. The PCI Express specification supports one-, two-,
+four-, eight-, 16-, and 32-lane widths.<br><br>PFU, Kontron, Intel, and
+RadiSys originally sponsored COM Express, an open PICMG (PCI Industrial
+Computer Manufacturers Group) industry standard for COMs for
+small-form-factor designs. The standard implements new technologies in
+such a way that designers can maintain compatibility with legacy
+circuitry or create new legacy-free products. COM Express includes PCI
+Express to replace the PCI bus, PCI Express Graphics to replace AGP
+(Accelerated Graphics Port), and Serial ATA (Advanced Technology
+Attachment) to replace Parallel ATA. The
+processor-architecture-agnostic COM Express defines only industry
+standard system-I/O interfaces.<br><br>For COM Express, PICMG defined a
+compact basic form factor measuring 125 95mm and an extended form
+factor measuring 155 110mm. With the same connector and pin
+definitions, the two sizes are interchangeable, and the extended form
+factor allows for double the memory capacity and dual-channel memory
+configurations. COM Express board-to-board connectors comprise two rows
+of 220 pins each. The required first row includes pins for PCI Express,
+Serial ATA, display, system and power management, networking, and power
+and ground interfaces. The optional second row provides digital video
+and legacy PCI and IDE signals plus additional PCI Express, networking,
+and power and ground signals.<br><br><br><b><font color="#4cc417">Take the express</font></b><br>Board
+manufacturers have adapted the ETX (Embedded Technology Extended)
+Express form factor to implement the PICMG COM Express specification.
+For example, Kontron based its new ETXexpress-PM module on the Intel
+Pentium M and Celeron M processors, as well as on the Intel 915GM chip
+set; the module conforms to COM Express (<b>Figure 1</b>). PCI Express
+is the primary data path, and a 32-bit PCI 2.1 interface supports
+legacy PCI-bus applications. The ETXexpress-PM will support four PCI
+Express lanes and PCI Express cards, as well as established hardware,
+such as the 32-bit PCI bus. For applications that require real-time
+video capabilities, the ETXexpress-PM has both Intel Extreme Graphics 2
+and PCI Express graphics. The board also has 10/100BaseT Ethernet-port
+networking and USB 2.0 for external peripherals. ETXexpress COM modules
+will also provide optional interfaces for Serial ATA, Parallel ATA,
+LVDS multimedia ports, and ACPI (Advanced Configuration and Power
+Interface) for power management.<br><br><img src="Serial_files/ednaapr06pg32pic1.jpg" align="middle" border="0"><br><br>PFU
+Systems also offers a family of COM Express-compliant modules targeting
+healthcare, gaming, entertainment, test, industrial-automation, and
+security applications. The company’s Plug-N-Run G4 modules are
+available with Intel Pentium M and Celeron M processors, featuring as
+much as 2Mbytes of L2 cache, a 533MHz front-side bus, a 533MHz DDR2
+memory controller, and an integrated Intel graphics-media accelerator
+(Figure 2). The devices allow for flexible man-machine interfaces with
+built-in USB 2.0, AC 97/HD audio, realistic 3-D-graphics rendering,
+MPEG-2 decoding, and dual independent-display, high resolution
+interfaces. An integrated 10/100BaseTX Ethernet with built in PXE
+(preboot execution environment) allows network boot for diskless
+operation and lower hardware costs. Designers can implement security
+features for authentication at the user, application, operating system,
+and BIOS levels. Plug-N-Run G4B modules in the COM Express basic form
+factor allow as much as 1Gbyte of DDR2 memory expansion, and modules in
+the COM Express extended form factor are available with dual-channel
+memory configurations for as much as 2Gbytes of memory.<br><br><img src="Serial_files/ednaapr06pg32pic2.jpg" align="middle" border="0"><br><br>Radisys
+has introduced the Procelerant CE COM Express compliant product family,
+comprising a carrier board and four COMs for use in ultra small-form
+factor computing systems. The modules feature a variety of Intel
+processors and as much as 1 Gbyte of DDR2 DRAM, dual display
+interfaces, an AC97 audio interface, Gigabit Ethernet, PCI Express, and
+PCI support. The Procelerant CR100 Flex ATX carrier
+development-platform board enables customers to immediately begin
+designing with COM Express modules and use the development platform as
+a baseline for customer specific COM Express carrier boards (Figure 3).
+The CR100 carrier boards bring key features from the COM Express module
+to connectors on the board. The expansion options on the CR100 include
+two 32-bit, 33MHz 3.3V PCI slots; one PCI Express card slot; and two
+one-lane-wide PCI Express slots. These expansion offerings enable
+customers to move their I/O from PCI to PCI Express using the same
+module and carrier. The CR100 boards also include an LVDS flat-panel
+interface; dual DVI-I ports with analog VGA, USB, Serial ATA, and ATA;
+IEE1394; 100-Mbit Ethernet; and an ATX power connector. Prices for the
+Procelerant CE products start at $489 (small quantities).<br><br><br><b><font color="#4cc417">Telecom treats</font></b><br><br><img src="Serial_files/ednaapr06pg34pic1.jpg" align="middle" border="0"> <br><br>Another
+fabric-based-module computer standard emerged from the recent
+AdvancedTCA (Telecom Computing Architecture) initiative. Telecom
+designers wanted a hotswappable, field-replaceable mezzanine module to
+lower maintenance costs and reduce downtime. To complement the
+high-performance features of AdvancedTCA, these new mezzanine modules
+also required remote management, switched fabric technology, and a
+greatly improved power budget. In early 2005, PICMG released the first
+AdvancedMC (Advanced Mezzanine Card) specifications that define the
+form factor, connector, power and thermal characteristics, management,
+clocking, and fabric options. AdvancedMC modules include single-width,
+double-width, half-height, and full-height form factors. The basic
+single-width module measures approximately 74 183 mm. On the
+interconnect side, AdvancedMC supports high speed serial interconnects,
+which will eventually include all of the switched fabrics that
+AdvancedTCA allows. The base specification defines a fabric interface
+with as many as 21 ports or 42 differential pairs, providing
+full-duplex, point-to-point connectivity between modules or to the
+baseboard. At 12.5Gbps per port, AdvancedMC can handle multiple lanes
+of protocols, such as Ethernet, PCI Express, Rapid I/O, and InfiniBand.<br><br><img src="Serial_files/ednaapr06pg34pic2.jpg" align="middle" border="0"><br><br>You
+can use the single-width, full-height KosaiPM AdvancedMC from Artesyn
+Technologies with an AdvancedTCA or proprietary carrier cards (Figure
+4). According to Michael Franco, hardware engineering manager at
+Artesyn, “AdvancedMC is the first mezzanine architecture to provide hot
+swappability and integrated system management, which enables designers
+to remotely monitor, control, and replace individual modules in the
+field.” Targeting use in embedded control, KosaiPM features a 1.6GHz
+Pentium M processor with a 400MHz, 3.2Gbyte/sec front-side bus; 1Mbyte
+of Level 2 cache; and SIMD (single-instruction-multiple-data)
+extensions for computationally intensive applications, such as
+multimedia and packet processing. KosaiPM also features a server-class
+E7501 north bridge, which gives the Pentium processor high-speed access
+to as much as 2Gbytes of local ECC SDRAM. The north bridge also
+connects to a 64-bit PCI-X bridge, which provides highspeed access to
+two Gigabit Ethernet channels, as much as 128Mbytes of Flash memory, a
+USB interface, an I2C system management interface, and a frontpanel
+10/100BaseT management interface. KosaiPM communicates with the carrier
+card through two Gigabit Ethernet channels and the I2C-based IPMI
+(intelligent platform management interface). Operating system support
+for KosaiPM includes carrier-grade Linux. KosaiPM costs $1500 (OEM
+quantities).<br><br>SBS Technologies recently introduced the
+single-width, full height Telum ASLP10 AdvancedMC processor board with
+integrated low-power Intel Pentium M processor and dual Gigabit
+Ethernet channels (Figure 5). The module supports full hot-swap
+capabilities and targets use in wireless base stations, voice over
+Internet Protocol, test and measurement systems, media servers,
+base-station controllers, and server blades. The Telum ASLP10 includes
+as much as 2Gbytes of 400MHz DDR2 SDRAM with ECC and an eight-lane PCI
+Express data port through the AdvancedMC connector. The board also
+includes a management controller for power sequencing, hot-swap
+capabilities, and module management. Rubin Dhillon, general manager of
+SBS Technologies’ communications division, says, “The Telum ASLP10
+gives system integrators the high performance of the latest Intel
+Pentium M processor, Gigabit Ethernet bandwidth, and excellent thermal
+properties, helping them maximize their high-performance system
+designs. This module is designed to enable today’s modular system
+architectures.” The Telum ASLP10 supports MontaVista Linux
+carrier-grade and SUSE (Gesellschaft für Software-und Systementwicklung
+MBH) Linux carrier-grade operating systems. The price for the Telum
+ASLP10 starts at $1750 (OEM quantities).<br><br><img src="Serial_files/ednaapr06pg36pic1.jpg" align="middle" border="0"><br><br><br><b><font color="#4cc417">Make mine micro</font></b><br>With
+the high-performance, hot-swap, switched-fabric, and management
+features of AdvancedMC, designers suggest using these modules to plug
+directly into a backplane for small, stand alone systems. As such,
+MicroTCA in October 2004 became a PICMG draft-system architecture
+specification. MicroTCA provides a stand-alone chassis with a backplane
+that directly accepts AdvancedMCs, thereby eliminating the need for an
+AdvancedTCA carrier board. The smaller form factor makes the concept
+viable for lower budget applications in telecom and a wide range of
+embedded-system projects. Although PICMG has not yet released it, a
+proposed chassis configuration includes a 4Uhigh 19-in.-wide unit that
+provides 12V payload power, anagement, and cooling for as many as 48
+half height, single-width AdvancedMC modules. PICMG is also considering
+a cube design, measuring approximately 8in. on a side. Designers are
+shooting for chassis hardware costs of approximately $500 by the
+projected release date of mid-2006.<br><br>New fabric-based, small-form
+factor-module computers give designers the opportunity to purchase one
+of the most complex portions of compact- or mobile product development.
+High performance, off-the-shelf processor modules fit many embedded
+devices, leaving the design team with the application-specific
+technology, including the electronics, power supply, operator
+interface, packaging, and software. With a shortened design schedule
+and early access to a compatible software development platform, the
+latest generation of plug-in processors promises to usher in a new era
+of rapid product development.<br><br><br><b><font color="#4cc417">Author information</font></b><br>You can reach Technical Editor Warren Webb at 1-858-513-3713 and<a href="http://www.ednasia.com/wwebb@edn.com">wwebb@edn.com</a>.<br><br><br></span></p>
+                  </td>
+                 </tr>
+                 </tbody></table>
+		<!-- google_ad_section_end=s1 -->
+	
+	
+	</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tbody><tr>
+        <td align="center" height="70"><!-- begin ad tag -->
+            
+            <iframe src="Serial_files/a_003.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="60" scrolling="no" width="600">
+            &lt;script&gt;&lt;/script&gt;
+            </iframe>
+            <noscript>
+<A
+HREF="http://ad.doubleclick.net/jump/ednasia.com/;sect=home;pos=7;sz=600x60;abr=!ie4;abr=!ie5;abr=!ie6;ord=323903381?"
+TARGET="_blank"><IMG
+SRC="http://ad.doubleclick.net/ad/ednasia.com/;sect=home;pos=7;sz=600x60;abr=!ie4;abr=!ie5;abr=!ie6;ord=323903381?"
+WIDTH="600" HEIGHT="60" BORDER="0" ALT="click here">click here</A> </noscript>
+            <!-- End ad tag -->
+        </td>
+      </tr>
+    </tbody></table></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#becdd8" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#becdd8" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="89%">
+      <tbody><tr class="iconHeader">
+        <td width="4%"><img src="Serial_files/icon_subcri.gif" height="26" width="21"></td>
+        <td width="31%"><a href="http://www.rbia-subn.com/ednasia/form.asp" target="_blank" class="iconHeader">Free Print Subscription</a></td>
+        <td width="4%"><img src="Serial_files/icon_print.gif" height="26" width="21"></td>
+        <td width="29%"><a href="http://www.ednasia.com/print.asp?id=5987" target="_blank" class="iconHeader">Print-friendly Version</a></td>
+        <td width="4%"><img src="Serial_files/icon_email.gif" height="26" width="21"></td>
+        <td width="28%"><a href="#" onclick="window.open('sendtofriend.asp?id=5987','sendtofriend','noresizable,noscrollbars,width=345,height=362')" class="iconHeader">Email to a friend</a></td>
+      </tr>
+    </tbody></table></td>
+    <td align="left" bgcolor="#becdd8" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="middle"><!-- begin ad tag -->
+    <!-- End ad tag --></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#001f56" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tbody><tr>
+        <td bgcolor="#001f56" width="3%"><img src="Serial_files/darkarrow.jpg" height="18" width="17"></td>
+        <td class="titlebarWhite" bgcolor="#001f56" width="97%">Related Articles </td>
+      </tr>
+    </tbody></table></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top"><table border="0" cellpadding="3" cellspacing="0" width="100%">
+            <tbody><tr>
+              <td class="normalText" valign="top"></td>
+            </tr>
+    </tbody></table></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr>
+    <td bgcolor="#6990af" width="50%"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr>
+          <td width="5%"><span class="articledesc"><img src="Serial_files/lightarrow.jpg" height="18" width="17"></span></td>
+          <td class="titlebarWhite" width="95%">Partner Solutions </td>
+        </tr>
+    </tbody></table></td>
+    <td width="1%"><img src="Serial_files/myspace.gif" height="12" width="8"></td>
+    <td bgcolor="#6990af" width="49%"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr>
+          <td width="5%"><span class="articledesc"><img src="Serial_files/lightarrow.jpg" height="18" width="17"></span></td>
+          <td class="titlebarWhite" width="95%">Industry Links</td>
+        </tr>
+    </tbody></table></td>
+  </tr>
+  <tr>
+    <td><table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr bgcolor="#ffffff">
+          <td class="articledesc" width="253"><strong><a href="http://www.ednasia.com/adini/" class="normalHeader" target="_blank">Innovation and Leadership</a></strong><br>
+            Sponsored by Analog Devices Inc. and National Instruments</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc">&nbsp;</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc"><a href="http://www.ednasia.com/microchip/" class="normalHeader" target="_blank"><strong>START NOW Design Contest</strong></a><br>
+            Sponsored by Microchip</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc">&nbsp;</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc"><strong>Texas Instruments:</strong> <a href="http://www.ednasia.com/safebet.asp" class="normalHeader" target="_blank">Safe Bet Series</a></td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc">&nbsp;</td>
+        </tr>
+    </tbody></table></td>
+    <td>&nbsp;</td>
+    <td valign="top"><table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr>
+          <td class="normalText" align="left" bgcolor="#ffffff" valign="top"><span class="articledesc"><a href="http://www.singoptics.org/" target="_blank" class="normalHeader"><strong>Photonics Association (Singapore)</strong></a><br>
+                <a href="http://www.esiaa.com/" target="_blank" class="normalHeader"><strong>Singapore Industrial Automation Association (SIAA)</strong></a><br>
+                <a href="http://www.tsia.org.tw/" target="_blank" class="normalHeader"><strong>Taiwan Semiconductor Industry Association (TSIA)</strong></a></span></td>
+        </tr>
+        <tr>
+          <td align="right" bgcolor="#ffffff" valign="top">&nbsp;</td>
+        </tr>
+    </tbody></table></td>
+  </tr>
+</tbody></table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr>
+    <td bgcolor="#6990af" width="50%"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr>
+          <td width="5%"><span class="articledesc"><img src="Serial_files/lightarrow.jpg" height="18" width="17"></span></td>
+          <td class="titlebarWhite" width="95%">Our Sponsor</td>
+        </tr>
+    </tbody></table></td>
+  </tr>
+  <tr>
+    <td><table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tbody><tr bgcolor="#ffffff">
+          <td class="articledesc"><strong><a href="http://ad.doubleclick.net/clk;29412126;12959023;b?http://clk.atdmt.com/DEN/go/mic0170000014den/direct/01/" class="normalHeader" target="_blank">The Power to Build Great Devices � Windows Embedded</a></strong>
+            <!-- begin ad tag -->
+            <script language="JavaScript" src="Serial_files/a.js" type="text/javascript"></script><a target="_blank" href="http://ad.doubleclick.net/click;h=v5%7C33cb%7C0%7C0%7C%2a%7Cz;29412006;0-0;1;5471983;31-1%7C1;15471106%7C15489002%7C1;;%7Esscs=%3fhttp://www.?"><img src="Serial_files/pix.gif" alt="Click here to find out more!" border="0"></a>
+            <noscript>
+<a
+href="http://ad.doubleclick.net/jump/ednasia.com/;sect=home;pos=maxim;sz=1x1;ord=[timestamp]?"
+target="_blank"><img
+src="http://ad.doubleclick.net/ad/ednasia.com/;sect=home;pos=maxim;sz=1x1;ord=[timestamp]?"
+width="1" height="1" border="0" alt=""></a> </noscript>
+            <!-- End ad tag --><!-- begin ad tag -->
+<a href="http://ad.doubleclick.net/jump/ednasia.com/;sect=newsletter;pos=embedded;sz=1x1;ord=%5Btimestamp%5D?" target="_blank">
+<img src="Serial_files/a.gif" alt="" border="0" height="1" width="1"></a>
+<!-- End ad tag -->
+            <br>
+Windows CE provides hard real-time capability to the robots of
+Chaveriat Robotic and powers a user-friendly handheld device which
+enables factory floor personnel to make program changes quickly. Get
+the power to truly innovate with Windows Embedded.</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc">&nbsp;</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc"><strong><a href="http://ad.doubleclick.net/clk;29412005;12958730;b?http://www.maxim-ic.com/appnotes.cfm?appnote_number=3572&amp;CMP=330" class="normalHeader" target="_blank">FAQs About the New Integrated-Crystal Package</a></strong><!-- begin ad tag -->
+<script language="JavaScript" src="Serial_files/a.js" type="text/javascript"></script><a target="_blank" href="http://ad.doubleclick.net/click;h=v5%7C33cb%7C0%7C0%7C%2a%7Cz;29412006;0-0;1;5471983;31-1%7C1;15471106%7C15489002%7C1;;%7Esscs=%3fhttp://www.?"><img src="Serial_files/pix.gif" alt="Click here to find out more!" border="0"></a>
+<noscript><a
+href="http://ad.doubleclick.net/jump/ednasia.com/;sect=home;pos=maxim;sz=1x1;ord=[timestamp]?"
+target="_blank"><img
+src="http://ad.doubleclick.net/ad/ednasia.com/;sect=home;pos=maxim;sz=1x1;ord=[timestamp]?"
+width="1" height="1" border="0" alt=""></a></noscript>
+<!-- End ad tag --><br> Learn more about Maxim's new package option
+that combines stand-alone RTCs, a serial interface device, and a
+32.768kHz quartz crystal into a single IC.</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc">&nbsp;</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc"><strong><a href="http://ad.doubleclick.net/clk;29093097;12932909;r?http://clk.atdmt.com/DSF/go/ts20030000030dsf/direct/01/%25n" target="_blank" class="normalHeader">Tektronix, Enabling Innovation</a></strong><!-- begin ad tag -->
+<script language="JavaScript" src="Serial_files/a_002.js" type="text/javascript"></script><a target="_blank" href="http://ad.doubleclick.net/click;h=v5%7C33cb%7C0%7C0%7C%2a%7Co;29412002;0-0;1;5471983;31-1%7C1;15471102%7C15488998%7C1;;%7Esscs=%3fhttp://www.?"><img src="Serial_files/pix_002.gif" alt="Click here to find out more!" border="0"></a>
+<noscript><a
+href="http://ad.doubleclick.net/jump/ednasia.com/;sect=home;pos=tkt;sz=1x1;ord=[timestamp]?"
+target="_blank"><img
+src="http://ad.doubleclick.net/ad/ednasia.com/;sect=home;pos=tkt;sz=1x1;ord=[timestamp]?"
+width="1" height="1" border="0" alt=""></a></noscript>
+<!-- End ad tag --><br>
+Click <strong><a href="http://ad.doubleclick.net/clk;29093097;12932909;r?http://clk.atdmt.com/DSF/go/ts20030000030dsf/direct/01/%25n" target="_blank">here</a></strong> for an online demo of the Tektronix DPO4000 Series Oscilloscope.
+</td>
+        </tr>
+        <tr bgcolor="#ffffff">
+          <td class="articledesc">&nbsp;</td>
+        </tr>
+    </tbody></table></td>
+  </tr>
+</tbody></table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top" width="8">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top" width="8">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="articledesc" align="center" bgcolor="#ffffff" valign="middle"><a href="http://www.kellysearchasia.com/" target="_blank"><img src="Serial_files/224x53_e_profile.gif" border="0"></a></td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top" width="8">&nbsp;</td>
+    <td class="articledesc" align="center" bgcolor="#ffffff" valign="middle"><a href="http://www.globaltronics.com.sg/" target="_blank"><img src="Serial_files/globle1.gif" border="0"></a></td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top" width="8">&nbsp;</td>
+    <td class="articledesc" align="center" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top" width="8">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top" width="8">&nbsp;</td>
+    <td class="articledesc" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+</tbody></table>
+</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle"><script type="text/javascript"><!--
+		var s = '';
+		var i;	
+		/*
+		* If an image ad is returned, then that ad should be
+		* displayed. Otherwise, build a string containing all of
+		* the ads and then use a document.write() command to
+		* print it when the string is complete.
+		*/
+	if (google_adsArray.length > 0 && top_ads_limit < google_adsArray.length)
+	{	
+		if (google_adsArray[0].type == "image") {
+			s +=	'<a href="' + google_adsArray[0].url +
+				'" target="_top" title="go to ' + google_adsArray[0].visible_url +
+				'"><img border="0" src="' + google_adsArray[0].image_url +
+				'"width="' + google_adsArray[0].image_width +
+				'"height="' + google_adsArray[0].image_height + '"></a>';
+			
+		} else {
+			s +=	'<style type="text/css"> .ch{cursor:pointer;cursor:hand} </style><b>Ads by Google</b><br>';
+			
+			/*
+			* For text ads, append each ad to the string.
+			*/
+	
+			s = '<table width="100%"><tr><td class="titlebarWhite" bgcolor="#6990AF" valign="top"><img src="images/lightarrow.jpg" width="17" height="18">&nbsp;Ads by Goooooogle</td></tr>'
+			s += '<tr><td class="normalHeader">';
+			for(i=top_ads_limit; i < google_adsArray.length; ++i) {
+			s +=	'<a href="' + google_adsArray[i].url + '" class="articledesc">' +
+				'<b>' + google_adsArray[i].line1 + '</b></a><br>' +
+				'<span onclick="document.location.href=\'' +
+				google_adsArray[i].url +
+				'\'" class="ch" onmouseover="window.status=\'go to ' +
+				google_adsArray[i].visible_url +
+				'\'" onmouseout="window.status=\'\'">' +
+				google_adsArray[i].line2 + '. ' + google_adsArray[i].line3 + '<br>' +
+				'<span>' +
+				google_adsArray[i].visible_url + '</span></span><br><br>';
+			}
+			s += '</td></tr>';
+			s += '</table>';
+		}
+			document.write(s);
+	}
+	
+
+//--></script><table width="100%"><tbody><tr><td class="titlebarWhite" bgcolor="#6990af" valign="top"><img src="Serial_files/lightarrow.jpg" height="18" width="17">&nbsp;Ads by Goooooogle</td></tr><tr><td class="normalHeader"><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=B1NE8rmBERK-ONY2apALz_KyTD4X45gzFgZipAsCNtwHQ9wcQAxgDIKTGxAMoB0DMFUiQOVCY1I_aA5gBnEqgAfXujf8DqgEHZWRuYXNpYbIBD3d3dy5lZG5hc2lhLmNvbcgBAdoBMWh0dHA6Ly93d3cuZWRuYXNpYS5jb20vYXJ0aWNsZS5hc3A_YXJ0aWNsZWlkPTU5ODeVAiRCSAo&amp;num=3&amp;adurl=http://www.tern.com/eengine.htm&amp;client=ca-rbiasia_js" class="articledesc"><b>x86 Embedded Controllers</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=B1NE8rmBERK-ONY2apALz_KyTD4X45gzFgZipAsCNtwHQ9wcQAxgDIKTGxAMoB0DMFUiQOVCY1I_aA5gBnEqgAfXujf8DqgEHZWRuYXNpYbIBD3d3dy5lZG5hc2lhLmNvbcgBAdoBMWh0dHA6Ly93d3cuZWRuYXNpYS5jb20vYXJ0aWNsZS5hc3A_YXJ0aWNsZWlkPTU5ODeVAiRCSAo&num=3&adurl=http://www.tern.com/eengine.htm&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to www.tern.com'" onmouseout="window.status=''">ADC/DAC, motion, LCD, I/O, Ethernet. Low-Cost, Flexible, C/C++ Program<br><span>www.tern.com</span></span><br><br><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=BqsmirmBERK-ONY2apALz_KyTD5D3qQm2x7nDAcCNtwHg3CoQBBgEIKTGxAMoB0DMFUiWOVCWy7_-_f____8BmAGcSqAB6fiQ_wOqAQdlZG5hc2lhsgEPd3d3LmVkbmFzaWEuY29tyAEB2gExaHR0cDovL3d3dy5lZG5hc2lhLmNvbS9hcnRpY2xlLmFzcD9hcnRpY2xlaWQ9NTk4N4ACAZUCCYhICg&amp;num=4&amp;adurl=http://www.trolltech.com/products/qtopia/index.html&amp;client=ca-rbiasia_js" class="articledesc"><b>Qt for embedded Linux</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BqsmirmBERK-ONY2apALz_KyTD5D3qQm2x7nDAcCNtwHg3CoQBBgEIKTGxAMoB0DMFUiWOVCWy7_-_f____8BmAGcSqAB6fiQ_wOqAQdlZG5hc2lhsgEPd3d3LmVkbmFzaWEuY29tyAEB2gExaHR0cDovL3d3dy5lZG5hc2lhLmNvbS9hcnRpY2xlLmFzcD9hcnRpY2xlaWQ9NTk4N4ACAZUCCYhICg&num=4&adurl=http://www.trolltech.com/products/qtopia/index.html&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to www.trolltech.com'" onmouseout="window.status=''">The foundation of Trolltech's. embedded technology<br><span>www.trolltech.com</span></span><br><br><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=BSEPGrmBERK-ONY2apALz_KyTD4P9V8a6rs4BwI23AYDxBBAFGAUgpMbEAygHQMwVSI45UOe4_tkDmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIG80gKqQKHH82tWFC0Pg&amp;num=5&amp;adurl=http://www.dave-tech.it&amp;client=ca-rbiasia_js" class="articledesc"><b>ARM7, ARM9, PowerPC</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BSEPGrmBERK-ONY2apALz_KyTD4P9V8a6rs4BwI23AYDxBBAFGAUgpMbEAygHQMwVSI45UOe4_tkDmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIG80gKqQKHH82tWFC0Pg&num=5&adurl=http://www.dave-tech.it&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to www.dave-tech.it'" onmouseout="window.status=''">Single Board Computer &amp; Systems. Linux, uCLinux, RTAI, eCos &amp; WinCE<br><span>www.dave-tech.it</span></span><br><br><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=BM2PNrmBERK-ONY2apALz_KyTD4Wb1hLlsIS5AcCNtwHwkwkQBhgGIKTGxAMoB0DMFUiVOVCws4uj-_____8BmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIKu0gK&amp;num=6&amp;adurl=http://web.info.com/infocom.us2/search/web/Embedded%2520System%3FCMP%3D2716%26itkw%3DEmbedded%2520System&amp;client=ca-rbiasia_js" class="articledesc"><b>Embedded System Info</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BM2PNrmBERK-ONY2apALz_KyTD4Wb1hLlsIS5AcCNtwHwkwkQBhgGIKTGxAMoB0DMFUiVOVCws4uj-_____8BmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIKu0gK&num=6&adurl=http://web.info.com/infocom.us2/search/web/Embedded%2520System%3FCMP%3D2716%26itkw%3DEmbedded%2520System&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to www.info.com/EmbeddedSystem'" onmouseout="window.status=''">Get Info on Embedded System. From 14 Search Engines in 1<br><span>www.info.com/EmbeddedSystem</span></span><br><br><a href="http://pagead2.googlesyndication.com/pagead/iclk?sa=l&amp;ai=BbH-BrmBERK-ONY2apALz_KyTD9S8gg6c8evNAcCNtwGQkhQQBxgHIKTGxAMoB0DMFUihOVCCoPSw-v____8BmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIBa0kK&amp;num=7&amp;adurl=http://www.eg3.com/webadv/pc-104.htm&amp;client=ca-rbiasia_js" class="articledesc"><b>PC/104 Standards and Info</b></a><br><span onclick="document.location.href='http://pagead2.googlesyndication.com/pagead/iclk?sa=l&ai=BbH-BrmBERK-ONY2apALz_KyTD9S8gg6c8evNAcCNtwGQkhQQBxgHIKTGxAMoB0DMFUihOVCCoPSw-v____8BmAGcSqoBB2VkbmFzaWGyAQ93d3cuZWRuYXNpYS5jb23IAQHaATFodHRwOi8vd3d3LmVkbmFzaWEuY29tL2FydGljbGUuYXNwP2FydGljbGVpZD01OTg3lQIBa0kK&num=7&adurl=http://www.eg3.com/webadv/pc-104.htm&client=ca-rbiasia_js'" class="ch" onmouseover="window.status='go to www.eg3.com/pc-104'" onmouseout="window.status=''">Embedded PC/104 Portal. News, Eval Kits, White Papers<br><span>www.eg3.com/pc-104</span></span><br><br></td></tr></tbody></table>
+</td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" height="19" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="middle"></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+  <tr>
+    <td align="left" bgcolor="#ffffff" valign="top"><img src="Serial_files/myspace.gif" height="12" width="8"></td>
+    <td align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+    <td align="left" bgcolor="#ffffff" valign="top" width="8"><img src="Serial_files/myspace.gif" height="12" width="8"></td>
+  </tr>
+  <tr>
+    <td colspan="3" align="left" bgcolor="#ffffff" valign="top">&nbsp;</td>
+  </tr>
+</tbody></table>
+
+
+
+
+<table class="siteborderend" align="center" border="0" cellpadding="0" cellspacing="0" width="774">
+<tbody><tr class="footerWhite">
+  <td colspan="2" align="center" bgcolor="#001f56" valign="middle">    <br>
+    <a href="http://www.reedelectronicsgroup.com/index.asp?layout=nocclamp&amp;doc_id=83536" target="_blank" class="footerWhite">Reed Electronics Group</a>
+	<span class="footerWhite"> | </span>    
+	 <a href="http://www.reedbusiness.com.sg/" target="_blank" class="footerWhite">Reed Business Information Asia</a>
+	<span class="footerWhite"> | </span> <br>
+	<a href="http://www.ednindia.com/" target="_blank" class="footerWhite">EDN India</a>
+	<span class="footerWhite"> | </span>
+    <a href="http://www.edntaiwan.com/" target="_blank" class="footerWhite">EDN Taiwan</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.ednkorea.com/" target="_blank" class="footerWhite">EDN Korea</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.ednjapan.com/" target="_blank" class="footerWhite">EDN Japan</a>
+	<span class="footerWhite"> | </span> <a href="http://www.ednchina.com/" target="_blank" class="footerWhite">EDN China</a>
+	<span class="footerWhite"> | </span> <a href="http://www.edn.com/" target="_blank" class="footerWhite">EDN</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.edn.com/info/123787.html" target="_blank" class="footerWhite">EDN Europe</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.electronicsnews.com.au/" target="_blank" class="footerWhite">EDN Australia</a><br>
+	
+    <a href="http://www.ecnasiamag.com/" target="_blank" class="footerWhite">ECN Asia</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.ecntaiwanmag.com/" target="_blank" class="footerWhite">ECN Taiwan</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.ecnkoreamag.com/" target="_blank" class="footerWhite">ECN Korea</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.eb-asia.com/" target="_blank" class="footerWhite">EB Asia</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.wirelessdesignasia.com/" target="_blank" class="footerWhite">WDDA</a>
+	<span class="footerWhite"> | </span> 
+	<a href="http://www.wirelessdesigntaiwan.com/" target="_blank" class="footerWhite">WDDA Taiwan</a><br>
+	<br></td>
+</tr>
+<tr class="footernew">
+  <td colspan="2" class="footernew" align="center" bgcolor="#ffffff" valign="middle">&nbsp;</td>
+</tr>
+<tr class="footernew">
+  <td colspan="2" class="footernew" align="center" bgcolor="#ffffff" valign="middle">
+  <a href="http://www.ednasia.com/aboutus.asp" target="_blank" class="footernew">ABOUT EDN Asia</a>
+ <span class="footernew">  | </span>
+  <a href="http://www.rbia-subn.com/ednasia/form.asp" target="_blank" class="footernew">FREE SUBSCRIPTION</a>
+  <span class="footernew">  | </span>
+   <a href="http://www.ednasia.com/cs.asp" target="_blank" class="footernew">CONTACT US</a></td>
+</tr>
+<tr class="footernew">
+  <td class="footernew" align="right" bgcolor="#ffffff" valign="bottom" width="24%">&nbsp;</td>
+  <td class="footernew" align="left" bgcolor="#ffffff" valign="bottom" width="76%">&nbsp;</td>
+</tr>
+<tr class="footernew">
+  <td class="footernew" align="right" bgcolor="#ffffff" valign="bottom"><a href="http://www.reedbusiness.com.sg/" target="_blank"><img src="Serial_files/reed_logo.jpg" border="0" height="26" width="150"></a></td>
+  <td class="footernew" align="left" bgcolor="#ffffff" valign="bottom">© 2005-2006 Reed Business Information, a division of Reed Elsevier Inc. All rights reserved.<br>
+    Use of this web site is subject to its Terms and Conditions of Use. View our Privacy Policy.</td>
+</tr>
+<tr class="footernew">
+  <td class="footernew" align="right" bgcolor="#ffffff" valign="bottom">&nbsp;</td>
+  <td class="footernew" align="left" bgcolor="#ffffff" valign="bottom">&nbsp;</td>
+</tr>
+</tbody></table>
+
+</body></html>

@@ -1,0 +1,4 @@
+SELECTDEVICE atmega32
+LOAD-PROG io.hex
+LOAD-DATA 	io.eep
+WRITE-ALL

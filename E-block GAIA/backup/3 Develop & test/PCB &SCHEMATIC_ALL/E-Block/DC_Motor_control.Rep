@@ -1,0 +1,54 @@
+Export log for : DC_Motor_control.Sch
+Start export of symbol definitions for parts
+      Warning: Symbol name (CON10), mode (Normal), part (1), changed to (CON10_N).
+      Warning: Rectangle (0,-110)(30,0) exported as lines.
+      Warning: Symbol name (SN754410), mode (Normal), part (1), changed to (SN754410_N).
+      Warning: Rectangle (-50,-80)(50,80) exported as lines.
+      Warning: Symbol name (DC MOTOR), mode (Normal), part (1), changed to (DC MOTOR_N).
+      Warning: Object kind not supported (Pie)
+      Warning: Symbol name (CAPACITOR), mode (Normal), part (1), changed to (CAPACITOR_N).
+End export of symbol definitions for part
+Start export of default symbol definitions for power ports
+End export of symbol defintions for power ports
+Start export of component definitions
+   Exporting component (CON10).
+
+   Exporting component (SN754410).
+
+   Exporting component (DC MOTOR).
+
+   Exporting component (CAPACITOR).
+
+End export of component definitions
+Start export component definitions for power ports.
+End export component definitions for powerports
+Start export of netlist
+Start export of component instances
+End export of component instances
+Start export of nets
+Start creation of designator names for powerports
+End creation of designator names for powerports
+End export of nets
+End export of netlist
+      Warning: Sheet name (DC_Motor_control) changed to (DC_Motor7F)
+Start export of sheet objects for sheet "DC_Motor_control".
+Start export of wires
+End export of wires
+Start export of buses.
+End export of buses.
+Start export port objects
+End export port objects
+Start export sheet entry objects.
+End export sheet entry objects
+      Warning: Object kind not supported (Unknown)
+      Warning: Exporting powerport at (300 370) as component with designator "BAR1"
+      Warning: Exporting powerport at (370 360) as component with designator "GNDPWR1"
+      Warning: Exporting powerport at (790 360) as component with designator "GNDPWR2"
+      Warning: Exporting powerport at (840 370) as component with designator "BAR2"
+      Warning: Exporting powerport at (650 620) as component with designator "BAR3"
+      Warning: Exporting powerport at (700 560) as component with designator "GNDPWR3"
+      Warning: Exporting powerport at (440 560) as component with designator "GNDPWR4"
+      Warning: Exporting powerport at (490 480) as component with designator "BAR4"
+End export sheet objects for sheet "DC_Motor_control".
+ 
+EndLog

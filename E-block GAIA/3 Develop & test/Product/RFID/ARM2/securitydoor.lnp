@@ -1,0 +1,13 @@
+"main.obj",
+"Startup.obj",
+"serial.obj",
+"keypad.obj",
+"RfidReader.obj",
+"settime.obj",
+"mmc.obj",
+"spi.obj",
+"LCD.obj" 
+TO "securitydoor" 
+CASE 
+CLASSES (DATA (0x40000000-0x40007FFF), 
+CODE (0x0-0x7FFFF), CONST (0x0-0x7FFFF)) 

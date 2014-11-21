@@ -1,0 +1,464 @@
+   1               		.file	"sercom.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  76               	.global	Hit0
+  78               	Hit0:
+   1:sercom.c      **** /*******************************************************************************
+   2:sercom.c      **** * Filename: sercom.c
+   3:sercom.c      **** *
+   4:sercom.c      **** * Author: Preston K. Manwaring & Donald Wichern
+   5:sercom.c      **** *
+   6:sercom.c      **** * Date: July 3, 2003
+   7:sercom.c      **** *
+   8:sercom.c      **** * Description: This file contains functions to write to the UART.
+   9:sercom.c      **** *
+  10:sercom.c      **** *******************************************************************************/
+  11:sercom.c      **** 
+  12:sercom.c      **** /*--- INCLUDE FILES ----------------------------------------------------------*/
+  13:sercom.c      **** #include "sercom.h"
+  14:sercom.c      **** 
+  15:sercom.c      **** /*--- unsigned char Hit0( void ) ---------------------------------------------*/
+  16:sercom.c      **** unsigned char Hit0( void )
+  17:sercom.c      **** {
+  80               	.LM1:
+  81               	/* prologue: frame size=0 */
+  82               	/* prologue end (size=0) */
+  18:sercom.c      ****  Hit0( void ) ---------------------------------------------*/
+  84               	.LM2:
+  85 0000 8BB1      		in r24,43-0x20
+  19:sercom.c      **** "sercom.h"
+  87               	.LM3:
+  88 0002 9927      		clr r25
+  89 0004 87FD      		sbrc r24,7
+  90 0006 9095      		com r25
+  20:sercom.c      **** INCLUDE FILES ----------------------------------------------------------*/
+  21:sercom.c      **** #include "sercom.h"
+  22:sercom.c      **** 
+  23:sercom.c      **** /*--- unsigned char Hit0( void ) ---------------------------------------------*/
+  92               	.LM4:
+  93 0008 8827      		clr r24
+  94 000a 990F      		lsl r25
+  95 000c 881F      		rol r24
+  96 000e 9927      		clr r25
+  97               	/* epilogue: frame size=0 */
+  98 0010 0895      		ret
+  99               	/* epilogue end (size=1) */
+ 100               	/* function Hit0 size 9 (8) */
+ 102               	.Lscope0:
+ 105               	.global	SerCom0Init
+ 107               	SerCom0Init:
+  24:sercom.c      **** "sercom.h"
+  25:sercom.c      **** 
+  26:sercom.c      **** /*--- unsigned char Hit0( void ) ---------------------------------------------*/
+  27:sercom.c      **** unsigned char Hit0( void )
+ 109               	.LM5:
+ 110               	/* prologue: frame size=0 */
+ 111               	/* prologue end (size=0) */
+ 112 0012 9C01      		movw r18,r24
+  28:sercom.c      **** har Hit0( void ) ---------------------------------------------*/
+  29:sercom.c      **** unsigned char Hit0( void )
+ 114               	.LM6:
+ 115 0014 892F      		mov r24,r25
+ 116 0016 9927      		clr r25
+ 117 0018 80BD      		out 64-0x20,r24
+  30:sercom.c      **** har Hit0( void ) ---------------------------------------------*/
+ 119               	.LM7:
+ 120 001a 29B9      		out 41-0x20,r18
+  31:sercom.c      **** "sercom.h"
+  32:sercom.c      **** 
+ 122               	.LM8:
+ 123 001c 88E1      		ldi r24,lo8(24)
+ 124 001e 8AB9      		out 42-0x20,r24
+  33:sercom.c      **** CLUDE FILES ----------------------------------------------------------*/
+  34:sercom.c      **** #include "sercom.h"
+ 126               	.LM9:
+ 127 0020 86E8      		ldi r24,lo8(-122)
+ 128 0022 80BD      		out 64-0x20,r24
+ 129               	/* epilogue: frame size=0 */
+ 130 0024 0895      		ret
+ 131               	/* epilogue end (size=1) */
+ 132               	/* function SerCom0Init size 10 (9) */
+ 134               	.Lscope1:
+ 137               	.global	PutChar0
+ 139               	PutChar0:
+  35:sercom.c      **** INCLUDE FILES ----------------------------------------------------------*/
+  36:sercom.c      **** #include "sercom.h"
+  37:sercom.c      **** 
+  38:sercom.c      **** /*--- unsigned char Hit0( void ) ---------------------------------------------*/
+  39:sercom.c      **** unsigned char Hit0( void )
+  40:sercom.c      **** {
+  41:sercom.c      **** 	if( UCSRA & (1<<RXC) )
+  42:sercom.c      **** 		return(1);
+  43:sercom.c      **** 		
+ 141               	.LM10:
+ 142               	/* prologue: frame size=0 */
+ 143               	/* prologue end (size=0) */
+ 144               	.L6:
+  44:sercom.c      **** ----------------*/
+  45:sercom.c      **** unsigned char Hit0( void )
+  46:sercom.c      **** {
+ 146               	.LM11:
+ 147 0026 5D9B      		sbis 43-0x20,5
+ 148 0028 FECF      		rjmp .L6
+  47:sercom.c      ****  Hit0( void ) ---------------------------------------------*/
+  48:sercom.c      **** unsigned char Hit0( void )
+  49:sercom.c      **** {
+ 150               	.LM12:
+ 151 002a 8CB9      		out 44-0x20,r24
+ 152               	/* epilogue: frame size=0 */
+ 153 002c 0895      		ret
+ 154               	/* epilogue end (size=1) */
+ 155               	/* function PutChar0 size 4 (3) */
+ 157               	.Lscope2:
+ 159               	.global	GetChar0
+ 161               	GetChar0:
+  50:sercom.c      ****  Hit0( void ) ---------------------------------------------*/
+  51:sercom.c      **** unsigned char Hit0( void )
+  52:sercom.c      **** {
+  53:sercom.c      **** 	if( UCSRA & (1<<RXC) )
+  54:sercom.c      **** 		return(1);
+  55:sercom.c      **** 		
+ 163               	.LM13:
+ 164               	/* prologue: frame size=0 */
+ 165               	/* prologue end (size=0) */
+ 166               	.L10:
+  56:sercom.c      **** ----------------*/
+  57:sercom.c      **** unsigned char Hit0( void )
+  58:sercom.c      **** {
+ 168               	.LM14:
+ 169 002e 5F9B      		sbis 43-0x20,7
+ 170 0030 FECF      		rjmp .L10
+  59:sercom.c      ****  Hit0( void ) ---------------------------------------------*/
+  60:sercom.c      **** unsigned char Hit0( void )
+  61:sercom.c      **** {
+ 172               	.LM15:
+ 173 0032 8CB1      		in r24,44-0x20
+  62:sercom.c      ****  Hit0( void ) ---------------------------------------------*/
+  63:sercom.c      **** unsigned char Hit0( void )
+ 175               	.LM16:
+ 176 0034 9927      		clr r25
+ 177               	/* epilogue: frame size=0 */
+ 178 0036 0895      		ret
+ 179               	/* epilogue end (size=1) */
+ 180               	/* function GetChar0 size 5 (4) */
+ 182               	.Lscope3:
+ 185               	.global	PutString0
+ 187               	PutString0:
+  64:sercom.c      **** har Hit0( void ) ---------------------------------------------*/
+  65:sercom.c      **** unsigned char Hit0( void )
+  66:sercom.c      **** {
+  67:sercom.c      **** 	if( UCSRA & (1<<RXC) )
+ 189               	.LM17:
+ 190               	/* prologue: frame size=0 */
+ 191 0038 1F93      		push r17
+ 192 003a CF93      		push r28
+ 193 003c DF93      		push r29
+ 194               	/* prologue end (size=3) */
+ 195 003e EC01      		movw r28,r24
+  68:sercom.c      **** ----------------------------------*/
+  69:sercom.c      **** unsigned char Hit0( void )
+ 197               	.LM18:
+ 198 0040 10E0      		ldi r17,lo8(0)
+  70:sercom.c      **** har Hit0( void ) ---------------------------------------------*/
+  71:sercom.c      **** unsigned char Hit0( void )
+  72:sercom.c      **** {
+  73:sercom.c      **** 	if( UCSRA & (1<<RXC) )
+ 200               	.LM19:
+ 201 0042 8881      		ld r24,Y
+ 202 0044 8823      		tst r24
+ 203 0046 69F0      		breq .L18
+ 204               	.L16:
+ 206               	.LM20:
+ 207 0048 FE01      		movw r30,r28
+ 208 004a E10F      		add r30,r17
+ 209 004c F11D      		adc r31,__zero_reg__
+ 210 004e 8081      		ld r24,Z
+ 211 0050 0E94 0000 		call PutChar0
+ 213               	.LM21:
+ 214 0054 1F5F      		subi r17,lo8(-(1))
+ 215 0056 FE01      		movw r30,r28
+ 216 0058 E10F      		add r30,r17
+ 217 005a F11D      		adc r31,__zero_reg__
+ 218 005c 8081      		ld r24,Z
+ 219 005e 8823      		tst r24
+ 220 0060 99F7      		brne .L16
+ 221               	.L18:
+ 222               	/* epilogue: frame size=0 */
+ 223 0062 DF91      		pop r29
+ 224 0064 CF91      		pop r28
+ 225 0066 1F91      		pop r17
+ 226 0068 0895      		ret
+ 227               	/* epilogue end (size=4) */
+ 228               	/* function PutString0 size 25 (18) */
+ 233               	.Lscope4:
+ 236               	.global	PutInt0
+ 238               	PutInt0:
+  74:sercom.c      **** ----------------------------------*/
+  75:sercom.c      **** unsigned char Hit0( void )
+  76:sercom.c      **** {
+  77:sercom.c      **** 	if( UCSRA & (1<<RXC) )
+  78:sercom.c      **** 		return(1);
+  79:sercom.c      **** 		
+  80:sercom.c      **** 	else
+ 240               	.LM22:
+ 241               	/* prologue: frame size=10 */
+ 242 006a 8F92      		push r8
+ 243 006c 9F92      		push r9
+ 244 006e BF92      		push r11
+ 245 0070 CF92      		push r12
+ 246 0072 DF92      		push r13
+ 247 0074 EF92      		push r14
+ 248 0076 FF92      		push r15
+ 249 0078 0F93      		push r16
+ 250 007a 1F93      		push r17
+ 251 007c CF93      		push r28
+ 252 007e DF93      		push r29
+ 253 0080 CDB7      		in r28,__SP_L__
+ 254 0082 DEB7      		in r29,__SP_H__
+ 255 0084 2A97      		sbiw r28,10
+ 256 0086 0FB6      		in __tmp_reg__,__SREG__
+ 257 0088 F894      		cli
+ 258 008a DEBF      		out __SP_H__,r29
+ 259 008c 0FBE      		out __SREG__,__tmp_reg__
+ 260 008e CDBF      		out __SP_L__,r28
+ 261               	/* prologue end (size=19) */
+ 262 0090 6B01      		movw r12,r22
+ 263 0092 7C01      		movw r14,r24
+  81:sercom.c      **** ---------*/
+  82:sercom.c      **** unsigned char Hit0( void )
+  83:sercom.c      **** {
+  84:sercom.c      **** 	if( UCSRA & (1<<RXC) )
+ 265               	.LM23:
+ 266 0094 97FF      		sbrs r25,7
+ 267 0096 0BC0      		rjmp .L20
+  85:sercom.c      **** ----------------------------------*/
+ 269               	.LM24:
+ 270 0098 8DE2      		ldi r24,lo8(45)
+ 271 009a 0E94 0000 		call PutChar0
+  86:sercom.c      **** "sercom.h"
+ 273               	.LM25:
+ 274 009e F094      		com r15
+ 275 00a0 E094      		com r14
+ 276 00a2 D094      		com r13
+ 277 00a4 C094      		com r12
+ 278 00a6 C11C      		adc r12,__zero_reg__
+ 279 00a8 D11C      		adc r13,__zero_reg__
+ 280 00aa E11C      		adc r14,__zero_reg__
+ 281 00ac F11C      		adc r15,__zero_reg__
+ 282               	.L20:
+  87:sercom.c      **** INCLUDE FILES ----------------------------------------------------------*/
+  88:sercom.c      **** #include "sercom.h"
+  89:sercom.c      **** 
+ 284               	.LM26:
+ 285 00ae BB24      		clr r11
+ 286 00b0 4E01      		movw r8,r28
+ 287 00b2 0894      		sec
+ 288 00b4 811C      		adc r8,__zero_reg__
+ 289 00b6 911C      		adc r9,__zero_reg__
+ 290               	.L21:
+  90:sercom.c      **** CLUDE FILES ----------------------------------------------------------*/
+  91:sercom.c      **** #include "sercom.h"
+ 292               	.LM27:
+ 293 00b8 8401      		movw r16,r8
+ 294 00ba 0B0D      		add r16,r11
+ 295 00bc 111D      		adc r17,__zero_reg__
+ 296 00be C701      		movw r24,r14
+ 297 00c0 B601      		movw r22,r12
+ 298 00c2 2AE0      		ldi r18,lo8(10)
+ 299 00c4 30E0      		ldi r19,hi8(10)
+ 300 00c6 40E0      		ldi r20,hlo8(10)
+ 301 00c8 50E0      		ldi r21,hhi8(10)
+ 302 00ca 0E94 0000 		call __divmodsi4
+ 303 00ce DC01      		movw r26,r24
+ 304 00d0 CB01      		movw r24,r22
+ 305 00d2 F801      		movw r30,r16
+ 306 00d4 8083      		st Z,r24
+  92:sercom.c      **** INCLUDE FILES ----------------------------------------------------------*/
+ 308               	.LM28:
+ 309 00d6 C701      		movw r24,r14
+ 310 00d8 B601      		movw r22,r12
+ 311 00da 2AE0      		ldi r18,lo8(10)
+ 312 00dc 30E0      		ldi r19,hi8(10)
+ 313 00de 40E0      		ldi r20,hlo8(10)
+ 314 00e0 50E0      		ldi r21,hhi8(10)
+ 315 00e2 0E94 0000 		call __divmodsi4
+ 316 00e6 6901      		movw r12,r18
+ 317 00e8 7A01      		movw r14,r20
+  93:sercom.c      **** ************/
+ 319               	.LM29:
+ 320 00ea B394      		inc r11
+  94:sercom.c      **** e to the UART.
+ 322               	.LM30:
+ 323 00ec 2115      		cp r18,__zero_reg__
+ 324 00ee 3105      		cpc r19,__zero_reg__
+ 325 00f0 4105      		cpc r20,__zero_reg__
+ 326 00f2 5105      		cpc r21,__zero_reg__
+ 327 00f4 09F7      		brne .L21
+  95:sercom.c      ****  Wichern
+  96:sercom.c      **** *
+  97:sercom.c      **** * Date: July 3, 2003
+  98:sercom.c      **** *
+ 329               	.LM31:
+ 330 00f6 BB20      		tst r11
+ 331 00f8 51F0      		breq .L28
+ 332               	.L26:
+ 334               	.LM32:
+ 335 00fa BA94      		dec r11
+ 337               	.LM33:
+ 338 00fc F401      		movw r30,r8
+ 339 00fe EB0D      		add r30,r11
+ 340 0100 F11D      		adc r31,__zero_reg__
+ 341 0102 8081      		ld r24,Z
+ 342 0104 805D      		subi r24,lo8(-(48))
+ 343 0106 0E94 0000 		call PutChar0
+ 344 010a BB20      		tst r11
+ 345 010c B1F7      		brne .L26
+ 346               	.L28:
+ 347               	/* epilogue: frame size=10 */
+ 348 010e 2A96      		adiw r28,10
+ 349 0110 0FB6      		in __tmp_reg__,__SREG__
+ 350 0112 F894      		cli
+ 351 0114 DEBF      		out __SP_H__,r29
+ 352 0116 0FBE      		out __SREG__,__tmp_reg__
+ 353 0118 CDBF      		out __SP_L__,r28
+ 354 011a DF91      		pop r29
+ 355 011c CF91      		pop r28
+ 356 011e 1F91      		pop r17
+ 357 0120 0F91      		pop r16
+ 358 0122 FF90      		pop r15
+ 359 0124 EF90      		pop r14
+ 360 0126 DF90      		pop r13
+ 361 0128 CF90      		pop r12
+ 362 012a BF90      		pop r11
+ 363 012c 9F90      		pop r9
+ 364 012e 8F90      		pop r8
+ 365 0130 0895      		ret
+ 366               	/* epilogue end (size=18) */
+ 367               	/* function PutInt0 size 100 (63) */
+ 373               	.Lscope5:
+ 374               		.data
+ 375               	.LC0:
+ 376 0000 30        		.byte	48
+ 377 0001 31        		.byte	49
+ 378 0002 32        		.byte	50
+ 379 0003 33        		.byte	51
+ 380 0004 34        		.byte	52
+ 381 0005 35        		.byte	53
+ 382 0006 36        		.byte	54
+ 383 0007 37        		.byte	55
+ 384 0008 38        		.byte	56
+ 385 0009 39        		.byte	57
+ 386 000a 41        		.byte	65
+ 387 000b 42        		.byte	66
+ 388 000c 43        		.byte	67
+ 389 000d 44        		.byte	68
+ 390 000e 45        		.byte	69
+ 391 000f 46        		.byte	70
+ 392               		.text
+ 395               	.global	PutHex0
+ 397               	PutHex0:
+  99:sercom.c      **** ****
+ 100:sercom.c      **** * Filename: sercom.c
+ 101:sercom.c      **** *
+ 102:sercom.c      **** * Author: Preston K. Manwaring & Donald Wichern
+ 103:sercom.c      **** *
+ 104:sercom.c      **** * Date: July 3, 2003
+ 399               	.LM34:
+ 400               	/* prologue: frame size=16 */
+ 401 0132 FF92      		push r15
+ 402 0134 0F93      		push r16
+ 403 0136 1F93      		push r17
+ 404 0138 CF93      		push r28
+ 405 013a DF93      		push r29
+ 406 013c CDB7      		in r28,__SP_L__
+ 407 013e DEB7      		in r29,__SP_H__
+ 408 0140 6097      		sbiw r28,16
+ 409 0142 0FB6      		in __tmp_reg__,__SREG__
+ 410 0144 F894      		cli
+ 411 0146 DEBF      		out __SP_H__,r29
+ 412 0148 0FBE      		out __SREG__,__tmp_reg__
+ 413 014a CDBF      		out __SP_L__,r28
+ 414               	/* prologue end (size=13) */
+ 415 014c F82E      		mov r15,r24
+ 105:sercom.c      **** *******
+ 417               	.LM35:
+ 418 014e 8E01      		movw r16,r28
+ 419 0150 0F5F      		subi r16,lo8(-(1))
+ 420 0152 1F4F      		sbci r17,hi8(-(1))
+ 421 0154 D801      		movw r26,r16
+ 422 0156 E0E0      		ldi r30,lo8(.LC0)
+ 423 0158 F0E0      		ldi r31,hi8(.LC0)
+ 424 015a 80E1      		ldi r24,lo8(16)
+ 425               	.L30:
+ 427               	.LM36:
+ 428 015c 0190      		ld r0,Z+
+ 429 015e 0D92      		st X+,r0
+ 430 0160 8150      		subi r24,lo8(-(-1))
+ 431 0162 E1F7      		brne .L30
+ 106:sercom.c      **** /*******************************************************************************
+ 433               	.LM37:
+ 434 0164 8F2D      		mov r24,r15
+ 435 0166 8295      		swap r24
+ 436 0168 8F70      		andi r24,0x0f
+ 437 016a F801      		movw r30,r16
+ 438 016c E80F      		add r30,r24
+ 439 016e F11D      		adc r31,__zero_reg__
+ 440 0170 8081      		ld r24,Z
+ 441 0172 0E94 0000 		call PutChar0
+ 107:sercom.c      **** /*******************************************************************************
+ 443               	.LM38:
+ 444 0176 EF2D      		mov r30,r15
+ 445 0178 FF27      		clr r31
+ 446 017a EF70      		andi r30,lo8(15)
+ 447 017c F070      		andi r31,hi8(15)
+ 448 017e E00F      		add r30,r16
+ 449 0180 F11F      		adc r31,r17
+ 450 0182 8081      		ld r24,Z
+ 451 0184 0E94 0000 		call PutChar0
+ 452               	/* epilogue: frame size=16 */
+ 453 0188 6096      		adiw r28,16
+ 454 018a 0FB6      		in __tmp_reg__,__SREG__
+ 455 018c F894      		cli
+ 456 018e DEBF      		out __SP_H__,r29
+ 457 0190 0FBE      		out __SREG__,__tmp_reg__
+ 458 0192 CDBF      		out __SP_L__,r28
+ 459 0194 DF91      		pop r29
+ 460 0196 CF91      		pop r28
+ 461 0198 1F91      		pop r17
+ 462 019a 0F91      		pop r16
+ 463 019c FF90      		pop r15
+ 464 019e 0895      		ret
+ 465               	/* epilogue end (size=12) */
+ 466               	/* function PutHex0 size 56 (31) */
+ 471               	.Lscope6:
+ 472               		.text
+ 474               	Letext:
+ 475               	/* File "sercom.c": code  209 = 0x00d1 ( 136), prologues  35, epilogues  38 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 sercom.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:78     .text:00000000 Hit0
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:107    .text:00000012 SerCom0Init
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:139    .text:00000026 PutChar0
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:161    .text:0000002e GetChar0
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:187    .text:00000038 PutString0
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:238    .text:0000006a PutInt0
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:397    .text:00000132 PutHex0
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc61aaaa.s:474    .text:000001a0 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+__divmodsi4

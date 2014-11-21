@@ -1,0 +1,293 @@
+   1               		.file	"test_uart.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  83               	.global	__vector_13
+  85               	__vector_13:
+   1:test_uart.c   **** /*
+   2:test_uart.c   ****  Module 				:   UART
+   3:test_uart.c   ****  Description 			:   Universal Async Transmitter
+   4:test_uart.c   ****  Original written for 	:   ATMEGA32
+   5:test_uart.c   ****  CPU port/tested		:   ATMEGA32
+   6:test_uart.c   ****  Hardware use			:   RS-232
+   7:test_uart.c   ****  Port use				:   UART Port Tx/Rx PD0, PD1
+   8:test_uart.c   ****  Memory	FLASH			:   XXX
+   9:test_uart.c   **** 		RAM				:   XXX
+  10:test_uart.c   **** 		EEPROM			:   XXX
+  11:test_uart.c   ****  Document				:   Document describe algorithm
+  12:test_uart.c   ****  Written by 			:   Wichai / wichai@geartronics.net
+  13:test_uart.c   ****  Date					:   1/06/2006
+  14:test_uart.c   ****   
+  15:test_uart.c   ****  Update History
+  16:test_uart.c   ****  
+  17:test_uart.c   ****  Date			By 					Comments
+  18:test_uart.c   ****  ----			--					---------
+  19:test_uart.c   ****  
+  20:test_uart.c   ****  
+  21:test_uart.c   **** */
+  22:test_uart.c   **** 
+  23:test_uart.c   **** 
+  24:test_uart.c   **** #include <stdlib.h>
+  25:test_uart.c   **** #include <avr/io.h>
+  26:test_uart.c   **** #include <avr/interrupt.h>
+  27:test_uart.c   **** 
+  28:test_uart.c   **** #include "E_uart.h"
+  29:test_uart.c   **** 
+  30:test_uart.c   **** 
+  31:test_uart.c   **** //  Global Data for Rx/Tx
+  32:test_uart.c   **** //uint8_t g_rcv_buff[MAX_BUFF];  // Circular buffer
+  33:test_uart.c   **** //uint8_t g_tra_buff[MAX_BUFF];
+  34:test_uart.c   **** //uint8_t g_rcv_ptr = 0;		  // Pointer for Rx buffer
+  35:test_uart.c   **** //uint8_t g_tra_ptr = 0;        // Pointer for Tx buffer    
+  36:test_uart.c   **** //uint8_t g_getc_ptr = 0;       //  Pointer for getc fn 
+  37:test_uart.c   **** //uint8_t g_putc_ptr = 0;       //  Pointer for putc fn
+  38:test_uart.c   **** //uint8_t g_ch;
+  39:test_uart.c   **** 
+  40:test_uart.c   **** /* UART receiver ready
+  41:test_uart.c   **** */
+  42:test_uart.c   **** 
+  43:test_uart.c   **** SIGNAL(SIG_UART_RECV)
+  44:test_uart.c   **** {
+  87               	.LM1:
+  88               	/* prologue: frame size=0 */
+  89 0000 1F92      		push __zero_reg__
+  90 0002 0F92      		push __tmp_reg__
+  91 0004 0FB6      		in __tmp_reg__,__SREG__
+  92 0006 0F92      		push __tmp_reg__
+  93 0008 1124      		clr __zero_reg__
+  94 000a 2F93      		push r18
+  95 000c 3F93      		push r19
+  96 000e 4F93      		push r20
+  97 0010 5F93      		push r21
+  98 0012 6F93      		push r22
+  99 0014 7F93      		push r23
+ 100 0016 8F93      		push r24
+ 101 0018 9F93      		push r25
+ 102 001a AF93      		push r26
+ 103 001c BF93      		push r27
+ 104 001e EF93      		push r30
+ 105 0020 FF93      		push r31
+ 106               	/* prologue end (size=17) */
+  45:test_uart.c   ****    uart_put_RX (UDR);
+ 108               	.LM2:
+ 109 0022 8CB1      		in r24,44-0x20
+ 110 0024 0E94 0000 		call uart_put_RX
+ 111               	/* epilogue: frame size=0 */
+ 112 0028 FF91      		pop r31
+ 113 002a EF91      		pop r30
+ 114 002c BF91      		pop r27
+ 115 002e AF91      		pop r26
+ 116 0030 9F91      		pop r25
+ 117 0032 8F91      		pop r24
+ 118 0034 7F91      		pop r23
+ 119 0036 6F91      		pop r22
+ 120 0038 5F91      		pop r21
+ 121 003a 4F91      		pop r20
+ 122 003c 3F91      		pop r19
+ 123 003e 2F91      		pop r18
+ 124 0040 0F90      		pop __tmp_reg__
+ 125 0042 0FBE      		out __SREG__,__tmp_reg__
+ 126 0044 0F90      		pop __tmp_reg__
+ 127 0046 1F90      		pop __zero_reg__
+ 128 0048 1895      		reti
+ 129               	/* epilogue end (size=17) */
+ 130               	/* function __vector_13 size 37 (3) */
+ 132               	.Lscope0:
+ 134               	.global	__vector_14
+ 136               	__vector_14:
+  46:test_uart.c   **** }
+  47:test_uart.c   **** 
+  48:test_uart.c   **** /*************************************************************************
+  49:test_uart.c   **** Function: UART Data Register Empty interrupt
+  50:test_uart.c   **** Purpose:  called when the UART is ready to transmit the next byte
+  51:test_uart.c   **** **************************************************************************/
+  52:test_uart.c   **** 
+  53:test_uart.c   **** SIGNAL(SIG_UART_DATA)
+  54:test_uart.c   **** { 
+ 138               	.LM3:
+ 139               	/* prologue: frame size=0 */
+ 140 004a 1F92      		push __zero_reg__
+ 141 004c 0F92      		push __tmp_reg__
+ 142 004e 0FB6      		in __tmp_reg__,__SREG__
+ 143 0050 0F92      		push __tmp_reg__
+ 144 0052 1124      		clr __zero_reg__
+ 145 0054 2F93      		push r18
+ 146 0056 3F93      		push r19
+ 147 0058 4F93      		push r20
+ 148 005a 5F93      		push r21
+ 149 005c 6F93      		push r22
+ 150 005e 7F93      		push r23
+ 151 0060 8F93      		push r24
+ 152 0062 9F93      		push r25
+ 153 0064 AF93      		push r26
+ 154 0066 BF93      		push r27
+ 155 0068 EF93      		push r30
+ 156 006a FF93      		push r31
+ 157               	/* prologue end (size=17) */
+  55:test_uart.c   ****     uint8_t  ch;
+  56:test_uart.c   **** 	if ((ch = uart_get_TX()))
+ 159               	.LM4:
+ 160 006c 0E94 0000 		call uart_get_TX
+ 161 0070 8111      		cpse r24,__zero_reg__
+  57:test_uart.c   **** 	    UDR = ch;
+ 163               	.LM5:
+ 164 0072 8CB9      		out 44-0x20,r24
+ 165               	.L2:
+ 166               	/* epilogue: frame size=0 */
+ 167 0074 FF91      		pop r31
+ 168 0076 EF91      		pop r30
+ 169 0078 BF91      		pop r27
+ 170 007a AF91      		pop r26
+ 171 007c 9F91      		pop r25
+ 172 007e 8F91      		pop r24
+ 173 0080 7F91      		pop r23
+ 174 0082 6F91      		pop r22
+ 175 0084 5F91      		pop r21
+ 176 0086 4F91      		pop r20
+ 177 0088 3F91      		pop r19
+ 178 008a 2F91      		pop r18
+ 179 008c 0F90      		pop __tmp_reg__
+ 180 008e 0FBE      		out __SREG__,__tmp_reg__
+ 181 0090 0F90      		pop __tmp_reg__
+ 182 0092 1F90      		pop __zero_reg__
+ 183 0094 1895      		reti
+ 184               	/* epilogue end (size=17) */
+ 185               	/* function __vector_14 size 39 (5) */
+ 190               	.Lscope1:
+ 191               		.data
+ 192               	.LC0:
+ 193 0000 5374 7269 		.string	"String stored in SRAM\n"
+ 193      6E67 2073 
+ 193      746F 7265 
+ 193      6420 696E 
+ 193      2053 5241 
+ 194               		.text
+ 196               	.global	main
+ 198               	main:
+  58:test_uart.c   **** }
+  59:test_uart.c   **** 
+  60:test_uart.c   **** 
+  61:test_uart.c   **** int main(void)
+  62:test_uart.c   **** {
+ 200               	.LM6:
+ 201               	/* prologue: frame size=7 */
+ 202 0096 C0E0      		ldi r28,lo8(__stack - 7)
+ 203 0098 D0E0      		ldi r29,hi8(__stack - 7)
+ 204 009a DEBF      		out __SP_H__,r29
+ 205 009c CDBF      		out __SP_L__,r28
+ 206               	/* prologue end (size=4) */
+  63:test_uart.c   ****     uint8_t c;
+  64:test_uart.c   ****     uint8_t buffer[7];
+  65:test_uart.c   ****     uint8_t  num=134;
+  66:test_uart.c   **** 
+  67:test_uart.c   ****     
+  68:test_uart.c   ****     /*
+  69:test_uart.c   ****      *  Initialize UART library, pass baudrate and AVR cpu clock
+  70:test_uart.c   ****      *  with the macro 
+  71:test_uart.c   ****      *  UART_BAUD_SELECT() (normal speed mode )
+  72:test_uart.c   ****      *  or 
+  73:test_uart.c   ****      *  UART_BAUD_SELECT_DOUBLE_SPEED() ( double speed mode)
+  74:test_uart.c   ****      */
+  75:test_uart.c   ****     uart_init(); 
+ 208               	.LM7:
+ 209 009e 0E94 0000 		call uart_init
+  76:test_uart.c   ****      
+  77:test_uart.c   **** 
+  78:test_uart.c   ****  
+  79:test_uart.c   ****     /*
+  80:test_uart.c   ****      * now enable interrupt, since UART library is interrupt controlled
+  81:test_uart.c   ****      */
+  82:test_uart.c   ****     sei();
+ 211               	.LM8:
+ 212               	/* #APP */
+ 213 00a2 7894      		sei
+  83:test_uart.c   ****     
+  84:test_uart.c   ****     /*
+  85:test_uart.c   ****      *  Transmit string to UART
+  86:test_uart.c   ****      *  The string is buffered by the uart library in a circular buffer
+  87:test_uart.c   ****      *  and one character at a time is transmitted to the UART using interrupts.
+  88:test_uart.c   ****      *  uart_puts() blocks if it can not write the whole string to the circular 
+  89:test_uart.c   ****      *  buffer
+  90:test_uart.c   ****      */
+  91:test_uart.c   ****     uart_puts("String stored in SRAM\n");
+ 215               	.LM9:
+ 216               	/* #NOAPP */
+ 217 00a4 80E0      		ldi r24,lo8(.LC0)
+ 218 00a6 90E0      		ldi r25,hi8(.LC0)
+ 219 00a8 0E94 0000 		call uart_puts
+  92:test_uart.c   ****     
+  93:test_uart.c   ****     
+  94:test_uart.c   ****         
+  95:test_uart.c   ****     /* 
+  96:test_uart.c   ****      * Use standard avr-libc functions to convert numbers into string
+  97:test_uart.c   ****      * before transmitting via UART
+  98:test_uart.c   ****      */     
+  99:test_uart.c   ****     itoa( num, buffer, 10);   // convert interger into string (decimal format)         
+ 221               	.LM10:
+ 222 00ac 4AE0      		ldi r20,lo8(10)
+ 223 00ae 50E0      		ldi r21,hi8(10)
+ 224 00b0 BE01      		movw r22,r28
+ 225 00b2 6F5F      		subi r22,lo8(-(1))
+ 226 00b4 7F4F      		sbci r23,hi8(-(1))
+ 227 00b6 86E8      		ldi r24,lo8(134)
+ 228 00b8 90E0      		ldi r25,hi8(134)
+ 229 00ba 0E94 0000 		call itoa
+ 100:test_uart.c   ****     uart_puts(buffer);        // and transmit string to UART
+ 231               	.LM11:
+ 232 00be CE01      		movw r24,r28
+ 233 00c0 0196      		adiw r24,1
+ 234 00c2 0E94 0000 		call uart_puts
+ 101:test_uart.c   ****     /*
+ 102:test_uart.c   ****      * Transmit single character to UART
+ 103:test_uart.c   ****      */
+ 104:test_uart.c   ****     uart_putc('\r');
+ 236               	.LM12:
+ 237 00c6 8DE0      		ldi r24,lo8(13)
+ 238               	.L7:
+ 240               	.LM13:
+ 241 00c8 0E94 0000 		call uart_putc
+ 105:test_uart.c   ****          
+ 106:test_uart.c   ****     for(;;)
+ 107:test_uart.c   ****     {
+ 108:test_uart.c   ****         c  = uart_getc();
+ 243               	.LM14:
+ 244 00cc 0E94 0000 		call uart_getc
+ 245 00d0 FBCF      		rjmp .L7
+ 246               	/* epilogue: frame size=7 */
+ 247               	/* epilogue: noreturn */
+ 248               	/* epilogue end (size=0) */
+ 249               	/* function main size 31 (27) */
+ 254               	.Lscope2:
+ 255               		.text
+ 257               	Letext:
+ 258               	/* File "test_uart.c": code  107 = 0x006b (  35), prologues  38, epilogues  34 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 test_uart.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:85     .text:00000000 __vector_13
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:136    .text:0000004a __vector_14
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:198    .text:00000096 main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccIdbaaa.s:257    .text:000000d2 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+uart_put_RX
+uart_get_TX
+__stack
+uart_init
+uart_puts
+itoa
+uart_putc
+uart_getc

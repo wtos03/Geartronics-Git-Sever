@@ -1,0 +1,229 @@
+   1               		.file	"ir_tv.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  56               	.global	init_ir
+  58               	init_ir:
+   1:ir_tv.c       **** /* 
+   2:ir_tv.c       ****  Module 				:   Infrared Detecting Module  IR TV Sony Remote control driver
+   3:ir_tv.c       ****  Description 			:   Driver for IR Remote control for Sony TV 
+   4:ir_tv.c       ****  Original written for 	:   ATMEGA32
+   5:ir_tv.c       ****  CPU port/tested		:   ATMEGA32
+   6:ir_tv.c       ****  Hardware use			:   TSOP4838
+   7:ir_tv.c       ****  Port use				:	ICP 	(input capture 16 bit)
+   8:ir_tv.c       ****  Document				:
+   9:ir_tv.c       ****  Written by 			: 	Wichai Tossamartvorakul (wichai@geartronics.net)
+  10:ir_tv.c       ****  Date					:   21/3/2006
+  11:ir_tv.c       ****  
+  12:ir_tv.c       ****  
+  13:ir_tv.c       ****  Update History
+  14:ir_tv.c       ****  
+  15:ir_tv.c       ****  Date			By 					Comments
+  16:ir_tv.c       ****  ----			--					---------
+  17:ir_tv.c       ****  28/3/2006		Wichai				Initial version
+  18:ir_tv.c       ****  
+  19:ir_tv.c       ****  
+  20:ir_tv.c       ****  
+  21:ir_tv.c       **** */
+  22:ir_tv.c       **** #include <avr/interrupt.h>
+  23:ir_tv.c       **** #include "ir_tv.h"
+  24:ir_tv.c       **** #include "Dual_7Segment.h"
+  25:ir_tv.c       **** 
+  26:ir_tv.c       ****  
+  27:ir_tv.c       **** 
+  28:ir_tv.c       **** void init_ir()
+  29:ir_tv.c       **** {
+  60               	.LM1:
+  61               	/* prologue: frame size=0 */
+  62               	/* prologue end (size=0) */
+  30:ir_tv.c       ****  //Set Direction
+  31:ir_tv.c       ****     IR_DDR_PORT &= ~IR_ICP; 
+  64               	.LM2:
+  65 0000 8E98      		cbi 49-0x20,6
+  32:ir_tv.c       **** 	
+  33:ir_tv.c       **** 	TCCR1B  |= ( _BV(ICNC1) | _BV(CS12) | _BV(CS10));			// Time 1 input to clock/1024 input capture on
+  67               	.LM3:
+  68 0002 8EB5      		in r24,78-0x20
+  69 0004 8568      		ori r24,lo8(-123)
+  70 0006 8EBD      		out 78-0x20,r24
+  34:ir_tv.c       **** 	TIMSK   |= _BV(TICIE1);   								// Enable input capture enable 
+  72               	.LM4:
+  73 0008 89B7      		in r24,89-0x20
+  74 000a 8062      		ori r24,lo8(32)
+  75 000c 89BF      		out 89-0x20,r24
+  35:ir_tv.c       **** 	sei();
+  77               	.LM5:
+  78               	/* #APP */
+  79 000e 7894      		sei
+  80               	/* #NOAPP */
+  81               	/* epilogue: frame size=0 */
+  82 0010 0895      		ret
+  83               	/* epilogue end (size=1) */
+  84               	/* function init_ir size 10 (9) */
+  86               	.Lscope0:
+  87               		.lcomm prev_capture_counter.0,2
+  88               		.lcomm stop_bit.1,1
+  89               		.lcomm ir_code.2,2
+  92               	.global	sony_ir_decode
+  94               	sony_ir_decode:
+  36:ir_tv.c       **** }
+  37:ir_tv.c       **** /*  Decode for Sony remote TV IR 
+  38:ir_tv.c       **** 			Input  Input capturn counter 16 bit register
+  39:ir_tv.c       **** 		   Output  0  = no code detect
+  40:ir_tv.c       **** 				   ir_decode  = detect IR code 
+  41:ir_tv.c       **** 				   
+  42:ir_tv.c       **** 	Algorithm
+  43:ir_tv.c       **** 		Calculate pulse width by substract ICP counter. from pulse width 
+  44:ir_tv.c       **** 		can determine whether it is  START BIT 		 =  XX
+  45:ir_tv.c       **** 									  BIT1 			 =  XX
+  46:ir_tv.c       **** 		until 12 bits then return ir code							  
+  47:ir_tv.c       **** 									 
+  48:ir_tv.c       **** */
+  49:ir_tv.c       **** 
+  50:ir_tv.c       **** uint16_t sony_ir_decode ( uint16_t capture_counter)
+  51:ir_tv.c       **** {
+  96               	.LM6:
+  97               	/* prologue: frame size=0 */
+  98               	/* prologue end (size=0) */
+  99 0012 BC01      		movw r22,r24
+  52:ir_tv.c       ****   static 	uint16_t  	prev_capture_counter = 0;
+  53:ir_tv.c       ****   static 	uint8_t   	stop_bit = 0;
+  54:ir_tv.c       ****   static	uint16_t	ir_code = 0;
+  55:ir_tv.c       ****  			uint16_t	width  = 0;	  
+  56:ir_tv.c       **** 
+  57:ir_tv.c       ****       if ( capture_counter > prev_capture_counter)
+ 101               	.LM7:
+ 102 0014 8091 0000 		lds r24,prev_capture_counter.0
+ 103 0018 9091 0000 		lds r25,(prev_capture_counter.0)+1
+ 104 001c 9B01      		movw r18,r22
+ 105 001e 281B      		sub r18,r24
+ 106 0020 390B      		sbc r19,r25
+  58:ir_tv.c       **** 			width = capture_counter - prev_capture_counter;
+  59:ir_tv.c       **** 	  else
+  60:ir_tv.c       **** 			width = capture_counter+(MAX_INT16 - prev_capture_counter);
+  61:ir_tv.c       **** //Check for start bit
+  62:ir_tv.c       ****      if ( width > IR_TV_PULSE_WIDTH)
+ 108               	.LM8:
+ 109 0022 2A30      		cpi r18,10
+ 110 0024 3105      		cpc r19,__zero_reg__
+ 111 0026 20F1      		brlo .L5
+  63:ir_tv.c       **** 	 {
+  64:ir_tv.c       **** 		  if (width > IR_TV_START_BIT)  			//  Found Start bit 
+ 113               	.LM9:
+ 114 0028 2632      		cpi r18,38
+ 115 002a 3105      		cpc r19,__zero_reg__
+ 116 002c 58F0      		brlo .L6
+  65:ir_tv.c       **** 			    {
+  66:ir_tv.c       **** 				  stop_bit = 0;
+ 118               	.LM10:
+ 119 002e 1092 0000 		sts stop_bit.1,__zero_reg__
+  67:ir_tv.c       **** 				  prev_capture_counter = 0;
+ 121               	.LM11:
+ 122 0032 1092 0000 		sts (prev_capture_counter.0)+1,__zero_reg__
+ 123 0036 1092 0000 		sts prev_capture_counter.0,__zero_reg__
+  68:ir_tv.c       **** 				  ir_code = 0;     			// New code
+ 125               	.LM12:
+ 126 003a 1092 0000 		sts (ir_code.2)+1,__zero_reg__
+ 127 003e 1092 0000 		sts ir_code.2,__zero_reg__
+ 128 0042 16C0      		rjmp .L5
+ 129               	.L6:
+ 130 0044 8091 0000 		lds r24,ir_code.2
+ 131 0048 9091 0000 		lds r25,(ir_code.2)+1
+ 132 004c 4091 0000 		lds r20,stop_bit.1
+  69:ir_tv.c       **** 				}
+  70:ir_tv.c       **** 		  else if (width > IR_TV_BIT1)	  		// bit 1 (3T)
+ 134               	.LM13:
+ 135 0050 2A31      		cpi r18,26
+ 136 0052 3105      		cpc r19,__zero_reg__
+ 137 0054 20F0      		brlo .L8
+  71:ir_tv.c       **** 				{
+  72:ir_tv.c       **** 				   ir_code <<= 1;    			//Shift right
+ 139               	.LM14:
+ 140 0056 880F      		lsl r24
+ 141 0058 991F      		rol r25
+  73:ir_tv.c       **** 				   ir_code  |= 1;    			// Or 1
+ 143               	.LM15:
+ 144 005a 8160      		ori r24,lo8(1)
+ 145 005c 02C0      		rjmp .L12
+ 146               	.L8:
+  74:ir_tv.c       **** 				    stop_bit++;
+  75:ir_tv.c       **** 				}
+  76:ir_tv.c       **** 		        else 	  // bit 0
+  77:ir_tv.c       **** 				{
+  78:ir_tv.c       **** 					ir_code  <<=  1;  //Shift right
+ 148               	.LM16:
+ 149 005e 880F      		lsl r24
+ 150 0060 991F      		rol r25
+ 151               	.L12:
+ 152 0062 9093 0000 		sts (ir_code.2)+1,r25
+ 153 0066 8093 0000 		sts ir_code.2,r24
+  79:ir_tv.c       **** 					stop_bit++;
+ 155               	.LM17:
+ 156 006a 4F5F      		subi r20,lo8(-(1))
+ 157 006c 4093 0000 		sts stop_bit.1,r20
+ 158               	.L5:
+  80:ir_tv.c       **** 				}
+  81:ir_tv.c       **** 	}
+  82:ir_tv.c       **** 	prev_capture_counter = capture_counter;
+ 160               	.LM18:
+ 161 0070 7093 0000 		sts (prev_capture_counter.0)+1,r23
+ 162 0074 6093 0000 		sts prev_capture_counter.0,r22
+  83:ir_tv.c       **** 	if (stop_bit == IR_TV_STOP_BIT)
+ 164               	.LM19:
+ 165 0078 8091 0000 		lds r24,stop_bit.1
+ 166 007c 8C30      		cpi r24,lo8(12)
+ 167 007e 39F4      		brne .L10
+  84:ir_tv.c       **** 	{       //End code dispatch command
+  85:ir_tv.c       ****   	    stop_bit = 0;
+ 169               	.LM20:
+ 170 0080 1092 0000 		sts stop_bit.1,__zero_reg__
+  86:ir_tv.c       **** 
+  87:ir_tv.c       **** 		return ir_code;
+ 172               	.LM21:
+ 173 0084 8091 0000 		lds r24,ir_code.2
+ 174 0088 9091 0000 		lds r25,(ir_code.2)+1
+ 175 008c 0895      		ret
+ 176               	.L10:
+  88:ir_tv.c       **** 			
+  89:ir_tv.c       **** //Note if  SELFTEST is selected g_irint = 0;
+  90:ir_tv.c       **** 	}   
+  91:ir_tv.c       **** 	else
+  92:ir_tv.c       **** 		return 0;		// No code detect yet
+ 178               	.LM22:
+ 179 008e 80E0      		ldi r24,lo8(0)
+ 180 0090 90E0      		ldi r25,hi8(0)
+  93:ir_tv.c       **** }
+ 182               	.LM23:
+ 183 0092 0895      		ret
+ 184               	/* epilogue: frame size=0 */
+ 185 0094 0895      		ret
+ 186               	/* epilogue end (size=1) */
+ 187               	/* function sony_ir_decode size 66 (65) */
+ 194               	.Lscope1:
+ 195               		.text
+ 197               	Letext:
+ 198               	/* File "ir_tv.c": code   76 = 0x004c (  74), prologues   0, epilogues   2 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 ir_tv.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccmAaaaa.s:58     .text:00000000 init_ir
+                             .bss:00000000 prev_capture_counter.0
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccmAaaaa.s:87     .bss:00000002 stop_bit.1
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccmAaaaa.s:88     .bss:00000003 ir_code.2
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccmAaaaa.s:94     .text:00000012 sony_ir_decode
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccmAaaaa.s:197    .text:00000096 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

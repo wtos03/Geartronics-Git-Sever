@@ -1,0 +1,179 @@
+   1               		.file	"E_io_piezo.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  76               	.global	io_piezo_init
+  78               	io_piezo_init:
+   1:../../Eblock_lib/E_io_piezo.c **** /*!  
+   2:../../Eblock_lib/E_io_piezo.c **** 	\file   	E_io_piezo.c
+   3:../../Eblock_lib/E_io_piezo.c **** 	\brief  	Piezo driver on E_iO block
+   4:../../Eblock_lib/E_io_piezo.c **** 	\ingroup	E_io_piezo
+   5:../../Eblock_lib/E_io_piezo.c **** 	\par  Create square wave form with vary Frequency,duty cycle and time length.
+   6:../../Eblock_lib/E_io_piezo.c ****     \n Start with tab +\n	
+   7:../../Eblock_lib/E_io_piezo.c ****  	\n Original written for :   \b for bold ATMEGA32
+   8:../../Eblock_lib/E_io_piezo.c ****  	\n CPU port/tested		:   ATMEG32
+   9:../../Eblock_lib/E_io_piezo.c ****  	\n E-block use			:   Piezo on E_IO
+  10:../../Eblock_lib/E_io_piezo.c ****  	\n Port use				:   TIMER0 pin  (OC2)  Timer2 
+  11:../../Eblock_lib/E_io_piezo.c ****  	\n Memory	FLASH		:   XXX
+  12:../../Eblock_lib/E_io_piezo.c ****  	\n		RAM		:   XXX
+  13:../../Eblock_lib/E_io_piezo.c ****  	\n		EEPROM		:   XXX
+  14:../../Eblock_lib/E_io_piezo.c ****  	\n Reference Document		:   Document describe algorithm
+  15:../../Eblock_lib/E_io_piezo.c **** 
+  16:../../Eblock_lib/E_io_piezo.c **** 	\version xxx.yyy
+  17:../../Eblock_lib/E_io_piezo.c ****  	\author  Name / Email
+  18:../../Eblock_lib/E_io_piezo.c **** 	\date 	 DD/MM/20XX  
+  19:../../Eblock_lib/E_io_piezo.c **** 
+  20:../../Eblock_lib/E_io_piezo.c **** 	\par Update History
+  21:../../Eblock_lib/E_io_piezo.c ****  	\nDate			By 					Comments
+  22:../../Eblock_lib/E_io_piezo.c ****  	\n----			--					--------
+  23:../../Eblock_lib/E_io_piezo.c **** 	\n 
+  24:../../Eblock_lib/E_io_piezo.c ****  
+  25:../../Eblock_lib/E_io_piezo.c **** */
+  26:../../Eblock_lib/E_io_piezo.c **** 
+  27:../../Eblock_lib/E_io_piezo.c **** 
+  28:../../Eblock_lib/E_io_piezo.c **** 
+  29:../../Eblock_lib/E_io_piezo.c **** 
+  30:../../Eblock_lib/E_io_piezo.c **** 
+  31:../../Eblock_lib/E_io_piezo.c **** 
+  32:../../Eblock_lib/E_io_piezo.c **** // Include file
+  33:../../Eblock_lib/E_io_piezo.c **** #include <avr/interrupt.h>
+  34:../../Eblock_lib/E_io_piezo.c **** #include "E_io_piezo.h"
+  35:../../Eblock_lib/E_io_piezo.c **** #include "avr_timer.h"
+  36:../../Eblock_lib/E_io_piezo.c **** 
+  37:../../Eblock_lib/E_io_piezo.c **** 
+  38:../../Eblock_lib/E_io_piezo.c **** 
+  39:../../Eblock_lib/E_io_piezo.c **** 
+  40:../../Eblock_lib/E_io_piezo.c **** // Start routine here
+  41:../../Eblock_lib/E_io_piezo.c **** 
+  42:../../Eblock_lib/E_io_piezo.c **** 
+  43:../../Eblock_lib/E_io_piezo.c **** 
+  44:../../Eblock_lib/E_io_piezo.c **** /*!	\brief  Initial timer for using on piezo
+  45:../../Eblock_lib/E_io_piezo.c **** 	\param  none	  
+  46:../../Eblock_lib/E_io_piezo.c **** 	\return none
+  47:../../Eblock_lib/E_io_piezo.c **** 	\n		   
+  48:../../Eblock_lib/E_io_piezo.c **** 	\par Port/Periheral Usage 
+  49:../../Eblock_lib/E_io_piezo.c **** 	\n   E_TIMER0   ( OC2 for timer2 on ATMEGA32)
+  50:../../Eblock_lib/E_io_piezo.c **** 	\par Theory of Operation   
+  51:../../Eblock_lib/E_io_piezo.c **** 	\n   Initial timer2 for generate Frequency in Melody notes between 27 Hz - 4 Khz 
+  52:../../Eblock_lib/E_io_piezo.c **** 	\n   or  36.3 ms - 0.24 ms Period. Adjust the duty cycle will adjust the sound level
+  53:../../Eblock_lib/E_io_piezo.c **** 	\n   Then the time mode shoud use Fast PWM
+  54:../../Eblock_lib/E_io_piezo.c **** 	\n	 
+  55:../../Eblock_lib/E_io_piezo.c **** 	\par Pseudo Code
+  56:../../Eblock_lib/E_io_piezo.c **** 	\note   To correct debounce by allow return value more than debouce interval ex 10 - 100
+  57:../../Eblock_lib/E_io_piezo.c **** 	\bug    <bug to fix>
+  58:../../Eblock_lib/E_io_piezo.c **** 
+  59:../../Eblock_lib/E_io_piezo.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  60:../../Eblock_lib/E_io_piezo.c **** 	\sa	 <see also two name joined by ::>
+  61:../../Eblock_lib/E_io_piezo.c **** */       
+  62:../../Eblock_lib/E_io_piezo.c **** 
+  63:../../Eblock_lib/E_io_piezo.c **** void io_piezo_init (void)
+  64:../../Eblock_lib/E_io_piezo.c **** {
+  80               	.LM1:
+  81               	/* prologue: frame size=0 */
+  82               	/* prologue end (size=0) */
+  65:../../Eblock_lib/E_io_piezo.c ****    E_DIR_TIMER0(OUTPUT);	  						// Need to set E_TIMER0 as output ****
+  84               	.LM2:
+  85 0000 8F9A      		sbi 49-0x20,7
+  86               	/* epilogue: frame size=0 */
+  87 0002 0895      		ret
+  88               	/* epilogue end (size=1) */
+  89               	/* function io_piezo_init size 2 (1) */
+  91               	.Lscope0:
+  94               	.global	io_piezo_write
+  96               	io_piezo_write:
+  66:../../Eblock_lib/E_io_piezo.c **** }
+  67:../../Eblock_lib/E_io_piezo.c **** 
+  68:../../Eblock_lib/E_io_piezo.c **** 
+  69:../../Eblock_lib/E_io_piezo.c **** /*!	\brief  Setting tone time and volumn on 
+  70:../../Eblock_lib/E_io_piezo.c **** 	\param  freq	Sound Frequency 	(0 -6636)
+  71:../../Eblock_lib/E_io_piezo.c ****  	\n 		volumne Adjust volumn by adjust duty cycle    (1-100)
+  72:../../Eblock_lib/E_io_piezo.c **** 	\return  PWM signal at E_TIMER0
+  73:../../Eblock_lib/E_io_piezo.c **** 	\par Port/Periheral Usage 
+  74:../../Eblock_lib/E_io_piezo.c **** 	\n   E_TIMER0
+  75:../../Eblock_lib/E_io_piezo.c **** 	\par Theory of Operation   
+  76:../../Eblock_lib/E_io_piezo.c **** 	\n   Music Notes are represented by Frequency  as the following
+  77:../../Eblock_lib/E_io_piezo.c **** 	\n  	c   261 Hz 
+  78:../../Eblock_lib/E_io_piezo.c **** 	\n		d   294 Hz 
+  79:../../Eblock_lib/E_io_piezo.c **** 	\n		e	329 Hz 
+  80:../../Eblock_lib/E_io_piezo.c **** 	\n		f	349 Hz 
+  81:../../Eblock_lib/E_io_piezo.c **** 	\n		g	392 Hz 
+  82:../../Eblock_lib/E_io_piezo.c **** 	\n		a  	440 Hz 
+  83:../../Eblock_lib/E_io_piezo.c **** 	\n		b   493 Hz 
+  84:../../Eblock_lib/E_io_piezo.c **** 	\n		C   523 Hz 
+  85:../../Eblock_lib/E_io_piezo.c **** 	\n   We can control the frequency and volumn by controll the following parameters
+  86:../../Eblock_lib/E_io_piezo.c **** 	\n		 TCNT2				-  Timer counter max 
+  87:../../Eblock_lib/E_io_piezo.c **** 	\n		 Clock presclae		-  Clock prescale from Internal clock source
+  88:../../Eblock_lib/E_io_piezo.c **** 	\n		 OCN2				-  For duty cycle which effect the loudness
+  89:../../Eblock_lib/E_io_piezo.c **** 	\n   Formula to calculate frequency   = Fclk / 2*N*(1_OCR2)   N = Prescale for CTC Mode
+  90:../../Eblock_lib/E_io_piezo.c ****  	\par Pseudo Code
+  91:../../Eblock_lib/E_io_piezo.c **** 	\note  PWM and FAST PWM can change duty cycle. But not frequency. Use CTC_MODE for changing
+  92:../../Eblock_lib/E_io_piezo.c **** 	\n	   Frequency
+  93:../../Eblock_lib/E_io_piezo.c **** 	\bug    <bug to fix>
+  94:../../Eblock_lib/E_io_piezo.c **** 
+  95:../../Eblock_lib/E_io_piezo.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  96:../../Eblock_lib/E_io_piezo.c **** 	\sa	 <see also two name joined by ::>
+  97:../../Eblock_lib/E_io_piezo.c **** */
+  98:../../Eblock_lib/E_io_piezo.c **** 
+  99:../../Eblock_lib/E_io_piezo.c **** void io_piezo_write ( uint8_t freq )
+ 100:../../Eblock_lib/E_io_piezo.c **** {
+  98               	.LM3:
+  99               	/* prologue: frame size=0 */
+ 100 0004 CF93      		push r28
+ 101               	/* prologue end (size=1) */
+ 102 0006 C82F      		mov r28,r24
+ 101:../../Eblock_lib/E_io_piezo.c **** // Stop the timer before set all parameters	
+ 102:../../Eblock_lib/E_io_piezo.c **** 	set_timer_mode (TIMER2,CTC_MODE,TOGGLE_OC, STOPPED_CLOCK);
+ 104               	.LM4:
+ 105 0008 20E0      		ldi r18,lo8(0)
+ 106 000a 40E1      		ldi r20,lo8(16)
+ 107 000c 68E0      		ldi r22,lo8(8)
+ 108 000e 83E0      		ldi r24,lo8(3)
+ 109 0010 0E94 0000 		call set_timer_mode
+ 103:../../Eblock_lib/E_io_piezo.c **** 
+ 104:../../Eblock_lib/E_io_piezo.c ****    if (freq)  // Play sound if sound != 0
+ 111               	.LM5:
+ 112 0014 CC23      		tst r28
+ 113 0016 39F0      		breq .L2
+ 105:../../Eblock_lib/E_io_piezo.c **** 	{   
+ 106:../../Eblock_lib/E_io_piezo.c ****  		OCR2  =  (freq) ;// period;
+ 115               	.LM6:
+ 116 0018 C3BD      		out 67-0x20,r28
+ 107:../../Eblock_lib/E_io_piezo.c **** 		set_timer_mode (TIMER2,CTC_MODE,TOGGLE_OC, CLK_BY_256);
+ 118               	.LM7:
+ 119 001a 24E0      		ldi r18,lo8(4)
+ 120 001c 40E1      		ldi r20,lo8(16)
+ 121 001e 68E0      		ldi r22,lo8(8)
+ 122 0020 83E0      		ldi r24,lo8(3)
+ 123 0022 0E94 0000 		call set_timer_mode
+ 124               	.L2:
+ 125               	/* epilogue: frame size=0 */
+ 126 0026 CF91      		pop r28
+ 127 0028 0895      		ret
+ 128               	/* epilogue end (size=2) */
+ 129               	/* function io_piezo_write size 19 (16) */
+ 131               	.Lscope1:
+ 132               		.text
+ 134               	Letext:
+ 135               	/* File "../../Eblock_lib/E_io_piezo.c": code   21 = 0x0015 (  17), prologues   1, epilogues   3 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 E_io_piezo.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:78     .text:00000000 io_piezo_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:96     .text:00000004 io_piezo_write
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccojaaaa.s:134    .text:0000002a Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+set_timer_mode

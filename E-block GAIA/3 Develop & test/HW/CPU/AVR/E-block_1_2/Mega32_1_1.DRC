@@ -1,0 +1,72 @@
+Protel Design System Design Rule Check
+PCB File : Mega32_1_1.PCB
+Date     : 21-Feb-2007
+Time     : 13:08:39
+
+Processing Rule : Short-Circuit Constraint (Allowed=Not Allowed) (On the board ),(On the board )
+Rule Violations :0
+
+Processing Rule : Broken-Net Constraint ( (On the board ) )
+Rule Violations :0
+
+Processing Rule : Width Constraint (Min=15mil) (Max=50mil) (Prefered=20mil) (Is on net VCC )
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=1mil) (Max=200mil) (On the board )
+Rule Violations :0
+
+Processing Rule : Clearance Constraint (Gap=12mil) (Disabled)(On the board ),(On the board )
+Rule Violations :0
+
+Processing Rule : Clearance Constraint (Gap=10mil) (On the board ),(On the board )
+   Violation between Pad uC1-10(1923.465mil,2380mil)  BottomLayer and                      Pad uC1-11(1954.961mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-13(2037.638mil,2265.827mil)  BottomLayer and                      Pad uC1-12(2037.638mil,2297.323mil)  BottomLayer   
+   Violation between Pad uC1-2(1671.496mil,2380mil)  BottomLayer and                      Pad uC1-1(1640mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-3(1702.992mil,2380mil)  BottomLayer and                      Pad uC1-2(1671.496mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-4(1734.488mil,2380mil)  BottomLayer and                      Pad uC1-3(1702.992mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-5(1765.984mil,2380mil)  BottomLayer and                      Pad uC1-4(1734.488mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-7(1828.977mil,2380mil)  BottomLayer and                      Pad uC1-6(1797.481mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-8(1860.473mil,2380mil)  BottomLayer and                      Pad uC1-7(1828.977mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-9(1891.969mil,2380mil)  BottomLayer and                      Pad uC1-8(1860.473mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-10(1923.465mil,2380mil)  BottomLayer and                      Pad uC1-9(1891.969mil,2380mil)  BottomLayer   
+   Violation between Pad uC1-14(2037.638mil,2234.331mil)  BottomLayer and                      Pad uC1-13(2037.638mil,2265.827mil)  BottomLayer   
+   Violation between Pad uC1-15(2037.638mil,2202.834mil)  BottomLayer and                      Pad uC1-14(2037.638mil,2234.331mil)  BottomLayer   
+   Violation between Pad uC1-16(2037.638mil,2171.338mil)  BottomLayer and                      Pad uC1-15(2037.638mil,2202.834mil)  BottomLayer   
+   Violation between Pad uC1-17(2037.638mil,2139.842mil)  BottomLayer and                      Pad uC1-16(2037.638mil,2171.338mil)  BottomLayer   
+   Violation between Pad uC1-19(2037.638mil,2076.85mil)  BottomLayer and                      Pad uC1-18(2037.638mil,2108.346mil)  BottomLayer   
+   Violation between Pad uC1-20(2037.638mil,2045.354mil)  BottomLayer and                      Pad uC1-19(2037.638mil,2076.85mil)  BottomLayer   
+   Violation between Pad uC1-21(2037.638mil,2013.858mil)  BottomLayer and                      Pad uC1-20(2037.638mil,2045.354mil)  BottomLayer   
+   Violation between Pad uC1-22(2037.638mil,1982.362mil)  BottomLayer and                      Pad uC1-21(2037.638mil,2013.858mil)  BottomLayer   
+   Violation between Track (1937.5mil,1837.5mil)(1937.5mil,1850mil)  BottomLayer and                      Pad uC1-23(1954.961mil,1899.685mil)  BottomLayer   
+   Violation between Track (1923.466mil,1850mil)(1937.5mil,1850mil)  BottomLayer and                      Pad uC1-23(1954.961mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-24(1923.465mil,1899.685mil)  BottomLayer and                      Pad uC1-23(1954.961mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-25(1891.969mil,1899.685mil)  BottomLayer and                      Pad uC1-24(1923.465mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-26(1860.473mil,1899.685mil)  BottomLayer and                      Pad uC1-25(1891.969mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-27(1828.977mil,1899.685mil)  BottomLayer and                      Pad uC1-26(1860.473mil,1899.685mil)  BottomLayer   
+   Violation between Track (1828.5mil,1862.5mil)(1828.978mil,1862.5mil)  BottomLayer and                      Pad uC1-28(1797.481mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-29(1765.984mil,1899.685mil)  BottomLayer and                      Pad uC1-28(1797.481mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-27(1828.977mil,1899.685mil)  BottomLayer and                      Pad uC1-28(1797.481mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-30(1734.488mil,1899.685mil)  BottomLayer and                      Pad uC1-29(1765.984mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-31(1702.992mil,1899.685mil)  BottomLayer and                      Pad uC1-30(1734.488mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-32(1671.496mil,1899.685mil)  BottomLayer and                      Pad uC1-31(1702.992mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-33(1640mil,1899.685mil)  BottomLayer and                      Pad uC1-32(1671.496mil,1899.685mil)  BottomLayer   
+   Violation between Pad uC1-35(1557.323mil,2013.858mil)  BottomLayer and                      Pad uC1-34(1557.323mil,1982.362mil)  BottomLayer   
+   Violation between Pad uC1-36(1557.323mil,2045.354mil)  BottomLayer and                      Pad uC1-35(1557.323mil,2013.858mil)  BottomLayer   
+   Violation between Pad uC1-37(1557.323mil,2076.85mil)  BottomLayer and                      Pad uC1-36(1557.323mil,2045.354mil)  BottomLayer   
+   Violation between Pad uC1-38(1557.323mil,2108.346mil)  BottomLayer and                      Pad uC1-37(1557.323mil,2076.85mil)  BottomLayer   
+   Violation between Pad uC1-38(1557.323mil,2108.346mil)  BottomLayer and                      Pad uC1-39(1557.323mil,2139.842mil)  BottomLayer   
+   Violation between Pad uC1-40(1557.323mil,2171.338mil)  BottomLayer and                      Pad uC1-39(1557.323mil,2139.842mil)  BottomLayer   
+   Violation between Pad uC1-41(1557.323mil,2202.834mil)  BottomLayer and                      Pad uC1-40(1557.323mil,2171.338mil)  BottomLayer   
+   Violation between Pad uC1-42(1557.323mil,2234.331mil)  BottomLayer and                      Pad uC1-41(1557.323mil,2202.834mil)  BottomLayer   
+   Violation between Pad uC1-43(1557.323mil,2265.827mil)  BottomLayer and                      Pad uC1-42(1557.323mil,2234.331mil)  BottomLayer   
+   Violation between Pad uC1-44(1557.323mil,2297.323mil)  BottomLayer and                      Pad uC1-43(1557.323mil,2265.827mil)  BottomLayer   
+   Violation between Track (1215.118mil,849.449mil)(1215.118mil,4560mil)  KeepOutLayer and                      Track (1204.588mil,1375.412mil)(1300mil,1280mil)  BottomLayer   
+   Violation between Track (1215.118mil,849.449mil)(1215.118mil,4560mil)  KeepOutLayer and                      Track (1204.588mil,1375.412mil)(1204.588mil,3864.588mil)  BottomLayer   
+   Violation between Track (1215.118mil,849.449mil)(1215.118mil,4560mil)  KeepOutLayer and                      Track (1200mil,3864.588mil)(1204.588mil,3864.588mil)  BottomLayer   
+   Violation between Track (1215.118mil,849.449mil)(1215.118mil,4560mil)  KeepOutLayer and                      Track (1200mil,3864.588mil)(1200mil,3880mil)  BottomLayer   
+   Violation between Track (1215.118mil,849.449mil)(1215.118mil,4560mil)  KeepOutLayer and                      Track (1200mil,3880mil)(1264.213mil,3944.213mil)  BottomLayer   
+Rule Violations :46
+
+
+Violations Detected : 46
+Time Elapsed        : 00:00:00

@@ -1,0 +1,336 @@
+LARM LINKER/LOCATER V2.32a                                                              05/18/2008  02:36:15  PAGE 1
+
+
+LARM LINKER/LOCATER V2.32a, INVOKED BY:
+C:\KEIL\ARM\BIN\LA.EXE main.obj, Startup.obj, serial.obj, keypad.obj, RfidReader.obj, settime.obj, mmc.obj, spi.obj, LCD
+>> .obj TO securitydoor CASE CLASSES (DATA (0X40000000-0X40007FFF), CODE (0X0-0X7FFFF), CONST (0X0-0X7FFFF))
+
+
+CPU MODE: LITTLE ENDIAN
+
+
+INPUT MODULES INCLUDED:
+  main.obj (main)
+         COMMENT TYPE 0: CARM V2.32a
+  Startup.obj (STARTUP)
+         COMMENT TYPE 0: AA V2.30a
+  serial.obj (serial)
+         COMMENT TYPE 0: CARM V2.32a
+  keypad.obj (keypad)
+         COMMENT TYPE 0: CARM V2.32a
+  RfidReader.obj (RfidReader)
+         COMMENT TYPE 0: CARM V2.32a
+  settime.obj (settime)
+         COMMENT TYPE 0: CARM V2.32a
+  mmc.obj (mmc)
+         COMMENT TYPE 0: CARM V2.32a
+  spi.obj (spi)
+         COMMENT TYPE 0: CARM V2.32a
+  LCD.obj (LCD)
+         COMMENT TYPE 0: CARM V2.32a
+  C:\KEIL\ARM\LIB\CAL.LIB (FIQ)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (IRQ)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (DABT)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (PABT)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (SWI)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (UNDEF)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (printf)
+         COMMENT TYPE 0: CARM V2.32a
+  C:\KEIL\ARM\LIB\CAL.LIB (prnfmt)
+         COMMENT TYPE 0: CARM V2.32a
+  C:\KEIL\ARM\LIB\CAL.LIB (strlen)
+         COMMENT TYPE 0: CARM V2.32a
+  C:\KEIL\ARM\LIB\CAL.LIB (?C?ICALL)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (UDIV)
+         COMMENT TYPE 0: AA V2.30a
+  C:\KEIL\ARM\LIB\CAL.LIB (SDIV)
+         COMMENT TYPE 0: AA V2.30a
+
+
+ACTIVE MEMORY CLASSES OF MODULE:  securitydoor (main)
+
+BASE       START      END        USED       MEMORY CLASS
+========================================================
+00000000H  40000000H  40007FFFH  00001E4AH  DATA
+00000000H  00000000H  0007FFFFH  000036CCH  CODE
+00000000H  00000000H  0007FFFFH  00000926H  CONST
+
+
+INTERRUPT FUNCTIONS
+
+TYPE  STACK SIZE    FUNCTION NAME
+=================================
+LARM LINKER/LOCATER V2.32a                                                            05/18/2008  02:36:15  PAGE 2
+
+
+irq                 irq_EINT2?A
+irq                 irq_EINT3?A
+
+
+
+
+MEMORY MAP OF MODULE:  securitydoor (main)
+
+START      STOP       LENGTH    ALIGN  RELOC  MEMORY CLASS   SEGMENT NAME
+=========================================================================
+00000000H  0000011FH  00000120H     4  AT..   CODE           STARTUPCODE
+00000120H  00000803H  000006E4H     4  UNIT   CONST          ?CON?main
+00000804H  000009DEH  000001DBH     4  UNIT   CONST          ?CON?LCD
+000009DFH  000009DFH  00000001H   ---  ---    **GAP**
+000009E0H  000009E6H  00000007H     4  UNIT   CONST          ?CON?prnfmt
+000009E7H  000009E7H  00000001H   ---  ---    **GAP**
+000009E8H  00000A07H  00000020H     4  UNIT   CONST          ?C_CLRSEG
+00000A08H  00000A47H  00000040H     4  UNIT   CONST          ?C_INITSEG
+00000A48H  000011DBH  00000794H     4  UNIT   CODE           ?PR?receive_keypad?T?main
+000011DCH  0000128FH  000000B4H     4  UNIT   CODE           ?PR?check_password?T?main
+00001290H  000012B7H  00000028H     4  UNIT   CODE           ?PR?change_password?T?main
+000012B8H  0000130FH  00000058H     4  UNIT   CODE           ?PR?loadpic_mmc?T?main
+00001310H  00001327H  00000018H     4  UNIT   CODE           ?PR?cleardata?T?main
+00001328H  00001367H  00000040H     4  UNIT   CODE           ?PR?setStateCompare?T?main
+00001368H  00001403H  0000009CH     4  UNIT   CODE           ?PR?setStateConfig?T?main
+00001404H  00001437H  00000034H     4  UNIT   CODE           ?PR?setStateChangepass?T?main
+00001438H  0000146BH  00000034H     4  UNIT   CODE           ?PR?setStateSettime?T?main
+0000146CH  000014B3H  00000048H     4  UNIT   CODE           ?PR?setStateSave?T?main
+000014B4H  000014FBH  00000048H     4  UNIT   CODE           ?PR?setStateDelete?T?main
+000014FCH  00001543H  00000048H     4  UNIT   CODE           ?PR?setStateAddPassword?T?main
+00001544H  0000158BH  00000048H     4  UNIT   CODE           ?PR?setStateDeletePassword?T?main
+0000158CH  000015B3H  00000028H     4  UNIT   CODE           ?PR?CheckRFIDCard?T?main
+000015B4H  0000164FH  0000009CH     4  UNIT   CODE           ?PR?inputMemTem?T?main
+00001650H  00001707H  000000B8H     4  UNIT   CODE           ?PR?inputMemRFID?T?main
+00001708H  00001763H  0000005CH     4  UNIT   CODE           ?PR?deleteMemRFID?T?main
+00001764H  00001817H  000000B4H     4  UNIT   CODE           ?PR?addPasswordUser?T?main
+00001818H  000018BBH  000000A4H     4  UNIT   CODE           ?PR?addPasswordUserTime?T?main
+000018BCH  0000194FH  00000094H     4  UNIT   CODE           ?PR?deletePasswordUser?T?main
+00001950H  000019B3H  00000064H     4  UNIT   CODE           ?PR?opendoor?T?main
+000019B4H  00001C33H  00000280H     4  UNIT   CODE           ?PR?loaddata_mmc?T?main
+00001C34H  0000200BH  000003D8H     4  UNIT   CODE           ?PR?savedata_mmc?T?main
+0000200CH  00002117H  0000010CH     4  UNIT   CODE           ?PR?cleardata_mmc?T?main
+00002118H  00002373H  0000025CH     4  UNIT   CODE           ?PR?settime?T?main
+00002374H  00002B0BH  00000798H     4  UNIT   CODE           ?PR?main?main
+00002B0CH  00002B43H  00000038H     4  UNIT   CODE           ?PR?putchar?T?serial
+00002B44H  00002BF3H  000000B0H     4  UNIT   CODE           ?PR?init_serial0?T?serial
+00002BF4H  00002C6BH  00000078H     4  UNIT   CODE           ?PR?init_keypad?T?keypad
+00002C6CH  00002C8FH  00000024H     4  UNIT   CODE           ?PR?delay_ms?T?keypad
+00002C90H  00002F3FH  000002B0H     4  UNIT   CODE           ?PR?keypad?T?keypad
+00002F40H  00002FCBH  0000008CH     4  UNIT   CODE           ?PR?irq_EINT2?A?RfidReader
+00002FCCH  0000304BH  00000080H     4  UNIT   CODE           ?PR?irq_EINT3?A?RfidReader
+0000304CH  000030A3H  00000058H     4  UNIT   CODE           ?PR?init_EINT2?T?RfidReader
+000030A4H  000030FBH  00000058H     4  UNIT   CODE           ?PR?init_EINT3?T?RfidReader
+000030FCH  0000311FH  00000024H     4  UNIT   CODE           ?PR?init_RFID?T?RfidReader
+00003120H  00003183H  00000064H     4  UNIT   CODE           ?PR?checkcorrectdata?T?RfidReader
+00003184H  00003197H  00000014H     4  UNIT   CODE           ?PR?dataRFID?T?RfidReader
+00003198H  000031CFH  00000038H     4  UNIT   CODE           ?PR?readRFID?T?RfidReader
+000031D0H  000031F7H  00000028H     4  UNIT   CODE           ?PR?initTime?T?settime
+000031F8H  00003203H  0000000CH     4  UNIT   CODE           ?PR?sec?T?settime
+00003204H  0000320FH  0000000CH     4  UNIT   CODE           ?PR?minute?T?settime
+00003210H  0000321BH  0000000CH     4  UNIT   CODE           ?PR?hour?T?settime
+0000321CH  00003227H  0000000CH     4  UNIT   CODE           ?PR?setminute?T?settime
+00003228H  00003233H  0000000CH     4  UNIT   CODE           ?PR?sethour?T?settime
+00003234H  0000323FH  0000000CH     4  UNIT   CODE           ?PR?setsec?T?settime
+00003240H  0000324BH  0000000CH     4  UNIT   CODE           ?PR?day?T?settime
+LARM LINKER/LOCATER V2.32a                                                            05/18/2008  02:36:15  PAGE 3
+
+
+0000324CH  00003257H  0000000CH     4  UNIT   CODE           ?PR?month?T?settime
+00003258H  00003263H  0000000CH     4  UNIT   CODE           ?PR?year?T?settime
+00003264H  0000326FH  0000000CH     4  UNIT   CODE           ?PR?setday?T?settime
+00003270H  0000327BH  0000000CH     4  UNIT   CODE           ?PR?setmonth?T?settime
+0000327CH  00003287H  0000000CH     4  UNIT   CODE           ?PR?setyear?T?settime
+00003288H  0000340FH  00000188H     4  UNIT   CODE           ?PR?mmc_init?T?mmc
+00003410H  00003447H  00000038H     4  UNIT   CODE           ?PR?mmc_response?T?mmc
+00003448H  00003513H  000000CCH     4  UNIT   CODE           ?PR?mmc_read_block_int?T?mmc
+00003514H  000035DFH  000000CCH     4  UNIT   CODE           ?PR?mmc_read_block_char?T?mmc
+000035E0H  000036D7H  000000F8H     4  UNIT   CODE           ?PR?mmc_write_block_int?T?mmc
+000036D8H  0000370BH  00000034H     4  UNIT   CODE           ?PR?mmc_wait_for_write_finish?T?mmc
+0000370CH  0000376BH  00000060H     4  UNIT   CODE           ?PR?SPI_Init?T?spi
+0000376CH  000037ABH  00000040H     4  UNIT   CODE           ?PR?SPI_Send?T?spi
+000037ACH  000037CBH  00000020H     4  UNIT   CODE           ?PR?SPI_Receive?T?spi
+000037CCH  000037EFH  00000024H     4  UNIT   CODE           ?PR?SPI_ReceiveByte?T?spi
+000037F0H  0000382BH  0000003CH     4  UNIT   CODE           ?PR?lcd_write_data?T?LCD
+0000382CH  00003867H  0000003CH     4  UNIT   CODE           ?PR?lcd_write_command?T?LCD
+00003868H  0000390BH  000000A4H     4  UNIT   CODE           ?PR?lcd_initial?T?LCD
+0000390CH  00003933H  00000028H     4  UNIT   CODE           ?PR?lcd_clear_screen?T?LCD
+00003934H  00003963H  00000030H     4  UNIT   CODE           ?PR?lcd_fill_picture?T?LCD
+00003964H  00003983H  00000020H     4  UNIT   CODE           ?PR?lcd_gotoxy?T?LCD
+00003984H  000039BFH  0000003CH     4  UNIT   CODE           ?PR?lcd_put_char?T?LCD
+000039C0H  000039C3H  00000004H     4  UNIT   CODE           ?C?FIQ
+000039C4H  000039C7H  00000004H     4  UNIT   CODE           ?C?IRQ
+000039C8H  000039CBH  00000004H     4  UNIT   CODE           ?C?DABT
+000039CCH  000039CFH  00000004H     4  UNIT   CODE           ?C?PABT
+000039D0H  000039D7H  00000008H     4  UNIT   CODE           ?C?UNDEF
+000039D8H  00003A0BH  00000034H     4  UNIT   CODE           ?PR?printf?T?printf
+00003A0CH  00003A3BH  00000030H     4  UNIT   CODE           ?PR?charout?T?prnfmt
+00003A3CH  00003A77H  0000003CH     4  UNIT   CODE           ?PR?numout?T?prnfmt
+00003A78H  00003B37H  000000C0H     4  UNIT   CODE           ?PR?signout?T?prnfmt
+00003B38H  00003F1BH  000003E4H     4  UNIT   CODE           ?PR?__prnfmt?T?prnfmt
+00003F1CH  00003F3BH  00000020H     4  UNIT   CODE           ?PR?strlen?T?strlen
+00003F3CH  00003F4BH  00000010H     4  UNIT   CODE           ?PR?C?ICALL
+00003F4CH  00003F93H  00000048H     4  UNIT   CODE           ?PR?C?UDIV
+00003F94H  00003FF3H  00000060H     4  UNIT   CODE           ?PR?C?SDIV
+00003FF4H  3FFFFFFFH  3FFFC00CH   ---  ---    **GAP**
+40000000H  400019A2H  000019A3H     4  UNIT   DATA           ?DT0?main
+400019A3H  400019A3H  00000001H   ---  ---    **GAP**
+400019A4H  40001E33H  00000490H     4  UNIT   DATA           STACK
+40001E34H  40001E43H  00000010H     4  UNIT   DATA           ?DT0?RfidReader
+40001E44H  40001E4AH  00000007H     4  UNIT   DATA           ?DT0?mmc
+
+
+
+REMOVED FUNCTIONS OF MODULE:  securitydoor (main)
+
+      ATTRIBUTE  FUNCTION NAME
+      ========================
+       unused    getchar?T
+       unused    mmc_write_block_char?T
+       unused    lcd_print_string?T
+
+
+
+PUBLIC SYMBOLS OF MODULE:  securitydoor (main)
+
+      VALUE      CLASS    TYPE      PUBLIC SYMBOL NAME
+      ================================================
+      000009E8H  ---      ---       ?C?CLRTAB
+      00003F3CH  CODE     ---       ?C?ICALL0?T
+      00003F3EH  CODE     ---       ?C?ICALL1?T
+      00003F40H  CODE     ---       ?C?ICALL2?T
+      00003F42H  CODE     ---       ?C?ICALL3?T
+      00003F44H  CODE     ---       ?C?ICALL4?T
+LARM LINKER/LOCATER V2.32a                                                            05/18/2008  02:36:15  PAGE 4
+
+
+      00003F46H  CODE     ---       ?C?ICALL5?T
+      00003F48H  CODE     ---       ?C?ICALL6?T
+      00003F4AH  CODE     ---       ?C?ICALL7?T
+      00002374H  ---      ---       ?C?INIT
+      00000A08H  ---      ---       ?C?INITTAB
+      00003F98H  CODE     ---       ?C?SDIV?A
+      00003F94H  CODE     ---       ?C?SDIV?T
+      00003F50H  CODE     ---       ?C?UDIV?A
+      00003F4CH  CODE     ---       ?C?UDIV?T
+      0000158CH  CODE     ---       CheckRFIDCard?T
+      000039C8H  CODE     ---       DAbt_Handler?A
+      000039C0H  CODE     ---       FIQ_Handler?A
+      000039C4H  CODE     ---       IRQ_Handler?A
+      40001E44H  DATA     ---       MMCCmd
+      40001E4AH  DATA     BYTE      MMCStatus
+      000039CCH  CODE     ---       PAbt_Handler?A
+      40001148H  DATA     ---       PassUser
+      40000B08H  DATA     ---       PassUserTime
+      0000370CH  CODE     ---       SPI_Init?T
+      000037ACH  CODE     ---       SPI_Receive?T
+      000037CCH  CODE     ---       SPI_ReceiveByte?T
+      0000376CH  CODE     ---       SPI_Send?T
+      000039D0H  CODE     ---       SWI_Handler?A
+      000039D4H  CODE     ---       Undef_Handler?A
+      00003B38H  CODE     ---       __prnfmt?A
+      00003B44H  CODE     ---       __prnfmt?T
+      00000000H  CODE     ---       __startup
+      00001764H  CODE     ---       addPasswordUser?T
+      00001818H  CODE     ---       addPasswordUserTime?T
+      00001290H  CODE     ---       change_password?T
+      000011DCH  CODE     ---       check_password?T
+      00003120H  CODE     ---       checkcorrectdata?T
+      40001993H  DATA     ---       ckmsg
+      00001310H  CODE     ---       cleardata?T
+      0000200CH  CODE     ---       cleardata_mmc?T
+      40001E34H  DATA     ---       countBitRFID
+      00003184H  CODE     ---       dataRFID?T
+      40001E3CH  DATA     ---       datacomplete
+      40001E40H  DATA     ---       datanow
+      00003240H  CODE     ---       day?T
+      00002C6CH  CODE     ---       delay_ms?T
+      00001708H  CODE     ---       deleteMemRFID?T
+      000018BCH  CODE     ---       deletePasswordUser?T
+      00003F98H  CODE     ---       div?A
+      00003F94H  CODE     ---       div?T
+      000000FCH  CODE     ---       exit?A
+      00000100H  CODE     ---       exit?T
+      00000000H  CODE     ---       getchar?T
+      00003210H  CODE     ---       hour?T
+      000031D0H  CODE     ---       initTime?T
+      0000304CH  CODE     ---       init_EINT2?T
+      000030A4H  CODE     ---       init_EINT3?T
+      000030FCH  CODE     ---       init_RFID?T
+      00002BF4H  CODE     ---       init_keypad?T
+      00002B44H  CODE     ---       init_serial0?T
+      00001650H  CODE     ---       inputMemRFID?T
+      000015B4H  CODE     ---       inputMemTem?T
+      00002F40H  CODE     ---       irq_EINT2?A
+      00002FCCH  CODE     ---       irq_EINT3?A
+      00002C90H  CODE     ---       keypad?T
+      4000000CH  DATA     ---       lMemRFID
+      40000008H  DATA     ---       lMemTem
+      40000010H  DATA     ---       lPasswordUser
+      40000014H  DATA     ---       lPasswordUserTime
+      0000390CH  CODE     ---       lcd_clear_screen?T
+LARM LINKER/LOCATER V2.32a                                                            05/18/2008  02:36:15  PAGE 5
+
+
+      00003934H  CODE     ---       lcd_fill_picture?T
+      00003964H  CODE     ---       lcd_gotoxy?T
+      00003868H  CODE     ---       lcd_initial?T
+      00000000H  CODE     ---       lcd_print_string?T
+      00003984H  CODE     ---       lcd_put_char?T
+      0000382CH  CODE     ---       lcd_write_command?T
+      000037F0H  CODE     ---       lcd_write_data?T
+      00003F98H  CODE     ---       ldiv?A
+      00003F94H  CODE     ---       ldiv?T
+      000019B4H  CODE     ---       loaddata_mmc?T
+      000012B8H  CODE     ---       loadpic_mmc?T
+      000023A8H  CODE     ---       main
+      40000590H  DATA     ---       memoryRFID
+      40000018H  DATA     ---       memoryTem
+      40001788H  DATA     BYTE      menuold
+      00003204H  CODE     ---       minute?T
+      00003288H  CODE     ---       mmc_init?T
+      00003514H  CODE     ---       mmc_read_block_char?T
+      00003448H  CODE     ---       mmc_read_block_int?T
+      00003410H  CODE     ---       mmc_response?T
+      000036D8H  CODE     ---       mmc_wait_for_write_finish?T
+      00000000H  CODE     ---       mmc_write_block_char?T
+      000035E0H  CODE     ---       mmc_write_block_int?T
+      0000324CH  CODE     ---       month?T
+      00001950H  CODE     ---       opendoor?T
+      40001792H  DATA     ---       password
+      000039D8H  CODE     ---       printf?A
+      000039E4H  CODE     ---       printf?T
+      00002B0CH  CODE     ---       putchar?T
+      00003198H  CODE     ---       readRFID?T
+      00000A48H  CODE     ---       receive_keypad?T
+      00001C34H  CODE     ---       savedata_mmc?T
+      000031F8H  CODE     ---       sec?T
+      000014FCH  CODE     ---       setStateAddPassword?T
+      00001404H  CODE     ---       setStateChangepass?T
+      00001328H  CODE     ---       setStateCompare?T
+      00001368H  CODE     ---       setStateConfig?T
+      000014B4H  CODE     ---       setStateDelete?T
+      00001544H  CODE     ---       setStateDeletePassword?T
+      0000146CH  CODE     ---       setStateSave?T
+      00001438H  CODE     ---       setStateSettime?T
+      00003264H  CODE     ---       setday?T
+      00003228H  CODE     ---       sethour?T
+      0000321CH  CODE     ---       setminute?T
+      00003270H  CODE     ---       setmonth?T
+      00003234H  CODE     ---       setsec?T
+      00002118H  CODE     ---       settime?T
+      0000327CH  CODE     ---       setyear?T
+      40001E38H  DATA     ---       start
+      40000004H  DATA     ---       state
+      00003F1CH  CODE     ---       strlen?A
+      00003F28H  CODE     ---       strlen?T
+      00000804H  CONST    ---       tab_font
+      40001789H  DATA     ---       tempkey
+      4000179BH  DATA     ---       temppic
+      40000000H  DATA     LONG      timestate
+      00003258H  CODE     ---       year?T
+
+Program Size: data=7754 const=2342 code=14028
+LARM RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,130 @@
+{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang1033\deflangfe1033{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f1\fswiss\fcharset0\fprq2{\*\panose 020b0604020202020204}Arial;}
+{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}{\f16\froman\fcharset238\fprq2 Times New Roman CE;}{\f17\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f19\froman\fcharset161\fprq2 Times New Roman Greek;}
+{\f20\froman\fcharset162\fprq2 Times New Roman Tur;}{\f21\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f22\fswiss\fcharset238\fprq2 Arial CE;}{\f23\fswiss\fcharset204\fprq2 Arial Cyr;}{\f25\fswiss\fcharset161\fprq2 Arial Greek;}
+{\f26\fswiss\fcharset162\fprq2 Arial Tur;}{\f27\fswiss\fcharset186\fprq2 Arial Baltic;}{\f28\fmodern\fcharset238\fprq1 Courier New CE;}{\f29\fmodern\fcharset204\fprq1 Courier New Cyr;}{\f31\fmodern\fcharset161\fprq1 Courier New Greek;}
+{\f32\fmodern\fcharset162\fprq1 Courier New Tur;}{\f33\fmodern\fcharset186\fprq1 Courier New Baltic;}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;
+\red255\green255\blue0;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{
+\sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid \snext0 Normal;}{\s1\sb240\sa60\keepn\nowidctlpar\widctlpar\adjustright \b\f1\fs28\lang2057\kerning28\cgrid \sbasedon0 \snext0 heading 1;}{
+\s2\sb240\sa60\keepn\nowidctlpar\widctlpar\adjustright \b\i\f1\lang2057\cgrid \sbasedon0 \snext0 heading 2;}{\s3\sb240\sa60\keepn\nowidctlpar\widctlpar\adjustright \f1\lang2057\cgrid \sbasedon0 \snext0 heading 3;}{\*\cs10 \additive 
+Default Paragraph Font;}{\s15\sb120\nowidctlpar\widctlpar\adjustright \f2\fs20\lang2057\cgrid \sbasedon0 \snext15 Plain Text;}}{\info{\title PalmFlash Adapter Protocol Specification}{\author Machine FEYNMAN}{\operator Machine FEYNMAN}
+{\creatim\yr2001\mo9\dy2\hr15\min31}{\revtim\yr2001\mo9\dy2\hr15\min41}{\version4}{\edmins10}{\nofpages4}{\nofwords1338}{\nofchars7631}{\*\company luminous}{\nofcharsws9371}{\vern71}}\paperw11906\paperh16838\margl1152\margr1152 
+\widowctrl\ftnbj\aenddoc\hyphcaps0\formshade\viewkind4\viewscale149\viewzk2\pgbrdrhead\pgbrdrfoot \fet0\sectd \linex0\headery709\footery709\colsx709\endnhere\sectdefaultcl {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2
+\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6
+\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang
+{\pntxtb (}{\pntxta )}}\pard\plain \s1\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel0\adjustright \b\f1\fs28\lang2057\kerning28\cgrid {MMCSerial Adapter Protocol Specification
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Sean Ellis
+\par 2 September 2001
+\par }\pard\plain \s2\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel1\adjustright \b\i\f1\lang2057\cgrid {Introduction
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {This document specifies a protocol for communication with the MMCSerial adapter, which is designed to interface flash-based multimedia cards (MMCs) with any host device with 
+an RS232 connection.
+\par }\pard\plain \s2\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel1\adjustright \b\i\f1\lang2057\cgrid {Signal Description
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {
+Commands and data are transferred between the host and the adapter using RS232 serial communications at 115,200 baud, one start bit, 8 data bits, one stop bit, no parity, with RTS/CTS flow control.
+\par Note that the limi
+ted RAM space in the microcontroller in the adapter means that response to the CTS signal must be fast. In order to accommodate UARTs with built-in FIFOs, it is guaranteed that there will be sufficient space in the buffer to receive 16 more bytes after th
+e CTS signal is de-asserted. Care should be taken to ensure that no more than 16 bytes are sent in this case.
+\par The host initiates all transfers. Communication is half-duplex, in that data flows in one direction at a time.
+\par On initial power up, the adapter goes through a card identification sequence, and then goes into a sleep mode to conserve power. It can be awakened by asserting the RTS line (see the Wake command).
+\par }\pard\plain \s2\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel1\adjustright \b\i\f1\lang2057\cgrid {Common Response Values
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {The adapter uses a number of common status bytes to communicate certain conditions back to the host. These are:
+\par \tab 0x10\tab OK\tab Command completed successfully
+\par }\pard \nowidctlpar\widctlpar\adjustright {\tab 0x11\tab Fail\tab Command failed
+\par \tab 0x12\tab Unk\tab Command not recognised
+\par \tab 0x13\tab Awake\tab Waking from power-down
+\par \tab 0x14\tab Wait\tab Command in progress
+\par \tab 0x15\tab Data\tab Data follows
+\par }\pard \sb120\nowidctlpar\widctlpar\adjustright {Commands themselves are commonly finished with a 0x20 (space), which is used to check that the command byte has been read correctly and to ensure synchronisation.
+\par }\pard\plain \s2\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel1\adjustright \b\i\f1\lang2057\cgrid {Command Description
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Wake
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command: \tab Assert RTS
+\par Response: \tab CTS asserted
+\par If the adapter is in sleep mode, a +12v (asserted) level on RTS will wake it up. It will respond when awake by asserting CTS in the same way. This is the standard RS232 RTS/CTS flow control handshake.
+\par If the adapter is present and asleep, CTS should be asserted within 100ms. If it is not, then the host should retry. If, after several retries, no response is received, the host should assume that no adapter is present.
+\par In sleep mode, any byte sent to the adapter using the RTS/CTS protocol may wake it from its sleep, but it is recommended that a Nop command 
+is used, since it will not be critical if this command is received incorrectly. An [OK] response should be received within 1ms of receiving the Nop command. If not, then the host may retry until it either receives an [OK] response or exhausts its retry co
+unt.
+\par It is recommended that this sequence is followed both on initial power-up, and on waking from a previous "sleep" command.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Nop
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command: \tab 0x00
+\par Response: \tab [OK]
+\par No operation.
+\par This command does nothing, but will return an [OK] response. This is useful to establish synchronisation with the adapter - a sequence of Nop commands can be sent until an [OK] response is seen.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Sleep (S)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x53 0x20
+\par Response:\tab [Wait][OK]
+\par \tab \tab [Wait][Fail]
+\par A [Wait] is sent immediately. The adapter waits for approximately 100ms for RTS to be de-asserted. If this happens in time, an [OK] response is sent, the adapter waits another 70
+ms, and then places itself in power-down mode. It can be awakened by asserting RTS again - see the Wake command description.
+\par If RTS is not de-asserted within 100ms, the sleep request is cancelled, a [Fail] response is sent, and operation continues normally. 
+\par During sleep mode, the select line on the multimedia card is de-asserted, all LEDs are turned off, the RS232 transmitter is powered down, and the microcontroller itself put into power-down mode. This should reduce t
+he power required in the adapter to a few microamps.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Identify Adapter (I)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x49 0x20
+\par Response:\tab [Data] 0x50 0x46 HR SR [OK]
+\par Identifies the currently connected adapter. A [Data] identifier is returned. The fir
+st two bytes are a magic header and indicate the MMCSerial hardware ("PF"). Following this are two bytes indicating the hardware and software revision of the adapter. These are ASCII characters starting from '0'. This is followed with an [OK].
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Identify Card (C)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x43 cc 0x20
+\par Response:\tab [Wait] [Data] \'8516 bytes\'85 [OK]
+\par }\pard \fi720\li720\sb120\nowidctlpar\widctlpar\adjustright {[Wait] [Fail]
+\par }\pard \sb120\nowidctlpar\widctlpar\adjustright {Identifies the currently connected card. Immediately sends back a [Wait]. If bit 0 of cc is 0, returns the card's specific data register contents (CSD), else if 1, returns the card's identity data (CID). 
+
+\par If a card is successfully identified, a [Data] identifier follows, followed by the contents of the specific data register requested, finally finishing with an [OK]. If a card is not attached, or its status cannot be determined, a [Fail] is sent instead.
+
+\par The CID contents include the serial number of the card. It is thus recommended that this command is issued before any read or write operations, in order to check that the card is still the same one as last time.
+\par The CSD contents include the format and size of the card, along with flags indicating the presence or absence of capabilities such as partial-sector reads and writes.
+\par Full details of the format of the CID and CSD register contents can be found in sections 4.5.3 and 4.5.4 of the }{\i MultiMediaCard Product Manual}{.
+\par 
+\par 
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Read (R)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x52 N3 N2 N1 N0 A3 A2 A1 A0 0x20
+\par Response:\tab [Wait] [Data] D0 D1 D2 \'85  Dn C1 C2 [OK]
+\par }\pard \fi720\li720\sb120\nowidctlpar\widctlpar\adjustright {[Wait] [Fail]
+\par }\pard \sb120\nowidctlpar\widctlpar\adjustright {Reads data from the card. The command data consists of the number of bytes to read, high byte first (N3...N0), followed by the address to read from, high byte first (A3\'85
+A0). A final 0x20 command terminator provides for basic checking and synching. A [Wait] response is sent immediately.
+\par The address range indicated by A and N must not cross a sector boundary (i.e. offset + length <= sector size). The address must be valid. If any of these conditions is not met, a [Fail] is sent.
+\par If the data is read successfully, then a [Data] response is sent, followed by the actual data bytes, in order of increas
+ing address. These are raw data, and may contain any value. After the final data byte are the two CRC checksum bytes (as read from the card - derived using CRC16 on the data bytes). Finally, an [OK] byte indicates the end of the sequence.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Write (W)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x57 N3 N2 N1 N0 A3 A2 A1 A0 D0 D1 D2 \'85  Dn C1 C2 0x20
+\par Response:\tab [Wait] [OK]
+\par }\pard \fi720\li720\sb120\nowidctlpar\widctlpar\adjustright {[Wait] [Fail]
+\par [Fail]
+\par }\pard \sb120\nowidctlpar\widctlpar\adjustright {Writes data to the card. The command data consists of the number of bytes to write, high byte first (N3...N0), followed by the address to write to, high byte first (A3\'85
+A0). The number of bytes written must be the same as the sector size, and the address indicate the start of a sector. If not, a [Fail] is sent immediately.
+\par Following this are the actual data bytes, in order of increasing address. These are raw data, and may contain any value. After the final data byte are two checksum bytes derived using CRC16 on the data bytes. At present, these CRC bytes are ignored. 
+
+\par A final 0x20 command terminator provides for basic checking and synching. A [Wait] response is sent immediately on receipt of the 0x20.
+\par If the data are written to the card correctly, then [OK] is returned, else [Fail].
+\par Verification of each byte written can be done by reading the data back from the flash using the Read command, and checking that it is as expected.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Erase (E)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x45 SG N3 N2 N1 N0 A3 A2 A1 A0 0x20
+\par Response:\tab [Wait] [OK]
+\par }\pard \fi720\li720\sb120\nowidctlpar\widctlpar\adjustright {[Wait] [Fail]
+\par }\pard \sb120\nowidctlpar\widctlpar\adjustright {Erases sectors or groups on the card. The command data consists of a Sector/Group flag (bit 0 of which is 0 for erasing sectors, or 1 for erasing g
+roups), the start and end addresses of the block to be erased in four bytes each, high byte first (A3\'85A0, B3\'85B0), then a command terminator, 0x20. A [Wait] response is sent immediately.
+\par If the sectors or groups are in a valid range, the sectors are erased and an [OK] response is sent, otherwise a [Fail] response is sent. If a [Fail] is sent, there is no guarantee that the data on the card have not been erased.
+\par Verification of the erase can be done by reading the data back from the flash using the Read command, and checking that it is in the erased state (all bytes set to 0x00).
+\par Note that a separate erase is not strictly required, since a write to a non-empty sector will first perform an erase on that sector. However, erasing whole groups of sectors simultane
+ously can speed up the write process as the sectors will now be empty. Erasing multiple sectors takes the same amount of time as erasing a single sector.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Status (?)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x3F 0x20
+\par Response:\tab [Data] S1 S2 [OK]
+\par Returns current card status. This is useful for retrieving additional information after a [Fail]. The meanings of the two bytes S1 and S2 are described in section 6.2.2.3 in the }{\i MultiMediaCard Product Manual}{.
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Debug (!)
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab 0x21 MM 0x20
+\par Response:\tab [OK]
+\par Enables or disables debug mode according to the low bit of MM. If debug mode is disabled all data are presented as raw bytes, both to and from the card.
+\par In debug mode, data are presented in hex, and command prompts and feedback are also provided. This is intended to facilitate debugging via a simple dumb ASCII terminal.
+\par Debug mode is disabled initially, and can be enabled from a terminal program by typing "!1 " without the quotes (the final space is important). Returning to raw mode can be accomplished by typing "210020", again without the quotes, at the command prompt.
+
+\par Typical communication (debug on, status, debug off again):
+\par !1 10
+\par -3F>20>15 00 00 10
+\par -21>00>20>
+\par }\pard\plain \s3\sb240\sa60\keepn\nowidctlpar\widctlpar\outlinelevel2\adjustright \f1\lang2057\cgrid {Unrecognised Command
+\par }\pard\plain \sb120\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {Command:\tab Any byte other than those listed above
+\par Response:\tab [Unk]
+\par When expecting a command, any byte other than those listed above will result in an [Unk] return code. The same code is used in the case where a command is malformed - for example, a space was not used to terminate the command.
+\par 
+\par }}

@@ -1,0 +1,24 @@
+Error Report For : Mega32.Sch    17-Oct-2006  10:50:09
+
+ #1 Warning   Unconnected Input Pin On Net NetU2_8
+   Mega32.Sch(U2-8 @890,410)
+
+ #3 Error   Floating Input Pins On Net NetU2_8
+Pin Mega32.Sch(U2-8 @890,410)
+
+ #4 Warning   Unconnected Input Pin On Net NetU2_10
+   Mega32.Sch(U2-10 @890,390)
+
+ #6 Error   Floating Input Pins On Net NetU2_10
+Pin Mega32.Sch(U2-10 @890,390)
+
+ #7 Warning  IO Pins And Output Pins On Net NetU2_12
+   IO Pins                  : Mega32.Sch(ATMEGA32-9 @460,590)
+   Output Pins              : Mega32.Sch(U2-12 @1060,420)
+
+ #8 Warning  IO Pins And Power Pins On Net VCC
+   IO Pins                  : Mega32.Sch(ATMEGA32-27 @650,480)
+   Power Pins               : Mega32.Sch(ATMEGA32-38 @560,710) Mega32.Sch(S1-8 @720,210) Mega32.Sch(S2-8 @960,210) Mega32.Sch(U2-16 @980,460)
+
+
+End Report

@@ -1,0 +1,113 @@
+   1               		.file	"E_delay.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  75               	.global	delay
+  77               	delay:
+   1:../../Eblock_lib/E_delay.c **** /*!  
+   2:../../Eblock_lib/E_delay.c **** 	\file   	E_delay.c
+   3:../../Eblock_lib/E_delay.c **** 	\brief  	Delay loop 
+   4:../../Eblock_lib/E_delay.c **** 	\ingroup	E_delay 
+   5:../../Eblock_lib/E_delay.c **** 	\par  Delay loop for use in E-block lib
+   6:../../Eblock_lib/E_delay.c ****         \n Start with tab +\n	
+   7:../../Eblock_lib/E_delay.c ****  	\n Original written for 	:   \b for bold CPU/Microcontroller
+   8:../../Eblock_lib/E_delay.c ****  	\n CPU port/tested		:   CPU/Microcontroller
+   9:../../Eblock_lib/E_delay.c ****  	\n Hardware use			:   IC Chip
+  10:../../Eblock_lib/E_delay.c ****  	\n Port use			:   Port name / Function
+  11:../../Eblock_lib/E_delay.c ****  	\n Memory	FLASH		:   XXX
+  12:../../Eblock_lib/E_delay.c ****  	\n		RAM		:   XXX
+  13:../../Eblock_lib/E_delay.c ****  	\n		EEPROM		:   XXX
+  14:../../Eblock_lib/E_delay.c ****  	\n Reference Document		:   Document describe algorithm
+  15:../../Eblock_lib/E_delay.c **** 
+  16:../../Eblock_lib/E_delay.c **** 	\version xxx.yyy
+  17:../../Eblock_lib/E_delay.c ****  	\author  Name / Email
+  18:../../Eblock_lib/E_delay.c **** 	\date 	 DD/MM/20XX  
+  19:../../Eblock_lib/E_delay.c **** 
+  20:../../Eblock_lib/E_delay.c **** 	\par Update History
+  21:../../Eblock_lib/E_delay.c ****  	\nDate			By 					Comments
+  22:../../Eblock_lib/E_delay.c ****  	\n----			--					--------
+  23:../../Eblock_lib/E_delay.c **** 	\n 
+  24:../../Eblock_lib/E_delay.c ****  
+  25:../../Eblock_lib/E_delay.c **** */
+  26:../../Eblock_lib/E_delay.c **** 
+  27:../../Eblock_lib/E_delay.c **** 
+  28:../../Eblock_lib/E_delay.c **** 
+  29:../../Eblock_lib/E_delay.c **** 
+  30:../../Eblock_lib/E_delay.c **** 
+  31:../../Eblock_lib/E_delay.c **** 
+  32:../../Eblock_lib/E_delay.c **** //! Include file
+  33:../../Eblock_lib/E_delay.c **** #include <avr/io.h>
+  34:../../Eblock_lib/E_delay.c **** 
+  35:../../Eblock_lib/E_delay.c **** 
+  36:../../Eblock_lib/E_delay.c **** 
+  37:../../Eblock_lib/E_delay.c **** 
+  38:../../Eblock_lib/E_delay.c **** 
+  39:../../Eblock_lib/E_delay.c **** 
+  40:../../Eblock_lib/E_delay.c **** // Start routine here
+  41:../../Eblock_lib/E_delay.c **** 
+  42:../../Eblock_lib/E_delay.c ****  
+  43:../../Eblock_lib/E_delay.c **** 
+  44:../../Eblock_lib/E_delay.c **** 
+  45:../../Eblock_lib/E_delay.c **** /*!	\brief  Initial toggle SW on E_IO block 
+  46:../../Eblock_lib/E_delay.c **** 	\param  None  
+  47:../../Eblock_lib/E_delay.c **** 	\return None
+  48:../../Eblock_lib/E_delay.c **** 	\par Port/Periheral Usage 
+  49:../../Eblock_lib/E_delay.c **** 	\n   E_PB0,E_PB3
+  50:../../Eblock_lib/E_delay.c **** 	\par Theory of Operation   
+  51:../../Eblock_lib/E_delay.c **** 	\n
+  52:../../Eblock_lib/E_delay.c **** 	\par Psedud code
+  53:../../Eblock_lib/E_delay.c **** 	\n
+  54:../../Eblock_lib/E_delay.c **** 	\note   (Pseudo code)
+  55:../../Eblock_lib/E_delay.c **** 	\bug    <bug to fix>
+  56:../../Eblock_lib/E_delay.c **** 
+  57:../../Eblock_lib/E_delay.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  58:../../Eblock_lib/E_delay.c **** 	\sa	 <see also two name joined by ::>
+  59:../../Eblock_lib/E_delay.c **** */     
+  60:../../Eblock_lib/E_delay.c **** void delay ( uint16_t j )
+  61:../../Eblock_lib/E_delay.c **** {
+  79               	.LM1:
+  80               	/* prologue: frame size=0 */
+  81               	/* prologue end (size=0) */
+  62:../../Eblock_lib/E_delay.c ****      uint16_t i;
+  63:../../Eblock_lib/E_delay.c **** 	 for ( i = 0; i < j ; i++);
+  83               	.LM2:
+  84 0000 20E0      		ldi r18,lo8(0)
+  85 0002 30E0      		ldi r19,hi8(0)
+  86               	.L8:
+  88               	.LM3:
+  89 0004 2817      		cp r18,r24
+  90 0006 3907      		cpc r19,r25
+  91 0008 18F4      		brsh .L7
+  92 000a 2F5F      		subi r18,lo8(-(1))
+  93 000c 3F4F      		sbci r19,hi8(-(1))
+  94 000e FACF      		rjmp .L8
+  95               	.L7:
+  96 0010 0895      		ret
+  97               	/* epilogue: frame size=0 */
+  98               	/* epilogue: noreturn */
+  99               	/* epilogue end (size=0) */
+ 100               	/* function delay size 9 (9) */
+ 105               	.Lscope0:
+ 106               		.text
+ 108               	Letext:
+ 109               	/* File "../../Eblock_lib/E_delay.c": code    9 = 0x0009 (   9), prologues   0, epilogues   0 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 E_delay.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:77     .text:00000000 delay
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccEHaaaa.s:108    .text:00000012 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

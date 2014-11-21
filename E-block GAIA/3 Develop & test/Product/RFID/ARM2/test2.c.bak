@@ -1,0 +1,10 @@
+#include <stdio.h>
+#include "test.h"
+
+//extern void testkub();
+
+int main()
+{
+	testkub();
+	return 0;
+}

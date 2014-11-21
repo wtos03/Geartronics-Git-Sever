@@ -1,0 +1,490 @@
+
+lab6-2.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000264  00000000  00000000  00000094  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00000264  000002f8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  00800060  00000264  000002f8  2**0
+                  ALLOC
+  3 .noinit       00000000  00800060  00800060  000002f8  2**0
+                  CONTENTS
+  4 .eeprom       00000000  00810000  00810000  000002f8  2**0
+                  CONTENTS
+  5 .stab         000005e8  00000000  00000000  000002f8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  6 .stabstr      00000606  00000000  00000000  000008e0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54
+   4:	0c 94 45 00 	jmp	0x8a
+   8:	0c 94 45 00 	jmp	0x8a
+   c:	0c 94 45 00 	jmp	0x8a
+  10:	0c 94 45 00 	jmp	0x8a
+  14:	0c 94 45 00 	jmp	0x8a
+  18:	0c 94 45 00 	jmp	0x8a
+  1c:	0c 94 45 00 	jmp	0x8a
+  20:	0c 94 45 00 	jmp	0x8a
+  24:	0c 94 45 00 	jmp	0x8a
+  28:	0c 94 45 00 	jmp	0x8a
+  2c:	0c 94 45 00 	jmp	0x8a
+  30:	0c 94 45 00 	jmp	0x8a
+  34:	0c 94 45 00 	jmp	0x8a
+  38:	0c 94 45 00 	jmp	0x8a
+  3c:	0c 94 45 00 	jmp	0x8a
+  40:	0c 94 45 00 	jmp	0x8a
+  44:	0c 94 45 00 	jmp	0x8a
+  48:	0c 94 45 00 	jmp	0x8a
+  4c:	0c 94 45 00 	jmp	0x8a
+  50:	0c 94 45 00 	jmp	0x8a
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_copy_data>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	e4 e6       	ldi	r30, 0x64	; 100
+  68:	f2 e0       	ldi	r31, 0x02	; 2
+  6a:	02 c0       	rjmp	.+4      	; 0x70
+
+0000006c <.do_copy_data_loop>:
+  6c:	05 90       	lpm	r0, Z+
+  6e:	0d 92       	st	X+, r0
+
+00000070 <.do_copy_data_start>:
+  70:	a0 36       	cpi	r26, 0x60	; 96
+  72:	b1 07       	cpc	r27, r17
+  74:	d9 f7       	brne	.-10     	; 0x6c
+
+00000076 <__do_clear_bss>:
+  76:	10 e0       	ldi	r17, 0x00	; 0
+  78:	a0 e6       	ldi	r26, 0x60	; 96
+  7a:	b0 e0       	ldi	r27, 0x00	; 0
+  7c:	01 c0       	rjmp	.+2      	; 0x80
+
+0000007e <.do_clear_bss_loop>:
+  7e:	1d 92       	st	X+, r1
+
+00000080 <.do_clear_bss_start>:
+  80:	a0 36       	cpi	r26, 0x60	; 96
+  82:	b1 07       	cpc	r27, r17
+  84:	e1 f7       	brne	.-8      	; 0x7e
+  86:	0c 94 d0 00 	jmp	0x1a0
+
+0000008a <__bad_interrupt>:
+  8a:	0c 94 00 00 	jmp	0x0
+
+0000008e <d7segment_display>:
+ 
+
+void d7segment_display( int8_t num, uint8_t digit)
+{
+ switch (num)
+  8e:	99 27       	eor	r25, r25
+  90:	87 fd       	sbrc	r24, 7
+  92:	90 95       	com	r25
+  94:	86 30       	cpi	r24, 0x06	; 6
+  96:	91 05       	cpc	r25, r1
+  98:	09 f4       	brne	.+2      	; 0x9c
+  9a:	41 c0       	rjmp	.+130    	; 0x11e
+  9c:	87 30       	cpi	r24, 0x07	; 7
+  9e:	91 05       	cpc	r25, r1
+  a0:	8c f4       	brge	.+34     	; 0xc4
+  a2:	82 30       	cpi	r24, 0x02	; 2
+  a4:	91 05       	cpc	r25, r1
+  a6:	59 f1       	breq	.+86     	; 0xfe
+  a8:	83 30       	cpi	r24, 0x03	; 3
+  aa:	91 05       	cpc	r25, r1
+  ac:	2c f4       	brge	.+10     	; 0xb8
+  ae:	00 97       	sbiw	r24, 0x00	; 0
+  b0:	11 f1       	breq	.+68     	; 0xf6
+  b2:	01 97       	sbiw	r24, 0x01	; 1
+  b4:	11 f1       	breq	.+68     	; 0xfa
+  b6:	37 c0       	rjmp	.+110    	; 0x126
+  b8:	84 30       	cpi	r24, 0x04	; 4
+  ba:	91 05       	cpc	r25, r1
+  bc:	21 f1       	breq	.+72     	; 0x106
+  be:	05 97       	sbiw	r24, 0x05	; 5
+  c0:	24 f5       	brge	.+72     	; 0x10a
+  c2:	1f c0       	rjmp	.+62     	; 0x102
+  c4:	89 30       	cpi	r24, 0x09	; 9
+  c6:	91 05       	cpc	r25, r1
+  c8:	31 f1       	breq	.+76     	; 0x116
+  ca:	8a 30       	cpi	r24, 0x0A	; 10
+  cc:	91 05       	cpc	r25, r1
+  ce:	34 f4       	brge	.+12     	; 0xdc
+  d0:	87 30       	cpi	r24, 0x07	; 7
+  d2:	91 05       	cpc	r25, r1
+  d4:	e1 f0       	breq	.+56     	; 0x10e
+  d6:	08 97       	sbiw	r24, 0x08	; 8
+  d8:	e1 f0       	breq	.+56     	; 0x112
+  da:	25 c0       	rjmp	.+74     	; 0x126
+  dc:	82 36       	cpi	r24, 0x62	; 98
+  de:	91 05       	cpc	r25, r1
+  e0:	f1 f0       	breq	.+60     	; 0x11e
+  e2:	83 36       	cpi	r24, 0x63	; 99
+  e4:	91 05       	cpc	r25, r1
+  e6:	1c f4       	brge	.+6      	; 0xee
+  e8:	0a 97       	sbiw	r24, 0x0a	; 10
+  ea:	d9 f0       	breq	.+54     	; 0x122
+  ec:	1c c0       	rjmp	.+56     	; 0x126
+  ee:	86 36       	cpi	r24, 0x66	; 102
+  f0:	91 05       	cpc	r25, r1
+  f2:	99 f0       	breq	.+38     	; 0x11a
+  f4:	18 c0       	rjmp	.+48     	; 0x126
+ {
+	case 0:
+		_7SEGMENT_PORT = _7SEGMENT_0;
+  f6:	8f e3       	ldi	r24, 0x3F	; 63
+  f8:	15 c0       	rjmp	.+42     	; 0x124
+		break;
+	case 1:
+		_7SEGMENT_PORT = _7SEGMENT_1;
+  fa:	86 e0       	ldi	r24, 0x06	; 6
+  fc:	13 c0       	rjmp	.+38     	; 0x124
+		break;
+	case 2:
+		_7SEGMENT_PORT = _7SEGMENT_2;
+  fe:	8b e5       	ldi	r24, 0x5B	; 91
+ 100:	11 c0       	rjmp	.+34     	; 0x124
+		break;
+	case 3:
+		_7SEGMENT_PORT = _7SEGMENT_3;
+ 102:	8f e4       	ldi	r24, 0x4F	; 79
+ 104:	0f c0       	rjmp	.+30     	; 0x124
+		break;
+	case 4:
+		_7SEGMENT_PORT = _7SEGMENT_4;
+ 106:	86 e6       	ldi	r24, 0x66	; 102
+ 108:	0d c0       	rjmp	.+26     	; 0x124
+		break;
+	case 5:
+		_7SEGMENT_PORT = _7SEGMENT_5;
+ 10a:	8d e6       	ldi	r24, 0x6D	; 109
+ 10c:	0b c0       	rjmp	.+22     	; 0x124
+		break;
+	case 6:
+		_7SEGMENT_PORT = _7SEGMENT_6;
+		break;
+	case 7:
+		_7SEGMENT_PORT = _7SEGMENT_7;
+ 10e:	87 e0       	ldi	r24, 0x07	; 7
+ 110:	09 c0       	rjmp	.+18     	; 0x124
+		break;
+	case 8:
+		_7SEGMENT_PORT = _7SEGMENT_8;
+ 112:	8f e7       	ldi	r24, 0x7F	; 127
+ 114:	07 c0       	rjmp	.+14     	; 0x124
+		break;
+	case 9:
+		_7SEGMENT_PORT = _7SEGMENT_9;
+ 116:	87 e6       	ldi	r24, 0x67	; 103
+ 118:	05 c0       	rjmp	.+10     	; 0x124
+	    break;
+	case 'f':
+	    _7SEGMENT_PORT = _7SEGMENT_C_F;
+ 11a:	81 e7       	ldi	r24, 0x71	; 113
+ 11c:	03 c0       	rjmp	.+6      	; 0x124
+		break;
+	case 'b':
+	    _7SEGMENT_PORT = _7SEGMENT_C_B;
+ 11e:	8c e7       	ldi	r24, 0x7C	; 124
+ 120:	01 c0       	rjmp	.+2      	; 0x124
+		break;
+	case DOT:
+		_7SEGMENT_PORT = _7SEGMENT_DOT;
+ 122:	80 e8       	ldi	r24, 0x80	; 128
+ 124:	88 bb       	out	0x18, r24	; 24
+		break;
+ 
+ }
+// Output  digit
+   if (digit == 1)
+ 126:	61 30       	cpi	r22, 0x01	; 1
+ 128:	19 f4       	brne	.+6      	; 0x130
+   {
+// ON Digit 1    ( 1 Off  0 On)
+	   _7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT1);
+ 12a:	ab 98       	cbi	0x15, 3	; 21
+// OFF Digit 2 
+	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT2;
+ 12c:	ac 9a       	sbi	0x15, 4	; 21
+ 12e:	08 95       	ret
+    }
+
+   if (digit == 2)
+ 130:	62 30       	cpi	r22, 0x02	; 2
+ 132:	11 f4       	brne	.+4      	; 0x138
+   {
+// ON Digit 2   ( 1 Off  0 On)
+	   _7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT2);
+ 134:	ac 98       	cbi	0x15, 4	; 21
+// OFF Digit 1 
+	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT1;
+ 136:	ab 9a       	sbi	0x15, 3	; 21
+ 138:	08 95       	ret
+ 13a:	08 95       	ret
+
+0000013c <delay>:
+    }
+
+	
+}	
+
+// Delay for display routine
+void delay ( uint16_t time)
+{
+ 13c:	cf 93       	push	r28
+ 13e:	df 93       	push	r29
+ 140:	cd b7       	in	r28, 0x3d	; 61
+ 142:	de b7       	in	r29, 0x3e	; 62
+ 144:	24 97       	sbiw	r28, 0x04	; 4
+ 146:	0f b6       	in	r0, 0x3f	; 63
+ 148:	f8 94       	cli
+ 14a:	de bf       	out	0x3e, r29	; 62
+ 14c:	0f be       	out	0x3f, r0	; 63
+ 14e:	cd bf       	out	0x3d, r28	; 61
+ 150:	9c 01       	movw	r18, r24
+   volatile uint16_t  t1,t2;   // Prevent optimizer skip command
+   for (t1 = 0 ; t1 < time ; t1++)
+ 152:	19 82       	std	Y+1, r1	; 0x01
+ 154:	1a 82       	std	Y+2, r1	; 0x02
+ 156:	89 81       	ldd	r24, Y+1	; 0x01
+ 158:	9a 81       	ldd	r25, Y+2	; 0x02
+ 15a:	82 17       	cp	r24, r18
+ 15c:	93 07       	cpc	r25, r19
+ 15e:	b8 f4       	brcc	.+46     	; 0x18e
+   {
+	   for (t2 = 0 ; t2 < 3000 ;t2++);		
+ 160:	1b 82       	std	Y+3, r1	; 0x03
+ 162:	1c 82       	std	Y+4, r1	; 0x04
+ 164:	8b 81       	ldd	r24, Y+3	; 0x03
+ 166:	9c 81       	ldd	r25, Y+4	; 0x04
+ 168:	88 5b       	subi	r24, 0xB8	; 184
+ 16a:	9b 40       	sbci	r25, 0x0B	; 11
+ 16c:	30 f4       	brcc	.+12     	; 0x17a
+ 16e:	8b 81       	ldd	r24, Y+3	; 0x03
+ 170:	9c 81       	ldd	r25, Y+4	; 0x04
+ 172:	01 96       	adiw	r24, 0x01	; 1
+ 174:	8b 83       	std	Y+3, r24	; 0x03
+ 176:	9c 83       	std	Y+4, r25	; 0x04
+ 178:	f5 cf       	rjmp	.-22     	; 0x164
+ 17a:	89 81       	ldd	r24, Y+1	; 0x01
+ 17c:	9a 81       	ldd	r25, Y+2	; 0x02
+ 17e:	01 96       	adiw	r24, 0x01	; 1
+ 180:	89 83       	std	Y+1, r24	; 0x01
+ 182:	9a 83       	std	Y+2, r25	; 0x02
+ 184:	89 81       	ldd	r24, Y+1	; 0x01
+ 186:	9a 81       	ldd	r25, Y+2	; 0x02
+ 188:	82 17       	cp	r24, r18
+ 18a:	93 07       	cpc	r25, r19
+ 18c:	48 f3       	brcs	.-46     	; 0x160
+ 18e:	24 96       	adiw	r28, 0x04	; 4
+ 190:	0f b6       	in	r0, 0x3f	; 63
+ 192:	f8 94       	cli
+ 194:	de bf       	out	0x3e, r29	; 62
+ 196:	0f be       	out	0x3f, r0	; 63
+ 198:	cd bf       	out	0x3d, r28	; 61
+ 19a:	df 91       	pop	r29
+ 19c:	cf 91       	pop	r28
+ 19e:	08 95       	ret
+
+000001a0 <main>:
+   }
+}
+
+
+
+void main (void)
+{
+ 1a0:	cf e5       	ldi	r28, 0x5F	; 95
+ 1a2:	d8 e0       	ldi	r29, 0x08	; 8
+ 1a4:	de bf       	out	0x3e, r29	; 62
+ 1a6:	cd bf       	out	0x3d, r28	; 61
+   uint8_t sw1,sw2;
+   int8_t num =0,digit1 = 0, digit2 =0;
+ 1a8:	10 e0       	ldi	r17, 0x00	; 0
+   uint8_t  key_release,time = 0;
+ 1aa:	01 2f       	mov	r16, r17
+   uint8_t trig_delay = 0;
+ 1ac:	f1 2e       	mov	r15, r17
+   
+   
+   
+// Initial value for E_IO  7 Segment as output and SW as input
+
+	_7SEGMENT_DIGIT_DIR   = 0xFF;  // Set direction for output all to 1 for 7 Segment     
+ 1ae:	8f ef       	ldi	r24, 0xFF	; 255
+ 1b0:	87 bb       	out	0x17, r24	; 23
+	_7SEGMENT_PORT_DIR	  |= _7SEGMENT_DIGIT1 | _7SEGMENT_DIGIT2; // Set output for 7 segments digit
+ 1b2:	84 b3       	in	r24, 0x14	; 20
+ 1b4:	88 61       	ori	r24, 0x18	; 24
+ 1b6:	84 bb       	out	0x14, r24	; 20
+ 
+// Set direction for input for SW 
+	_7SEGMENT_SW1_DIR	&=  ~(_7SEGMENT_SW1);   // Inverse to 1 except SW1
+ 1b8:	a5 98       	cbi	0x14, 5	; 20
+	_7SEGMENT_SW2_DIR	&=  ~(_7SEGMENT_SW2);   // Inverse to 1 except SW2
+ 1ba:	a2 98       	cbi	0x14, 2	; 20
+	
+// Read value from SW, out 1 to input port for sync and nop 1 clock before read
+    _7SEGMENT_SW2_PORT   |= _7SEGMENT_SW2;
+ 1bc:	aa 9a       	sbi	0x15, 2	; 21
+	 _7SEGMENT_SW1_PORT   |= _7SEGMENT_SW1;  // Output 1 to port SW1, SW2 for enable internal pull up resisters
+ 1be:	ad 9a       	sbi	0x15, 5	; 21
+ 
+	 
+// Enable pull up set PUD in SFIOR default = 0??
+   
+     
+  while (1)
+  {
+
+// NOP     
+	 sw1 =  _7SEGMENT_SW1_IN_PORT;          // Get status for ALL input port 
+ 1c0:	83 b3       	in	r24, 0x13	; 19
+	 sw1 &=  (_7SEGMENT_SW1);				// Mask data for SW1
+	 sw2 =  (_7SEGMENT_SW2_IN_PORT);
+ 1c2:	93 b3       	in	r25, 0x13	; 19
+     sw2 &=  (_7SEGMENT_SW2);
+ 1c4:	94 70       	andi	r25, 0x04	; 4
+ 
+	key_release  = 1;                       // Flag for key release
+	 	
+     if ((sw1 == 0) || (sw2 == 0))  // Press  SW
+ 1c6:	85 ff       	sbrs	r24, 5
+ 1c8:	02 c0       	rjmp	.+4      	; 0x1ce
+ 1ca:	99 23       	and	r25, r25
+ 1cc:	51 f4       	brne	.+20     	; 0x1e2
+	 {
+	   	if  (trig_delay  == 0 )
+ 1ce:	ff 20       	and	r15, r15
+ 1d0:	89 f4       	brne	.+34     	; 0x1f4
+		{
+			trig_delay = 2;     				// Delay for number scroll
+ 1d2:	92 e0       	ldi	r25, 0x02	; 2
+ 1d4:	f9 2e       	mov	r15, r25
+			time++; 							// time to scroll after key release
+ 1d6:	0f 5f       	subi	r16, 0xFF	; 255
+			if ( time >  15)
+ 1d8:	00 31       	cpi	r16, 0x10	; 16
+ 1da:	08 f0       	brcs	.+2      	; 0x1de
+				time = 3;						// Min = scroll another 3 when release key
+ 1dc:	03 e0       	ldi	r16, 0x03	; 3
+			num++;								// Increase number when key press and end of trig delay loop
+ 1de:	1f 5f       	subi	r17, 0xFF	; 255
+ 1e0:	09 c0       	rjmp	.+18     	; 0x1f4
+		}		
+		key_release = 0;
+	}
+
+	
+	 if (key_release && time)                  // Key release detect and time to scroll after key release > 0
+ 1e2:	00 23       	and	r16, r16
+ 1e4:	39 f0       	breq	.+14     	; 0x1f4
+	 {
+ 		if  (trig_delay  == 0 )
+ 1e6:	ff 20       	and	r15, r15
+ 1e8:	29 f4       	brne	.+10     	; 0x1f4
+		{
+			trig_delay = 10;
+ 1ea:	8a e0       	ldi	r24, 0x0A	; 10
+ 1ec:	f8 2e       	mov	r15, r24
+			time--;
+ 1ee:	01 50       	subi	r16, 0x01	; 1
+			num++;
+ 1f0:	1f 5f       	subi	r17, 0xFF	; 255
+ 1f2:	01 c0       	rjmp	.+2      	; 0x1f6
+		}	
+	 }		
+	 
+// Loop for scroll number stopped when 0	 
+	if ( trig_delay > 0)
+ 1f4:	f1 10       	cpse	r15, r1
+	{
+	    trig_delay--;
+ 1f6:	fa 94       	dec	r15
+	}
+	
+// Calculate digit to display	
+	if (num > 12)
+ 1f8:	1d 30       	cpi	r17, 0x0D	; 13
+ 1fa:	0c f0       	brlt	.+2      	; 0x1fe
+		num = 0;	  	   
+ 1fc:	10 e0       	ldi	r17, 0x00	; 0
+	digit2 = num/10;    // Find second digit
+ 1fe:	81 2f       	mov	r24, r17
+ 200:	6a e0       	ldi	r22, 0x0A	; 10
+ 202:	0e 94 19 01 	call	0x232
+ 206:	c8 2f       	mov	r28, r24
+	digit1 = num%10;    // Find first digitdelay_trig--;
+ 208:	81 2f       	mov	r24, r17
+ 20a:	6a e0       	ldi	r22, 0x0A	; 10
+ 20c:	0e 94 19 01 	call	0x232
+   
+// Display 2 digit   
+  	d7segment_display(digit1,2);
+ 210:	62 e0       	ldi	r22, 0x02	; 2
+ 212:	89 2f       	mov	r24, r25
+ 214:	0e 94 47 00 	call	0x8e
+	delay(4);                     // Delay to show 2 digit clearly
+ 218:	84 e0       	ldi	r24, 0x04	; 4
+ 21a:	90 e0       	ldi	r25, 0x00	; 0
+ 21c:	0e 94 9e 00 	call	0x13c
+ 	d7segment_display(digit2,1);
+ 220:	61 e0       	ldi	r22, 0x01	; 1
+ 222:	8c 2f       	mov	r24, r28
+ 224:	0e 94 47 00 	call	0x8e
+	delay(4);
+ 228:	84 e0       	ldi	r24, 0x04	; 4
+ 22a:	90 e0       	ldi	r25, 0x00	; 0
+ 22c:	0e 94 9e 00 	call	0x13c
+ 230:	c7 cf       	rjmp	.-114    	; 0x1c0
+
+00000232 <__divmodqi4>:
+ 232:	87 fb       	bst	r24, 7
+ 234:	08 2e       	mov	r0, r24
+ 236:	06 26       	eor	r0, r22
+ 238:	87 fd       	sbrc	r24, 7
+ 23a:	81 95       	neg	r24
+ 23c:	67 fd       	sbrc	r22, 7
+ 23e:	61 95       	neg	r22
+ 240:	05 d0       	rcall	.+10     	; 0x24c
+ 242:	0e f4       	brtc	.+2      	; 0x246
+ 244:	91 95       	neg	r25
+
+00000246 <__divmodqi4_1>:
+ 246:	07 fc       	sbrc	r0, 7
+ 248:	81 95       	neg	r24
+
+0000024a <__divmodqi4_exit>:
+ 24a:	08 95       	ret
+
+0000024c <__udivmodqi4>:
+ 24c:	99 1b       	sub	r25, r25
+ 24e:	79 e0       	ldi	r23, 0x09	; 9
+ 250:	04 c0       	rjmp	.+8      	; 0x25a
+
+00000252 <__udivmodqi4_loop>:
+ 252:	99 1f       	adc	r25, r25
+ 254:	96 17       	cp	r25, r22
+ 256:	08 f0       	brcs	.+2      	; 0x25a
+ 258:	96 1b       	sub	r25, r22
+
+0000025a <__udivmodqi4_ep>:
+ 25a:	88 1f       	adc	r24, r24
+ 25c:	7a 95       	dec	r23
+ 25e:	c9 f7       	brne	.-14     	; 0x252
+ 260:	80 95       	com	r24
+ 262:	08 95       	ret

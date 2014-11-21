@@ -1,0 +1,1173 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000005b4  00007000  00007000  00000094  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  000075b4  00000648  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000087  00800060  00800060  00000648  2**0
+                  ALLOC
+  3 .noinit       00000000  008000e7  008000e7  00000648  2**0
+                  CONTENTS
+  4 .eeprom       00000000  00810000  00810000  00000648  2**0
+                  CONTENTS
+  5 .stab         00000fc0  00000000  00000000  00000648  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  6 .stabstr      0000096d  00000000  00000000  00001608  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00007000 <__vectors>:
+    7000:	0c 94 2a 38 	jmp	0x7054
+    7004:	0c 94 45 38 	jmp	0x708a
+    7008:	0c 94 45 38 	jmp	0x708a
+    700c:	0c 94 45 38 	jmp	0x708a
+    7010:	0c 94 45 38 	jmp	0x708a
+    7014:	0c 94 45 38 	jmp	0x708a
+    7018:	0c 94 45 38 	jmp	0x708a
+    701c:	0c 94 45 38 	jmp	0x708a
+    7020:	0c 94 45 38 	jmp	0x708a
+    7024:	0c 94 45 38 	jmp	0x708a
+    7028:	0c 94 45 38 	jmp	0x708a
+    702c:	0c 94 45 38 	jmp	0x708a
+    7030:	0c 94 45 38 	jmp	0x708a
+    7034:	0c 94 45 38 	jmp	0x708a
+    7038:	0c 94 45 38 	jmp	0x708a
+    703c:	0c 94 45 38 	jmp	0x708a
+    7040:	0c 94 45 38 	jmp	0x708a
+    7044:	0c 94 45 38 	jmp	0x708a
+    7048:	0c 94 45 38 	jmp	0x708a
+    704c:	0c 94 45 38 	jmp	0x708a
+    7050:	0c 94 45 38 	jmp	0x708a
+
+00007054 <__ctors_end>:
+    7054:	11 24       	eor	r1, r1
+    7056:	1f be       	out	0x3f, r1	; 63
+    7058:	cf e5       	ldi	r28, 0x5F	; 95
+    705a:	d8 e0       	ldi	r29, 0x08	; 8
+    705c:	de bf       	out	0x3e, r29	; 62
+    705e:	cd bf       	out	0x3d, r28	; 61
+
+00007060 <__do_copy_data>:
+    7060:	10 e0       	ldi	r17, 0x00	; 0
+    7062:	a0 e6       	ldi	r26, 0x60	; 96
+    7064:	b0 e0       	ldi	r27, 0x00	; 0
+    7066:	e4 eb       	ldi	r30, 0xB4	; 180
+    7068:	f5 e7       	ldi	r31, 0x75	; 117
+    706a:	02 c0       	rjmp	.+4      	; 0x7070
+
+0000706c <.do_copy_data_loop>:
+    706c:	05 90       	lpm	r0, Z+
+    706e:	0d 92       	st	X+, r0
+
+00007070 <.do_copy_data_start>:
+    7070:	a0 36       	cpi	r26, 0x60	; 96
+    7072:	b1 07       	cpc	r27, r17
+    7074:	d9 f7       	brne	.-10     	; 0x706c
+
+00007076 <__do_clear_bss>:
+    7076:	10 e0       	ldi	r17, 0x00	; 0
+    7078:	a0 e6       	ldi	r26, 0x60	; 96
+    707a:	b0 e0       	ldi	r27, 0x00	; 0
+    707c:	01 c0       	rjmp	.+2      	; 0x7080
+
+0000707e <.do_clear_bss_loop>:
+    707e:	1d 92       	st	X+, r1
+
+00007080 <.do_clear_bss_start>:
+    7080:	a7 3e       	cpi	r26, 0xE7	; 231
+    7082:	b1 07       	cpc	r27, r17
+    7084:	e1 f7       	brne	.-8      	; 0x707e
+    7086:	0c 94 87 39 	jmp	0x730e
+
+0000708a <__bad_interrupt>:
+    708a:	0c 94 00 38 	jmp	0x7000
+
+0000708e <send_boot>:
+unsigned char device;
+
+void send_boot(void)
+{
+	sendchar('A');
+    708e:	81 e4       	ldi	r24, 0x41	; 65
+    7090:	0e 94 aa 3a 	call	0x7554
+	sendchar('V');
+    7094:	86 e5       	ldi	r24, 0x56	; 86
+    7096:	0e 94 aa 3a 	call	0x7554
+	sendchar('R');
+    709a:	82 e5       	ldi	r24, 0x52	; 82
+    709c:	0e 94 aa 3a 	call	0x7554
+	sendchar('B');
+    70a0:	82 e4       	ldi	r24, 0x42	; 66
+    70a2:	0e 94 aa 3a 	call	0x7554
+	sendchar('O');
+    70a6:	8f e4       	ldi	r24, 0x4F	; 79
+    70a8:	0e 94 aa 3a 	call	0x7554
+	sendchar('O');
+    70ac:	8f e4       	ldi	r24, 0x4F	; 79
+    70ae:	0e 94 aa 3a 	call	0x7554
+	sendchar('T');
+    70b2:	84 e5       	ldi	r24, 0x54	; 84
+    70b4:	0e 94 aa 3a 	call	0x7554
+    70b8:	08 95       	ret
+
+000070ba <d7segment_init>:
+}
+
+void (*jump_to_app)(void) = 0x0000;
+
+// Show output to 7 Segments
+
+
+void d7segment_init (void)
+{
+// Set direction for output for 7 Segment
+	_7SEGMENT_DIGIT_DIR   = 0xFF;
+    70ba:	8f ef       	ldi	r24, 0xFF	; 255
+    70bc:	87 bb       	out	0x17, r24	; 23
+	_7SEGMENT_PORT_DIR	  |= _7SEGMENT_DIGIT1 | _7SEGMENT_DIGIT2;
+    70be:	84 b3       	in	r24, 0x14	; 20
+    70c0:	88 61       	ori	r24, 0x18	; 24
+    70c2:	84 bb       	out	0x14, r24	; 20
+ 
+// Set direction for input for SW 
+	_7SEGMENT_SW1_DIR	&=  ~(_7SEGMENT_SW1);
+    70c4:	8b 98       	cbi	0x11, 3	; 17
+	_7SEGMENT_SW2_DIR	&=  ~(_7SEGMENT_SW2);
+    70c6:	a2 98       	cbi	0x14, 2	; 20
+
+// Enable pull up
+    _7SEGMENT_SW1_PORT   |= _7SEGMENT_SW1;
+    70c8:	93 9a       	sbi	0x12, 3	; 18
+    _7SEGMENT_SW2_PORT   |= _7SEGMENT_SW2;
+    70ca:	aa 9a       	sbi	0x15, 2	; 21
+    70cc:	08 95       	ret
+
+000070ce <d7segment_display>:
+	
+}
+
+ /* Display numeric 0-9  on  digit 0 or 1 
+  
+	INPUT
+	num		:	number to show
+	digit 	: 	Digit  to show
+	
+	OUTPUT	:	null
+	
+*/  
+
+#include "Dual_7Segment.h"
+
+void d7segment_display( uint8_t num, uint8_t digit)
+{
+ 
+   _7SEGMENT_PORT = num;
+    70ce:	88 bb       	out	0x18, r24	; 24
+// Out digit
+	 
+    if ( digit == 1 )
+    70d0:	61 30       	cpi	r22, 0x01	; 1
+    70d2:	19 f4       	brne	.+6      	; 0x70da
+	{  // ON Digit 1 OFF  ( 1 Off  0 On)
+		_7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT1);
+    70d4:	ab 98       	cbi	0x15, 3	; 21
+	   // OFF Digit 2 
+	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT2;
+    70d6:	ac 9a       	sbi	0x15, 4	; 21
+    70d8:	08 95       	ret
+	}
+	if ( digit == 2 )
+    70da:	62 30       	cpi	r22, 0x02	; 2
+    70dc:	11 f4       	brne	.+4      	; 0x70e2
+	{  // ON Digit 2 OFF  ( 1 Off  0 On)
+		_7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT2);
+    70de:	ac 98       	cbi	0x15, 4	; 21
+	   // OFF Digit 1
+	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT1;
+    70e0:	ab 9a       	sbi	0x15, 3	; 21
+    70e2:	08 95       	ret
+    70e4:	08 95       	ret
+
+000070e6 <BufferLoad>:
+	}	
+
+}	
+
+
+int main(void)
+{
+ 
+	unsigned  tempi;
+	char val;
+    uint8_t sw1,sw2;
+	
+	#ifdef START_POWERSAVE
+	char OK = 1;    
+	#endif
+    
+	cli();
+	
+	MCUCR = (1<<IVCE);       
+	MCUCR = (1<<IVSEL);             //move interruptvectors to the Boot sector    
+ 
+	USART_Init(UART_BAUD_SELECT(BAUDRATE,XTAL),UARTSINGLE); 	// single speed
+	// USART_Init(UART_BAUD_SELECT(BAUDRATE/2,XTAL),UARTDOUBLE);  // double speed
+	d7segment_init();
+	
+
+
+
+	
+
+#if defined(START_POWERSAVE)
+	/* 
+		This is an adoption of the Butterfly Bootloader startup-sequence.
+		It may look a little strange but separating the login-loop from
+		the main parser-loop gives a lot a possibilities (timeout, sleep-modes
+	    etc.).
+	*/		
+ 
+	
+	for(;OK;)
+	{
+		if((BLPIN1 & (1<<BLPNUM1)) || (BLPIN2 & (1<<BLPNUM2)))	 // Either one of two switch press still go app mode 
+		{  
+			// jump to main app if pin is not grounded
+			BLPORT1 &= ~(1<<BLPNUM1);  // set to default
+			MCUCR = (1<<IVCE); 
+			MCUCR = (0<<IVSEL);      // move interruptvectors to the Application sector
+			jump_to_app();			 // Jump to application sector
+		}
+		else
+		{	
+			val = recchar();
+		
+			if( val == 0x1B ) /* ESC */
+	        {				// AVRPROG connection
+				while (val != 'S')	// Wait for signon 
+				{
+					val = recchar();
+				}
+				send_boot();					// Report signon
+				OK = 0;
+			}
+			else
+				sendchar('?');
+	        }
+		// Power-Save code here
+	}
+	
+#elif defined(START_SIMPLE)
+ 
+
+   sw1 = _7SEGMENT_SW1_IN_PORT & _7SEGMENT_SW1; 
+   sw2 = _7SEGMENT_SW2_IN_PORT & _7SEGMENT_SW2; 
+   
+    if ((sw1) ) //&&  (!sw2)) // SW1, SW2 Press
+//	if((BLPIN1 & (1<<BLPNUM1)) || (BLPIN2 & (1<<BLPNUM2))) 
+	{  
+// jump to main app if pin is  grounded
+//		BLPORT1 &= ~(1<<BLPNUM1);  		// set to default  ??
+//		BLPORT2 &= ~(1<<BLPNUM2);  		// set to default  ??
+		MCUCR = (1<<IVCE); 
+		MCUCR = (0<<IVSEL);             //move interruptvectors to the Application sector
+
+		d7segment_display(_7SEGMENT_C_P,1);
+		jump_to_app();					// Jump to application sector
+	}
+	
+	#elif defined(START_BOOTICE)
+	#warning "BOOTICE mode - no startup-condition"
+
+	#else
+	#error "Select START_ condition for bootloader in main.c"
+	#endif
+
+  
+	
+    for(;;)                             
+    {   
+	    d7segment_display(_7SEGMENT_C_B,1);
+		val=recchar();
+         
+        if(val=='a')                         //Autoincrement?
+        {
+          sendchar('Y');					  //Autoincrement is quicker
+        }
+ 
+        else if(val=='A')                    //write address 
+        {
+			address=recchar();                //read address 8 MSB
+			address=(address<<8)|recchar();
+			
+			address=address<<1;               // !! convert from word address to byte address
+			sendchar('\r');
+        }
+        
+        else if(val=='b')
+		{									// Buffer load support
+			sendchar('Y');					// Report buffer load supported
+			sendchar((UART_RX_BUFFER_SIZE >> 8) & 0xFF);
+											// Report buffer size in bytes
+			sendchar(UART_RX_BUFFER_SIZE & 0xFF);
+		}
+
+		else if(val=='B')					// Start buffer load
+		{
+			tempi = recchar() << 8;			// Load high byte of buffersize
+			tempi |= recchar();				// Load low byte of buffersize
+			val = recchar();				// Load memory type ('E' or 'F')
+			sendchar (BufferLoad(tempi,val));
+											// Start downloading of buffer
+		}
+		
+		else if(val == 'g')					// Block read
+		{
+			tempi = (recchar() << 8) | recchar();
+
+			val = recchar();				// Get memtype
+			BlockRead(tempi,val);			// Perform the block read
+		}		
+
+        else if(val=='e')                   //Chip erase 
+        {
+			if (device == devtype)
+			{
+				// erase only main section (bootloader protection)
+				address = 0; 
+				while ( APP_END > address )
+				{
+					boot_page_erase(address);	// Perform page erase
+					boot_spm_busy_wait();		// Wait until the memory is erased.
+					address += SPM_PAGESIZE;
+				}
+			}
+			boot_rww_enable();
+			sendchar('\r');  
+
+        }
+
+        else if(val=='E')                   //Exit upgrade
+        {
+//			wdt_enable(WDTO_15MS); // Enable Watchdog Timer to give reset
+			sendchar('\r');
+			MCUCR = (1<<IVCE); 
+			MCUCR = (0<<IVSEL);             //move interruptvectors to the Application sector
+			jump_to_app();					// Jump to application sector
+        }
+       
+	   #ifdef WRITELOCKBITS
+	   #warning "Extension 'WriteLockBits' enabled"
+	   // TODO: does not work reliably
+        else if(val=='l')                   // write lockbits 
+        {
+			if (device == devtype)
+			{
+				// write_lock_bits(recchar());
+				boot_lock_bits_set(recchar());	// boot.h takes care of mask
+				boot_spm_busy_wait();
+			}
+			sendchar('\r');
+		}
+		#endif
+        
+        else if(val=='P')     // Enter programming mode 
+        {
+			sendchar('\r');
+        }
+        
+        else if(val=='L')   // Leave programming mode
+        { 
+			sendchar('\r');
+        }
+        
+        else if (val=='p')		// return programmer type
+        {
+          sendchar('S');		// always serial programmer
+        } 
+		
+#ifdef ENABLEREADFUSELOCK
+#warning "Extension 'ReadFuseLock' enabled"
+        else if(val=='F')                   // read "low" fuse bits
+        {
+			sendchar( read_fuse_lock(0x0000, _BV(BLBSET)|_BV(SPMEN)) );
+        }
+
+        else if(val=='r')                   // read lock bits
+        { 
+			sendchar( read_fuse_lock(0x0001, _BV(BLBSET)|_BV(SPMEN)) );
+        }        
+
+        else if(val=='N')                   // read high fuse bits
+        {
+			sendchar( read_fuse_lock(0x0003,_BV(BLBSET)|_BV(SPMEN)) );
+        }        
+
+        else if(val=='Q')                   // read extended fuse bits
+        {
+			sendchar( read_fuse_lock(0x0002,_BV(BLBSET)|_BV(SPMEN)) );
+        }
+#endif	
+// end of ENABLEREADFUSELOCK section
+
+        else if(val=='t')                   // Return device type 
+        {
+			sendchar(devtype);
+			sendchar(0);
+        }
+
+        else if ((val=='x')||(val=='y'))	// clear and set LED ignored
+        {
+			recchar();
+			sendchar('\r');
+        }
+  
+		else if (val=='T')					// set device
+		{
+			device = recchar();
+			sendchar('\r');
+		}
+		
+        else if (val=='S')                  // Return software identifier 
+        {
+			send_boot();
+        }                
+        
+        else if (val=='V')                  // Return Software Version
+        {
+			sendchar(VERSION_HIGH);
+			sendchar(VERSION_LOW);
+        }        
+
+        else if (val=='s')                  // Return Signature Byte
+        {
+			sendchar(sig_byte1);
+			sendchar(sig_byte2);
+			sendchar(sig_byte3);
+        }       
+
+        else if(val != 0x1b) /* ESC */
+        {
+			sendchar('?');
+        }
+
+	}	// end of "parser" for-loop
+
+	return 0;
+}
+
+
+unsigned char BufferLoad(unsigned int size, unsigned char mem)
+{
+    70e6:	bf 92       	push	r11
+    70e8:	cf 92       	push	r12
+    70ea:	df 92       	push	r13
+    70ec:	ef 92       	push	r14
+    70ee:	ff 92       	push	r15
+    70f0:	0f 93       	push	r16
+    70f2:	1f 93       	push	r17
+    70f4:	cf 93       	push	r28
+    70f6:	df 93       	push	r29
+    70f8:	8c 01       	movw	r16, r24
+    70fa:	b6 2e       	mov	r11, r22
+	unsigned int data, cnt;
+	uint32_t tempaddress;
+		
+	for (cnt=0; cnt<UART_RX_BUFFER_SIZE; cnt++)
+    70fc:	20 e0       	ldi	r18, 0x00	; 0
+    70fe:	30 e0       	ldi	r19, 0x00	; 0
+    7100:	e9 01       	movw	r28, r18
+    7102:	ce 59       	subi	r28, 0x9E	; 158
+    7104:	df 4f       	sbci	r29, 0xFF	; 255
+    7106:	79 01       	movw	r14, r18
+    7108:	08 94       	sec
+    710a:	e1 1c       	adc	r14, r1
+    710c:	f1 1c       	adc	r15, r1
+	{
+		if (cnt<size) gBuffer[cnt]=recchar();
+    710e:	20 17       	cp	r18, r16
+    7110:	31 07       	cpc	r19, r17
+    7112:	18 f4       	brcc	.+6      	; 0x711a
+    7114:	0e 94 bf 3a 	call	0x757e
+    7118:	01 c0       	rjmp	.+2      	; 0x711c
+		else gBuffer[cnt]=0xFF;
+    711a:	8f ef       	ldi	r24, 0xFF	; 255
+    711c:	88 83       	st	Y, r24
+    711e:	97 01       	movw	r18, r14
+    7120:	20 38       	cpi	r18, 0x80	; 128
+    7122:	31 05       	cpc	r19, r1
+    7124:	68 f3       	brcs	.-38     	; 0x7100
+	}
+	cnt=0;
+    7126:	20 e0       	ldi	r18, 0x00	; 0
+    7128:	30 e0       	ldi	r19, 0x00	; 0
+
+	tempaddress = address;					// Store address in page
+    712a:	c0 90 e2 00 	lds	r12, 0x00E2
+    712e:	d0 90 e3 00 	lds	r13, 0x00E3
+    7132:	e0 90 e4 00 	lds	r14, 0x00E4
+    7136:	f0 90 e5 00 	lds	r15, 0x00E5
+	
+	my_eeprom_busy_wait();
+    713a:	8c b3       	in	r24, 0x1c	; 28
+    713c:	99 27       	eor	r25, r25
+    713e:	96 95       	lsr	r25
+    7140:	87 95       	ror	r24
+    7142:	ac 01       	movw	r20, r24
+    7144:	41 70       	andi	r20, 0x01	; 1
+    7146:	50 70       	andi	r21, 0x00	; 0
+    7148:	80 fd       	sbrc	r24, 0
+    714a:	f7 cf       	rjmp	.-18     	; 0x713a
+	
+	if (device == devtype)
+    714c:	80 91 e6 00 	lds	r24, 0x00E6
+    7150:	83 37       	cpi	r24, 0x73	; 115
+    7152:	09 f0       	breq	.+2      	; 0x7156
+    7154:	7f c0       	rjmp	.+254    	; 0x7254
+	{
+		if (mem == 'F')		// Flash
+    7156:	86 e4       	ldi	r24, 0x46	; 70
+    7158:	b8 16       	cp	r11, r24
+    715a:	09 f0       	breq	.+2      	; 0x715e
+    715c:	39 c0       	rjmp	.+114    	; 0x71d0
+    715e:	41 e0       	ldi	r20, 0x01	; 1
+    7160:	c2 e6       	ldi	r28, 0x62	; 98
+    7162:	d0 e0       	ldi	r29, 0x00	; 0
+		{
+			do {
+				data=gBuffer[cnt++];
+    7164:	89 91       	ld	r24, Y+
+    7166:	28 2f       	mov	r18, r24
+    7168:	33 27       	eor	r19, r19
+				data|=(gBuffer[cnt++]<<8);
+    716a:	89 91       	ld	r24, Y+
+    716c:	99 27       	eor	r25, r25
+    716e:	98 2f       	mov	r25, r24
+    7170:	88 27       	eor	r24, r24
+    7172:	28 2b       	or	r18, r24
+    7174:	39 2b       	or	r19, r25
+				boot_page_fill(address,data);
+    7176:	80 91 e2 00 	lds	r24, 0x00E2
+    717a:	90 91 e3 00 	lds	r25, 0x00E3
+    717e:	09 01       	movw	r0, r18
+    7180:	fc 01       	movw	r30, r24
+    7182:	40 93 57 00 	sts	0x0057, r20
+    7186:	e8 95       	spm
+    7188:	11 24       	eor	r1, r1
+											//call asm routine. 
+				address=address+2;  		// Select next word in memory
+    718a:	80 91 e2 00 	lds	r24, 0x00E2
+    718e:	90 91 e3 00 	lds	r25, 0x00E3
+    7192:	a0 91 e4 00 	lds	r26, 0x00E4
+    7196:	b0 91 e5 00 	lds	r27, 0x00E5
+    719a:	02 96       	adiw	r24, 0x02	; 2
+    719c:	a1 1d       	adc	r26, r1
+    719e:	b1 1d       	adc	r27, r1
+    71a0:	80 93 e2 00 	sts	0x00E2, r24
+    71a4:	90 93 e3 00 	sts	0x00E3, r25
+    71a8:	a0 93 e4 00 	sts	0x00E4, r26
+    71ac:	b0 93 e5 00 	sts	0x00E5, r27
+				size -= 2;					// Reduce number of bytes to write by two    
+    71b0:	02 50       	subi	r16, 0x02	; 2
+    71b2:	10 40       	sbci	r17, 0x00	; 0
+			} while(size);					// Loop until all bytes written
+    71b4:	b9 f6       	brne	.-82     	; 0x7164
+
+			/* commented out since not compatible with mega8 - 
+			   secondary benefit: saves memory 
+			tempaddress &= 0xFF80;			// Ensure the address points to the first byte in the page
+			*/
+
+			boot_page_write(tempaddress);
+    71b6:	85 e0       	ldi	r24, 0x05	; 5
+    71b8:	f6 01       	movw	r30, r12
+    71ba:	80 93 57 00 	sts	0x0057, r24
+    71be:	e8 95       	spm
+			boot_spm_busy_wait();	
+    71c0:	07 b6       	in	r0, 0x37	; 55
+    71c2:	00 fc       	sbrc	r0, 0
+    71c4:	fd cf       	rjmp	.-6      	; 0x71c0
+			boot_rww_enable();				//Re-enable the RWW section
+    71c6:	81 e1       	ldi	r24, 0x11	; 17
+    71c8:	80 93 57 00 	sts	0x0057, r24
+    71cc:	e8 95       	spm
+    71ce:	3f c0       	rjmp	.+126    	; 0x724e
+			
+			/* commented out since not compatible with mega8
+			if (address != (address & 0xFF80))
+			{								// Ensure that the address points to the beginning of the next page
+				address &= 0xFF80;
+				address += SPM_PAGESIZE;
+			}
+			*/	
+		}									// End FLASH
+		
+		if (mem == 'E')						// Start EEPROM
+    71d0:	85 e4       	ldi	r24, 0x45	; 69
+    71d2:	b8 16       	cp	r11, r24
+    71d4:	e1 f5       	brne	.+120    	; 0x724e
+        {
+			address>>=1;
+    71d6:	80 91 e2 00 	lds	r24, 0x00E2
+    71da:	90 91 e3 00 	lds	r25, 0x00E3
+    71de:	a0 91 e4 00 	lds	r26, 0x00E4
+    71e2:	b0 91 e5 00 	lds	r27, 0x00E5
+    71e6:	b6 95       	lsr	r27
+    71e8:	a7 95       	ror	r26
+    71ea:	97 95       	ror	r25
+    71ec:	87 95       	ror	r24
+    71ee:	80 93 e2 00 	sts	0x00E2, r24
+    71f2:	90 93 e3 00 	sts	0x00E3, r25
+    71f6:	a0 93 e4 00 	sts	0x00E4, r26
+    71fa:	b0 93 e5 00 	sts	0x00E5, r27
+    71fe:	f9 01       	movw	r30, r18
+    7200:	ef 59       	subi	r30, 0x9F	; 159
+    7202:	ff 4f       	sbci	r31, 0xFF	; 255
+			do {
+	 	        EEARL = address;			// Setup EEPROM address
+    7204:	80 91 e2 00 	lds	r24, 0x00E2
+    7208:	8e bb       	out	0x1e, r24	; 30
+	            EEARH = (address >> 8);
+    720a:	80 91 e2 00 	lds	r24, 0x00E2
+    720e:	90 91 e3 00 	lds	r25, 0x00E3
+    7212:	a0 91 e4 00 	lds	r26, 0x00E4
+    7216:	b0 91 e5 00 	lds	r27, 0x00E5
+    721a:	29 2f       	mov	r18, r25
+    721c:	3a 2f       	mov	r19, r26
+    721e:	4b 2f       	mov	r20, r27
+    7220:	55 27       	eor	r21, r21
+    7222:	2f bb       	out	0x1f, r18	; 31
+				address++;					// Select next byte
+    7224:	01 96       	adiw	r24, 0x01	; 1
+    7226:	a1 1d       	adc	r26, r1
+    7228:	b1 1d       	adc	r27, r1
+    722a:	80 93 e2 00 	sts	0x00E2, r24
+    722e:	90 93 e3 00 	sts	0x00E3, r25
+    7232:	a0 93 e4 00 	sts	0x00E4, r26
+    7236:	b0 93 e5 00 	sts	0x00E5, r27
+				EEDR=gBuffer[cnt++];
+    723a:	31 96       	adiw	r30, 0x01	; 1
+    723c:	80 81       	ld	r24, Z
+    723e:	8d bb       	out	0x1d, r24	; 29
+				
+	            EECR |= (1<<EEMWE);			// Write data into EEPROM
+    7240:	e2 9a       	sbi	0x1c, 2	; 28
+	            EECR |= (1<<EEWE);
+    7242:	e1 9a       	sbi	0x1c, 1	; 28
+	            
+				while (EECR & (1<<EEWE));	// Wait for EEPROM write to finish
+    7244:	e1 99       	sbic	0x1c, 1	; 28
+    7246:	fe cf       	rjmp	.-4      	; 0x7244
+				size--;						// Decreas number of bytes to write
+    7248:	01 50       	subi	r16, 0x01	; 1
+    724a:	10 40       	sbci	r17, 0x00	; 0
+			} while(size);					// Loop until all bytes written
+    724c:	d9 f6       	brne	.-74     	; 0x7204
+
+		}
+
+		return '\r';						// Report programming OK
+    724e:	8d e0       	ldi	r24, 0x0D	; 13
+    7250:	90 e0       	ldi	r25, 0x00	; 0
+    7252:	01 c0       	rjmp	.+2      	; 0x7256
+
+	}
+	
+	return 0;								// Report programming failed
+    7254:	ca 01       	movw	r24, r20
+    7256:	df 91       	pop	r29
+    7258:	cf 91       	pop	r28
+    725a:	1f 91       	pop	r17
+    725c:	0f 91       	pop	r16
+    725e:	ff 90       	pop	r15
+    7260:	ef 90       	pop	r14
+    7262:	df 90       	pop	r13
+    7264:	cf 90       	pop	r12
+    7266:	bf 90       	pop	r11
+    7268:	08 95       	ret
+
+0000726a <BlockRead>:
+}
+
+void BlockRead(unsigned int size, unsigned char mem)
+{
+    726a:	0f 93       	push	r16
+    726c:	1f 93       	push	r17
+    726e:	cf 93       	push	r28
+    7270:	df 93       	push	r29
+    7272:	ec 01       	movw	r28, r24
+	unsigned int data;
+	
+	my_eeprom_busy_wait();
+    7274:	e1 99       	sbic	0x1c, 1	; 28
+    7276:	fe cf       	rjmp	.-4      	; 0x7274
+	
+	if (mem == 'E')							// Read EEPROM
+    7278:	65 34       	cpi	r22, 0x45	; 69
+    727a:	11 f5       	brne	.+68     	; 0x72c0
+	{
+		// address>>=1; // not needed here - hmm, somehow inconsistant TODO
+		do {
+			EEARL = address;				// Setup EEPROM address
+    727c:	80 91 e2 00 	lds	r24, 0x00E2
+    7280:	8e bb       	out	0x1e, r24	; 30
+			EEARH = (address >> 8);
+    7282:	80 91 e2 00 	lds	r24, 0x00E2
+    7286:	90 91 e3 00 	lds	r25, 0x00E3
+    728a:	a0 91 e4 00 	lds	r26, 0x00E4
+    728e:	b0 91 e5 00 	lds	r27, 0x00E5
+    7292:	29 2f       	mov	r18, r25
+    7294:	3a 2f       	mov	r19, r26
+    7296:	4b 2f       	mov	r20, r27
+    7298:	55 27       	eor	r21, r21
+    729a:	2f bb       	out	0x1f, r18	; 31
+			address++;						// Select next EEPROM byte
+    729c:	01 96       	adiw	r24, 0x01	; 1
+    729e:	a1 1d       	adc	r26, r1
+    72a0:	b1 1d       	adc	r27, r1
+    72a2:	80 93 e2 00 	sts	0x00E2, r24
+    72a6:	90 93 e3 00 	sts	0x00E3, r25
+    72aa:	a0 93 e4 00 	sts	0x00E4, r26
+    72ae:	b0 93 e5 00 	sts	0x00E5, r27
+			EECR |= (1<<EERE);				// Read EEPROM
+    72b2:	e0 9a       	sbi	0x1c, 0	; 28
+			sendchar(EEDR);					// Transmit EEPROM data to PC
+    72b4:	8d b3       	in	r24, 0x1d	; 29
+    72b6:	0e 94 aa 3a 	call	0x7554
+			size--;							// Decrease number of bytes to read
+    72ba:	21 97       	sbiw	r28, 0x01	; 1
+		} while (size);					// Repeat until all block has been read
+    72bc:	f9 f6       	brne	.-66     	; 0x727c
+    72be:	22 c0       	rjmp	.+68     	; 0x7304
+	}
+	else									// Read Flash
+	{
+		do {
+#if defined(RAMPZ)
+			data = pgm_read_word_far(address);
+#else
+			data = pgm_read_word_near((uint16_t)address);
+    72c0:	e0 91 e2 00 	lds	r30, 0x00E2
+    72c4:	f0 91 e3 00 	lds	r31, 0x00E3
+    72c8:	05 91       	lpm	r16, Z+
+    72ca:	14 91       	lpm	r17, Z
+#endif
+			sendchar((unsigned char)data);		//send LSB
+    72cc:	80 2f       	mov	r24, r16
+    72ce:	0e 94 aa 3a 	call	0x7554
+			sendchar((unsigned char)(data >> 8));	//send MSB  
+    72d2:	81 2f       	mov	r24, r17
+    72d4:	99 27       	eor	r25, r25
+    72d6:	0e 94 aa 3a 	call	0x7554
+			address += 2;  					// Select next word in memory
+    72da:	80 91 e2 00 	lds	r24, 0x00E2
+    72de:	90 91 e3 00 	lds	r25, 0x00E3
+    72e2:	a0 91 e4 00 	lds	r26, 0x00E4
+    72e6:	b0 91 e5 00 	lds	r27, 0x00E5
+    72ea:	02 96       	adiw	r24, 0x02	; 2
+    72ec:	a1 1d       	adc	r26, r1
+    72ee:	b1 1d       	adc	r27, r1
+    72f0:	80 93 e2 00 	sts	0x00E2, r24
+    72f4:	90 93 e3 00 	sts	0x00E3, r25
+    72f8:	a0 93 e4 00 	sts	0x00E4, r26
+    72fc:	b0 93 e5 00 	sts	0x00E5, r27
+			size -= 2;						// Subtract two bytes from number of bytes to read
+    7300:	22 97       	sbiw	r28, 0x02	; 2
+		} while (size);					// Repeat until all block has been read
+    7302:	f1 f6       	brne	.-68     	; 0x72c0
+    7304:	df 91       	pop	r29
+    7306:	cf 91       	pop	r28
+    7308:	1f 91       	pop	r17
+    730a:	0f 91       	pop	r16
+    730c:	08 95       	ret
+
+0000730e <main>:
+    730e:	cf e5       	ldi	r28, 0x5F	; 95
+    7310:	d8 e0       	ldi	r29, 0x08	; 8
+    7312:	de bf       	out	0x3e, r29	; 62
+    7314:	cd bf       	out	0x3d, r28	; 61
+    7316:	f8 94       	cli
+    7318:	01 e0       	ldi	r16, 0x01	; 1
+    731a:	05 bf       	out	0x35, r16	; 53
+    731c:	82 e0       	ldi	r24, 0x02	; 2
+    731e:	85 bf       	out	0x35, r24	; 53
+    7320:	60 e0       	ldi	r22, 0x00	; 0
+    7322:	83 e3       	ldi	r24, 0x33	; 51
+    7324:	90 e0       	ldi	r25, 0x00	; 0
+    7326:	0e 94 a0 3a 	call	0x7540
+    732a:	0e 94 5d 38 	call	0x70ba
+    732e:	80 b3       	in	r24, 0x10	; 16
+    7330:	93 b3       	in	r25, 0x13	; 19
+    7332:	83 ff       	sbrs	r24, 3
+    7334:	0b c0       	rjmp	.+22     	; 0x734c
+    7336:	05 bf       	out	0x35, r16	; 53
+    7338:	15 be       	out	0x35, r1	; 53
+    733a:	60 2f       	mov	r22, r16
+    733c:	83 e7       	ldi	r24, 0x73	; 115
+    733e:	0e 94 67 38 	call	0x70ce
+    7342:	e0 91 60 00 	lds	r30, 0x0060
+    7346:	f0 91 61 00 	lds	r31, 0x0061
+    734a:	09 95       	icall
+    734c:	61 e0       	ldi	r22, 0x01	; 1
+    734e:	8c e7       	ldi	r24, 0x7C	; 124
+    7350:	0e 94 67 38 	call	0x70ce
+    7354:	0e 94 bf 3a 	call	0x757e
+    7358:	68 2f       	mov	r22, r24
+    735a:	81 36       	cpi	r24, 0x61	; 97
+    735c:	11 f4       	brne	.+4      	; 0x7362
+    735e:	89 e5       	ldi	r24, 0x59	; 89
+    7360:	ec c0       	rjmp	.+472    	; 0x753a
+    7362:	81 34       	cpi	r24, 0x41	; 65
+    7364:	39 f5       	brne	.+78     	; 0x73b4
+    7366:	0e 94 bf 3a 	call	0x757e
+    736a:	99 27       	eor	r25, r25
+    736c:	aa 27       	eor	r26, r26
+    736e:	bb 27       	eor	r27, r27
+    7370:	80 93 e2 00 	sts	0x00E2, r24
+    7374:	90 93 e3 00 	sts	0x00E3, r25
+    7378:	a0 93 e4 00 	sts	0x00E4, r26
+    737c:	b0 93 e5 00 	sts	0x00E5, r27
+    7380:	ee 24       	eor	r14, r14
+    7382:	f8 2e       	mov	r15, r24
+    7384:	09 2f       	mov	r16, r25
+    7386:	1a 2f       	mov	r17, r26
+    7388:	0e 94 bf 3a 	call	0x757e
+    738c:	99 27       	eor	r25, r25
+    738e:	aa 27       	eor	r26, r26
+    7390:	bb 27       	eor	r27, r27
+    7392:	e8 2a       	or	r14, r24
+    7394:	f9 2a       	or	r15, r25
+    7396:	0a 2b       	or	r16, r26
+    7398:	1b 2b       	or	r17, r27
+    739a:	ee 0c       	add	r14, r14
+    739c:	ff 1c       	adc	r15, r15
+    739e:	00 1f       	adc	r16, r16
+    73a0:	11 1f       	adc	r17, r17
+    73a2:	e0 92 e2 00 	sts	0x00E2, r14
+    73a6:	f0 92 e3 00 	sts	0x00E3, r15
+    73aa:	00 93 e4 00 	sts	0x00E4, r16
+    73ae:	10 93 e5 00 	sts	0x00E5, r17
+    73b2:	68 c0       	rjmp	.+208    	; 0x7484
+    73b4:	82 36       	cpi	r24, 0x62	; 98
+    73b6:	41 f4       	brne	.+16     	; 0x73c8
+    73b8:	89 e5       	ldi	r24, 0x59	; 89
+    73ba:	0e 94 aa 3a 	call	0x7554
+    73be:	80 e0       	ldi	r24, 0x00	; 0
+    73c0:	0e 94 aa 3a 	call	0x7554
+    73c4:	80 e8       	ldi	r24, 0x80	; 128
+    73c6:	b9 c0       	rjmp	.+370    	; 0x753a
+    73c8:	82 34       	cpi	r24, 0x42	; 66
+    73ca:	89 f4       	brne	.+34     	; 0x73ee
+    73cc:	0e 94 bf 3a 	call	0x757e
+    73d0:	99 27       	eor	r25, r25
+    73d2:	18 2f       	mov	r17, r24
+    73d4:	00 27       	eor	r16, r16
+    73d6:	0e 94 bf 3a 	call	0x757e
+    73da:	99 27       	eor	r25, r25
+    73dc:	08 2b       	or	r16, r24
+    73de:	19 2b       	or	r17, r25
+    73e0:	0e 94 bf 3a 	call	0x757e
+    73e4:	68 2f       	mov	r22, r24
+    73e6:	c8 01       	movw	r24, r16
+    73e8:	0e 94 73 38 	call	0x70e6
+    73ec:	a6 c0       	rjmp	.+332    	; 0x753a
+    73ee:	87 36       	cpi	r24, 0x67	; 103
+    73f0:	89 f4       	brne	.+34     	; 0x7414
+    73f2:	0e 94 bf 3a 	call	0x757e
+    73f6:	99 27       	eor	r25, r25
+    73f8:	18 2f       	mov	r17, r24
+    73fa:	00 27       	eor	r16, r16
+    73fc:	0e 94 bf 3a 	call	0x757e
+    7400:	99 27       	eor	r25, r25
+    7402:	08 2b       	or	r16, r24
+    7404:	19 2b       	or	r17, r25
+    7406:	0e 94 bf 3a 	call	0x757e
+    740a:	68 2f       	mov	r22, r24
+    740c:	c8 01       	movw	r24, r16
+    740e:	0e 94 35 39 	call	0x726a
+    7412:	9c cf       	rjmp	.-200    	; 0x734c
+    7414:	85 36       	cpi	r24, 0x65	; 101
+    7416:	09 f0       	breq	.+2      	; 0x741a
+    7418:	37 c0       	rjmp	.+110    	; 0x7488
+    741a:	80 91 e6 00 	lds	r24, 0x00E6
+    741e:	83 37       	cpi	r24, 0x73	; 115
+    7420:	69 f5       	brne	.+90     	; 0x747c
+    7422:	10 92 e2 00 	sts	0x00E2, r1
+    7426:	10 92 e3 00 	sts	0x00E3, r1
+    742a:	10 92 e4 00 	sts	0x00E4, r1
+    742e:	10 92 e5 00 	sts	0x00E5, r1
+    7432:	23 e0       	ldi	r18, 0x03	; 3
+    7434:	80 91 e2 00 	lds	r24, 0x00E2
+    7438:	90 91 e3 00 	lds	r25, 0x00E3
+    743c:	fc 01       	movw	r30, r24
+    743e:	20 93 57 00 	sts	0x0057, r18
+    7442:	e8 95       	spm
+    7444:	07 b6       	in	r0, 0x37	; 55
+    7446:	00 fc       	sbrc	r0, 0
+    7448:	fd cf       	rjmp	.-6      	; 0x7444
+    744a:	80 91 e2 00 	lds	r24, 0x00E2
+    744e:	90 91 e3 00 	lds	r25, 0x00E3
+    7452:	a0 91 e4 00 	lds	r26, 0x00E4
+    7456:	b0 91 e5 00 	lds	r27, 0x00E5
+    745a:	80 58       	subi	r24, 0x80	; 128
+    745c:	9f 4f       	sbci	r25, 0xFF	; 255
+    745e:	af 4f       	sbci	r26, 0xFF	; 255
+    7460:	bf 4f       	sbci	r27, 0xFF	; 255
+    7462:	80 93 e2 00 	sts	0x00E2, r24
+    7466:	90 93 e3 00 	sts	0x00E3, r25
+    746a:	a0 93 e4 00 	sts	0x00E4, r26
+    746e:	b0 93 e5 00 	sts	0x00E5, r27
+    7472:	80 50       	subi	r24, 0x00	; 0
+    7474:	90 47       	sbci	r25, 0x70	; 112
+    7476:	a0 40       	sbci	r26, 0x00	; 0
+    7478:	b0 40       	sbci	r27, 0x00	; 0
+    747a:	e0 f2       	brcs	.-72     	; 0x7434
+    747c:	81 e1       	ldi	r24, 0x11	; 17
+    747e:	80 93 57 00 	sts	0x0057, r24
+    7482:	e8 95       	spm
+    7484:	8d e0       	ldi	r24, 0x0D	; 13
+    7486:	59 c0       	rjmp	.+178    	; 0x753a
+    7488:	85 34       	cpi	r24, 0x45	; 69
+    748a:	39 f4       	brne	.+14     	; 0x749a
+    748c:	8d e0       	ldi	r24, 0x0D	; 13
+    748e:	0e 94 aa 3a 	call	0x7554
+    7492:	81 e0       	ldi	r24, 0x01	; 1
+    7494:	85 bf       	out	0x35, r24	; 53
+    7496:	15 be       	out	0x35, r1	; 53
+    7498:	54 cf       	rjmp	.-344    	; 0x7342
+    749a:	80 35       	cpi	r24, 0x50	; 80
+    749c:	99 f3       	breq	.-26     	; 0x7484
+    749e:	8c 34       	cpi	r24, 0x4C	; 76
+    74a0:	89 f3       	breq	.-30     	; 0x7484
+    74a2:	80 37       	cpi	r24, 0x70	; 112
+    74a4:	11 f4       	brne	.+4      	; 0x74aa
+    74a6:	83 e5       	ldi	r24, 0x53	; 83
+    74a8:	48 c0       	rjmp	.+144    	; 0x753a
+    74aa:	86 34       	cpi	r24, 0x46	; 70
+    74ac:	21 f4       	brne	.+8      	; 0x74b6
+    74ae:	69 e0       	ldi	r22, 0x09	; 9
+    74b0:	80 e0       	ldi	r24, 0x00	; 0
+    74b2:	90 e0       	ldi	r25, 0x00	; 0
+    74b4:	05 c0       	rjmp	.+10     	; 0x74c0
+    74b6:	82 37       	cpi	r24, 0x72	; 114
+    74b8:	31 f4       	brne	.+12     	; 0x74c6
+    74ba:	69 e0       	ldi	r22, 0x09	; 9
+    74bc:	81 e0       	ldi	r24, 0x01	; 1
+    74be:	90 e0       	ldi	r25, 0x00	; 0
+    74c0:	0e 94 d3 3a 	call	0x75a6
+    74c4:	3a c0       	rjmp	.+116    	; 0x753a
+    74c6:	8e 34       	cpi	r24, 0x4E	; 78
+    74c8:	21 f4       	brne	.+8      	; 0x74d2
+    74ca:	69 e0       	ldi	r22, 0x09	; 9
+    74cc:	83 e0       	ldi	r24, 0x03	; 3
+    74ce:	90 e0       	ldi	r25, 0x00	; 0
+    74d0:	f7 cf       	rjmp	.-18     	; 0x74c0
+    74d2:	81 35       	cpi	r24, 0x51	; 81
+    74d4:	21 f4       	brne	.+8      	; 0x74de
+    74d6:	69 e0       	ldi	r22, 0x09	; 9
+    74d8:	82 e0       	ldi	r24, 0x02	; 2
+    74da:	90 e0       	ldi	r25, 0x00	; 0
+    74dc:	f1 cf       	rjmp	.-30     	; 0x74c0
+    74de:	84 37       	cpi	r24, 0x74	; 116
+    74e0:	29 f4       	brne	.+10     	; 0x74ec
+    74e2:	83 e7       	ldi	r24, 0x73	; 115
+    74e4:	0e 94 aa 3a 	call	0x7554
+    74e8:	80 e0       	ldi	r24, 0x00	; 0
+    74ea:	27 c0       	rjmp	.+78     	; 0x753a
+    74ec:	88 57       	subi	r24, 0x78	; 120
+    74ee:	82 30       	cpi	r24, 0x02	; 2
+    74f0:	18 f4       	brcc	.+6      	; 0x74f8
+    74f2:	0e 94 bf 3a 	call	0x757e
+    74f6:	c6 cf       	rjmp	.-116    	; 0x7484
+    74f8:	64 35       	cpi	r22, 0x54	; 84
+    74fa:	29 f4       	brne	.+10     	; 0x7506
+    74fc:	0e 94 bf 3a 	call	0x757e
+    7500:	80 93 e6 00 	sts	0x00E6, r24
+    7504:	bf cf       	rjmp	.-130    	; 0x7484
+    7506:	63 35       	cpi	r22, 0x53	; 83
+    7508:	19 f4       	brne	.+6      	; 0x7510
+    750a:	0e 94 47 38 	call	0x708e
+    750e:	1e cf       	rjmp	.-452    	; 0x734c
+    7510:	66 35       	cpi	r22, 0x56	; 86
+    7512:	29 f4       	brne	.+10     	; 0x751e
+    7514:	80 e3       	ldi	r24, 0x30	; 48
+    7516:	0e 94 aa 3a 	call	0x7554
+    751a:	87 e3       	ldi	r24, 0x37	; 55
+    751c:	0e c0       	rjmp	.+28     	; 0x753a
+    751e:	63 37       	cpi	r22, 0x73	; 115
+    7520:	41 f4       	brne	.+16     	; 0x7532
+    7522:	82 e0       	ldi	r24, 0x02	; 2
+    7524:	0e 94 aa 3a 	call	0x7554
+    7528:	85 e9       	ldi	r24, 0x95	; 149
+    752a:	0e 94 aa 3a 	call	0x7554
+    752e:	8e e1       	ldi	r24, 0x1E	; 30
+    7530:	04 c0       	rjmp	.+8      	; 0x753a
+    7532:	6b 31       	cpi	r22, 0x1B	; 27
+    7534:	09 f4       	brne	.+2      	; 0x7538
+    7536:	0a cf       	rjmp	.-492    	; 0x734c
+    7538:	8f e3       	ldi	r24, 0x3F	; 63
+    753a:	0e 94 aa 3a 	call	0x7554
+    753e:	06 cf       	rjmp	.-500    	; 0x734c
+
+00007540 <USART_Init>:
+#endif
+
+
+void USART_Init(unsigned int baudrate, unsigned char doublespeed)
+{
+    7540:	9c 01       	movw	r18, r24
+    // Set baud rate
+    UART0_UBRR_HIGH = (unsigned char)(baudrate>>8);
+    7542:	83 2f       	mov	r24, r19
+    7544:	99 27       	eor	r25, r25
+    7546:	80 bd       	out	0x20, r24	; 32
+    UART0_UBRR_LOW  = (unsigned char)baudrate;
+    7548:	29 b9       	out	0x09, r18	; 9
+
+    // Enable 2x speed - TODO adopt to all uCs
+	#ifdef UART0_DOUBLEAVAIL
+    if (doublespeed) UCSR0A = (1<<U2X0);
+	#endif
+
+#if defined (ATMEGA_USART)
+    /* Enable USART receiver and transmitter and disable interrupts */
+    UART0_CONTROL = (1<<RXEN)|(1<<TXEN)|(0<<RXCIE)|(0<<UDRIE);
+    754a:	88 e1       	ldi	r24, 0x18	; 24
+    754c:	8a b9       	out	0x0a, r24	; 10
+    /* Set frame format: asynchronous, 8data, no parity, 1stop bit */
+    #ifdef URSEL
+    UCSRC = (1<<URSEL)|(3<<UCSZ0);
+    754e:	86 e8       	ldi	r24, 0x86	; 134
+    7550:	80 bd       	out	0x20, r24	; 32
+    7552:	08 95       	ret
+
+00007554 <sendchar>:
+    #else
+    UCSRC = (3<<UCSZ0);
+    #endif 
+    
+#elif defined (ATMEGA_USART0 )
+    /* Enable USART receiver and transmitter and disable interrupts */
+    UART0_CONTROL = (1<<RXEN0)|(1<<TXEN0)|(0<<RXCIE0)|(0<<UDRIE0);
+    /* Set frame format: asynchronous, 8data, no parity, 1stop bit */
+    #ifdef URSEL0
+    UCSR0C = (1<<URSEL0)|(3<<UCSZ00);
+    #else
+    UCSR0C = (3<<UCSZ00);
+    #endif 
+#endif
+    
+}
+
+void sendchar(char data)
+{
+    int i = 0;
+    7554:	20 e0       	ldi	r18, 0x00	; 0
+    7556:	30 e0       	ldi	r19, 0x00	; 0
+    
+    UART0_DATA  = data;
+    7558:	8c b9       	out	0x0c, r24	; 12
+    
+    if(SREG & 0x80)
+    755a:	0f b6       	in	r0, 0x3f	; 63
+    755c:	07 fe       	sbrs	r0, 7
+    755e:	0b c0       	rjmp	.+22     	; 0x7576
+    {
+		while ( !(UART0_STATUS&0x40) && (i<10000) )
+		{
+			i++;
+    7560:	5e 99       	sbic	0x0b, 6	; 11
+    7562:	0b c0       	rjmp	.+22     	; 0x757a
+    7564:	2f 5f       	subi	r18, 0xFF	; 255
+    7566:	3f 4f       	sbci	r19, 0xFF	; 255
+    7568:	5e 99       	sbic	0x0b, 6	; 11
+    756a:	07 c0       	rjmp	.+14     	; 0x757a
+    756c:	87 e2       	ldi	r24, 0x27	; 39
+    756e:	20 31       	cpi	r18, 0x10	; 16
+    7570:	38 07       	cpc	r19, r24
+    7572:	c4 f3       	brlt	.-16     	; 0x7564
+    7574:	02 c0       	rjmp	.+4      	; 0x757a
+		}
+    }
+    else 
+        while( !(UART0_STATUS&0x40) );
+    7576:	5e 9b       	sbis	0x0b, 6	; 11
+    7578:	fe cf       	rjmp	.-4      	; 0x7576
+        
+    UART0_STATUS=UART0_STATUS|0x40;                             //delete TXCflag
+    757a:	5e 9a       	sbi	0x0b, 6	; 11
+    757c:	08 95       	ret
+
+0000757e <recchar>:
+}
+
+
+char recchar(void)
+{
+    int i = 0;
+    757e:	80 e0       	ldi	r24, 0x00	; 0
+    7580:	90 e0       	ldi	r25, 0x00	; 0
+
+    
+    if(SREG & 0x80)
+    7582:	0f b6       	in	r0, 0x3f	; 63
+    7584:	07 fe       	sbrs	r0, 7
+    7586:	0a c0       	rjmp	.+20     	; 0x759c
+    {
+		// while (!(UART0_STATUS & (1<<RXC0)) && (i<10000))
+		while (!(UART0_STATUS & 0x80) && (i<10000))
+		{
+			i++;
+    7588:	5f 99       	sbic	0x0b, 7	; 11
+    758a:	0a c0       	rjmp	.+20     	; 0x75a0
+    758c:	01 96       	adiw	r24, 0x01	; 1
+    758e:	5f 99       	sbic	0x0b, 7	; 11
+    7590:	07 c0       	rjmp	.+14     	; 0x75a0
+    7592:	27 e2       	ldi	r18, 0x27	; 39
+    7594:	80 31       	cpi	r24, 0x10	; 16
+    7596:	92 07       	cpc	r25, r18
+    7598:	cc f3       	brlt	.-14     	; 0x758c
+    759a:	02 c0       	rjmp	.+4      	; 0x75a0
+		}
+    }
+    else
+        // while(!(UART0_STATUS & (1<<RXC0)));
+		while(!(UART0_STATUS & 0x80));
+    759c:	5f 9b       	sbis	0x0b, 7	; 11
+    759e:	fe cf       	rjmp	.-4      	; 0x759c
+		
+        
+    return UART0_DATA ;
+    75a0:	8c b1       	in	r24, 0x0c	; 12
+}
+    75a2:	99 27       	eor	r25, r25
+    75a4:	08 95       	ret
+
+000075a6 <read_fuse_lock>:
+unsigned char read_fuse_lock(unsigned short addr, unsigned char mode)
+{
+	unsigned char retval;
+	
+	asm volatile
+    75a6:	fc 01       	movw	r30, r24
+    75a8:	60 93 57 00 	sts	0x0057, r22
+    75ac:	c8 95       	lpm
+    75ae:	80 2d       	mov	r24, r0
+	(
+		"movw r30, %3\n\t" /* Z to addr */ \
+		"sts %0, %2\n\t" /* set mode in SPM_REG */ \
+		"lpm\n\t"  /* load fuse/lock value into r0 */ \
+		"mov %1,r0\n\t" /* save return value */ \
+		: "=m" (SPM_REG),
+		  "=r" (retval)
+		: "r" (mode),
+		  "r" (addr)
+		: "r30", "r31", "r0"
+	);
+	return retval;
+}
+    75b0:	99 27       	eor	r25, r25
+    75b2:	08 95       	ret

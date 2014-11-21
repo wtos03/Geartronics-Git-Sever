@@ -1,0 +1,305 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+rx_out              0x1               avr_io.o
+reg                 0x1               avr_io.o
+command             0x2               avr_io.o
+rx_buffer           0x10              avr_io.o
+tx_buffer           0xa               avr_io.o
+tx_numbytes         0x1               avr_io.o
+parse_state         0x2               avr_io.o
+tx_empty            0x1               avr_io.o
+data                0x1               avr_io.o
+rx_timeout          0x1               avr_io.o
+error               0x2               avr_io.o
+rx_in               0x1               avr_io.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00002000         xr
+data             0x00800060         0x00000200         rw !x
+eeprom           0x00810000         0x00000200         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+LOAD avr_io.o
+LOAD C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\libgcc.a
+LOAD C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\libc.a
+LOAD C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000      0x2d8
+ *(.init)
+ .init          0x00000000       0x1a C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+ *(.progmem.gcc*)
+ *(.progmem*)
+                0x0000001a                .=ALIGN(0x2)
+ *(.text)
+ .text          0x0000001a       0x3c C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+                0x00000052                _overflow1_
+                0x00000052                _interrupt1_
+                0x00000052                _spi_
+                0x0000001a                _init_
+                0x00000052                _output_compare1b_
+                0x00000052                _uart_data_
+                0x00000054                _unexpected_
+                0x00000052                _comparator_
+                0x00000052                _interrupt0_
+                0x00000052                _output_compare1a_
+                0x00000052                _input_capture1_
+                0x0000001a                _real_init_
+ .text          0x00000056      0x282 avr_io.o
+                0x0000021a                UartSend
+                0x00000252                _uart_trans_
+                0x000002ba                _overflow0_
+                0x000001a2                DoCommand
+                0x00000270                _uart_recv_
+                0x00000056                main
+                0x00000208                Error
+                0x000002d8                .=ALIGN(0x2)
+ *(.text.*)
+                0x000002d8                .=ALIGN(0x2)
+ *(.fini)
+                0x000002d8                _etext=.
+
+.data           0x00800060        0x0 load address 0x000002d8
+                0x00800060                PROVIDE (__data_start, .)
+ *(.data)
+ *(.gnu.linkonce.d*)
+                0x00800060                .=ALIGN(0x2)
+                0x00800060                _edata=.
+
+.bss            0x00800060       0x27
+                0x00800060                PROVIDE (__bss_start, .)
+ *(.bss)
+ *(COMMON)
+ COMMON         0x00800060       0x27 avr_io.o
+                                  0x0 (size before relaxing)
+                0x00800060                rx_out
+                0x00800061                reg
+                0x00800062                command
+                0x00800064                rx_buffer
+                0x00800074                tx_buffer
+                0x0080007e                tx_numbytes
+                0x0080007f                parse_state
+                0x00800081                tx_empty
+                0x00800082                data
+                0x00800083                rx_timeout
+                0x00800084                error
+                0x00800086                rx_in
+                0x00800087                PROVIDE (__bss_end, .)
+                0x00800087                _end=.
+
+.eeprom         0x00810000        0x0 load address 0x000002d8
+ *(.eeprom*)
+                0x00810000                __eeprom_end=.
+
+.stab           0x00000000      0xb58
+ *(.stab)
+ .stab          0x00000000      0x324 C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+ .stab          0x00000324      0x834 avr_io.o
+                                0x84c (size before relaxing)
+
+.stabstr        0x00000000      0x9e9
+ *(.stabstr)
+ .stabstr       0x00000000      0x9e9 C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+                                  0x0 (size before relaxing)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+                0x0000025f                PROVIDE (__stack, 0x25f)
+OUTPUT(avr_io.elf elf32-avr)
+
+Cross Reference Table
+
+Symbol                                            File
+DoCommand                                         avr_io.o
+Error                                             avr_io.o
+UartSend                                          avr_io.o
+__bss_end                                         C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+__bss_start                                       C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+__data_start                                      C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+__init_emcucr__                                   C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+__init_mcucr__                                    C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+__init_wdtcr__                                    C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+__stack                                           C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+                                                  avr_io.o
+_comparator_                                      C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_edata                                            C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_etext                                            C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_init_                                            C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_input_capture1_                                  C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_interrupt0_                                      C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_interrupt1_                                      C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_output_compare1a_                                C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_output_compare1b_                                C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_overflow0_                                       avr_io.o
+                                                  C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_overflow1_                                       C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_real_init_                                       C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_spi_                                             C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_uart_data_                                       C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_uart_recv_                                       avr_io.o
+                                                  C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_uart_trans_                                      avr_io.o
+                                                  C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+_unexpected_                                      C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+command                                           avr_io.o
+data                                              avr_io.o
+error                                             avr_io.o
+main                                              avr_io.o
+                                                  C:\DOSPROG\AVRGCC\BIN\..\lib\gcc-lib\avr\3.0.2\..\..\..\..\avr\lib\crts8515.o
+parse_state                                       avr_io.o
+reg                                               avr_io.o
+rx_buffer                                         avr_io.o
+rx_in                                             avr_io.o
+rx_out                                            avr_io.o
+rx_timeout                                        avr_io.o
+tx_buffer                                         avr_io.o
+tx_empty                                          avr_io.o
+tx_numbytes                                       avr_io.o

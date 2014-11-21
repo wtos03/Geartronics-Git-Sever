@@ -1,0 +1,51 @@
+
+
+
+/*!   \file  	E_io_7segments	 
+      \brief    Fonts file for 7 segments
+	  \n        Need to seperate for E_io_7segments.h If not will get duplicate variable error. 
+      \ingroup 	E_io_7segments
+	\n Summary for include files (X = have  - = NO)
+	\n --------------------------------------------
+	\n Constant variable				X   
+	\n Function prototype				-
+	\n Variable (Keep in Flash Program memory)	-
+	\n Memory usage					?? bytes
+	\n Update History
+	\n Used by module                         	xxxxx
+    \code #include <7segments_fonts.h> \endcode
+ 
+      \version	0.1
+      \author 	wichai tossamartvorakul wichai@geartronics.net
+      \date	   13/08/08
+
+      \n \b Update \b History
+ 
+	\n Date                 By                     Comments
+	\n ----                 --                     ---------
+        \n
+ 
+ 
+	\note   
+ 
+*/
+  
+ 
+
+
+//! Fonts save to show on 7 Segments 
+
+const char font[FONT_NUM]  PROGMEM =  {
+//  From SPACE 0x32  to ` 0x60
+ 0x00,0x82,0x22,0x36,0x65,0x24,0x52,0x02,
+ 0x39,0x0F,0x63,0x46,0x02,0x40,0x80,0x52,
+ 0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,
+ 0x7F,0x6F,0x48,0x18,0x63,0x48,0x43,0x53,
+ 0x5F,0x77,0x7C,0x39,0x5e,0x79,0x71,0x3d,
+ 0x76,0x06,0x1e,0xf2,0x38,0x55,0x54,0x3f,
+ 0x73,0x67,0x31,0x6d,0x78,0x3e,0x2a,0x6a,
+ 0x49,0x6e,0x52,0x39,0x24,0x0f,0x23,0x08,
+ 0x20};
+ 
+ 
+//

@@ -1,0 +1,77 @@
+Export log for : E_7Segment_1_1.Sch
+Start export of symbol definitions for parts
+      Warning: Symbol name (CON10), mode (Normal), part (1), changed to (CON10_N).
+      Warning: Rectangle (0,-110)(30,0) exported as lines.
+      Warning: Symbol name (SW-PB), mode (Normal), part (1), changed to (SW-PB_N).
+      Warning: Elliptical arc is circle (3, -10)!
+      Warning: Elliptical arc is circle (27, -10)!
+      Warning: Symbol name (DUAL 7_SEGMENTS), mode (Normal), part (1), changed to (DUAL 7_SEGMENT93).
+      Warning: Rectangle (-80,-60)(100,50) exported as lines.
+      Warning: Object kind not supported (Image)
+      Warning: Object kind not supported (Image)
+      Warning: Object kind not supported (Image)
+      Warning: Object kind not supported (Image)
+      Warning: Symbol name (RES1), mode (Normal), part (1), changed to (RES1_N).
+      Warning: Symbol name (PNP), mode (Normal), part (1), changed to (PNP_N).
+      Warning: Elliptical arc is circle (20, -20)!
+      Warning: Symbol name (CON3), mode (Normal), part (1), changed to (CON3_N).
+      Warning: Rectangle (0,-40)(20,0) exported as lines.
+      Warning: Symbol name (BUZZER), mode (Normal), part (1), changed to (BUZZER_N).
+      Warning: Elliptical arc is circle (20, 0)!
+      Warning: Symbol name (CAPACITOR POL), mode (Normal), part (1), changed to (CAPACITOR POL_N).
+End export of symbol definitions for part
+Start export of default symbol definitions for power ports
+End export of symbol defintions for power ports
+Start export of component definitions
+   Exporting component (CON10).
+
+   Exporting component (SW-PB).
+
+   Exporting component (DUAL 7_SEGMENTS).
+
+   Exporting component (RES1).
+
+   Exporting component (PNP).
+
+   Exporting component (CON3).
+
+   Exporting component (BUZZER).
+
+   Exporting component (CAPACITOR POL).
+
+End export of component definitions
+Start export component definitions for power ports.
+End export component definitions for powerports
+Start export of netlist
+Start export of component instances
+End export of component instances
+Start export of nets
+Start creation of designator names for powerports
+End creation of designator names for powerports
+End export of nets
+End export of netlist
+      Warning: Sheet name (E_7Segment_1_1) changed to (E_7Segme53)
+Start export of sheet objects for sheet "E_7Segment_1_1".
+Start export of wires
+End export of wires
+Start export of buses.
+End export of buses.
+Start export port objects
+End export port objects
+Start export sheet entry objects.
+End export sheet entry objects
+      Warning: Object kind not supported (Unknown)
+      Warning: Exporting powerport at (300 370) as component with designator "BAR1"
+      Warning: Exporting powerport at (370 360) as component with designator "GNDPWR1"
+      Warning: Exporting powerport at (790 360) as component with designator "GNDPWR2"
+      Warning: Exporting powerport at (840 370) as component with designator "BAR2"
+      Warning: Exporting powerport at (850 540) as component with designator "GNDPWR3"
+      Warning: Exporting powerport at (620 170) as component with designator "GNDPWR4"
+      Warning: Exporting powerport at (950 460) as component with designator "GNDPWR5"
+      Warning: Rectangle (450,110)(450,110) exported as lines.
+      Warning: Exporting powerport at (570 120) as component with designator "GNDPWR6"
+      Warning: Exporting powerport at (590 70) as component with designator "BAR3"
+      Warning: Exporting powerport at (760 250) as component with designator "GNDPWR7"
+End export sheet objects for sheet "E_7Segment_1_1".
+ 
+EndLog

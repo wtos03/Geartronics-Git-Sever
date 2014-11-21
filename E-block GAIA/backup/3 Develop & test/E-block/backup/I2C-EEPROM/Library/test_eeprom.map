@@ -1,0 +1,472 @@
+Archive member included because of file (symbol)
+
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodhi4.o)
+                              E_i2c.o (__udivmodhi4)
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_copy_data.o)
+                              test_eeprom.o (__do_copy_data)
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+                              test_eeprom.o (__do_clear_bss)
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(itoa.o)
+                              E_uart.o (itoa)
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ltoa.o)
+                              E_uart.o (ltoa)
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
+                              C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(itoa.o) (strrev)
+C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodsi4.o)
+                              C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ltoa.o) (__udivmodsi4)
+
+Allocating common symbols
+Common symbol       size              file
+
+g_rx_buff           0xfa              E_uart.o
+g_tx_buff           0xfa              E_uart.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+LOAD test_eeprom.o
+LOAD Dual_7Segment.o
+LOAD ir_tv.o
+LOAD E_uart.o
+LOAD E_i2c.o
+LOAD E_i2ceeprom.o
+LOAD C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libm.a
+LOAD C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a
+LOAD C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a
+LOAD C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000      0x8b8
+ *(.vectors)
+ .vectors       0x00000000       0x54 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+                0x00000000                __vectors
+                0x00000000                __vector_default
+                0x00000054                __ctors_start = .
+ *(.ctors)
+                0x00000054                __ctors_end = .
+                0x00000054                __dtors_start = .
+ *(.dtors)
+                0x00000054                __dtors_end = .
+ *(.progmem.gcc*)
+ *(.progmem*)
+                0x00000054                . = ALIGN (0x2)
+ *(.init0)
+ *(.init1)
+ *(.init2)
+ .init2         0x00000054        0xc C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+ *(.init3)
+ *(.init4)
+ .init4         0x00000060       0x16 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_copy_data.o)
+                0x00000060                __do_copy_data
+ .init4         0x00000076       0x10 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+                0x00000076                __do_clear_bss
+ *(.init5)
+ *(.init6)
+ *(.init7)
+ *(.init8)
+ *(.init9)
+ .init9         0x00000086        0x4 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+ *(.text)
+ .text          0x0000008a        0x4 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+                0x0000008a                __vector_1
+                0x0000008a                __vector_12
+                0x0000008a                __bad_interrupt
+                0x0000008a                __vector_6
+                0x0000008a                __vector_3
+                0x0000008a                __vector_11
+                0x0000008a                __vector_17
+                0x0000008a                __vector_19
+                0x0000008a                __vector_7
+                0x0000008a                __vector_5
+                0x0000008a                __vector_4
+                0x0000008a                __vector_9
+                0x0000008a                __vector_2
+                0x0000008a                __vector_15
+                0x0000008a                __vector_8
+                0x0000008a                __vector_10
+                0x0000008a                __vector_16
+                0x0000008a                __vector_18
+                0x0000008a                __vector_20
+ .text          0x0000008e      0x1ba test_eeprom.o
+                0x0000008e                __vector_13
+                0x0000012a                main
+                0x000000d8                __vector_14
+ .text          0x00000248       0xc2 Dual_7Segment.o
+                0x00000248                d7segment_display
+                0x000002f6                d7segment_init
+ .text          0x0000030a       0x96 ir_tv.o
+                0x0000031c                sony_ir_decode
+                0x0000030a                init_ir
+ .text          0x000003a0      0x1ba E_uart.o
+                0x000004c6                debug_value
+                0x00000454                uart_get_TX
+                0x000003ea                uart_get_RX
+                0x000004a0                uart_puts
+                0x000003a0                uart_init
+                0x0000048c                uart_getc
+                0x00000504                debug_lvalue
+                0x00000494                uart_putc
+                0x000003b8                uart_put_RX
+                0x00000422                uart_put_TX
+ .text          0x0000055a      0x166 E_i2c.o
+                0x000005ce                i2c_send_byte
+                0x000005f2                i2c_master_sendni
+                0x000005da                i2c_receive_byte
+                0x000005bc                i2c_send_stop
+                0x0000064e                i2c_master_receiveni
+                0x000006b8                i2cGetState
+                0x000005a2                i2c_set_localdeviceaddr
+                0x000005b2                i2c_send_start
+                0x000005c6                i2c_wait_for_complete
+                0x00000584                i2c_init
+                0x0000055a                i2c_set_bitrate
+ .text          0x000006c0       0xb4 E_i2ceeprom.o
+                0x0000072a                i2ceeprom_write_byte
+                0x000006c0                i2ceeprom_init
+                0x000006c6                i2ceeprom_read_byte
+ .text          0x00000774       0x4a C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(itoa.o)
+                0x00000774                itoa
+ .text          0x000007be       0x6e C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ltoa.o)
+                0x000007be                ltoa
+ .text          0x0000082c       0x20 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
+                0x0000082c                strrev
+                0x0000084c                . = ALIGN (0x2)
+ *(.text.*)
+ .text.libgcc   0x0000084c       0x28 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodhi4.o)
+                0x0000084c                __udivmodhi4
+ .text.libgcc   0x00000874       0x44 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodsi4.o)
+                0x00000874                __udivmodsi4
+                0x000008b8                . = ALIGN (0x2)
+ *(.fini9)
+ *(.fini8)
+ *(.fini7)
+ *(.fini6)
+ *(.fini5)
+ *(.fini4)
+ *(.fini3)
+ *(.fini2)
+ *(.fini1)
+ *(.fini0)
+                0x000008b8                _etext = .
+
+.data           0x00800060       0x44 load address 0x000008b8
+                0x00800060                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800060       0x44 test_eeprom.o
+ *(.gnu.linkonce.d*)
+                0x008000a4                . = ALIGN (0x2)
+                0x008000a4                _edata = .
+                0x008000a4                PROVIDE (__data_end, .)
+
+.bss            0x008000a4      0x1fc
+                0x008000a4                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x008000a4        0x5 ir_tv.o
+ .bss           0x008000a9        0x2 E_uart.o
+                0x008000aa                g_rx_ptr
+                0x008000a9                g_tx_ptr
+ .bss           0x008000ab        0x1 E_i2c.o
+ *(COMMON)
+ COMMON         0x008000ac      0x1f4 E_uart.o
+                                  0x0 (size before relaxing)
+                0x008000ac                g_rx_buff
+                0x008001a6                g_tx_buff
+                0x008002a0                PROVIDE (__bss_end, .)
+                0x000008b8                __data_load_start = LOADADDR (.data)
+                0x000008fc                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x008002a0        0x0
+                0x008002a0                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x008002a0                PROVIDE (__noinit_end, .)
+                0x008002a0                _end = .
+                0x008002a0                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.stab           0x00000000     0x1b84
+ *(.stab)
+ .stab          0x00000000      0x63c test_eeprom.o
+ .stab          0x0000063c      0x300 Dual_7Segment.o
+                                0x3b4 (size before relaxing)
+ .stab          0x0000093c      0x2d0 ir_tv.o
+                                0x390 (size before relaxing)
+ .stab          0x00000c0c      0x6a8 E_uart.o
+                                0x768 (size before relaxing)
+ .stab          0x000012b4      0x624 E_i2c.o
+                                0x6fc (size before relaxing)
+ .stab          0x000018d8      0x2ac E_i2ceeprom.o
+                                0x384 (size before relaxing)
+
+.stabstr        0x00000000      0xd31
+ *(.stabstr)
+ .stabstr       0x00000000      0xd31 test_eeprom.o
+                                  0x0 (size before relaxing)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+OUTPUT(test_eeprom.elf elf32-avr)
+
+Cross Reference Table
+
+Symbol                                            File
+__bad_interrupt                                   C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__bss_end                                         C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+__bss_start                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+__data_end                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_copy_data.o)
+__data_load_start                                 C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_copy_data.o)
+__data_start                                      C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_copy_data.o)
+__do_clear_bss                                    C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+                                                  E_i2ceeprom.o
+                                                  E_i2c.o
+                                                  E_uart.o
+                                                  ir_tv.o
+                                                  Dual_7Segment.o
+                                                  test_eeprom.o
+__do_copy_data                                    C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_copy_data.o)
+                                                  E_i2ceeprom.o
+                                                  E_i2c.o
+                                                  E_uart.o
+                                                  ir_tv.o
+                                                  Dual_7Segment.o
+                                                  test_eeprom.o
+__heap_end                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__init                                            C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__stack                                           C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+                                                  test_eeprom.o
+__udivmodhi4                                      C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodhi4.o)
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(itoa.o)
+                                                  E_i2c.o
+__udivmodsi4                                      C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodsi4.o)
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ltoa.o)
+__vector_1                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_10                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_11                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_12                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_13                                       test_eeprom.o
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_14                                       test_eeprom.o
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_15                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_16                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_17                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_18                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_19                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_2                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_20                                       C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_3                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_4                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_5                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_6                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_7                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_8                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_9                                        C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vector_default                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+__vectors                                         C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+d7segment_display                                 Dual_7Segment.o
+                                                  test_eeprom.o
+d7segment_init                                    Dual_7Segment.o
+                                                  test_eeprom.o
+debug_lvalue                                      E_uart.o
+debug_value                                       E_uart.o
+g_rx_buff                                         E_uart.o
+g_rx_ptr                                          E_uart.o
+g_tx_buff                                         E_uart.o
+g_tx_ptr                                          E_uart.o
+i2cGetState                                       E_i2c.o
+i2c_init                                          E_i2c.o
+                                                  E_i2ceeprom.o
+i2c_master_receiveni                              E_i2c.o
+                                                  E_i2ceeprom.o
+i2c_master_sendni                                 E_i2c.o
+                                                  E_i2ceeprom.o
+i2c_receive_byte                                  E_i2c.o
+i2c_send_byte                                     E_i2c.o
+i2c_send_start                                    E_i2c.o
+i2c_send_stop                                     E_i2c.o
+i2c_set_bitrate                                   E_i2c.o
+i2c_set_localdeviceaddr                           E_i2c.o
+                                                  test_eeprom.o
+i2c_wait_for_complete                             E_i2c.o
+i2ceeprom_init                                    E_i2ceeprom.o
+                                                  test_eeprom.o
+i2ceeprom_read_byte                               E_i2ceeprom.o
+                                                  test_eeprom.o
+i2ceeprom_write_byte                              E_i2ceeprom.o
+                                                  test_eeprom.o
+init_ir                                           ir_tv.o
+itoa                                              C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(itoa.o)
+                                                  E_uart.o
+ltoa                                              C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ltoa.o)
+                                                  E_uart.o
+main                                              test_eeprom.o
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm32.o
+sony_ir_decode                                    ir_tv.o
+strrev                                            C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ltoa.o)
+                                                  C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(itoa.o)
+uart_get_RX                                       E_uart.o
+uart_get_TX                                       E_uart.o
+                                                  test_eeprom.o
+uart_getc                                         E_uart.o
+                                                  test_eeprom.o
+uart_init                                         E_uart.o
+                                                  test_eeprom.o
+uart_put_RX                                       E_uart.o
+                                                  test_eeprom.o
+uart_put_TX                                       E_uart.o
+uart_putc                                         E_uart.o
+                                                  test_eeprom.o
+uart_puts                                         E_uart.o
+                                                  test_eeprom.o

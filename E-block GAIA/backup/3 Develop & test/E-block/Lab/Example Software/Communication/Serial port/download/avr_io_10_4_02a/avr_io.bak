@@ -1,0 +1,227 @@
+//AVR_IO
+//Control the AVR from a remote host.
+// Command packets are sent by the host with the following format:
+//
+// Commands
+// 1. STX 0x57 register data  ETX         Write data to register
+// 2. STX 0x52 register x     ETX         Read byte from register, byte is returned by UART
+// 3. STX 0x45 x        x     ETX         Send the current error, byte is returned by UART
+//
+// An error number is saved when an error occurs:
+// Errors
+// 0 no error
+// 1 expected STX
+// 2 expected ETX
+// 3 invalid/unknown command
+// 4 receive timeout
+//
+// Upon receiving a byte, a 5msec timer is active.  The next byte must arrive before the timer
+// expires, else error 4 is set.  This is a recovery mechanism in case the host does not
+// finish sending the command packet. 
+//
+// Written for AVRGCC to run on the STK200
+// Steven R. Nickels
+
+
+#include <io.h>
+#include <interrupt.h>
+#include <sig-avr.h>
+
+#include "misc.h"
+#include "avr_io.h"
+
+
+//Globals
+BYTE rx_timeout;
+BYTE rx_buffer[16];
+BYTE rx_in;
+BYTE rx_out;
+BYTE tx_buffer[10];
+BYTE tx_numbytes;
+BYTE tx_empty;
+
+Commands command;
+Errors error;
+BYTE reg;
+BYTE data;
+
+ParseStates parse_state;
+
+
+//Prototypes
+void DoCommand( void );
+void Error( Errors error_num );
+void UartSend( void );
+
+
+int main( void )
+{
+  //Initialization - set globals
+	rx_timeout = FALSE;
+  rx_in = 0;
+  rx_out = 0;
+  tx_empty = TRUE;
+	tx_numbytes = 1;
+	parse_state = PARSE_STATE_STX;
+	error = ERROR_NONE;
+
+  //Init the uart
+  outp((1<<RXCIE)|(1<<TXCIE)|(1<<RXEN)|(1<<TXEN),UCR);        																		//Enable RxD/TxD and ints
+  outp((BYTE)UART_BAUD_SELECT, UBRR);                          																		//Set baud
+
+	//Init timer 5msec (used for byte receive timeout)
+  outp( (1<<TOIE0), TIMSK );
+  outp( 4, TCCR0 );																																								//4MHz/256 = 64us, 64us * x = 5ms, x = 78, since it's an upcounter, TCNT0 must be set to 256-78=178
+
+
+  //Enable Interrupts
+  sei();                                    																											//Enable interrupts
+
+	//Send ':' - this informs the host that we're up and run'n
+  outp( 0x3A, UDR );																																							//Let the host know we're up and running
+
+  for( ;; )
+  {
+		if( rx_timeout == TRUE )
+		{
+			if( parse_state != PARSE_STATE_STX )
+			{
+				Error( ERROR_RX_TIMEOUT );		
+				parse_state = PARSE_STATE_STX;
+			}
+			rx_timeout = FALSE;
+		}
+
+		//If data is in the receive buffer
+    if( rx_in != rx_out )
+    {
+      switch( parse_state )
+      {
+        case PARSE_STATE_STX:
+          if( rx_buffer[rx_out] == 0x02 )
+          {
+            ++parse_state;
+          }
+          else
+          {
+          	Error( ERROR_START_FRAME );
+          }
+          break;
+
+        case PARSE_STATE_COMMAND:
+          command = rx_buffer[rx_out];
+          ++parse_state;
+          break;
+          
+        case PARSE_STATE_REGISTER:
+        	reg = rx_buffer[rx_out];
+          ++parse_state;
+          break;
+          
+        case PARSE_STATE_DATA:
+          data = rx_buffer[rx_out];
+          ++parse_state;
+          break;
+          
+        case PARSE_STATE_ETX:
+          if( rx_buffer[rx_out] == 0x03 )
+          {
+          	DoCommand();
+          }
+          else
+          {
+          	Error( ERROR_END_FRAME );
+          }
+					//fall into default
+
+        default:
+          parse_state = PARSE_STATE_STX;
+          break;
+      }
+      ++rx_out;
+      rx_out &= 0x0F;
+    }
+  }            
+}
+
+
+
+void DoCommand( void )
+{
+	if( command == CMD_WRITE_REG )
+  {
+ 		outp( data, reg );
+ 		
+ 		Error( ERROR_NONE );
+    return;
+  }
+	  
+	if( command == CMD_READ_REG )
+  {
+  	tx_buffer[0] = inp( reg );
+    UartSend();
+    
+    Error( ERROR_NONE );
+    return;
+  }
+  
+  if( command == CMD_GET_ERROR )
+  {
+		tx_buffer[0] = error;
+		UartSend();
+	}
+
+	//If we got here, then the command is not valid
+	Error( ERROR_INVALID_CMD );
+}
+
+
+void Error( Errors error_num )
+{
+	error = error_num;
+	
+	parse_state = PARSE_STATE_STX;
+}
+
+
+void UartSend( void )
+{
+  BYTE i;
+
+  for( i = 0; i < tx_numbytes; i++ )
+  {
+    while( tx_empty == 0 )
+    {
+      ;
+    }
+    tx_empty = 0;
+    outp( tx_buffer[i], UDR );
+  }
+}
+
+
+SIGNAL(SIG_UART_TRANS)      
+{
+  tx_empty = 1;
+}
+
+
+SIGNAL(SIG_UART_RECV)      
+{
+  rx_buffer[rx_in] = inp( UDR );
+  rx_in++;
+  rx_in &= 0x0F;
+
+  outp( RX_TIMEOUT_CNT, TCNT0 );																													//Reset receive timeout
+}
+
+
+SIGNAL(SIG_OVERFLOW0)
+{
+	rx_timeout = TRUE;
+}
+
+
+
+
+

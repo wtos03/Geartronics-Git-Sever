@@ -1,0 +1,151 @@
+#include "LPC213x.h"
+#include "Keypad.h"
+
+
+void init_keypad(void)
+{
+	PINSEL0 &= 0xCFFFFFFF;  // use pin 0.14 
+	PINSEL2 &= 0xFFFFF000;	// use pin 1.16 - pin 1.21
+	IODIR1 |= 0x00380000;	// use pin 1.19 - pin 1.21 as output (18 = col 2)(17 = col 1)(16 = col 0)
+	IODIR1 &= 0xFFF8FFFF;	// use pin 1.16 - pin 1.18 as input (20 = row0)(21 = row1)(22 = row2)(23 = row3)
+	IODIR0 &= 0xFFFFBFFF;   // use pin 0.14 as input
+	IOSET1 |= 0x00070000;
+	IOSET0 |= 0x00004000;
+}
+
+void delay_ms(long int ms)
+{
+	long int i,j;
+	for(i=0;i<ms;i++)
+	for(j=0;j<6666;j++);
+}
+
+char keypad(void)
+{
+	char key = '$';
+
+	IOCLR1 |= 0x00380000;
+
+	if( (IOPIN1 & 0x00010000) == 0)
+	{ 	
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00080000;  	
+		if((IOPIN1 & 0x00010000) == 0) // key is 4
+		{
+			key = '4';
+			while((IOPIN1 & 0x00010000) == 0);
+			delay_ms(10);
+		}
+	
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00100000;  	
+		if((IOPIN1 & 0x00010000) == 0) // key is 5
+		{
+			key = '5';
+			while((IOPIN1 & 0x00010000) == 0);
+			delay_ms(10);
+		} 
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00200000;  	
+		if((IOPIN1 & 0x00010000) == 0) // key is 6
+		{
+			key = '6';
+			while((IOPIN1 & 0x00010000) == 0);
+			delay_ms(10);
+		}
+	}
+
+	if( (IOPIN1 & 0x00020000) == 0 )
+	{	
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00080000;  	
+		if((IOPIN1 & 0x00020000) == 0) // key is 7
+		{
+			key = '7';
+			while((IOPIN1 & 0x00020000) == 0);
+			delay_ms(10);
+		}
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00100000;  	
+		if((IOPIN1 & 0x00020000) == 0) // key is 8
+		{
+			key = '8';
+			while((IOPIN1 & 0x00020000) == 0);
+			delay_ms(10);
+		} 
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00200000;  	
+		if((IOPIN1 & 0x00020000) == 0) // key is 9
+		{
+			key = '9';
+			while((IOPIN1 & 0x00020000) == 0);
+			delay_ms(10);
+		}
+	}
+		
+	if( (IOPIN1 & 0x00040000) == 0 )
+	{	
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00080000;  	
+		if((IOPIN1 & 0x00040000) == 0) // key is *
+		{
+			key = '*';
+			while((IOPIN1 & 0x00040000) == 0);
+			delay_ms(10);
+		}
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00100000;  	
+		if((IOPIN1 & 0x00040000) == 0) // key is 0
+		{
+			key = '0';
+			while((IOPIN1 & 0x00040000) == 0);
+			delay_ms(10);
+		} 
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00200000;  	
+		if((IOPIN1 & 0x00040000) == 0) // key is #
+		{
+			key = '#';
+			while((IOPIN1 & 0x00040000) == 0);
+			delay_ms(10);
+		}
+	}
+			
+	if( (IOPIN0 & 0x00004000) == 0 )
+	{
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00080000;  	
+		if((IOPIN0 & 0x00004000) == 0) // key is 1
+		{
+			key = '1';
+			while((IOPIN0 & 0x00004000) == 0);
+			delay_ms(10);
+		}
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00100000;  	
+		if((IOPIN0 & 0x00004000) == 0) // key is 2
+		{
+			key = '2';
+			while((IOPIN0 & 0x00004000) == 0);
+			delay_ms(10);
+		} 
+
+		IOSET1 |= 0x00380000;
+		IOCLR1 |= 0x00200000;  	
+		if((IOPIN0 & 0x00004000) == 0) // key is 3
+		{
+			key = '3';
+			while((IOPIN0 & 0x00004000) == 0);
+			delay_ms(10);
+		}
+	}
+	
+	return key;
+	
+}

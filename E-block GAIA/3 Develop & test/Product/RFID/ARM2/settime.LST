@@ -1,0 +1,245 @@
+ARM COMPILER V2.32a,  settime                                                              18/05/08  02:36:15  PAGE 1   
+
+
+ARM COMPILER V2.32a, COMPILATION OF MODULE settime
+OBJECT MODULE PLACED IN settime.OBJ
+COMPILER INVOKED BY: C:\Keil\ARM\BIN\CA.exe settime.c THUMB TABS(4) 
+
+stmt  level    source
+
+    1          #include "LPC213x.h"
+    2          #include "settime.h"
+    3          
+    4          void initTime(){
+    5   1          PREINT = 914;
+    6   1          PREFRAC = 17280;
+    7   1          CCR = 0x00000001;
+    8   1      }
+    9          
+   10          int sec(){
+   11   1          return SEC;
+   12   1      }
+   13          
+   14          int minute(){
+   15   1          return MIN;
+   16   1      }
+   17          
+   18          int hour(){
+   19   1          return HOUR;
+   20   1      }
+   21          
+   22          int day(){
+   23   1          return DOM;
+   24   1      }
+   25          
+   26          int month(){
+   27   1          return MONTH;
+   28   1      }
+   29          
+   30          int year(){
+   31   1          return YEAR;
+   32   1      }
+   33          
+   34          void setminute(int inmin){
+   35   1          MIN = inmin; 
+   36   1      }
+   37          
+   38          void sethour(int inhour){
+   39   1          HOUR = inhour;
+   40   1      }
+   41          
+   42          void setsec(int insec){
+   43   1          SEC = insec;
+   44   1      }
+   45          
+   46          void setday(int inday){
+   47   1          DOM = inday;
+   48   1      }
+   49          
+   50          void setmonth(int inmonth){
+   51   1          MONTH = inmonth;
+   52   1      }
+   53          
+   54          void setyear(int inyear){
+   55   1          YEAR = inyear;
+   56   1      }
+ARM COMPILER V2.32a,  settime                                                              18/05/08  02:36:15  PAGE 2   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+
+*** PUBLICS:
+ PUBLIC         initTime?T
+ PUBLIC         sec?T
+ PUBLIC         minute?T
+ PUBLIC         hour?T
+ PUBLIC         setminute?T
+ PUBLIC         sethour?T
+ PUBLIC         setsec?T
+ PUBLIC         day?T
+ PUBLIC         month?T
+ PUBLIC         year?T
+ PUBLIC         setday?T
+ PUBLIC         setmonth?T
+ PUBLIC         setyear?T
+
+
+
+*** CODE SEGMENT '?PR?initTime?T?settime':
+    5:     PREINT = 914;
+ 00000000  4800      LDRH        R1,=0x392
+ 00000002  4800      LDR         R0,=0xE0024080
+ 00000004  8001      STRH        R1,[R0,#0x0]
+    6:     PREFRAC = 17280;
+ 00000006  4800      LDRH        R1,=0x4380
+ 00000008  4800      LDR         R0,=0xE0024084
+ 0000000A  8001      STRH        R1,[R0,#0x0]
+    7:     CCR = 0x00000001;
+ 0000000C  2101      MOV         R1,#0x1
+ 0000000E  4800      LDR         R0,=0xE0024008
+ 00000010  7001      STRB        R1,[R0,#0x0]
+    8: }
+ 00000012  4770      BX          R14
+ 00000014          ENDP ; 'initTime?T'
+
+
+*** CODE SEGMENT '?PR?sec?T?settime':
+   11:     return SEC;
+ 00000000  4800      LDR         R0,=0xE0024020
+ 00000002  7800      LDRB        R0,[R0,#0x0]
+   12: }
+ 00000004  4770      BX          R14
+ 00000006          ENDP ; 'sec?T'
+
+
+*** CODE SEGMENT '?PR?minute?T?settime':
+   15:     return MIN;
+ 00000000  4800      LDR         R0,=0xE0024024
+ 00000002  7800      LDRB        R0,[R0,#0x0]
+   16: }
+ 00000004  4770      BX          R14
+ 00000006          ENDP ; 'minute?T'
+
+
+*** CODE SEGMENT '?PR?hour?T?settime':
+   19:     return HOUR;
+ 00000000  4800      LDR         R0,=0xE0024028
+ 00000002  7800      LDRB        R0,[R0,#0x0]
+   20: }
+ 00000004  4770      BX          R14
+ 00000006          ENDP ; 'hour?T'
+
+
+*** CODE SEGMENT '?PR?day?T?settime':
+   23:     return DOM;
+ 00000000  4800      LDR         R0,=0xE002402C
+ 00000002  7800      LDRB        R0,[R0,#0x0]
+   24: }
+ 00000004  4770      BX          R14
+ 00000006          ENDP ; 'day?T'
+
+
+*** CODE SEGMENT '?PR?month?T?settime':
+   27:       return MONTH;
+ 00000000  4800      LDR         R0,=0xE0024038
+ 00000002  7800      LDRB        R0,[R0,#0x0]
+ARM COMPILER V2.32a,  settime                                                              18/05/08  02:36:15  PAGE 3   
+
+   28: }
+ 00000004  4770      BX          R14
+ 00000006          ENDP ; 'month?T'
+
+
+*** CODE SEGMENT '?PR?year?T?settime':
+   31:      return YEAR;
+ 00000000  4800      LDR         R0,=0xE002403C
+ 00000002  8800      LDRH        R0,[R0,#0x0]
+   32: }
+ 00000004  4770      BX          R14
+ 00000006          ENDP ; 'year?T'
+
+
+*** CODE SEGMENT '?PR?setminute?T?settime':
+   34: void setminute(int inmin){
+ 00000000  ---- Variable 'inmin' assigned to Register 'R0' ----
+   35:     MIN = inmin; 
+ 00000000  1C01      MOV         R1,R0 ; inmin
+ 00000002  4800      LDR         R0,=0xE0024024
+ 00000004  7001      STRB        R1,[R0,#0x0]
+   36: }
+ 00000006  4770      BX          R14
+ 00000008          ENDP ; 'setminute?T'
+
+
+*** CODE SEGMENT '?PR?sethour?T?settime':
+   38: void sethour(int inhour){
+ 00000000  ---- Variable 'inhour' assigned to Register 'R0' ----
+   39:     HOUR = inhour;
+ 00000000  1C01      MOV         R1,R0 ; inhour
+ 00000002  4800      LDR         R0,=0xE0024028
+ 00000004  7001      STRB        R1,[R0,#0x0]
+   40: }
+ 00000006  4770      BX          R14
+ 00000008          ENDP ; 'sethour?T'
+
+
+*** CODE SEGMENT '?PR?setsec?T?settime':
+   42: void setsec(int insec){
+ 00000000  ---- Variable 'insec' assigned to Register 'R0' ----
+   43:     SEC = insec;
+ 00000000  1C01      MOV         R1,R0 ; insec
+ 00000002  4800      LDR         R0,=0xE0024020
+ 00000004  7001      STRB        R1,[R0,#0x0]
+   44: }
+ 00000006  4770      BX          R14
+ 00000008          ENDP ; 'setsec?T'
+
+
+*** CODE SEGMENT '?PR?setday?T?settime':
+   46: void setday(int inday){
+ 00000000  ---- Variable 'inday' assigned to Register 'R0' ----
+   47:      DOM = inday;
+ 00000000  1C01      MOV         R1,R0 ; inday
+ 00000002  4800      LDR         R0,=0xE002402C
+ 00000004  7001      STRB        R1,[R0,#0x0]
+   48: }
+ 00000006  4770      BX          R14
+ 00000008          ENDP ; 'setday?T'
+
+
+*** CODE SEGMENT '?PR?setmonth?T?settime':
+   50: void setmonth(int inmonth){
+ 00000000  ---- Variable 'inmonth' assigned to Register 'R0' ----
+   51:      MONTH = inmonth;
+ 00000000  1C01      MOV         R1,R0 ; inmonth
+ 00000002  4800      LDR         R0,=0xE0024038
+ 00000004  7001      STRB        R1,[R0,#0x0]
+   52: }
+ 00000006  4770      BX          R14
+ 00000008          ENDP ; 'setmonth?T'
+
+
+*** CODE SEGMENT '?PR?setyear?T?settime':
+   54: void setyear(int inyear){
+ 00000000  ---- Variable 'inyear' assigned to Register 'R0' ----
+   55:     YEAR = inyear;
+ 00000000  1C01      MOV         R1,R0 ; inyear
+ 00000002  4800      LDR         R0,=0xE002403C
+ARM COMPILER V2.32a,  settime                                                              18/05/08  02:36:15  PAGE 4   
+
+ 00000004  8001      STRH        R1,[R0,#0x0]
+ 00000006  4770      BX          R14
+ 00000008          ENDP ; 'setyear?T'
+
+
+
+Module Information          Static
+----------------------------------
+  code size            =    ------
+  data size            =    ------
+  const size           =    ------
+End of Module Information.
+
+
+ARM COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

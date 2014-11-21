@@ -1,0 +1,868 @@
+   1               		.file	"boot.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  69               	.global	jump_to_app
+  70               	.global	jump_to_app
+  71               		.section .bss
+  74               	jump_to_app:
+  75 0000 0000      		.skip 2,0
+  76               		.text
+  79               	.global	ascii_to_bin
+  81               	ascii_to_bin:
+   1:boot.c        **** /******************************************************************************
+   2:boot.c        ****  * Filename: Boot.c
+   3:boot.c        ****  *
+   4:boot.c        ****  * Author: Preston K. Manwaring
+   5:boot.c        ****  *
+   6:boot.c        ****  * Date: Monday, August 22, 2005 13:38:36 -0600
+   7:boot.c        ****  *
+   8:boot.c        ****  * License: Free to use. Please mention the contributing authors in the source
+   9:boot.c        ****  * code.
+  10:boot.c        ****  *
+  11:boot.c        ****  * Description: This is a bootloader designed for the AVR processor family
+  12:boot.c        ****  * which allows new firmware to be uploaded via the UART in Intel Hex format.
+  13:boot.c        ****  * An interface for uploading such as Hyperterm is envisioned.
+  14:boot.c        ****  * This code correctly parses the Intel Hex strings and upon reception of
+  15:boot.c        ****  * a complete page (processor specific) of data, writes the data to flash.
+  16:boot.c        ****  * Minimal error handling is implemented. Errors during program upload are
+  17:boot.c        ****  *
+  18:boot.c        ****  * ERR 1 - File upload synchronization is off (i.e. the ':' was not found)
+  19:boot.c        ****  * ERR 2 - the checksum failed.
+  20:boot.c        ****  *
+  21:boot.c        ****  * Typical Intel hex format is supported in unix mode (LF not LF,CR). So
+  22:boot.c        ****  * be sure to strip the extra CR from the hex file or have this program
+  23:boot.c        ****  * strip the CR.
+  24:boot.c        ****  *
+  25:boot.c        ****  * The user menu is as follows:
+  26:boot.c        ****  * U - upload the hex file. A 'READY' will return when the MCU is ready to
+  27:boot.c        ****  *     receive the file. As the file uploads, a '*' prints for every page
+  28:boot.c        ****  *     written to flash. When complete, 'OK' is transmitted. If an error
+  29:boot.c        ****  *     occurs, 'ERR' followed by a number is printed.
+  30:boot.c        ****  *
+  31:boot.c        ****  * X - exit this program and start the user application.
+  32:boot.c        ****  *
+  33:boot.c        ****  * NOTE: This software is not optimized. It fits as it currently stands
+  34:boot.c        ****  * in a BLS of 1024. Optimizations could be easily made, but the code is 
+  35:boot.c        ****  * much easier to  understand with the way it currently stands. I spent
+  36:boot.c        ****  * a lot of time reading manuals and looking at other's code to figure out
+  37:boot.c        ****  * all I wanted to know. So I hope this is easily understood. Due to the 
+  38:boot.c        ****  * lack of optimization, the most common error you will get using this
+  39:boot.c        ****  * code will be ERR 1 as synchronization fails. This failure will occur
+  40:boot.c        ****  * because your BAUD rate setting is too high and the program cannot
+  41:boot.c        ****  * keep up the incoming data. Slowing down the data transfer rate should
+  42:boot.c        ****  * fix this or you can optimize the code.
+  43:boot.c        ****  *
+  44:boot.c        ****  * A special thanks needs to go to Martin Thomas for writing some excelent code
+  45:boot.c        ****  * which helped me get started. In fact, you will see some files and macros 
+  46:boot.c        ****  * of his which I use including chipdef.h. His project can be found at
+  47:boot.c        ****  * http://www.siwawi.arubi.uni-kl.de/avr_projects/
+  48:boot.c        ****  *
+  49:boot.c        ****  * If you have any questions or comments, feel free to write.
+  50:boot.c        ****  * manjagu@byu.edu
+  51:boot.c        ****  
+  52:boot.c        ****  * Modified by Wichai Tossamartvorakul
+  53:boot.c        ****  * Date 2 Aug 2007 
+  54:boot.c        ****  * Test with ATMEGA32 at 16 Mhz
+  55:boot.c        ****  *
+  56:boot.c        ****  * To remove pin for select bootloader use keypress from terminal program
+  57:boot.c        ****  * Enter boot mode condition
+  58:boot.c        ****  *   	1.No program at 0x0000 ( Read 0xFF )
+  59:boot.c        ****  * 		2.Enter i while press reset key
+  60:boot.c        ****  * Enter program mode condition
+  61:boot.c        ****  * 	    1  There are program at 0x0000  (Checked when press Reset)
+  62:boot.c        ****  *     	2  Press x  at bootmode  
+  63:boot.c        ****  *  
+  64:boot.c        ****  *
+  65:boot.c        ****  ******************************************************************************/
+  66:boot.c        **** 
+  67:boot.c        **** /*--- INCLUDE FILES ----------------------------------------------------------*/
+  68:boot.c        **** #include <inttypes.h>
+  69:boot.c        **** #include <avr/io.h>
+  70:boot.c        **** #include <avr/interrupt.h>
+  71:boot.c        **** #include <avr/wdt.h>
+  72:boot.c        **** #include <avr/boot.h>
+  73:boot.c        **** #include <avr/pgmspace.h>
+  74:boot.c        **** #include "sercom.h"
+  75:boot.c        **** 
+  76:boot.c        **** /* Select Boot Size (select one, comment out the others) */
+  77:boot.c        **** // MAYBE: #define _B512 
+  78:boot.c        **** //#define _B1024 
+  79:boot.c        **** #define _B2048
+  80:boot.c        **** 
+  81:boot.c        **** /* From Martin Thomas */
+  82:boot.c        **** #include "chipdef.h"
+  83:boot.c        **** 
+  84:boot.c        ****  
+  85:boot.c        **** 
+  86:boot.c        **** /* Bootloader Version */
+  87:boot.c        **** #define VER_HIGH_BYTE '0'
+  88:boot.c        **** #define VER_LOW_BYTE  '1'
+  89:boot.c        **** 
+  90:boot.c        **** // TRUE and FALSE
+  91:boot.c        **** #define TRUE  1
+  92:boot.c        **** #define FALSE 0
+  93:boot.c        **** 
+  94:boot.c        **** /*--- GLOBAL VARIABLES -------------------------------------------------------*/
+  95:boot.c        **** unsigned char page_data[SPM_PAGESIZE]; // create temporary location for program 
+  96:boot.c        **** 				       // data
+  97:boot.c        **** unsigned long buf_address;
+  98:boot.c        **** 
+  99:boot.c        **** /*--- FUNCTION PROTOTYPES ----------------------------------------------------*/
+ 100:boot.c        **** unsigned char ascii_to_bin( char data );
+ 101:boot.c        **** char ihex_load(void);
+ 102:boot.c        **** void (*jump_to_app)(void) = 0x0000;
+ 103:boot.c        **** 
+ 104:boot.c        **** /*--- MAIN -------------------------------------------------------------------*/
+ 105:boot.c        **** int main(void)
+ 106:boot.c        **** {
+ 107:boot.c        ****     char temp_char;
+ 108:boot.c        ****     uint16_t loop  = 1;
+ 109:boot.c        **** 	uint8_t bootFlag = TRUE;
+ 110:boot.c        ****     
+ 111:boot.c        ****     cli();
+ 112:boot.c        **** 	
+ 113:boot.c        ****     /* the following code moves the interrupt vector pointer to the bootloader
+ 114:boot.c        ****        section. The problem is the compiler doesn't understand where to put
+ 115:boot.c        ****        the IV table. */
+ 116:boot.c        ****     GICR = _BV(IVCE);       
+ 117:boot.c        ****     GICR |= _BV(IVSEL); //move interruptvectors to the Boot sector       
+ 118:boot.c        ****  
+ 119:boot.c        ****     /* The slow baud rate is required because of the intel hex parsing overhead.
+ 120:boot.c        ****        If I could figure out how to enable interrupts in the BLS (compiler issue)
+ 121:boot.c        ****        then a higher speed could be used by switching to an interrupt based
+ 122:boot.c        ****        UART ISR. The code could also be optimized. */
+ 123:boot.c        **** 
+ 124:boot.c        ****     SerCom0Init(BAUD_2400); // NOTE, the baud rates are constants defined in
+ 125:boot.c        ****                             // sercom.h. You need to adjust those constants
+ 126:boot.c        ****                             // to fit your MCU speed
+ 127:boot.c        **** 							
+ 128:boot.c        **** 	   // poll USART receive complete flag 64k times to catch the 'i' reliably
+ 129:boot.c        ****  
+ 130:boot.c        ****  
+ 131:boot.c        **** 	
+ 132:boot.c        **** // test if flash is empty (i.e. flash content is 0xff)
+ 133:boot.c        **** 	if(pgm_read_byte_near(0x0000) != 0xFF) {
+ 134:boot.c        **** 		bootFlag = FALSE; 
+ 135:boot.c        **** 	}
+ 136:boot.c        **** 
+ 137:boot.c        ****     do {
+ 138:boot.c        **** 	if(bit_is_set( UCSRA, RXC))
+ 139:boot.c        **** 	    if( UDR == 'i')
+ 140:boot.c        **** 		{ 	bootFlag = TRUE;
+ 141:boot.c        **** 			PutString0("Boot V ");
+ 142:boot.c        **** 			PutChar0(VER_HIGH_BYTE);
+ 143:boot.c        **** 			PutChar0(VER_LOW_BYTE);
+ 144:boot.c        **** 			PutString0("\r\n");
+ 145:boot.c        **** 		}		
+ 146:boot.c        **** 		
+ 147:boot.c        ****     } while(loop++);
+ 148:boot.c        ****  
+ 149:boot.c        ****     
+ 150:boot.c        ****     /* this main loop is the user 'menu'. */
+ 151:boot.c        ****     while(bootFlag)                             
+ 152:boot.c        ****     {
+ 153:boot.c        **** 			   
+ 154:boot.c        **** 	if( Hit0() ) // more necessary for UART code running interrupts
+ 155:boot.c        **** 	{
+ 156:boot.c        **** 	    temp_char=GetChar0();
+ 157:boot.c        **** 
+ 158:boot.c        ****  	    switch(temp_char)
+ 159:boot.c        **** 	    {
+ 160:boot.c        **** 		case 'u': // download new program
+ 161:boot.c        **** 		{
+ 162:boot.c        **** 		    /* erase the main flash excepting BLS */
+ 163:boot.c        **** 		    buf_address = 0; 
+ 164:boot.c        **** 		    while ( APP_END > buf_address )
+ 165:boot.c        **** 		    {
+ 166:boot.c        **** 			boot_page_erase(buf_address);	// Perform page erase
+ 167:boot.c        **** 			boot_spm_busy_wait();		// Wait until the memory is erased.
+ 168:boot.c        **** 			buf_address += SPM_PAGESIZE;
+ 169:boot.c        **** 		    }
+ 170:boot.c        **** 		    buf_address = 0;
+ 171:boot.c        **** 
+ 172:boot.c        **** 		    /* load new program */
+ 173:boot.c        **** 		    PutString0("READY");
+ 174:boot.c        **** 		    if( temp_char = ihex_load() )
+ 175:boot.c        **** 		    {
+ 176:boot.c        **** 			PutString0("ERR ");
+ 177:boot.c        **** 			PutInt0(temp_char);
+ 178:boot.c        **** 		    }
+ 179:boot.c        **** 		    else
+ 180:boot.c        **** 			{( PutString0("OK") );
+ 181:boot.c        **** 				bootFlag = FALSE ;  // Exit to run
+ 182:boot.c        **** 			}
+ 183:boot.c        **** 		}
+ 184:boot.c        **** 		break;
+ 185:boot.c        **** 		
+ 186:boot.c        **** 		case 'x':                   //Exit upgrade
+ 187:boot.c        **** 		{
+ 188:boot.c        **** 			GICR = _BV(IVCE); 
+ 189:boot.c        **** 			GICR &= ~_BV(IVSEL); //move interruptvectors to the Application sector
+ 190:boot.c        **** 			jump_to_app(); // Jump to application sector
+ 191:boot.c        **** //		    wdt_enable(WDTO_15MS); // Enable Watchdog Timer to give reset
+ 192:boot.c        **** 		}
+ 193:boot.c        **** 		break;
+ 194:boot.c        **** 		default:
+ 195:boot.c        **** 		{
+ 196:boot.c        **** 		    PutString0("u - Upload or x - Execute\r\n");
+ 197:boot.c        **** 		}
+ 198:boot.c        **** 	    } // end switch
+ 199:boot.c        **** 	} // end if( Hit0() )
+ 200:boot.c        ****     }	// end while(1)
+ 201:boot.c        **** // Start to application
+ 202:boot.c        **** 
+ 203:boot.c        **** 	 GICR = _BV(IVCE); 
+ 204:boot.c        **** 	 GICR &= ~_BV(IVSEL); //move interruptvectors to the Application sector
+ 205:boot.c        **** 	 jump_to_app(); // Jump to application sector
+ 206:boot.c        **** 
+ 207:boot.c        ****     return 0;
+ 208:boot.c        **** }
+ 209:boot.c        **** 
+ 210:boot.c        **** /*--- char ihex_load( void ) -------------------------------------------------*/
+ 211:boot.c        **** /* This function pulls intel hex formatted code from the serial port and loads 
+ 212:boot.c        ****    it into a temporary location. Once a complete SPM page length is stored,
+ 213:boot.c        ****    it executes a flash memory write. */
+ 214:boot.c        **** char ihex_load(void)
+ 215:boot.c        **** {
+ 216:boot.c        ****     unsigned char
+ 217:boot.c        **** 	i,
+ 218:boot.c        **** 	byte_count = 0,
+ 219:boot.c        **** 	data_pairs,
+ 220:boot.c        **** 	data_type,
+ 221:boot.c        **** 	temp_byte,
+ 222:boot.c        **** 	temp_store,
+ 223:boot.c        **** 	address_lo,
+ 224:boot.c        **** 	address_hi;
+ 225:boot.c        **** 
+ 226:boot.c        ****     unsigned int data; // temporary location to store program words
+ 227:boot.c        ****     
+ 228:boot.c        ****     unsigned long temp_address;
+ 229:boot.c        **** 
+ 230:boot.c        ****     do
+ 231:boot.c        ****     {
+ 232:boot.c        **** 	if(GetChar0() != ':') // check to make sure the first character is ':'
+ 233:boot.c        **** 	{
+ 234:boot.c        **** 	    return(1);
+ 235:boot.c        **** 	}
+ 236:boot.c        **** 	/* get the count of data pairs */
+ 237:boot.c        **** 	data_pairs = ascii_to_bin( GetChar0() ) << 4;
+ 238:boot.c        **** 	data_pairs |= ascii_to_bin( GetChar0() );
+ 239:boot.c        **** 	
+ 240:boot.c        **** 	/* get the address to put the data */
+ 241:boot.c        **** 	/* although we collect this data, we do not use it.  All data
+ 242:boot.c        **** 	   programmed through this bootloader starts at application program
+ 243:boot.c        **** 	   space location 0x0000. The collection is neccessary only for
+ 244:boot.c        **** 	   the checksum calculation. */
+ 245:boot.c        **** 	address_hi = ascii_to_bin( GetChar0() ) << 4;
+ 246:boot.c        **** 	address_hi |= ascii_to_bin( GetChar0() );
+ 247:boot.c        **** 	
+ 248:boot.c        **** 	address_lo = ascii_to_bin( GetChar0() ) << 4;
+ 249:boot.c        **** 	address_lo |= ascii_to_bin( GetChar0() );
+ 250:boot.c        **** 	
+ 251:boot.c        **** 	/* get the data type */
+ 252:boot.c        **** 	data_type = ascii_to_bin( GetChar0() ) << 4;
+ 253:boot.c        **** 	data_type |= ascii_to_bin( GetChar0() );
+ 254:boot.c        **** 	
+ 255:boot.c        **** 	temp_store = data_pairs + address_hi + address_lo + data_type;
+ 256:boot.c        **** 	
+ 257:boot.c        **** 	for( i = 0; i < data_pairs; i++ )
+ 258:boot.c        **** 	{
+ 259:boot.c        **** 	    temp_byte = ascii_to_bin( GetChar0() ) << 4;
+ 260:boot.c        **** 	    temp_byte |= ascii_to_bin( GetChar0() );
+ 261:boot.c        **** 	    page_data[byte_count++] = temp_byte;	
+ 262:boot.c        **** 	    temp_store += temp_byte;
+ 263:boot.c        **** 	}
+ 264:boot.c        **** 	    
+ 265:boot.c        **** 	/* get the checksum */
+ 266:boot.c        **** 	temp_byte = ascii_to_bin( GetChar0() ) << 4;
+ 267:boot.c        **** 	temp_byte |= ascii_to_bin( GetChar0() );
+ 268:boot.c        **** 
+ 269:boot.c        **** 	GetChar0(); // get and dispose of the LF
+ 270:boot.c        **** 	//GetChar0(); // strip the CR character
+ 271:boot.c        **** 
+ 272:boot.c        **** 	/* check the data and checksum */
+ 273:boot.c        **** 	if( (char)(temp_store + temp_byte) )
+ 274:boot.c        **** 	{
+ 275:boot.c        **** 	    return(2);
+ 276:boot.c        **** 	}
+ 277:boot.c        **** 
+ 278:boot.c        **** 	/* fill the rest of the page buffer with 0xFF if the last records are not 
+ 279:boot.c        **** 	   a full page in length */
+ 280:boot.c        **** 	if( data_type )
+ 281:boot.c        **** 	{
+ 282:boot.c        **** 	    for( byte_count; byte_count < SPM_PAGESIZE; byte_count++ )
+ 283:boot.c        **** 	    {
+ 284:boot.c        **** 		page_data[byte_count] = 0xFF;
+ 285:boot.c        **** 	    }
+ 286:boot.c        **** 	}
+ 287:boot.c        **** 
+ 288:boot.c        **** 	/* if the page buffer is full, write the buffer to the temp flash buffer */
+ 289:boot.c        **** 	if( byte_count >= SPM_PAGESIZE )
+ 290:boot.c        **** 	{
+ 291:boot.c        **** 	    byte_count = 0;
+ 292:boot.c        **** 
+ 293:boot.c        **** 	    /* store data in temp buffer and write to flash */
+ 294:boot.c        **** 	    for( i = 0; i < SPM_PAGESIZE; i += 2 )
+ 295:boot.c        **** 	    {
+ 296:boot.c        **** 		/* swap the bytes for little endian format */
+ 297:boot.c        **** 		data = page_data[ i ];
+ 298:boot.c        **** 		data |= ( page_data[ i + 1 ] << 8 );
+ 299:boot.c        **** 		boot_page_fill( temp_address, data ); // call asm routine to load temporary flash buffer
+ 300:boot.c        **** 		temp_address += 2; // select next word in temporary buffer
+ 301:boot.c        **** 	    }
+ 302:boot.c        **** 
+ 303:boot.c        **** 	    /* write to the flash */
+ 304:boot.c        **** 	    boot_page_write( temp_address - SPM_PAGESIZE );
+ 305:boot.c        **** 	    boot_spm_busy_wait();	
+ 306:boot.c        **** 	    boot_rww_enable();				//Re-enable the RWW section
+ 307:boot.c        **** 
+ 308:boot.c        **** 	    PutChar0('*');
+ 309:boot.c        **** 	}
+ 310:boot.c        ****     } while( !data_type );
+ 311:boot.c        ****     return(0);
+ 312:boot.c        **** }
+ 313:boot.c        **** 
+ 314:boot.c        **** /*--- unsigned char ascii_to_bin( char data ) --------------------------------*/
+ 315:boot.c        **** /* This fuction returns the binary value of the received ascii (HEX) character */
+ 316:boot.c        **** unsigned char ascii_to_bin( char data )
+ 317:boot.c        **** {
+  83               	.LM1:
+  84               	/* prologue: frame size=0 */
+  85               	/* prologue end (size=0) */
+ 318:boot.c        ****  data )
+  87               	.LM2:
+  88 0000 8134      		cpi r24,lo8(65)
+  89 0002 18F4      		brsh .L2
+ 319:boot.c        **** har data )
+ 320:boot.c        **** {
+  91               	.LM3:
+  92 0004 8053      		subi r24,lo8(-(-48))
+  93 0006 9927      		clr r25
+  94 0008 0895      		ret
+  95               	.L2:
+ 321:boot.c        ****  data )
+ 322:boot.c        **** {
+ 323:boot.c        ****     if( data < 'A' )
+ 324:boot.c        ****     {
+  97               	.LM4:
+  98 000a 8753      		subi r24,lo8(-(-55))
+  99 000c 9927      		clr r25
+ 325:boot.c        **** )
+ 326:boot.c        ****     {
+ 101               	.LM5:
+ 102 000e 0895      		ret
+ 103               	/* epilogue: frame size=0 */
+ 104 0010 0895      		ret
+ 105               	/* epilogue end (size=1) */
+ 106               	/* function ascii_to_bin size 9 (8) */
+ 108               	.Lscope0:
+ 110               	.global	ihex_load
+ 112               	ihex_load:
+ 114               	.LM6:
+ 115               	/* prologue: frame size=0 */
+ 116 0012 AF92      		push r10
+ 117 0014 BF92      		push r11
+ 118 0016 CF92      		push r12
+ 119 0018 DF92      		push r13
+ 120 001a EF92      		push r14
+ 121 001c FF92      		push r15
+ 122 001e 0F93      		push r16
+ 123 0020 1F93      		push r17
+ 124 0022 CF93      		push r28
+ 125               	/* prologue end (size=9) */
+ 126 0024 CC24      		clr r12
+ 127 0026 DD24      		clr r13
+ 128 0028 7601      		movw r14,r12
+ 130               	.LM7:
+ 131 002a BB24      		clr r11
+ 132               	.L5:
+ 134               	.LM8:
+ 135 002c 0E94 0000 		call GetChar0
+ 136 0030 8A33      		cpi r24,lo8(58)
+ 137 0032 19F0      		breq .L8
+ 139               	.LM9:
+ 140 0034 81E0      		ldi r24,lo8(1)
+ 141 0036 90E0      		ldi r25,hi8(1)
+ 142 0038 A5C0      		rjmp .L4
+ 143               	.L8:
+ 145               	.LM10:
+ 146 003a 0E94 0000 		call GetChar0
+ 147 003e 0E94 0000 		call ascii_to_bin
+ 148 0042 C82F      		mov r28,r24
+ 149 0044 C295      		swap r28
+ 150 0046 C07F      		andi r28,0xf0
+ 152               	.LM11:
+ 153 0048 0E94 0000 		call GetChar0
+ 154 004c 0E94 0000 		call ascii_to_bin
+ 155 0050 C82B      		or r28,r24
+ 157               	.LM12:
+ 158 0052 0E94 0000 		call GetChar0
+ 159 0056 0E94 0000 		call ascii_to_bin
+ 160 005a 082F      		mov r16,r24
+ 161 005c 0295      		swap r16
+ 162 005e 007F      		andi r16,0xf0
+ 164               	.LM13:
+ 165 0060 0E94 0000 		call GetChar0
+ 166 0064 0E94 0000 		call ascii_to_bin
+ 167 0068 082B      		or r16,r24
+ 169               	.LM14:
+ 170 006a 0E94 0000 		call GetChar0
+ 171 006e 0E94 0000 		call ascii_to_bin
+ 172 0072 182F      		mov r17,r24
+ 173 0074 1295      		swap r17
+ 174 0076 107F      		andi r17,0xf0
+ 176               	.LM15:
+ 177 0078 0E94 0000 		call GetChar0
+ 178 007c 0E94 0000 		call ascii_to_bin
+ 179 0080 182B      		or r17,r24
+ 181               	.LM16:
+ 182 0082 0E94 0000 		call GetChar0
+ 183 0086 0E94 0000 		call ascii_to_bin
+ 184 008a A82E      		mov r10,r24
+ 185 008c AA0C      		lsl r10
+ 186 008e AA0C      		lsl r10
+ 187 0090 AA0C      		lsl r10
+ 188 0092 AA0C      		lsl r10
+ 190               	.LM17:
+ 191 0094 0E94 0000 		call GetChar0
+ 192 0098 0E94 0000 		call ascii_to_bin
+ 193 009c A82A      		or r10,r24
+ 195               	.LM18:
+ 196 009e 0C0F      		add r16,r28
+ 197 00a0 010F      		add r16,r17
+ 198 00a2 0A0D      		add r16,r10
+ 199               	.L32:
+ 201               	.LM19:
+ 202 00a4 CC23      		tst r28
+ 203 00a6 A9F0      		breq .L28
+ 205               	.LM20:
+ 206 00a8 0E94 0000 		call GetChar0
+ 207 00ac 0E94 0000 		call ascii_to_bin
+ 208 00b0 182F      		mov r17,r24
+ 209 00b2 1295      		swap r17
+ 210 00b4 107F      		andi r17,0xf0
+ 212               	.LM21:
+ 213 00b6 0E94 0000 		call GetChar0
+ 214 00ba 0E94 0000 		call ascii_to_bin
+ 215 00be 182B      		or r17,r24
+ 217               	.LM22:
+ 218 00c0 EB2D      		mov r30,r11
+ 219 00c2 FF27      		clr r31
+ 220 00c4 E050      		subi r30,lo8(-(page_data))
+ 221 00c6 F040      		sbci r31,hi8(-(page_data))
+ 222 00c8 1083      		st Z,r17
+ 223 00ca B394      		inc r11
+ 225               	.LM23:
+ 226 00cc 010F      		add r16,r17
+ 228               	.LM24:
+ 229 00ce C150      		subi r28,lo8(-(-1))
+ 230 00d0 E9CF      		rjmp .L32
+ 231               	.L28:
+ 233               	.LM25:
+ 234 00d2 0E94 0000 		call GetChar0
+ 235 00d6 0E94 0000 		call ascii_to_bin
+ 236 00da 182F      		mov r17,r24
+ 237 00dc 1295      		swap r17
+ 238 00de 107F      		andi r17,0xf0
+ 240               	.LM26:
+ 241 00e0 0E94 0000 		call GetChar0
+ 242 00e4 0E94 0000 		call ascii_to_bin
+ 243 00e8 182B      		or r17,r24
+ 245               	.LM27:
+ 246 00ea 0E94 0000 		call GetChar0
+ 248               	.LM28:
+ 249 00ee 010F      		add r16,r17
+ 250 00f0 19F0      		breq .L13
+ 252               	.LM29:
+ 253 00f2 82E0      		ldi r24,lo8(2)
+ 254 00f4 90E0      		ldi r25,hi8(2)
+ 255 00f6 46C0      		rjmp .L4
+ 256               	.L13:
+ 258               	.LM30:
+ 259 00f8 AA20      		tst r10
+ 260 00fa 59F0      		breq .L14
+ 262               	.LM31:
+ 263 00fc B7FC      		sbrc r11,7
+ 264 00fe 09C0      		rjmp .L14
+ 265 0100 8FEF      		ldi r24,lo8(-1)
+ 266               	.L18:
+ 268               	.LM32:
+ 269 0102 EB2D      		mov r30,r11
+ 270 0104 FF27      		clr r31
+ 271 0106 E050      		subi r30,lo8(-(page_data))
+ 272 0108 F040      		sbci r31,hi8(-(page_data))
+ 273 010a 8083      		st Z,r24
+ 275               	.LM33:
+ 276 010c B394      		inc r11
+ 277 010e B7FE      		sbrs r11,7
+ 278 0110 F8CF      		rjmp .L18
+ 279               	.L14:
+ 281               	.LM34:
+ 282 0112 B7FE      		sbrs r11,7
+ 283 0114 32C0      		rjmp .L7
+ 285               	.LM35:
+ 286 0116 C0E0      		ldi r28,lo8(0)
+ 288               	.LM36:
+ 289 0118 BC2E      		mov r11,r28
+ 290 011a 41E0      		ldi r20,lo8(1)
+ 291               	.L23:
+ 293               	.LM37:
+ 294 011c EC2F      		mov r30,r28
+ 295 011e FF27      		clr r31
+ 296 0120 E050      		subi r30,lo8(-(page_data))
+ 297 0122 F040      		sbci r31,hi8(-(page_data))
+ 298 0124 8081      		ld r24,Z
+ 299 0126 9927      		clr r25
+ 301               	.LM38:
+ 302 0128 2181      		ldd r18,Z+1
+ 303 012a 3327      		clr r19
+ 304 012c 322F      		mov r19,r18
+ 305 012e 2227      		clr r18
+ 306 0130 822B      		or r24,r18
+ 307 0132 932B      		or r25,r19
+ 308               	.LBB2:
+ 310               	.LM39:
+ 311               	/* #APP */
+ 312 0134 0C01      		movw  r0, r24
+ 313 0136 F601      		movw r30, r12
+ 314 0138 4093 5700 		sts 87, r20
+ 315 013c E895      		spm
+ 316 013e 1124      		clr  r1
+ 317               		
+ 318               	/* #NOAPP */
+ 319               	.LBE2:
+ 321               	.LM40:
+ 322 0140 82E0      		ldi r24,lo8(2)
+ 323 0142 90E0      		ldi r25,hi8(2)
+ 324 0144 A0E0      		ldi r26,hlo8(2)
+ 325 0146 B0E0      		ldi r27,hhi8(2)
+ 326 0148 C80E      		add r12,r24
+ 327 014a D91E      		adc r13,r25
+ 328 014c EA1E      		adc r14,r26
+ 329 014e FB1E      		adc r15,r27
+ 331               	.LM41:
+ 332 0150 CE5F      		subi r28,lo8(-(2))
+ 333 0152 C7FF      		sbrs r28,7
+ 334 0154 E3CF      		rjmp .L23
+ 335               	.LBB3:
+ 337               	.LM42:
+ 338 0156 25E0      		ldi r18,lo8(5)
+ 339 0158 C601      		movw r24,r12
+ 340 015a 8058      		subi r24,lo8(-(-128))
+ 341 015c 9040      		sbci r25,hi8(-(-128))
+ 342               	/* #APP */
+ 343 015e FC01      		movw r30, r24
+ 344 0160 2093 5700 		sts 87, r18
+ 345 0164 E895      		spm
+ 346               		
+ 347               	/* #NOAPP */
+ 348               	.L24:
+ 349               	.LBE3:
+ 351               	.LM43:
+ 352 0166 07B6      		in __tmp_reg__,87-0x20
+ 353 0168 00FC      		sbrc __tmp_reg__,0
+ 354 016a FDCF      		rjmp .L24
+ 355               	.LBB4:
+ 357               	.LM44:
+ 358 016c 81E1      		ldi r24,lo8(17)
+ 359               	/* #APP */
+ 360 016e 8093 5700 		sts 87, r24
+ 361 0172 E895      		spm
+ 362               		
+ 363               	/* #NOAPP */
+ 364               	.LBE4:
+ 366               	.LM45:
+ 367 0174 8AE2      		ldi r24,lo8(42)
+ 368 0176 0E94 0000 		call PutChar0
+ 369               	.L7:
+ 371               	.LM46:
+ 372 017a AA20      		tst r10
+ 373 017c 09F4      		brne .+2
+ 374 017e 56CF      		rjmp .L5
+ 376               	.LM47:
+ 377 0180 80E0      		ldi r24,lo8(0)
+ 378 0182 90E0      		ldi r25,hi8(0)
+ 379               	.L4:
+ 380               	/* epilogue: frame size=0 */
+ 381 0184 CF91      		pop r28
+ 382 0186 1F91      		pop r17
+ 383 0188 0F91      		pop r16
+ 384 018a FF90      		pop r15
+ 385 018c EF90      		pop r14
+ 386 018e DF90      		pop r13
+ 387 0190 CF90      		pop r12
+ 388 0192 BF90      		pop r11
+ 389 0194 AF90      		pop r10
+ 390 0196 0895      		ret
+ 391               	/* epilogue end (size=10) */
+ 392               	/* function ihex_load size 209 (190) */
+ 405               	.Lscope1:
+ 406               		.data
+ 407               	.LC0:
+ 408 0000 426F 6F74 		.string	"Boot V "
+ 408      2056 2000 
+ 409               	.LC1:
+ 410 0008 0D0A 00   		.string	"\r\n"
+ 411               	.LC2:
+ 412 000b 5245 4144 		.string	"READY"
+ 412      5900 
+ 413               	.LC3:
+ 414 0011 4552 5220 		.string	"ERR "
+ 414      00
+ 415               	.LC4:
+ 416 0016 4F4B 00   		.string	"OK"
+ 417               	.LC5:
+ 418 0019 7520 2D20 		.string	"u - Upload or x - Execute\r\n"
+ 418      5570 6C6F 
+ 418      6164 206F 
+ 418      7220 7820 
+ 418      2D20 4578 
+ 419               		.text
+ 421               	.global	main
+ 423               	main:
+ 425               	.LM48:
+ 426               	/* prologue: frame size=0 */
+ 427 0198 C0E0      		ldi r28,lo8(__stack - 0)
+ 428 019a D0E0      		ldi r29,hi8(__stack - 0)
+ 429 019c DEBF      		out __SP_H__,r29
+ 430 019e CDBF      		out __SP_L__,r28
+ 431               	/* prologue end (size=4) */
+ 433               	.LM49:
+ 434 01a0 C1E0      		ldi r28,lo8(1)
+ 435 01a2 D0E0      		ldi r29,hi8(1)
+ 437               	.LM50:
+ 438 01a4 11E0      		ldi r17,lo8(1)
+ 440               	.LM51:
+ 441               	/* #APP */
+ 442 01a6 F894      		cli
+ 444               	.LM52:
+ 445               	/* #NOAPP */
+ 446 01a8 81E0      		ldi r24,lo8(1)
+ 447 01aa 8BBF      		out 91-0x20,r24
+ 449               	.LM53:
+ 450 01ac 8BB7      		in r24,91-0x20
+ 451 01ae 8260      		ori r24,lo8(2)
+ 452 01b0 8BBF      		out 91-0x20,r24
+ 454               	.LM54:
+ 455 01b2 80EA      		ldi r24,lo8(416)
+ 456 01b4 91E0      		ldi r25,hi8(416)
+ 457 01b6 0E94 0000 		call SerCom0Init
+ 458               	.LBB5:
+ 460               	.LM55:
+ 461 01ba E0E0      		ldi r30,lo8(0)
+ 462 01bc F0E0      		ldi r31,hi8(0)
+ 463               	/* #APP */
+ 464 01be 8491      		lpm r24, Z
+ 465               		
+ 466               	/* #NOAPP */
+ 467               	.LBE5:
+ 468 01c0 8F3F      		cpi r24,lo8(-1)
+ 469 01c2 09F0      		breq .L35
+ 471               	.LM56:
+ 472 01c4 10E0      		ldi r17,lo8(0)
+ 473               	.L35:
+ 475               	.LM57:
+ 476 01c6 5F9B      		sbis 43-0x20,7
+ 477 01c8 12C0      		rjmp .L37
+ 479               	.LM58:
+ 480 01ca 8CB1      		in r24,44-0x20
+ 481 01cc 8936      		cpi r24,lo8(105)
+ 482 01ce 79F4      		brne .L37
+ 484               	.LM59:
+ 485 01d0 11E0      		ldi r17,lo8(1)
+ 487               	.LM60:
+ 488 01d2 80E0      		ldi r24,lo8(.LC0)
+ 489 01d4 90E0      		ldi r25,hi8(.LC0)
+ 490 01d6 0E94 0000 		call PutString0
+ 492               	.LM61:
+ 493 01da 80E3      		ldi r24,lo8(48)
+ 494 01dc 0E94 0000 		call PutChar0
+ 496               	.LM62:
+ 497 01e0 81E3      		ldi r24,lo8(49)
+ 498 01e2 0E94 0000 		call PutChar0
+ 500               	.LM63:
+ 501 01e6 80E0      		ldi r24,lo8(.LC1)
+ 502 01e8 90E0      		ldi r25,hi8(.LC1)
+ 503 01ea 0E94 0000 		call PutString0
+ 504               	.L37:
+ 506               	.LM64:
+ 507 01ee 2196      		adiw r28,1
+ 508 01f0 C130      		cpi r28,1
+ 509 01f2 D105      		cpc r29,__zero_reg__
+ 510 01f4 41F7      		brne .L35
+ 511               	.L61:
+ 513               	.LM65:
+ 514 01f6 1123      		tst r17
+ 515 01f8 09F4      		brne .+2
+ 516 01fa 6FC0      		rjmp .L57
+ 518               	.LM66:
+ 519 01fc 0E94 0000 		call Hit0
+ 520 0200 8823      		tst r24
+ 521 0202 C9F3      		breq .L61
+ 523               	.LM67:
+ 524 0204 0E94 0000 		call GetChar0
+ 526               	.LM68:
+ 527 0208 9927      		clr r25
+ 528 020a 8537      		cpi r24,117
+ 529 020c 9105      		cpc r25,__zero_reg__
+ 530 020e 29F0      		breq .L44
+ 531 0210 8837      		cpi r24,120
+ 532 0212 9105      		cpc r25,__zero_reg__
+ 533 0214 09F4      		brne .+2
+ 534 0216 51C0      		rjmp .L53
+ 535 0218 5BC0      		rjmp .L54
+ 536               	.L44:
+ 538               	.LM69:
+ 539 021a 1092 0000 		sts buf_address,__zero_reg__
+ 540 021e 1092 0000 		sts (buf_address)+1,__zero_reg__
+ 541 0222 1092 0000 		sts (buf_address)+2,__zero_reg__
+ 542 0226 1092 0000 		sts (buf_address)+3,__zero_reg__
+ 543 022a 23E0      		ldi r18,lo8(3)
+ 544               	.L50:
+ 545               	.LBB6:
+ 547               	.LM70:
+ 548 022c 8091 0000 		lds r24,buf_address
+ 549 0230 9091 0000 		lds r25,(buf_address)+1
+ 550               	/* #APP */
+ 551 0234 FC01      		movw r30, r24
+ 552 0236 2093 5700 		sts 87, r18
+ 553 023a E895      		spm
+ 554               		
+ 555               	/* #NOAPP */
+ 556               	.L47:
+ 557               	.LBE6:
+ 559               	.LM71:
+ 560 023c 07B6      		in __tmp_reg__,87-0x20
+ 561 023e 00FC      		sbrc __tmp_reg__,0
+ 562 0240 FDCF      		rjmp .L47
+ 564               	.LM72:
+ 565 0242 8091 0000 		lds r24,buf_address
+ 566 0246 9091 0000 		lds r25,(buf_address)+1
+ 567 024a A091 0000 		lds r26,(buf_address)+2
+ 568 024e B091 0000 		lds r27,(buf_address)+3
+ 569 0252 8058      		subi r24,lo8(-(128))
+ 570 0254 9F4F      		sbci r25,hi8(-(128))
+ 571 0256 AF4F      		sbci r26,hlo8(-(128))
+ 572 0258 BF4F      		sbci r27,hhi8(-(128))
+ 573 025a 8093 0000 		sts buf_address,r24
+ 574 025e 9093 0000 		sts (buf_address)+1,r25
+ 575 0262 A093 0000 		sts (buf_address)+2,r26
+ 576 0266 B093 0000 		sts (buf_address)+3,r27
+ 577 026a 8050      		subi r24,lo8(28672)
+ 578 026c 9047      		sbci r25,hi8(28672)
+ 579 026e A040      		sbci r26,hlo8(28672)
+ 580 0270 B040      		sbci r27,hhi8(28672)
+ 581 0272 E0F2      		brlo .L50
+ 583               	.LM73:
+ 584 0274 1092 0000 		sts buf_address,__zero_reg__
+ 585 0278 1092 0000 		sts (buf_address)+1,__zero_reg__
+ 586 027c 1092 0000 		sts (buf_address)+2,__zero_reg__
+ 587 0280 1092 0000 		sts (buf_address)+3,__zero_reg__
+ 589               	.LM74:
+ 590 0284 80E0      		ldi r24,lo8(.LC2)
+ 591 0286 90E0      		ldi r25,hi8(.LC2)
+ 592 0288 0E94 0000 		call PutString0
+ 594               	.LM75:
+ 595 028c 0E94 0000 		call ihex_load
+ 596 0290 C82F      		mov r28,r24
+ 597 0292 8823      		tst r24
+ 598 0294 69F0      		breq .L51
+ 600               	.LM76:
+ 601 0296 80E0      		ldi r24,lo8(.LC3)
+ 602 0298 90E0      		ldi r25,hi8(.LC3)
+ 603 029a 0E94 0000 		call PutString0
+ 605               	.LM77:
+ 606 029e 8C2F      		mov r24,r28
+ 607 02a0 9927      		clr r25
+ 608 02a2 AA27      		clr r26
+ 609 02a4 BB27      		clr r27
+ 610 02a6 BC01      		movw r22,r24
+ 611 02a8 CD01      		movw r24,r26
+ 612 02aa 0E94 0000 		call PutInt0
+ 613 02ae A3CF      		rjmp .L61
+ 614               	.L51:
+ 616               	.LM78:
+ 617 02b0 80E0      		ldi r24,lo8(.LC4)
+ 618 02b2 90E0      		ldi r25,hi8(.LC4)
+ 619 02b4 0E94 0000 		call PutString0
+ 621               	.LM79:
+ 622 02b8 10C0      		rjmp .L57
+ 623               	.L53:
+ 625               	.LM80:
+ 626 02ba 81E0      		ldi r24,lo8(1)
+ 627 02bc 8BBF      		out 91-0x20,r24
+ 629               	.LM81:
+ 630 02be 8BB7      		in r24,91-0x20
+ 631 02c0 8D7F      		andi r24,lo8(-3)
+ 632 02c2 8BBF      		out 91-0x20,r24
+ 634               	.LM82:
+ 635 02c4 E091 0000 		lds r30,jump_to_app
+ 636 02c8 F091 0000 		lds r31,(jump_to_app)+1
+ 637 02cc 0995      		icall
+ 639               	.LM83:
+ 640 02ce 93CF      		rjmp .L61
+ 641               	.L54:
+ 643               	.LM84:
+ 644 02d0 80E0      		ldi r24,lo8(.LC5)
+ 645 02d2 90E0      		ldi r25,hi8(.LC5)
+ 646 02d4 0E94 0000 		call PutString0
+ 647 02d8 8ECF      		rjmp .L61
+ 648               	.L57:
+ 650               	.LM85:
+ 651 02da 81E0      		ldi r24,lo8(1)
+ 652 02dc 8BBF      		out 91-0x20,r24
+ 654               	.LM86:
+ 655 02de 8BB7      		in r24,91-0x20
+ 656 02e0 8D7F      		andi r24,lo8(-3)
+ 657 02e2 8BBF      		out 91-0x20,r24
+ 659               	.LM87:
+ 660 02e4 E091 0000 		lds r30,jump_to_app
+ 661 02e8 F091 0000 		lds r31,(jump_to_app)+1
+ 662 02ec 0995      		icall
+ 664               	.LM88:
+ 665 02ee 80E0      		ldi r24,lo8(0)
+ 666 02f0 90E0      		ldi r25,hi8(0)
+ 667               	/* epilogue: frame size=0 */
+ 668 02f2 0C94 0000 		jmp exit
+ 669               	/* epilogue end (size=2) */
+ 670               	/* function main size 186 (180) */
+ 681               	.Lscope2:
+ 682               		.comm page_data,128,1
+ 683               		.comm buf_address,4,1
+ 687               		.text
+ 689               	Letext:
+ 690               	/* File "boot.c": code  404 = 0x0194 ( 378), prologues  13, epilogues  13 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 boot.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc6naaaa.s:74     .bss:00000000 jump_to_app
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc6naaaa.s:81     .text:00000000 ascii_to_bin
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc6naaaa.s:112    .text:00000012 ihex_load
+                            *COM*:00000080 page_data
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc6naaaa.s:423    .text:00000198 main
+                            *COM*:00000004 buf_address
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc6naaaa.s:689    .text:000002f6 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+GetChar0
+PutChar0
+__stack
+SerCom0Init
+PutString0
+Hit0
+PutInt0
+exit

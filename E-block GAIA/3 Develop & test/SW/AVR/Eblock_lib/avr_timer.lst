@@ -1,0 +1,231 @@
+   1               		.file	"avr_timer.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  80               	.global	set_timer_mode
+  82               	set_timer_mode:
+   1:../../Eblock_lib/avr_timer.c **** /*!  
+   2:../../Eblock_lib/avr_timer.c **** 	\file   	avr_timer.c
+   3:../../Eblock_lib/avr_timer.c **** 	\brief  	Setting timer for AVR
+   4:../../Eblock_lib/avr_timer.c **** 	\ingroup	avr_timer
+   5:../../Eblock_lib/avr_timer.c **** 	\par	This module initial the timer for avr 
+   6:../../Eblock_lib/avr_timer.c **** 	\n		TIMER0  use for internal tick for E_IO Module SW and  Display 7 Segments
+   7:../../Eblock_lib/avr_timer.c **** 	\n		TIMER1  use for	ICP mode, IR detecting
+   8:../../Eblock_lib/avr_timer.c **** 	\n		TIMER2  use for Piezo
+   9:../../Eblock_lib/avr_timer.c **** 	\n		Other timer mode will be added
+  10:../../Eblock_lib/avr_timer.c ****  	\n Original written for :   \b AVR
+  11:../../Eblock_lib/avr_timer.c ****  	\n CPU port/tested		: 	ATMEGA32
+  12:../../Eblock_lib/avr_timer.c ****  	\n Hardware use			:   E_MEGA32
+  13:../../Eblock_lib/avr_timer.c **** 	\n Peripheral use		:   TIMER2,TIMER0, TIMER1
+  14:../../Eblock_lib/avr_timer.c ****  	\n Library use			:   x
+  15:../../Eblock_lib/avr_timer.c ****  	\n Memory	FLASH		:   XXX
+  16:../../Eblock_lib/avr_timer.c ****  	\n			RAM			:   XXX
+  17:../../Eblock_lib/avr_timer.c ****  	\n		EEPROM			:   XXX
+  18:../../Eblock_lib/avr_timer.c ****  	\n Reference Document	:   ATMEGA32 Datasheet
+  19:../../Eblock_lib/avr_timer.c **** 
+  20:../../Eblock_lib/avr_timer.c **** 	\version 0.1
+  21:../../Eblock_lib/avr_timer.c ****  	\author  wichai tosssamartvorakul / wichai@geartronics.net
+  22:../../Eblock_lib/avr_timer.c **** 	\date 	 13/08/08  
+  23:../../Eblock_lib/avr_timer.c **** 
+  24:../../Eblock_lib/avr_timer.c **** 	\par Update History
+  25:../../Eblock_lib/avr_timer.c ****  	\nDate			By 					Comments
+  26:../../Eblock_lib/avr_timer.c ****  	\n----			--					--------
+  27:../../Eblock_lib/avr_timer.c **** 	\n 
+  28:../../Eblock_lib/avr_timer.c ****  
+  29:../../Eblock_lib/avr_timer.c **** */
+  30:../../Eblock_lib/avr_timer.c **** 
+  31:../../Eblock_lib/avr_timer.c ****  
+  32:../../Eblock_lib/avr_timer.c **** 
+  33:../../Eblock_lib/avr_timer.c **** //! Include file
+  34:../../Eblock_lib/avr_timer.c **** #include <avr/interrupt.h>
+  35:../../Eblock_lib/avr_timer.c **** #include "avr_timer.h"
+  36:../../Eblock_lib/avr_timer.c **** 
+  37:../../Eblock_lib/avr_timer.c **** 
+  38:../../Eblock_lib/avr_timer.c **** 
+  39:../../Eblock_lib/avr_timer.c **** //  Start routine here
+  40:../../Eblock_lib/avr_timer.c **** 
+  41:../../Eblock_lib/avr_timer.c **** /*!	\brief  Initial timer for operation mode
+  42:../../Eblock_lib/avr_timer.c **** 	\param  timer no    0,1,2
+  43:../../Eblock_lib/avr_timer.c **** 	\n		timer mode  Mode of opertaion
+  44:../../Eblock_lib/avr_timer.c **** 	\n	    output mode Output mode to OCn pin
+  45:../../Eblock_lib/avr_timer.c **** 	\n		Clock source   From prescale interna clock or external
+  46:../../Eblock_lib/avr_timer.c **** 	\return None
+  47:../../Eblock_lib/avr_timer.c **** 	\par Port/Peripheral Usage   TIMER
+  48:../../Eblock_lib/avr_timer.c **** 	\n    
+  49:../../Eblock_lib/avr_timer.c **** 	\par Register setting
+  50:../../Eblock_lib/avr_timer.c **** 	\n	 TCCR0    
+  51:../../Eblock_lib/avr_timer.c **** 	\par Theory of Operation   
+  52:../../Eblock_lib/avr_timer.c **** 	\n   Setting  timer mode, output pin  and clock source for each timer 
+  53:../../Eblock_lib/avr_timer.c **** 	\n   Mode of operations
+  54:../../Eblock_lib/avr_timer.c **** 	\n	 NORMAL_MODE  	Count from 0 to 0xFF and restart again Can update TCNTn to set the timer tick
+  55:../../Eblock_lib/avr_timer.c **** 	\n   CTC_Mode     	Count from 0 until reach OCRn and restart again
+  56:../../Eblock_lib/avr_timer.c **** 	\n   FAST_PWM_MODE	Create PWM with counting  0 - MAX (Out 1) - TOP  (Out 0)  Reset to 0 
+  57:../../Eblock_lib/avr_timer.c **** 	\n   PWM_MODE       Create PWM with counting  MAX- 0 - MAX  ( Out 1)  MAX - TOP - MAX (Out 0)
+  58:../../Eblock_lib/avr_timer.c **** 	\par Pseudo code
+  59:../../Eblock_lib/avr_timer.c **** 	\n
+  60:../../Eblock_lib/avr_timer.c **** 	\note   (Pseudo code)
+  61:../../Eblock_lib/avr_timer.c **** 	\bug    <bug to fix>
+  62:../../Eblock_lib/avr_timer.c **** 
+  63:../../Eblock_lib/avr_timer.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  64:../../Eblock_lib/avr_timer.c **** 	\sa	 <see also two name joined by ::>
+  65:../../Eblock_lib/avr_timer.c **** */          
+  66:../../Eblock_lib/avr_timer.c **** 
+  67:../../Eblock_lib/avr_timer.c **** void set_timer_mode (uint8_t timer, uint8_t mode, uint8_t output_mode, uint8_t clock)
+  68:../../Eblock_lib/avr_timer.c **** {
+  84               	.LM1:
+  85               	/* prologue: frame size=0 */
+  86               	/* prologue end (size=0) */
+  69:../../Eblock_lib/avr_timer.c **** // Set mode to 
+  70:../../Eblock_lib/avr_timer.c **** 
+  71:../../Eblock_lib/avr_timer.c ****    switch (timer)
+  88               	.LM2:
+  89 0000 9927      		clr r25
+  90 0002 8230      		cpi r24,2
+  91 0004 9105      		cpc r25,__zero_reg__
+  92 0006 89F0      		breq .L6
+  94               	.LM3:
+  95 0008 8330      		cpi r24,3
+  96 000a 9105      		cpc r25,__zero_reg__
+  97 000c 1CF4      		brge .L8
+  98 000e 892B      		or r24,r25
+  99 0010 21F0      		breq .L3
+ 100 0012 0895      		ret
+ 101               	.L8:
+ 102 0014 0397      		sbiw r24,3
+ 103 0016 29F0      		breq .L4
+ 104 0018 0895      		ret
+ 105               	.L3:
+  72:../../Eblock_lib/avr_timer.c ****    {
+  73:../../Eblock_lib/avr_timer.c ****       case TIMER0:
+  74:../../Eblock_lib/avr_timer.c **** 		TCCR0 = ( mode | output_mode |clock);
+ 107               	.LM4:
+ 108 001a 642B      		or r22,r20
+ 109 001c 622B      		or r22,r18
+ 110 001e 63BF      		out 83-0x20,r22
+  75:../../Eblock_lib/avr_timer.c **** 	    break;
+ 112               	.LM5:
+ 113 0020 0895      		ret
+ 114               	.L4:
+  76:../../Eblock_lib/avr_timer.c **** 	  case TIMER2:
+  77:../../Eblock_lib/avr_timer.c **** 	    TCCR2 = ( mode | output_mode |clock);
+ 116               	.LM6:
+ 117 0022 642B      		or r22,r20
+ 118 0024 622B      		or r22,r18
+ 119 0026 65BD      		out 69-0x20,r22
+  78:../../Eblock_lib/avr_timer.c **** 		break;
+ 121               	.LM7:
+ 122 0028 0895      		ret
+ 123               	.L6:
+  79:../../Eblock_lib/avr_timer.c **** 	  case TIMER1A:
+  80:../../Eblock_lib/avr_timer.c **** 	    break;
+  81:../../Eblock_lib/avr_timer.c **** 	  case TIMER1B:
+  82:../../Eblock_lib/avr_timer.c **** 	    TCCR1B  = ( mode | output_mode |clock);			 
+ 125               	.LM8:
+ 126 002a 642B      		or r22,r20
+ 127 002c 622B      		or r22,r18
+ 128 002e 6EBD      		out 78-0x20,r22
+ 129 0030 0895      		ret
+ 130               	/* epilogue: frame size=0 */
+ 131               	/* epilogue: noreturn */
+ 132               	/* epilogue end (size=0) */
+ 133               	/* function set_timer_mode size 26 (26) */
+ 135               	.Lscope0:
+ 138               	.global	timer_tick
+ 140               	timer_tick:
+  83:../../Eblock_lib/avr_timer.c **** 		break;
+  84:../../Eblock_lib/avr_timer.c **** 	  default:
+  85:../../Eblock_lib/avr_timer.c **** 	    break;
+  86:../../Eblock_lib/avr_timer.c ****    
+  87:../../Eblock_lib/avr_timer.c ****    }
+  88:../../Eblock_lib/avr_timer.c ****  
+  89:../../Eblock_lib/avr_timer.c **** }
+  90:../../Eblock_lib/avr_timer.c **** 
+  91:../../Eblock_lib/avr_timer.c ****  
+  92:../../Eblock_lib/avr_timer.c **** 
+  93:../../Eblock_lib/avr_timer.c **** /*!	\brief  Initial timer tick for using in E_IO
+  94:../../Eblock_lib/avr_timer.c **** 	\n   This setting will effect the refresh rate of 7 Segments
+  95:../../Eblock_lib/avr_timer.c **** 	\param  Value  Value for timer tick   ~ (0.128*value + 0.12)  ms
+  96:../../Eblock_lib/avr_timer.c **** 	\return None
+  97:../../Eblock_lib/avr_timer.c **** 	\par Port/Peripheral Usage   TIMER
+  98:../../Eblock_lib/avr_timer.c **** 	\n    
+  99:../../Eblock_lib/avr_timer.c **** 	\par Register setting
+ 100:../../Eblock_lib/avr_timer.c **** 	\n	 TCNT0  
+ 101:../../Eblock_lib/avr_timer.c **** 	\par Theory of Operation   
+ 102:../../Eblock_lib/avr_timer.c **** 	\n   Set timer0 to counter mode and disable the Output. Because we want to use
+ 103:../../Eblock_lib/avr_timer.c **** 	\n   just timer to tick the routine tasks. Ex. Update display 
+ 104:../../Eblock_lib/avr_timer.c **** 	\n   Mode of operations
+ 105:../../Eblock_lib/avr_timer.c **** 	\n   CTC_Mode     	Count from 0 until reach OCRn and restart again
+ 106:../../Eblock_lib/avr_timer.c ****  	\n   	timer tick  = 2.n.(1+OCRn)/fclk    n = Prescale  fclk = 16 Mhz
+ 107:../../Eblock_lib/avr_timer.c **** 	\n      timer tick  = 0.128 (1+0CRn)  ms
+ 108:../../Eblock_lib/avr_timer.c **** 	\n
+ 109:../../Eblock_lib/avr_timer.c **** 	\par Pseudo code
+ 110:../../Eblock_lib/avr_timer.c **** 	\n
+ 111:../../Eblock_lib/avr_timer.c **** 	\note   Need to Add   
+ 112:../../Eblock_lib/avr_timer.c **** 	\n		SIGNAL(SIG_OUTPUT_COMPARE0)  into main source code
+ 113:../../Eblock_lib/avr_timer.c **** 
+ 114:../../Eblock_lib/avr_timer.c **** 	\bug    <bug to fix>
+ 115:../../Eblock_lib/avr_timer.c **** 
+ 116:../../Eblock_lib/avr_timer.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 117:../../Eblock_lib/avr_timer.c **** 	\sa	 <see also two name joined by ::>
+ 118:../../Eblock_lib/avr_timer.c **** */          
+ 119:../../Eblock_lib/avr_timer.c **** 
+ 120:../../Eblock_lib/avr_timer.c **** void timer_tick (uint8_t value)
+ 121:../../Eblock_lib/avr_timer.c **** {
+ 142               	.LM9:
+ 143               	/* prologue: frame size=0 */
+ 144 0032 1F93      		push r17
+ 145               	/* prologue end (size=1) */
+ 146 0034 182F      		mov r17,r24
+ 122:../../Eblock_lib/avr_timer.c **** // Set mode to 
+ 123:../../Eblock_lib/avr_timer.c ****   set_timer_mode (0,CTC_MODE,OC_DISCONNECT, CLK_BY_1024);
+ 148               	.LM10:
+ 149 0036 25E0      		ldi r18,lo8(5)
+ 150 0038 40E0      		ldi r20,lo8(0)
+ 151 003a 68E0      		ldi r22,lo8(8)
+ 152 003c 842F      		mov r24,r20
+ 153 003e 0E94 0000 		call set_timer_mode
+ 124:../../Eblock_lib/avr_timer.c ****   OCR0 = value;
+ 155               	.LM11:
+ 156 0042 1CBF      		out 92-0x20,r17
+ 125:../../Eblock_lib/avr_timer.c ****  // Enable interrupt Flag
+ 126:../../Eblock_lib/avr_timer.c ****   TIMSK  |= _BV(OCIE0);
+ 158               	.LM12:
+ 159 0044 89B7      		in r24,89-0x20
+ 160 0046 8260      		ori r24,lo8(2)
+ 161 0048 89BF      		out 89-0x20,r24
+ 127:../../Eblock_lib/avr_timer.c ****  // Enable interrupt Set i bit in the status register
+ 128:../../Eblock_lib/avr_timer.c ****   sei();   
+ 163               	.LM13:
+ 164               	/* #APP */
+ 165 004a 7894      		sei
+ 166               	/* #NOAPP */
+ 167               	/* epilogue: frame size=0 */
+ 168 004c 1F91      		pop r17
+ 169 004e 0895      		ret
+ 170               	/* epilogue end (size=2) */
+ 171               	/* function timer_tick size 16 (13) */
+ 173               	.Lscope1:
+ 174               		.text
+ 176               	Letext:
+ 177               	/* File "../../Eblock_lib/avr_timer.c": code   42 = 0x002a (  39), prologues   1, epilogues   2 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 avr_timer.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:82     .text:00000000 set_timer_mode
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:140    .text:00000032 timer_tick
+C:\DOCUME~1\tos\LOCALS~1\Temp/cceYaaaa.s:176    .text:00000050 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

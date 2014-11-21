@@ -1,0 +1,799 @@
+
+boot.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000596  00007000  00007000  00000094  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000046  00800060  00007596  0000062a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000086  008000a6  008000a6  00000670  2**0
+                  ALLOC
+  3 .noinit       00000000  0080012c  0080012c  00000670  2**0
+                  CONTENTS
+  4 .eeprom       00000000  00810000  00810000  00000670  2**0
+                  CONTENTS
+  5 .stab         00001074  00000000  00000000  00000670  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  6 .stabstr      00000b50  00000000  00000000  000016e4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00007000 <__vectors>:
+    7000:	0c 94 2a 38 	jmp	0x7054 <__ctors_end>
+    7004:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7008:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    700c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7010:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7014:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7018:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    701c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7020:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7024:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7028:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    702c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7030:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7034:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7038:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    703c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7040:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7044:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7048:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    704c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7050:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+
+00007054 <__ctors_end>:
+    7054:	11 24       	eor	r1, r1
+    7056:	1f be       	out	0x3f, r1	; 63
+    7058:	cf e5       	ldi	r28, 0x5F	; 95
+    705a:	d8 e0       	ldi	r29, 0x08	; 8
+    705c:	de bf       	out	0x3e, r29	; 62
+    705e:	cd bf       	out	0x3d, r28	; 61
+
+00007060 <__do_copy_data>:
+    7060:	10 e0       	ldi	r17, 0x00	; 0
+    7062:	a0 e6       	ldi	r26, 0x60	; 96
+    7064:	b0 e0       	ldi	r27, 0x00	; 0
+    7066:	e6 e9       	ldi	r30, 0x96	; 150
+    7068:	f5 e7       	ldi	r31, 0x75	; 117
+    706a:	02 c0       	rjmp	.+4      	; 0x7070 <.do_copy_data_start>
+
+0000706c <.do_copy_data_loop>:
+    706c:	05 90       	lpm	r0, Z+
+    706e:	0d 92       	st	X+, r0
+
+00007070 <.do_copy_data_start>:
+    7070:	a6 3a       	cpi	r26, 0xA6	; 166
+    7072:	b1 07       	cpc	r27, r17
+    7074:	d9 f7       	brne	.-10     	; 0x706c <.do_copy_data_loop>
+
+00007076 <__do_clear_bss>:
+    7076:	11 e0       	ldi	r17, 0x01	; 1
+    7078:	a6 ea       	ldi	r26, 0xA6	; 166
+    707a:	b0 e0       	ldi	r27, 0x00	; 0
+    707c:	01 c0       	rjmp	.+2      	; 0x7080 <.do_clear_bss_start>
+
+0000707e <.do_clear_bss_loop>:
+    707e:	1d 92       	st	X+, r1
+
+00007080 <.do_clear_bss_start>:
+    7080:	ac 32       	cpi	r26, 0x2C	; 44
+    7082:	b1 07       	cpc	r27, r17
+    7084:	e1 f7       	brne	.-8      	; 0x707e <.do_clear_bss_loop>
+    7086:	0c 94 17 39 	jmp	0x722e <main>
+
+0000708a <__bad_interrupt>:
+    708a:	0c 94 00 38 	jmp	0x7000 <__vectors>
+
+0000708e <ascii_to_bin>:
+/*--- unsigned char ascii_to_bin( char data ) --------------------------------*/
+/* This fuction returns the binary value of the received ascii (HEX) character */
+unsigned char ascii_to_bin( char data )
+{
+    if( data < 'A' )
+    708e:	81 34       	cpi	r24, 0x41	; 65
+    7090:	18 f4       	brcc	.+6      	; 0x7098 <ascii_to_bin+0xa>
+    {
+	return( data - '0' );
+    7092:	80 53       	subi	r24, 0x30	; 48
+    7094:	99 27       	eor	r25, r25
+    7096:	08 95       	ret
+    }
+    else
+    {
+	return( data - 55 );
+    7098:	87 53       	subi	r24, 0x37	; 55
+    709a:	99 27       	eor	r25, r25
+    }
+}
+    709c:	08 95       	ret
+
+0000709e <ihex_load>:
+    709e:	9f 92       	push	r9
+    70a0:	af 92       	push	r10
+    70a2:	bf 92       	push	r11
+    70a4:	cf 92       	push	r12
+    70a6:	df 92       	push	r13
+    70a8:	ef 92       	push	r14
+    70aa:	ff 92       	push	r15
+    70ac:	0f 93       	push	r16
+    70ae:	1f 93       	push	r17
+    70b0:	cf 93       	push	r28
+    70b2:	ee 24       	eor	r14, r14
+    70b4:	aa 24       	eor	r10, r10
+    70b6:	bb 24       	eor	r11, r11
+    70b8:	65 01       	movw	r12, r10
+    70ba:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    70be:	8a 33       	cpi	r24, 0x3A	; 58
+    70c0:	19 f0       	breq	.+6      	; 0x70c8 <ihex_load+0x2a>
+    70c2:	81 e0       	ldi	r24, 0x01	; 1
+    70c4:	90 e0       	ldi	r25, 0x00	; 0
+    70c6:	a8 c0       	rjmp	.+336    	; 0x7218 <ihex_load+0x17a>
+    70c8:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    70cc:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    70d0:	f8 2e       	mov	r15, r24
+    70d2:	ff 0c       	add	r15, r15
+    70d4:	ff 0c       	add	r15, r15
+    70d6:	ff 0c       	add	r15, r15
+    70d8:	ff 0c       	add	r15, r15
+    70da:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    70de:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    70e2:	f8 2a       	or	r15, r24
+    70e4:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    70e8:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    70ec:	c8 2f       	mov	r28, r24
+    70ee:	c2 95       	swap	r28
+    70f0:	c0 7f       	andi	r28, 0xF0	; 240
+    70f2:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    70f6:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    70fa:	c8 2b       	or	r28, r24
+    70fc:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    7100:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    7104:	18 2f       	mov	r17, r24
+    7106:	12 95       	swap	r17
+    7108:	10 7f       	andi	r17, 0xF0	; 240
+    710a:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    710e:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    7112:	18 2b       	or	r17, r24
+    7114:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    7118:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    711c:	98 2e       	mov	r9, r24
+    711e:	99 0c       	add	r9, r9
+    7120:	99 0c       	add	r9, r9
+    7122:	99 0c       	add	r9, r9
+    7124:	99 0c       	add	r9, r9
+    7126:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    712a:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    712e:	98 2a       	or	r9, r24
+    7130:	cf 0d       	add	r28, r15
+    7132:	c1 0f       	add	r28, r17
+    7134:	c9 0d       	add	r28, r9
+    7136:	00 e0       	ldi	r16, 0x00	; 0
+    7138:	0f 15       	cp	r16, r15
+    713a:	a8 f4       	brcc	.+42     	; 0x7166 <ihex_load+0xc8>
+    713c:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    7140:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    7144:	18 2f       	mov	r17, r24
+    7146:	12 95       	swap	r17
+    7148:	10 7f       	andi	r17, 0xF0	; 240
+    714a:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    714e:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    7152:	18 2b       	or	r17, r24
+    7154:	ee 2d       	mov	r30, r14
+    7156:	ff 27       	eor	r31, r31
+    7158:	e8 55       	subi	r30, 0x58	; 88
+    715a:	ff 4f       	sbci	r31, 0xFF	; 255
+    715c:	10 83       	st	Z, r17
+    715e:	e3 94       	inc	r14
+    7160:	c1 0f       	add	r28, r17
+    7162:	0f 5f       	subi	r16, 0xFF	; 255
+    7164:	e9 cf       	rjmp	.-46     	; 0x7138 <ihex_load+0x9a>
+    7166:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    716a:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    716e:	18 2f       	mov	r17, r24
+    7170:	12 95       	swap	r17
+    7172:	10 7f       	andi	r17, 0xF0	; 240
+    7174:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    7178:	0e 94 47 38 	call	0x708e <ascii_to_bin>
+    717c:	18 2b       	or	r17, r24
+    717e:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    7182:	c1 0f       	add	r28, r17
+    7184:	19 f0       	breq	.+6      	; 0x718c <ihex_load+0xee>
+    7186:	82 e0       	ldi	r24, 0x02	; 2
+    7188:	90 e0       	ldi	r25, 0x00	; 0
+    718a:	46 c0       	rjmp	.+140    	; 0x7218 <ihex_load+0x17a>
+    718c:	99 20       	and	r9, r9
+    718e:	59 f0       	breq	.+22     	; 0x71a6 <ihex_load+0x108>
+    7190:	e7 fc       	sbrc	r14, 7
+    7192:	09 c0       	rjmp	.+18     	; 0x71a6 <ihex_load+0x108>
+    7194:	8f ef       	ldi	r24, 0xFF	; 255
+    7196:	ee 2d       	mov	r30, r14
+    7198:	ff 27       	eor	r31, r31
+    719a:	e8 55       	subi	r30, 0x58	; 88
+    719c:	ff 4f       	sbci	r31, 0xFF	; 255
+    719e:	80 83       	st	Z, r24
+    71a0:	e3 94       	inc	r14
+    71a2:	e7 fe       	sbrs	r14, 7
+    71a4:	f8 cf       	rjmp	.-16     	; 0x7196 <ihex_load+0xf8>
+    71a6:	e7 fe       	sbrs	r14, 7
+    71a8:	32 c0       	rjmp	.+100    	; 0x720e <ihex_load+0x170>
+    71aa:	00 e0       	ldi	r16, 0x00	; 0
+    71ac:	e0 2e       	mov	r14, r16
+    71ae:	41 e0       	ldi	r20, 0x01	; 1
+    71b0:	e0 2f       	mov	r30, r16
+    71b2:	ff 27       	eor	r31, r31
+    71b4:	e8 55       	subi	r30, 0x58	; 88
+    71b6:	ff 4f       	sbci	r31, 0xFF	; 255
+    71b8:	80 81       	ld	r24, Z
+    71ba:	99 27       	eor	r25, r25
+    71bc:	21 81       	ldd	r18, Z+1	; 0x01
+    71be:	33 27       	eor	r19, r19
+    71c0:	32 2f       	mov	r19, r18
+    71c2:	22 27       	eor	r18, r18
+    71c4:	82 2b       	or	r24, r18
+    71c6:	93 2b       	or	r25, r19
+    71c8:	0c 01       	movw	r0, r24
+    71ca:	f5 01       	movw	r30, r10
+    71cc:	40 93 57 00 	sts	0x0057, r20
+    71d0:	e8 95       	spm
+    71d2:	11 24       	eor	r1, r1
+    71d4:	82 e0       	ldi	r24, 0x02	; 2
+    71d6:	90 e0       	ldi	r25, 0x00	; 0
+    71d8:	a0 e0       	ldi	r26, 0x00	; 0
+    71da:	b0 e0       	ldi	r27, 0x00	; 0
+    71dc:	a8 0e       	add	r10, r24
+    71de:	b9 1e       	adc	r11, r25
+    71e0:	ca 1e       	adc	r12, r26
+    71e2:	db 1e       	adc	r13, r27
+    71e4:	0e 5f       	subi	r16, 0xFE	; 254
+    71e6:	07 ff       	sbrs	r16, 7
+    71e8:	e3 cf       	rjmp	.-58     	; 0x71b0 <ihex_load+0x112>
+    71ea:	25 e0       	ldi	r18, 0x05	; 5
+    71ec:	c5 01       	movw	r24, r10
+    71ee:	80 58       	subi	r24, 0x80	; 128
+    71f0:	90 40       	sbci	r25, 0x00	; 0
+    71f2:	fc 01       	movw	r30, r24
+    71f4:	20 93 57 00 	sts	0x0057, r18
+    71f8:	e8 95       	spm
+    71fa:	07 b6       	in	r0, 0x37	; 55
+    71fc:	00 fc       	sbrc	r0, 0
+    71fe:	fd cf       	rjmp	.-6      	; 0x71fa <ihex_load+0x15c>
+    7200:	81 e1       	ldi	r24, 0x11	; 17
+    7202:	80 93 57 00 	sts	0x0057, r24
+    7206:	e8 95       	spm
+    7208:	8a e2       	ldi	r24, 0x2A	; 42
+    720a:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    720e:	99 20       	and	r9, r9
+    7210:	09 f4       	brne	.+2      	; 0x7214 <ihex_load+0x176>
+    7212:	53 cf       	rjmp	.-346    	; 0x70ba <ihex_load+0x1c>
+    7214:	80 e0       	ldi	r24, 0x00	; 0
+    7216:	90 e0       	ldi	r25, 0x00	; 0
+    7218:	cf 91       	pop	r28
+    721a:	1f 91       	pop	r17
+    721c:	0f 91       	pop	r16
+    721e:	ff 90       	pop	r15
+    7220:	ef 90       	pop	r14
+    7222:	df 90       	pop	r13
+    7224:	cf 90       	pop	r12
+    7226:	bf 90       	pop	r11
+    7228:	af 90       	pop	r10
+    722a:	9f 90       	pop	r9
+    722c:	08 95       	ret
+
+0000722e <main>:
+    722e:	cf e5       	ldi	r28, 0x5F	; 95
+    7230:	d8 e0       	ldi	r29, 0x08	; 8
+    7232:	de bf       	out	0x3e, r29	; 62
+    7234:	cd bf       	out	0x3d, r28	; 61
+    7236:	10 e0       	ldi	r17, 0x00	; 0
+    7238:	f8 94       	cli
+    723a:	81 e0       	ldi	r24, 0x01	; 1
+    723c:	8b bf       	out	0x3b, r24	; 59
+    723e:	8b b7       	in	r24, 0x3b	; 59
+    7240:	82 60       	ori	r24, 0x02	; 2
+    7242:	8b bf       	out	0x3b, r24	; 59
+    7244:	80 ea       	ldi	r24, 0xA0	; 160
+    7246:	91 e0       	ldi	r25, 0x01	; 1
+    7248:	0e 94 c6 39 	call	0x738c <SerCom0Init>
+    724c:	5f 9b       	sbis	0x0b, 7	; 11
+    724e:	13 c0       	rjmp	.+38     	; 0x7276 <main+0x48>
+    7250:	8c b1       	in	r24, 0x0c	; 12
+    7252:	89 36       	cpi	r24, 0x69	; 105
+    7254:	81 f4       	brne	.+32     	; 0x7276 <main+0x48>
+    7256:	11 e0       	ldi	r17, 0x01	; 1
+    7258:	80 e6       	ldi	r24, 0x60	; 96
+    725a:	90 e0       	ldi	r25, 0x00	; 0
+    725c:	0e 94 d9 39 	call	0x73b2 <PutString0>
+    7260:	80 e3       	ldi	r24, 0x30	; 48
+    7262:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    7266:	81 e3       	ldi	r24, 0x31	; 49
+    7268:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    726c:	88 e6       	ldi	r24, 0x68	; 104
+    726e:	90 e0       	ldi	r25, 0x00	; 0
+    7270:	0e 94 d9 39 	call	0x73b2 <PutString0>
+    7274:	02 c0       	rjmp	.+4      	; 0x727a <main+0x4c>
+    7276:	11 23       	and	r17, r17
+    7278:	49 f3       	breq	.-46     	; 0x724c <main+0x1e>
+    727a:	0e 94 bd 39 	call	0x737a <Hit0>
+    727e:	88 23       	and	r24, r24
+    7280:	09 f4       	brne	.+2      	; 0x7284 <main+0x56>
+    7282:	6a c0       	rjmp	.+212    	; 0x7358 <main+0x12a>
+    7284:	0e 94 d4 39 	call	0x73a8 <GetChar0>
+    7288:	99 27       	eor	r25, r25
+    728a:	85 37       	cpi	r24, 0x75	; 117
+    728c:	91 05       	cpc	r25, r1
+    728e:	29 f0       	breq	.+10     	; 0x729a <main+0x6c>
+    7290:	88 37       	cpi	r24, 0x78	; 120
+    7292:	91 05       	cpc	r25, r1
+    7294:	09 f4       	brne	.+2      	; 0x7298 <main+0x6a>
+    7296:	51 c0       	rjmp	.+162    	; 0x733a <main+0x10c>
+    7298:	5b c0       	rjmp	.+182    	; 0x7350 <main+0x122>
+    729a:	10 92 28 01 	sts	0x0128, r1
+    729e:	10 92 29 01 	sts	0x0129, r1
+    72a2:	10 92 2a 01 	sts	0x012A, r1
+    72a6:	10 92 2b 01 	sts	0x012B, r1
+    72aa:	23 e0       	ldi	r18, 0x03	; 3
+    72ac:	80 91 28 01 	lds	r24, 0x0128
+    72b0:	90 91 29 01 	lds	r25, 0x0129
+    72b4:	fc 01       	movw	r30, r24
+    72b6:	20 93 57 00 	sts	0x0057, r18
+    72ba:	e8 95       	spm
+    72bc:	07 b6       	in	r0, 0x37	; 55
+    72be:	00 fc       	sbrc	r0, 0
+    72c0:	fd cf       	rjmp	.-6      	; 0x72bc <main+0x8e>
+    72c2:	80 91 28 01 	lds	r24, 0x0128
+    72c6:	90 91 29 01 	lds	r25, 0x0129
+    72ca:	a0 91 2a 01 	lds	r26, 0x012A
+    72ce:	b0 91 2b 01 	lds	r27, 0x012B
+    72d2:	80 58       	subi	r24, 0x80	; 128
+    72d4:	9f 4f       	sbci	r25, 0xFF	; 255
+    72d6:	af 4f       	sbci	r26, 0xFF	; 255
+    72d8:	bf 4f       	sbci	r27, 0xFF	; 255
+    72da:	80 93 28 01 	sts	0x0128, r24
+    72de:	90 93 29 01 	sts	0x0129, r25
+    72e2:	a0 93 2a 01 	sts	0x012A, r26
+    72e6:	b0 93 2b 01 	sts	0x012B, r27
+    72ea:	80 50       	subi	r24, 0x00	; 0
+    72ec:	90 47       	sbci	r25, 0x70	; 112
+    72ee:	a0 40       	sbci	r26, 0x00	; 0
+    72f0:	b0 40       	sbci	r27, 0x00	; 0
+    72f2:	e0 f2       	brcs	.-72     	; 0x72ac <main+0x7e>
+    72f4:	10 92 28 01 	sts	0x0128, r1
+    72f8:	10 92 29 01 	sts	0x0129, r1
+    72fc:	10 92 2a 01 	sts	0x012A, r1
+    7300:	10 92 2b 01 	sts	0x012B, r1
+    7304:	8b e6       	ldi	r24, 0x6B	; 107
+    7306:	90 e0       	ldi	r25, 0x00	; 0
+    7308:	0e 94 d9 39 	call	0x73b2 <PutString0>
+    730c:	0e 94 4f 38 	call	0x709e <ihex_load>
+    7310:	c8 2f       	mov	r28, r24
+    7312:	88 23       	and	r24, r24
+    7314:	69 f0       	breq	.+26     	; 0x7330 <main+0x102>
+    7316:	81 e7       	ldi	r24, 0x71	; 113
+    7318:	90 e0       	ldi	r25, 0x00	; 0
+    731a:	0e 94 d9 39 	call	0x73b2 <PutString0>
+    731e:	8c 2f       	mov	r24, r28
+    7320:	99 27       	eor	r25, r25
+    7322:	aa 27       	eor	r26, r26
+    7324:	bb 27       	eor	r27, r27
+    7326:	bc 01       	movw	r22, r24
+    7328:	cd 01       	movw	r24, r26
+    732a:	0e 94 f2 39 	call	0x73e4 <PutInt0>
+    732e:	14 c0       	rjmp	.+40     	; 0x7358 <main+0x12a>
+    7330:	86 e7       	ldi	r24, 0x76	; 118
+    7332:	90 e0       	ldi	r25, 0x00	; 0
+    7334:	0e 94 d9 39 	call	0x73b2 <PutString0>
+    7338:	12 c0       	rjmp	.+36     	; 0x735e <main+0x130>
+    733a:	81 e0       	ldi	r24, 0x01	; 1
+    733c:	8b bf       	out	0x3b, r24	; 59
+    733e:	8b b7       	in	r24, 0x3b	; 59
+    7340:	8d 7f       	andi	r24, 0xFD	; 253
+    7342:	8b bf       	out	0x3b, r24	; 59
+    7344:	e0 91 a6 00 	lds	r30, 0x00A6
+    7348:	f0 91 a7 00 	lds	r31, 0x00A7
+    734c:	09 95       	icall
+    734e:	04 c0       	rjmp	.+8      	; 0x7358 <main+0x12a>
+    7350:	89 e7       	ldi	r24, 0x79	; 121
+    7352:	90 e0       	ldi	r25, 0x00	; 0
+    7354:	0e 94 d9 39 	call	0x73b2 <PutString0>
+    7358:	11 23       	and	r17, r17
+    735a:	09 f0       	breq	.+2      	; 0x735e <main+0x130>
+    735c:	8e cf       	rjmp	.-228    	; 0x727a <main+0x4c>
+    735e:	81 e0       	ldi	r24, 0x01	; 1
+    7360:	8b bf       	out	0x3b, r24	; 59
+    7362:	8b b7       	in	r24, 0x3b	; 59
+    7364:	8d 7f       	andi	r24, 0xFD	; 253
+    7366:	8b bf       	out	0x3b, r24	; 59
+    7368:	e0 91 a6 00 	lds	r30, 0x00A6
+    736c:	f0 91 a7 00 	lds	r31, 0x00A7
+    7370:	09 95       	icall
+    7372:	80 e0       	ldi	r24, 0x00	; 0
+    7374:	90 e0       	ldi	r25, 0x00	; 0
+    7376:	0c 94 ca 3a 	jmp	0x7594 <_exit>
+
+0000737a <Hit0>:
+
+/*--- unsigned char Hit0( void ) ---------------------------------------------*/
+unsigned char Hit0( void )
+{
+	if( UCSRA & (1<<RXC) )
+    737a:	8b b1       	in	r24, 0x0b	; 11
+		return(1);
+    737c:	99 27       	eor	r25, r25
+    737e:	87 fd       	sbrc	r24, 7
+    7380:	90 95       	com	r25
+		
+	else
+		return(0);
+}
+    7382:	88 27       	eor	r24, r24
+    7384:	99 0f       	add	r25, r25
+    7386:	88 1f       	adc	r24, r24
+    7388:	99 27       	eor	r25, r25
+    738a:	08 95       	ret
+
+0000738c <SerCom0Init>:
+
+/*--- void SerComInit( unsigned int baud ) -----------------------------------*/
+void SerCom0Init( unsigned int baud ) 
+{
+    738c:	9c 01       	movw	r18, r24
+	// set baud rate
+	UBRRH = (unsigned char)(baud>>8);
+    738e:	89 2f       	mov	r24, r25
+    7390:	99 27       	eor	r25, r25
+    7392:	80 bd       	out	0x20, r24	; 32
+	UBRRL = (unsigned char)(baud);
+    7394:	29 b9       	out	0x09, r18	; 9
+	// enable receiver and transmitter
+	UCSRB = (1<<RXEN) | (1<<TXEN);
+    7396:	88 e1       	ldi	r24, 0x18	; 24
+    7398:	8a b9       	out	0x0a, r24	; 10
+	// set frame format 8 data bits, 1 stop bit
+     UCSRC  = 0x86;    // 8 bit non parity  1 stop bit
+    739a:	86 e8       	ldi	r24, 0x86	; 134
+    739c:	80 bd       	out	0x20, r24	; 32
+    739e:	08 95       	ret
+
+000073a0 <PutChar0>:
+
+//	UCSRC = (1<<URSEL) | (3<<UCSZ);		 		
+
+
+} 
+
+/*--- void PutChar0( unsigned char byte ) ------------------------------------*/
+void PutChar0( unsigned char byte ) 
+{
+
+	// wait for empty transmit buffer
+	while ( !( UCSRA & (1<<UDRE) ) );
+    73a0:	5d 9b       	sbis	0x0b, 5	; 11
+    73a2:	fe cf       	rjmp	.-4      	; 0x73a0 <PutChar0>
+	
+	// send data
+	UDR = byte;
+    73a4:	8c b9       	out	0x0c, r24	; 12
+    73a6:	08 95       	ret
+
+000073a8 <GetChar0>:
+
+}
+
+/*--- unsigned char GetChar0( void ) -----------------------------------------*/
+unsigned char GetChar0( void ) 
+{
+
+	// wait for data ...
+	while ( !( UCSRA & (1<<RXC) ) );
+    73a8:	5f 9b       	sbis	0x0b, 7	; 11
+    73aa:	fe cf       	rjmp	.-4      	; 0x73a8 <GetChar0>
+	
+	// return data
+	return( UDR );
+    73ac:	8c b1       	in	r24, 0x0c	; 12
+
+}
+    73ae:	99 27       	eor	r25, r25
+    73b0:	08 95       	ret
+
+000073b2 <PutString0>:
+
+/*--- void PutString0( unsigned char *str )-----------------------------------*/
+void PutString0( unsigned char *str )
+{
+    73b2:	1f 93       	push	r17
+    73b4:	cf 93       	push	r28
+    73b6:	df 93       	push	r29
+    73b8:	ec 01       	movw	r28, r24
+
+	unsigned char i = 0;
+    73ba:	10 e0       	ldi	r17, 0x00	; 0
+
+	while ( str[i] ) {
+		PutChar0( str[i] );
+		i++;
+    73bc:	88 81       	ld	r24, Y
+    73be:	88 23       	and	r24, r24
+    73c0:	69 f0       	breq	.+26     	; 0x73dc <PutString0+0x2a>
+    73c2:	fe 01       	movw	r30, r28
+    73c4:	e1 0f       	add	r30, r17
+    73c6:	f1 1d       	adc	r31, r1
+    73c8:	80 81       	ld	r24, Z
+    73ca:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    73ce:	1f 5f       	subi	r17, 0xFF	; 255
+    73d0:	fe 01       	movw	r30, r28
+    73d2:	e1 0f       	add	r30, r17
+    73d4:	f1 1d       	adc	r31, r1
+    73d6:	80 81       	ld	r24, Z
+    73d8:	88 23       	and	r24, r24
+    73da:	99 f7       	brne	.-26     	; 0x73c2 <PutString0+0x10>
+    73dc:	df 91       	pop	r29
+    73de:	cf 91       	pop	r28
+    73e0:	1f 91       	pop	r17
+    73e2:	08 95       	ret
+
+000073e4 <PutInt0>:
+	}
+
+}
+
+/*--- void PutInt0( long numi ) ----------------------------------------------*/
+void PutInt0( long numi ) 
+{
+    73e4:	8f 92       	push	r8
+    73e6:	9f 92       	push	r9
+    73e8:	bf 92       	push	r11
+    73ea:	cf 92       	push	r12
+    73ec:	df 92       	push	r13
+    73ee:	ef 92       	push	r14
+    73f0:	ff 92       	push	r15
+    73f2:	0f 93       	push	r16
+    73f4:	1f 93       	push	r17
+    73f6:	cf 93       	push	r28
+    73f8:	df 93       	push	r29
+    73fa:	cd b7       	in	r28, 0x3d	; 61
+    73fc:	de b7       	in	r29, 0x3e	; 62
+    73fe:	2a 97       	sbiw	r28, 0x0a	; 10
+    7400:	0f b6       	in	r0, 0x3f	; 63
+    7402:	f8 94       	cli
+    7404:	de bf       	out	0x3e, r29	; 62
+    7406:	0f be       	out	0x3f, r0	; 63
+    7408:	cd bf       	out	0x3d, r28	; 61
+    740a:	6b 01       	movw	r12, r22
+    740c:	7c 01       	movw	r14, r24
+	unsigned char i;
+	unsigned char nums[10];
+	
+	if ( numi < 0 ) {
+    740e:	97 ff       	sbrs	r25, 7
+    7410:	0b c0       	rjmp	.+22     	; 0x7428 <PutInt0+0x44>
+		PutChar0( '-' );
+    7412:	8d e2       	ldi	r24, 0x2D	; 45
+    7414:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+		numi = -numi;
+    7418:	f0 94       	com	r15
+    741a:	e0 94       	com	r14
+    741c:	d0 94       	com	r13
+    741e:	c0 94       	com	r12
+    7420:	c1 1c       	adc	r12, r1
+    7422:	d1 1c       	adc	r13, r1
+    7424:	e1 1c       	adc	r14, r1
+    7426:	f1 1c       	adc	r15, r1
+	}
+	
+	i = 0;
+    7428:	bb 24       	eor	r11, r11
+    742a:	4e 01       	movw	r8, r28
+    742c:	08 94       	sec
+    742e:	81 1c       	adc	r8, r1
+    7430:	91 1c       	adc	r9, r1
+	do {	
+		nums[i] = numi%10;
+    7432:	84 01       	movw	r16, r8
+    7434:	0b 0d       	add	r16, r11
+    7436:	11 1d       	adc	r17, r1
+    7438:	c7 01       	movw	r24, r14
+    743a:	b6 01       	movw	r22, r12
+    743c:	2a e0       	ldi	r18, 0x0A	; 10
+    743e:	30 e0       	ldi	r19, 0x00	; 0
+    7440:	40 e0       	ldi	r20, 0x00	; 0
+    7442:	50 e0       	ldi	r21, 0x00	; 0
+    7444:	0e 94 8d 3a 	call	0x751a <__divmodsi4>
+    7448:	dc 01       	movw	r26, r24
+    744a:	cb 01       	movw	r24, r22
+    744c:	f8 01       	movw	r30, r16
+    744e:	80 83       	st	Z, r24
+		numi = numi/10;
+    7450:	c7 01       	movw	r24, r14
+    7452:	b6 01       	movw	r22, r12
+    7454:	2a e0       	ldi	r18, 0x0A	; 10
+    7456:	30 e0       	ldi	r19, 0x00	; 0
+    7458:	40 e0       	ldi	r20, 0x00	; 0
+    745a:	50 e0       	ldi	r21, 0x00	; 0
+    745c:	0e 94 8d 3a 	call	0x751a <__divmodsi4>
+    7460:	69 01       	movw	r12, r18
+    7462:	7a 01       	movw	r14, r20
+		i++;
+    7464:	b3 94       	inc	r11
+	} while ( numi );
+    7466:	21 15       	cp	r18, r1
+    7468:	31 05       	cpc	r19, r1
+    746a:	41 05       	cpc	r20, r1
+    746c:	51 05       	cpc	r21, r1
+    746e:	09 f7       	brne	.-62     	; 0x7432 <PutInt0+0x4e>
+	
+	while ( i ) {
+		i--;
+		PutChar0( nums[i] + '0' );
+    7470:	bb 20       	and	r11, r11
+    7472:	51 f0       	breq	.+20     	; 0x7488 <PutInt0+0xa4>
+    7474:	ba 94       	dec	r11
+    7476:	f4 01       	movw	r30, r8
+    7478:	eb 0d       	add	r30, r11
+    747a:	f1 1d       	adc	r31, r1
+    747c:	80 81       	ld	r24, Z
+    747e:	80 5d       	subi	r24, 0xD0	; 208
+    7480:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    7484:	bb 20       	and	r11, r11
+    7486:	b1 f7       	brne	.-20     	; 0x7474 <PutInt0+0x90>
+    7488:	2a 96       	adiw	r28, 0x0a	; 10
+    748a:	0f b6       	in	r0, 0x3f	; 63
+    748c:	f8 94       	cli
+    748e:	de bf       	out	0x3e, r29	; 62
+    7490:	0f be       	out	0x3f, r0	; 63
+    7492:	cd bf       	out	0x3d, r28	; 61
+    7494:	df 91       	pop	r29
+    7496:	cf 91       	pop	r28
+    7498:	1f 91       	pop	r17
+    749a:	0f 91       	pop	r16
+    749c:	ff 90       	pop	r15
+    749e:	ef 90       	pop	r14
+    74a0:	df 90       	pop	r13
+    74a2:	cf 90       	pop	r12
+    74a4:	bf 90       	pop	r11
+    74a6:	9f 90       	pop	r9
+    74a8:	8f 90       	pop	r8
+    74aa:	08 95       	ret
+
+000074ac <PutHex0>:
+	}
+
+}
+
+void PutHex0( unsigned char data )
+{
+    74ac:	ff 92       	push	r15
+    74ae:	0f 93       	push	r16
+    74b0:	1f 93       	push	r17
+    74b2:	cf 93       	push	r28
+    74b4:	df 93       	push	r29
+    74b6:	cd b7       	in	r28, 0x3d	; 61
+    74b8:	de b7       	in	r29, 0x3e	; 62
+    74ba:	60 97       	sbiw	r28, 0x10	; 16
+    74bc:	0f b6       	in	r0, 0x3f	; 63
+    74be:	f8 94       	cli
+    74c0:	de bf       	out	0x3e, r29	; 62
+    74c2:	0f be       	out	0x3f, r0	; 63
+    74c4:	cd bf       	out	0x3d, r28	; 61
+    74c6:	f8 2e       	mov	r15, r24
+    unsigned char ascii[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+    74c8:	8e 01       	movw	r16, r28
+    74ca:	0f 5f       	subi	r16, 0xFF	; 255
+    74cc:	1f 4f       	sbci	r17, 0xFF	; 255
+    74ce:	d8 01       	movw	r26, r16
+    74d0:	e5 e9       	ldi	r30, 0x95	; 149
+    74d2:	f0 e0       	ldi	r31, 0x00	; 0
+    74d4:	80 e1       	ldi	r24, 0x10	; 16
+    74d6:	01 90       	ld	r0, Z+
+    74d8:	0d 92       	st	X+, r0
+    74da:	81 50       	subi	r24, 0x01	; 1
+    74dc:	e1 f7       	brne	.-8      	; 0x74d6 <PutHex0+0x2a>
+    PutChar0( ascii[(data >> 4) & 0x0F] );
+    74de:	8f 2d       	mov	r24, r15
+    74e0:	82 95       	swap	r24
+    74e2:	8f 70       	andi	r24, 0x0F	; 15
+    74e4:	f8 01       	movw	r30, r16
+    74e6:	e8 0f       	add	r30, r24
+    74e8:	f1 1d       	adc	r31, r1
+    74ea:	80 81       	ld	r24, Z
+    74ec:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    PutChar0( ascii[data & 0x0F]);
+    74f0:	ef 2d       	mov	r30, r15
+    74f2:	ff 27       	eor	r31, r31
+    74f4:	ef 70       	andi	r30, 0x0F	; 15
+    74f6:	f0 70       	andi	r31, 0x00	; 0
+    74f8:	e0 0f       	add	r30, r16
+    74fa:	f1 1f       	adc	r31, r17
+    74fc:	80 81       	ld	r24, Z
+    74fe:	0e 94 d0 39 	call	0x73a0 <PutChar0>
+    7502:	60 96       	adiw	r28, 0x10	; 16
+    7504:	0f b6       	in	r0, 0x3f	; 63
+    7506:	f8 94       	cli
+    7508:	de bf       	out	0x3e, r29	; 62
+    750a:	0f be       	out	0x3f, r0	; 63
+    750c:	cd bf       	out	0x3d, r28	; 61
+    750e:	df 91       	pop	r29
+    7510:	cf 91       	pop	r28
+    7512:	1f 91       	pop	r17
+    7514:	0f 91       	pop	r16
+    7516:	ff 90       	pop	r15
+    7518:	08 95       	ret
+
+0000751a <__divmodsi4>:
+    751a:	97 fb       	bst	r25, 7
+    751c:	09 2e       	mov	r0, r25
+    751e:	05 26       	eor	r0, r21
+    7520:	0e d0       	rcall	.+28     	; 0x753e <__divmodsi4_neg1>
+    7522:	57 fd       	sbrc	r21, 7
+    7524:	04 d0       	rcall	.+8      	; 0x752e <__divmodsi4_neg2>
+    7526:	14 d0       	rcall	.+40     	; 0x7550 <__udivmodsi4>
+    7528:	0a d0       	rcall	.+20     	; 0x753e <__divmodsi4_neg1>
+    752a:	00 1c       	adc	r0, r0
+    752c:	38 f4       	brcc	.+14     	; 0x753c <__divmodsi4_exit>
+
+0000752e <__divmodsi4_neg2>:
+    752e:	50 95       	com	r21
+    7530:	40 95       	com	r20
+    7532:	30 95       	com	r19
+    7534:	21 95       	neg	r18
+    7536:	3f 4f       	sbci	r19, 0xFF	; 255
+    7538:	4f 4f       	sbci	r20, 0xFF	; 255
+    753a:	5f 4f       	sbci	r21, 0xFF	; 255
+
+0000753c <__divmodsi4_exit>:
+    753c:	08 95       	ret
+
+0000753e <__divmodsi4_neg1>:
+    753e:	f6 f7       	brtc	.-4      	; 0x753c <__divmodsi4_exit>
+    7540:	90 95       	com	r25
+    7542:	80 95       	com	r24
+    7544:	70 95       	com	r23
+    7546:	61 95       	neg	r22
+    7548:	7f 4f       	sbci	r23, 0xFF	; 255
+    754a:	8f 4f       	sbci	r24, 0xFF	; 255
+    754c:	9f 4f       	sbci	r25, 0xFF	; 255
+    754e:	08 95       	ret
+
+00007550 <__udivmodsi4>:
+    7550:	a1 e2       	ldi	r26, 0x21	; 33
+    7552:	1a 2e       	mov	r1, r26
+    7554:	aa 1b       	sub	r26, r26
+    7556:	bb 1b       	sub	r27, r27
+    7558:	fd 01       	movw	r30, r26
+    755a:	0d c0       	rjmp	.+26     	; 0x7576 <__udivmodsi4_ep>
+
+0000755c <__udivmodsi4_loop>:
+    755c:	aa 1f       	adc	r26, r26
+    755e:	bb 1f       	adc	r27, r27
+    7560:	ee 1f       	adc	r30, r30
+    7562:	ff 1f       	adc	r31, r31
+    7564:	a2 17       	cp	r26, r18
+    7566:	b3 07       	cpc	r27, r19
+    7568:	e4 07       	cpc	r30, r20
+    756a:	f5 07       	cpc	r31, r21
+    756c:	20 f0       	brcs	.+8      	; 0x7576 <__udivmodsi4_ep>
+    756e:	a2 1b       	sub	r26, r18
+    7570:	b3 0b       	sbc	r27, r19
+    7572:	e4 0b       	sbc	r30, r20
+    7574:	f5 0b       	sbc	r31, r21
+
+00007576 <__udivmodsi4_ep>:
+    7576:	66 1f       	adc	r22, r22
+    7578:	77 1f       	adc	r23, r23
+    757a:	88 1f       	adc	r24, r24
+    757c:	99 1f       	adc	r25, r25
+    757e:	1a 94       	dec	r1
+    7580:	69 f7       	brne	.-38     	; 0x755c <__udivmodsi4_loop>
+    7582:	60 95       	com	r22
+    7584:	70 95       	com	r23
+    7586:	80 95       	com	r24
+    7588:	90 95       	com	r25
+    758a:	9b 01       	movw	r18, r22
+    758c:	ac 01       	movw	r20, r24
+    758e:	bd 01       	movw	r22, r26
+    7590:	cf 01       	movw	r24, r30
+    7592:	08 95       	ret
+
+00007594 <_exit>:
+    7594:	ff cf       	rjmp	.-2      	; 0x7594 <_exit>

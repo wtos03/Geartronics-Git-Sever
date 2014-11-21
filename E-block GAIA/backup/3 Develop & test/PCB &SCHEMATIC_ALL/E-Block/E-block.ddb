@@ -1,0 +1,135 @@
+[Design Root]
+Version=1.0.0
+[Directory]
+CPU.PCB=PCB
+Mega8.Sch=Sch
+Mega32.Sch=Sch
+E_IO_Template.Sch=Sch
+E_CPU_Template.Sch=Sch
+E_7Segment.Sch=Sch
+E-block.Lib=SchLib
+DC_Motor_control.Sch=Sch
+E_IO.pcb=PCB
+Preview CPU.PPC=PCBPrint
+E-blockPCB.LIB=PCBLib
+Mega32.ERC=Text
+Preview Mega32.PPC=PCBPrint
+Mega32.NET=Text
+CPU.SYN=Text
+CAM Outputs for Mega32.cam=CAMManager
+Preview E_7Segment.PPC=PCBPrint
+Serial.Sch=Sch
+Serial.PCB=PCB
+Preview Serial.PPC=PCBPrint
+Mega32.XLS=SPREAD
+Mega32.cfg=Text
+E_7Segment.XLS=SPREAD
+E_7Segment.cfg=Text
+Serial.XLS=SPREAD
+Serial.cfg=Text
+Mega32.DRC=Text
+E_VGA.PCB=PCB
+Preview VGA.PPC=PCBPrint
+VGA.Sch=Sch
+VGA-FEMALE.PCB=PCB
+VGA-MALE.PCB=PCB
+Mega32.SYN=Text
+Mega32_1_1.PCB=PCB
+E_PROTO_1.2.PCB=PCB
+Preview E_PROTO_1.2.PPC=PCBPrint
+E_7Segment_1_1.PCB=PCB
+E_7Segment_1_1.Sch=Sch
+Preview E_7Segment_1_1.PPC=PCBPrint
+E_PROTO_Wiring.PCB=PCB
+Preview E_PROTO_Wiring.PPC=PCBPrint
+E_7Segment_1_1.Rep=Text
+DC_Motor_control.Rep=Text
+Mega32.Rep=Text
+[CPU.PCB]
+Editor Kind=PCB
+[Mega8.Sch]
+Editor Kind=Sch
+[Mega32.Sch]
+Editor Kind=Sch
+[E_IO_Template.Sch]
+Editor Kind=Sch
+[E_CPU_Template.Sch]
+Editor Kind=Sch
+[E_7Segment.Sch]
+Editor Kind=Sch
+[E-block.Lib]
+Editor Kind=SchLib
+[DC_Motor_control.Sch]
+Editor Kind=Sch
+[E_IO.pcb]
+Editor Kind=PCB
+[Preview CPU.PPC]
+Editor Kind=PCBPrint
+[E-blockPCB.LIB]
+Editor Kind=PCBLib
+[Mega32.ERC]
+Editor Kind=Text
+[Preview Mega32.PPC]
+Editor Kind=PCBPrint
+[Mega32.NET]
+Editor Kind=Text
+[CPU.SYN]
+Editor Kind=Text
+[CAM Outputs for Mega32.cam]
+Editor Kind=CAMManager
+[Preview E_7Segment.PPC]
+Editor Kind=PCBPrint
+[Serial.Sch]
+Editor Kind=Sch
+[Serial.PCB]
+Editor Kind=PCB
+[Preview Serial.PPC]
+Editor Kind=PCBPrint
+[Mega32.XLS]
+Editor Kind=SPREAD
+[Mega32.cfg]
+Editor Kind=Text
+[E_7Segment.XLS]
+Editor Kind=SPREAD
+[E_7Segment.cfg]
+Editor Kind=Text
+[Serial.XLS]
+Editor Kind=SPREAD
+[Serial.cfg]
+Editor Kind=Text
+[Mega32.DRC]
+Editor Kind=Text
+[E_VGA.PCB]
+Editor Kind=PCB
+[Preview VGA.PPC]
+Editor Kind=PCBPrint
+[VGA.Sch]
+Editor Kind=Sch
+[VGA-FEMALE.PCB]
+Editor Kind=PCB
+[VGA-MALE.PCB]
+Editor Kind=PCB
+[Mega32.SYN]
+Editor Kind=Text
+[Mega32_1_1.PCB]
+Editor Kind=PCB
+[E_PROTO_1.2.PCB]
+Editor Kind=PCB
+[Preview E_PROTO_1.2.PPC]
+Editor Kind=PCBPrint
+[E_7Segment_1_1.PCB]
+Editor Kind=PCB
+[E_7Segment_1_1.Sch]
+Editor Kind=Sch
+[Preview E_7Segment_1_1.PPC]
+Editor Kind=PCBPrint
+[E_PROTO_Wiring.PCB]
+Editor Kind=PCB
+[Preview E_PROTO_Wiring.PPC]
+Editor Kind=PCBPrint
+[E_7Segment_1_1.Rep]
+Editor Kind=Text
+[DC_Motor_control.Rep]
+Editor Kind=Text
+[Mega32.Rep]
+Editor Kind=Text

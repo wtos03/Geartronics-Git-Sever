@@ -1,0 +1,746 @@
+   1               		.file	"test_eeprom.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  60               	.global	__vector_13
+  62               	__vector_13:
+   1:test_eeprom.c **** /*
+   2:test_eeprom.c **** 
+   3:test_eeprom.c ****  Module 				:   Test eeprom module
+   4:test_eeprom.c ****  Description 			:   Test eeprom read/write using i2c interface 
+   5:test_eeprom.c ****  Original written for 	:   ATMEGA32
+   6:test_eeprom.c ****  CPU port/tested		:   ATMEGA32
+   7:test_eeprom.c ****  Hardware use			:   Dual 7 Segments common cathode module
+   8:test_eeprom.c ****  Port use				:   E_PORTA (0-7), E_PORTB (0-1), SCL, SDA
+   9:test_eeprom.c ****  Memory	FLASH			:   XXX
+  10:test_eeprom.c **** 		RAM				:   XXX
+  11:test_eeprom.c **** 		EEPROM			:   XXX
+  12:test_eeprom.c ****  Document				:   Document describe algorithm
+  13:test_eeprom.c ****  Written by 			:   Wichai  wichai@geartronics.net
+  14:test_eeprom.c ****  Date					:  	23/04/2006
+  15:test_eeprom.c ****   
+  16:test_eeprom.c ****  Update History
+  17:test_eeprom.c ****  
+  18:test_eeprom.c ****  Date			By 					Comments
+  19:test_eeprom.c ****  ----			--					---------
+  20:test_eeprom.c ****  
+  21:test_eeprom.c ****  
+  22:test_eeprom.c ****   */
+  23:test_eeprom.c ****  
+  24:test_eeprom.c **** #include <avr/interrupt.h>
+  25:test_eeprom.c **** #include <avr/io.h>
+  26:test_eeprom.c **** #include <avr/signal.h>
+  27:test_eeprom.c **** #include <avr/delay.h>
+  28:test_eeprom.c **** #include "cpu.h"
+  29:test_eeprom.c **** #include "Dual_7Segment.h"
+  30:test_eeprom.c **** #include "E_i2ceeprom.h"
+  31:test_eeprom.c **** #include "E_i2c.h"
+  32:test_eeprom.c **** #include "E_uart.h"
+  33:test_eeprom.c ****  
+  34:test_eeprom.c ****   
+  35:test_eeprom.c **** 
+  36:test_eeprom.c **** #define READ 1
+  37:test_eeprom.c **** #define WRITE 2
+  38:test_eeprom.c **** #define STOP 0 
+  39:test_eeprom.c **** #define NULL 0
+  40:test_eeprom.c **** #define I2C_EEPROM_ADDR  0xA0  // Address eeprom 1010 	- 0000
+  41:test_eeprom.c **** 							//                 EEprom   - A2,A1,A0 - R/W
+  42:test_eeprom.c **** 
+  43:test_eeprom.c **** 
+  44:test_eeprom.c **** 
+  45:test_eeprom.c **** SIGNAL(SIG_UART_RECV)
+  46:test_eeprom.c **** {  
+  64               	.LM1:
+  65               	/* prologue: frame size=0 */
+  66 0000 1F92      		push __zero_reg__
+  67 0002 0F92      		push __tmp_reg__
+  68 0004 0FB6      		in __tmp_reg__,__SREG__
+  69 0006 0F92      		push __tmp_reg__
+  70 0008 1124      		clr __zero_reg__
+  71 000a 2F93      		push r18
+  72 000c 3F93      		push r19
+  73 000e 4F93      		push r20
+  74 0010 5F93      		push r21
+  75 0012 6F93      		push r22
+  76 0014 7F93      		push r23
+  77 0016 8F93      		push r24
+  78 0018 9F93      		push r25
+  79 001a AF93      		push r26
+  80 001c BF93      		push r27
+  81 001e EF93      		push r30
+  82 0020 FF93      		push r31
+  83               	/* prologue end (size=17) */
+  47:test_eeprom.c ****    uint8_t ch;
+  48:test_eeprom.c ****    ch =  UDR;
+  85               	.LM2:
+  86 0022 8CB1      		in r24,44-0x20
+  49:test_eeprom.c ****    uart_put_RX (ch);    // Should not use UDR here to avoid characters missing
+  88               	.LM3:
+  89 0024 0E94 0000 		call uart_put_RX
+  90               	/* epilogue: frame size=0 */
+  91 0028 FF91      		pop r31
+  92 002a EF91      		pop r30
+  93 002c BF91      		pop r27
+  94 002e AF91      		pop r26
+  95 0030 9F91      		pop r25
+  96 0032 8F91      		pop r24
+  97 0034 7F91      		pop r23
+  98 0036 6F91      		pop r22
+  99 0038 5F91      		pop r21
+ 100 003a 4F91      		pop r20
+ 101 003c 3F91      		pop r19
+ 102 003e 2F91      		pop r18
+ 103 0040 0F90      		pop __tmp_reg__
+ 104 0042 0FBE      		out __SREG__,__tmp_reg__
+ 105 0044 0F90      		pop __tmp_reg__
+ 106 0046 1F90      		pop __zero_reg__
+ 107 0048 1895      		reti
+ 108               	/* epilogue end (size=17) */
+ 109               	/* function __vector_13 size 37 (3) */
+ 114               	.Lscope0:
+ 116               	.global	__vector_14
+ 118               	__vector_14:
+  50:test_eeprom.c **** }
+  51:test_eeprom.c ****  
+  52:test_eeprom.c ****  
+  53:test_eeprom.c **** 
+  54:test_eeprom.c **** /*************************************************************************
+  55:test_eeprom.c **** Function: UART Data Register Empty interrupt
+  56:test_eeprom.c **** Purpose:  called when the UART is ready to transmit the next byte
+  57:test_eeprom.c **** **************************************************************************/
+  58:test_eeprom.c **** 
+  59:test_eeprom.c **** SIGNAL(SIG_UART_DATA)
+  60:test_eeprom.c **** { 
+ 120               	.LM4:
+ 121               	/* prologue: frame size=0 */
+ 122 004a 1F92      		push __zero_reg__
+ 123 004c 0F92      		push __tmp_reg__
+ 124 004e 0FB6      		in __tmp_reg__,__SREG__
+ 125 0050 0F92      		push __tmp_reg__
+ 126 0052 1124      		clr __zero_reg__
+ 127 0054 2F93      		push r18
+ 128 0056 3F93      		push r19
+ 129 0058 4F93      		push r20
+ 130 005a 5F93      		push r21
+ 131 005c 6F93      		push r22
+ 132 005e 7F93      		push r23
+ 133 0060 8F93      		push r24
+ 134 0062 9F93      		push r25
+ 135 0064 AF93      		push r26
+ 136 0066 BF93      		push r27
+ 137 0068 EF93      		push r30
+ 138 006a FF93      		push r31
+ 139               	/* prologue end (size=17) */
+  61:test_eeprom.c ****     uint8_t  ch;
+  62:test_eeprom.c **** 	if ((ch = uart_get_TX()))
+ 141               	.LM5:
+ 142 006c 0E94 0000 		call uart_get_TX
+ 143 0070 8823      		tst r24
+ 144 0072 11F0      		breq .L3
+  63:test_eeprom.c **** 	{
+  64:test_eeprom.c ****  		UDR = ch;
+ 146               	.LM6:
+ 147 0074 8CB9      		out 44-0x20,r24
+ 148 0076 01C0      		rjmp .L2
+ 149               	.L3:
+  65:test_eeprom.c **** 	}	
+  66:test_eeprom.c **** 	else 
+  67:test_eeprom.c **** // No character disable  interrupt to avoid repetable call Enable again when
+  68:test_eeprom.c **** //	send character in putc procedure
+  69:test_eeprom.c **** 	{
+  70:test_eeprom.c **** 	    UCSRB &=  ~(1<<UDRIE);
+ 151               	.LM7:
+ 152 0078 5598      		cbi 42-0x20,5
+ 153               	.L2:
+ 154               	/* epilogue: frame size=0 */
+ 155 007a FF91      		pop r31
+ 156 007c EF91      		pop r30
+ 157 007e BF91      		pop r27
+ 158 0080 AF91      		pop r26
+ 159 0082 9F91      		pop r25
+ 160 0084 8F91      		pop r24
+ 161 0086 7F91      		pop r23
+ 162 0088 6F91      		pop r22
+ 163 008a 5F91      		pop r21
+ 164 008c 4F91      		pop r20
+ 165 008e 3F91      		pop r19
+ 166 0090 2F91      		pop r18
+ 167 0092 0F90      		pop __tmp_reg__
+ 168 0094 0FBE      		out __SREG__,__tmp_reg__
+ 169 0096 0F90      		pop __tmp_reg__
+ 170 0098 1F90      		pop __zero_reg__
+ 171 009a 1895      		reti
+ 172               	/* epilogue end (size=17) */
+ 173               	/* function __vector_14 size 41 (7) */
+ 178               	.Lscope1:
+ 179               		.data
+ 180               	.LC0:
+ 181 0000 5072 6F67 		.string	"Program Start\n"
+ 181      7261 6D20 
+ 181      5374 6172 
+ 181      740A 00
+ 182               	.LC1:
+ 183 000f 0A54 6578 		.string	"\nText will stored in EEPROM\n"
+ 183      7420 7769 
+ 183      6C6C 2073 
+ 183      746F 7265 
+ 183      6420 696E 
+ 184               	.LC2:
+ 185 002c 0A54 6578 		.string	"\nText read from EEPROM\n"
+ 185      7420 7265 
+ 185      6164 2066 
+ 185      726F 6D20 
+ 185      4545 5052 
+ 186               		.text
+ 188               	.global	main
+ 190               	main:
+  71:test_eeprom.c **** 	}
+  72:test_eeprom.c **** 	
+  73:test_eeprom.c **** }
+  74:test_eeprom.c ****  
+  75:test_eeprom.c **** void main(void);
+  76:test_eeprom.c **** 
+  77:test_eeprom.c **** 
+  78:test_eeprom.c **** 
+  79:test_eeprom.c ****  
+  80:test_eeprom.c **** /*
+  81:test_eeprom.c **** This program test for eeprom read/ write.  Press SW1 to start recording text Press SW1 again to sto
+  82:test_eeprom.c **** Press SW2 to read stored text from eeprom  Press again to stop The 7 Segments will show 01 for read
+  83:test_eeprom.c **** 00 for stop
+  84:test_eeprom.c **** 
+  85:test_eeprom.c **** */
+  86:test_eeprom.c **** 
+  87:test_eeprom.c **** void main()
+  88:test_eeprom.c **** {
+ 192               	.LM8:
+ 193               	/* prologue: frame size=0 */
+ 194 009c C0E0      		ldi r28,lo8(__stack - 0)
+ 195 009e D0E0      		ldi r29,hi8(__stack - 0)
+ 196 00a0 DEBF      		out __SP_H__,r29
+ 197 00a2 CDBF      		out __SP_L__,r28
+ 198               	/* prologue end (size=4) */
+  89:test_eeprom.c ****   uint8_t sw1,sw2,ch;
+  90:test_eeprom.c ****   uint16_t i;
+  91:test_eeprom.c ****   int8_t d1,d2;
+  92:test_eeprom.c ****   uint8_t  g_mode  = 0;
+ 200               	.LM9:
+ 201 00a4 C0E0      		ldi r28,lo8(0)
+  93:test_eeprom.c ****   uint8_t index = 0;
+ 203               	.LM10:
+ 204 00a6 DC2E      		mov r13,r28
+  94:test_eeprom.c **** //  uint32_t  memAddr = 0;   // Start memory Address
+  95:test_eeprom.c ****   
+  96:test_eeprom.c ****   d7segment_init();
+ 206               	.LM11:
+ 207 00a8 0E94 0000 		call d7segment_init
+  97:test_eeprom.c **** /*
+  98:test_eeprom.c ****  *  Initialize UART library, pass baudrate and AVR cpu clock
+  99:test_eeprom.c ****  *  with the macro 
+ 100:test_eeprom.c ****  *  UART_BAUD_SELECT() (normal speed mode )
+ 101:test_eeprom.c ****  *  or 
+ 102:test_eeprom.c ****  *  UART_BAUD_SELECT_DOUBLE_SPEED() ( double speed mode)
+ 103:test_eeprom.c **** */
+ 104:test_eeprom.c ****   DDRC = 0xFC;
+ 209               	.LM12:
+ 210 00ac 8CEF      		ldi r24,lo8(-4)
+ 211 00ae 84BB      		out 52-0x20,r24
+ 105:test_eeprom.c ****   uart_init(); 
+ 213               	.LM13:
+ 214 00b0 0E94 0000 		call uart_init
+ 106:test_eeprom.c **** 
+ 107:test_eeprom.c ****   i2ceeprom_init();
+ 216               	.LM14:
+ 217 00b4 0E94 0000 		call i2ceeprom_init
+ 108:test_eeprom.c ****   i2c_set_localdeviceaddr(I2C_EEPROM_ADDR,FALSE);
+ 219               	.LM15:
+ 220 00b8 6C2F      		mov r22,r28
+ 221 00ba 80EA      		ldi r24,lo8(-96)
+ 222 00bc 0E94 0000 		call i2c_set_localdeviceaddr
+ 109:test_eeprom.c ****  
+ 110:test_eeprom.c ****   sei();
+ 224               	.LM16:
+ 225               	/* #APP */
+ 226 00c0 7894      		sei
+ 111:test_eeprom.c ****   d1 = 0;
+ 228               	.LM17:
+ 229               	/* #NOAPP */
+ 230 00c2 FF24      		clr r15
+ 112:test_eeprom.c ****   d2 = 0;
+ 232               	.LM18:
+ 233 00c4 EF2C      		mov r14,r15
+ 113:test_eeprom.c ****   uart_puts("Program Start\n");
+ 235               	.LM19:
+ 236 00c6 80E0      		ldi r24,lo8(.LC0)
+ 237 00c8 90E0      		ldi r25,hi8(.LC0)
+ 238 00ca 0E94 0000 		call uart_puts
+ 114:test_eeprom.c **** 
+ 115:test_eeprom.c **** 	i2ceeprom_write_byte(I2C_EEPROM_ADDR,0,1);
+ 240               	.LM20:
+ 241 00ce 21E0      		ldi r18,lo8(1)
+ 242 00d0 40E0      		ldi r20,lo8(0)
+ 243 00d2 50E0      		ldi r21,hi8(0)
+ 244 00d4 60E0      		ldi r22,hlo8(0)
+ 245 00d6 70E0      		ldi r23,hhi8(0)
+ 246 00d8 80EA      		ldi r24,lo8(-96)
+ 247 00da 0E94 0000 		call i2ceeprom_write_byte
+ 116:test_eeprom.c **** 	i = i2ceeprom_read_byte(I2C_EEPROM_ADDR,0);
+ 249               	.LM21:
+ 250 00de 40E0      		ldi r20,lo8(0)
+ 251 00e0 50E0      		ldi r21,hi8(0)
+ 252 00e2 60E0      		ldi r22,hlo8(0)
+ 253 00e4 70E0      		ldi r23,hhi8(0)
+ 254 00e6 80EA      		ldi r24,lo8(-96)
+ 255 00e8 0E94 0000 		call i2ceeprom_read_byte
+ 256               	.L6:
+ 117:test_eeprom.c **** 		
+ 118:test_eeprom.c **** 
+ 119:test_eeprom.c ****  
+ 120:test_eeprom.c ****   while (1)
+ 121:test_eeprom.c ****   {
+ 122:test_eeprom.c ****  		
+ 123:test_eeprom.c **** 		
+ 124:test_eeprom.c ****    sw1 = _7SEGMENT_SW1_IN_PORT & _7SEGMENT_SW1; 
+ 125:test_eeprom.c ****    
+ 126:test_eeprom.c ****  
+ 127:test_eeprom.c ****  // Delay
+ 128:test_eeprom.c ****    
+ 129:test_eeprom.c ****    if (!sw1) // write eeprom 
+ 258               	.LM22:
+ 259 00ec 8399      		sbic 48-0x20,3
+ 260 00ee 18C0      		rjmp .L8
+ 261               	.L9:
+ 130:test_eeprom.c ****     {   	
+ 131:test_eeprom.c ****         while (!(sw1 = _7SEGMENT_SW1_IN_PORT & _7SEGMENT_SW1));
+ 263               	.LM23:
+ 264 00f0 839B      		sbis 48-0x20,3
+ 265 00f2 FECF      		rjmp .L9
+ 132:test_eeprom.c **** 		d1  = d1^1;           //Toggle 
+ 267               	.LM24:
+ 268 00f4 81E0      		ldi r24,lo8(1)
+ 269 00f6 E826      		eor r14,r24
+ 133:test_eeprom.c **** 		if (d1)
+ 271               	.LM25:
+ 272 00f8 39F0      		breq .L12
+ 134:test_eeprom.c **** 		{
+ 135:test_eeprom.c **** 			g_mode = WRITE;
+ 274               	.LM26:
+ 275 00fa C2E0      		ldi r28,lo8(2)
+ 136:test_eeprom.c **** 	        uart_puts("\nText will stored in EEPROM\n");
+ 277               	.LM27:
+ 278 00fc 80E0      		ldi r24,lo8(.LC1)
+ 279 00fe 90E0      		ldi r25,hi8(.LC1)
+ 280 0100 0E94 0000 		call uart_puts
+ 137:test_eeprom.c **** 			index  = 0;
+ 282               	.LM28:
+ 283 0104 DD24      		clr r13
+ 284 0106 0CC0      		rjmp .L8
+ 285               	.L12:
+ 138:test_eeprom.c **** 		}	
+ 139:test_eeprom.c **** 		else 
+ 140:test_eeprom.c **** 		{    g_mode = STOP;
+ 287               	.LM29:
+ 288 0108 CE2D      		mov r28,r14
+ 141:test_eeprom.c **** // Write null character
+ 142:test_eeprom.c **** 			i2ceeprom_write_byte(I2C_EEPROM_ADDR,( index),NULL);
+ 290               	.LM30:
+ 291 010a 8D2D      		mov r24,r13
+ 292 010c 9927      		clr r25
+ 293 010e AA27      		clr r26
+ 294 0110 BB27      		clr r27
+ 295 0112 2E2D      		mov r18,r14
+ 296 0114 AC01      		movw r20,r24
+ 297 0116 BD01      		movw r22,r26
+ 298 0118 80EA      		ldi r24,lo8(-96)
+ 299 011a 0E94 0000 		call i2ceeprom_write_byte
+ 143:test_eeprom.c **** 		     index  = 0; 
+ 301               	.LM31:
+ 302 011e DE2C      		mov r13,r14
+ 303               	.L8:
+ 144:test_eeprom.c **** 		}	 
+ 145:test_eeprom.c **** 
+ 146:test_eeprom.c **** 	}
+ 147:test_eeprom.c ****    
+ 148:test_eeprom.c ****    sw2 = _7SEGMENT_SW2_IN_PORT & _7SEGMENT_SW2; 
+ 149:test_eeprom.c ****    
+ 150:test_eeprom.c ****  
+ 151:test_eeprom.c ****    if (!sw2) // Read eeprom 
+ 305               	.LM32:
+ 306 0120 9A99      		sbic 51-0x20,2
+ 307 0122 0DC0      		rjmp .L14
+ 308               	.L15:
+ 152:test_eeprom.c ****    {
+ 153:test_eeprom.c ****  // Check until release
+ 154:test_eeprom.c **** 	   while (!(sw2 = _7SEGMENT_SW2_IN_PORT & _7SEGMENT_SW2));
+ 310               	.LM33:
+ 311 0124 9A9B      		sbis 51-0x20,2
+ 312 0126 FECF      		rjmp .L15
+ 155:test_eeprom.c **** 	   d2 = d2^1;
+ 314               	.LM34:
+ 315 0128 81E0      		ldi r24,lo8(1)
+ 316 012a F826      		eor r15,r24
+ 156:test_eeprom.c **** 	   if (d2)
+ 318               	.LM35:
+ 319 012c 29F0      		breq .L18
+ 157:test_eeprom.c **** 	    {
+ 158:test_eeprom.c **** 			g_mode = READ;
+ 159:test_eeprom.c **** 		    uart_puts("\nText read from EEPROM\n");
+ 321               	.LM36:
+ 322 012e 80E0      		ldi r24,lo8(.LC2)
+ 323 0130 90E0      		ldi r25,hi8(.LC2)
+ 324 0132 0E94 0000 		call uart_puts
+ 325 0136 1AC0      		rjmp .L42
+ 326               	.L18:
+ 160:test_eeprom.c **** 		}
+ 161:test_eeprom.c **** 		else	
+ 162:test_eeprom.c **** 		{
+ 163:test_eeprom.c **** 			g_mode = STOP;
+ 328               	.LM37:
+ 329 0138 CF2D      		mov r28,r15
+ 164:test_eeprom.c **** 			index  = 0;
+ 331               	.LM38:
+ 332 013a DF2C      		mov r13,r15
+ 333 013c 2DC0      		rjmp .L22
+ 334               	.L14:
+ 165:test_eeprom.c **** 	    }
+ 166:test_eeprom.c ****     	
+ 167:test_eeprom.c ****    }
+ 168:test_eeprom.c ****    
+ 169:test_eeprom.c ****    if (g_mode == WRITE)
+ 336               	.LM39:
+ 337 013e C230      		cpi r28,lo8(2)
+ 338 0140 99F4      		brne .L20
+ 170:test_eeprom.c ****    {
+ 171:test_eeprom.c ****  // Note that if not check for ch ch will equal 0 whether the key pressed or not
+ 172:test_eeprom.c **** 		if ((ch  = uart_getc()))
+ 340               	.LM40:
+ 341 0142 0E94 0000 		call uart_getc
+ 342 0146 082F      		mov r16,r24
+ 343 0148 8823      		tst r24
+ 344 014a 31F1      		breq .L22
+ 173:test_eeprom.c **** 		{
+ 174:test_eeprom.c **** 			uart_putc(ch);   // Show on screen
+ 346               	.LM41:
+ 347 014c 0E94 0000 		call uart_putc
+ 175:test_eeprom.c **** 			i2ceeprom_write_byte(I2C_EEPROM_ADDR,( index),ch);
+ 349               	.LM42:
+ 350 0150 8D2D      		mov r24,r13
+ 351 0152 9927      		clr r25
+ 352 0154 AA27      		clr r26
+ 353 0156 BB27      		clr r27
+ 354 0158 202F      		mov r18,r16
+ 355 015a AC01      		movw r20,r24
+ 356 015c BD01      		movw r22,r26
+ 357 015e 80EA      		ldi r24,lo8(-96)
+ 358 0160 0E94 0000 		call i2ceeprom_write_byte
+ 176:test_eeprom.c **** 			index ++;
+ 360               	.LM43:
+ 361 0164 D394      		inc r13
+ 362 0166 18C0      		rjmp .L22
+ 363               	.L20:
+ 177:test_eeprom.c **** 	    }
+ 178:test_eeprom.c ****    }
+ 179:test_eeprom.c ****    
+ 180:test_eeprom.c ****    if (g_mode == READ)
+ 365               	.LM44:
+ 366 0168 C130      		cpi r28,lo8(1)
+ 367 016a B1F4      		brne .L22
+ 368               	.L42:
+ 181:test_eeprom.c ****    {
+ 182:test_eeprom.c **** // Read until found null char        
+ 183:test_eeprom.c ****         i = 0;
+ 370               	.LM45:
+ 371 016c C0E0      		ldi r28,lo8(0)
+ 372 016e D0E0      		ldi r29,hi8(0)
+ 184:test_eeprom.c ****         while ((ch = i2ceeprom_read_byte(I2C_EEPROM_ADDR,(i))))
+ 374               	.LM46:
+ 375 0170 04C0      		rjmp .L23
+ 376               	.L25:
+ 185:test_eeprom.c **** 		{		
+ 186:test_eeprom.c **** 				uart_putc(ch);   // Show on screen
+ 378               	.LM47:
+ 379 0172 802F      		mov r24,r16
+ 380 0174 0E94 0000 		call uart_putc
+ 187:test_eeprom.c **** 				i++;
+ 382               	.LM48:
+ 383 0178 2196      		adiw r28,1
+ 384               	.L23:
+ 385 017a CE01      		movw r24,r28
+ 386 017c AA27      		clr r26
+ 387 017e BB27      		clr r27
+ 388 0180 AC01      		movw r20,r24
+ 389 0182 BD01      		movw r22,r26
+ 390 0184 80EA      		ldi r24,lo8(-96)
+ 391 0186 0E94 0000 		call i2ceeprom_read_byte
+ 392 018a 082F      		mov r16,r24
+ 393 018c 8823      		tst r24
+ 394 018e 89F7      		brne .L25
+ 188:test_eeprom.c **** 		}
+ 189:test_eeprom.c **** 		uart_putc('\n');
+ 396               	.LM49:
+ 397 0190 8AE0      		ldi r24,lo8(10)
+ 398 0192 0E94 0000 		call uart_putc
+ 190:test_eeprom.c **** 		g_mode = STOP;
+ 400               	.LM50:
+ 401 0196 C02F      		mov r28,r16
+ 402               	.L22:
+ 191:test_eeprom.c ****    }
+ 192:test_eeprom.c ****    	
+ 193:test_eeprom.c ****    	d7segment_display(0,1);
+ 404               	.LM51:
+ 405 0198 61E0      		ldi r22,lo8(1)
+ 406 019a 80E0      		ldi r24,lo8(0)
+ 407 019c 0E94 0000 		call d7segment_display
+ 408               	.LBB2:
+ 409               	.LBB3:
+ 411               	.Ltext1:
+   1:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /* Copyright (c) 2002, Marek Michalkiewicz
+   2:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    Copyright (c) 2004, Joerg Wunsch
+   3:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    All rights reserved.
+   4:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+   5:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    Redistribution and use in source and binary forms, with or without
+   6:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    modification, are permitted provided that the following conditions are met:
+   7:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+   8:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    * Redistributions of source code must retain the above copyright
+   9:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****      notice, this list of conditions and the following disclaimer.
+  10:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  11:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    * Redistributions in binary form must reproduce the above copyright
+  12:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****      notice, this list of conditions and the following disclaimer in
+  13:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****      the documentation and/or other materials provided with the
+  14:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****      distribution.
+  15:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  16:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    * Neither the name of the copyright holders nor the names of
+  17:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****      contributors may be used to endorse or promote products derived
+  18:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****      from this software without specific prior written permission.
+  19:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  20:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  24:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  25:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  26:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  27:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  28:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  29:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  30:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****   POSSIBILITY OF SUCH DAMAGE. */
+  31:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  32:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /* $Id: delay.h,v 1.9 2004/12/22 10:16:54 joerg_wunsch Exp $ */
+  33:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  34:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /*
+  35:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    avr/delay.h - loops for small accurate delays
+  36:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****  */
+  37:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  38:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** #ifndef _AVR_DELAY_H_
+  39:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** #define _AVR_DELAY_H_ 1
+  40:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  41:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** #include <inttypes.h>
+  42:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  43:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /** \defgroup avr_delay Busy-wait delay loops
+  44:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     \code
+  45:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     #define F_CPU 1000000UL  // 1 MHz
+  46:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     //#define F_CPU 14.7456E6
+  47:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     #include <avr/delay.h>
+  48:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     \endcode
+  49:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  50:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     The functions in this header file implement simple delay loops
+  51:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     that perform a busy-waiting.  They are typically used to
+  52:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     facilitate short delays in the program execution.  They are
+  53:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     implemented as count-down loops with a well-known CPU cycle
+  54:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     count per loop iteration.  As such, no other processing can
+  55:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     occur simultaneously.  It should be kept in mind that the
+  56:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     functions described here do not disable interrupts.
+  57:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  58:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     In general, for long delays, the use of hardware timers is
+  59:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     much preferrable, as they free the CPU, and allow for
+  60:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     concurrent processing of other events while the timer is
+  61:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     running.  However, in particular for very short delays, the
+  62:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     overhead of setting up a hardware timer is too much compared
+  63:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     to the overall delay time.
+  64:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  65:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     Two inline functions are provided for the actual delay algorithms.
+  66:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  67:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     Two wrapper functions allow the specification of microsecond, and
+  68:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     millisecond delays directly, using the application-supplied macro
+  69:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     F_CPU as the CPU clock frequency (in Hertz).  These functions
+  70:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     operate on double typed arguments, however when optimization is
+  71:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     turned on, the entire floating-point calculation will be done at
+  72:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     compile-time.
+  73:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** */
+  74:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  75:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /** \ingroup avr_delay
+  76:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  77:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     Delay loop using an 8-bit counter \c __count, so up to 256
+  78:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     iterations are possible.  (The value 256 would have to be passed
+  79:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     as 0.)  The loop executes three CPU cycles per iteration, not
+  80:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     including the overhead the compiler needs to setup the counter
+  81:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     register.
+  82:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  83:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     Thus, at a CPU speed of 1 MHz, delays of up to 768 microseconds
+  84:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     can be achieved.
+  85:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** */
+  86:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** static __inline__ void
+  87:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** _delay_loop_1(uint8_t __count)
+  88:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** {
+  89:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	__asm__ volatile (
+  90:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		"1: dec %0" "\n\t"
+  91:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		"brne 1b"
+  92:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		: "=r" (__count)
+  93:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		: "0" (__count)
+  94:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	);
+  95:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** }
+  96:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  97:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /** \ingroup avr_delay
+  98:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+  99:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     Delay loop using a 16-bit counter \c __count, so up to 65536
+ 100:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     iterations are possible.  (The value 65536 would have to be
+ 101:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     passed as 0.)  The loop executes four CPU cycles per iteration,
+ 102:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     not including the overhead the compiler requires to setup the
+ 103:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     counter register pair.
+ 104:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 105:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     Thus, at a CPU speed of 1 MHz, delays of up to about 262.1
+ 106:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****     milliseconds can be achieved.
+ 107:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****  */
+ 108:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** static __inline__ void
+ 109:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** _delay_loop_2(uint16_t __count)
+ 110:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** {
+ 111:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	__asm__ volatile (
+ 112:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		"1: sbiw %0,1" "\n\t"
+ 113:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		"brne 1b"
+ 114:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		: "=w" (__count)
+ 115:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		: "0" (__count)
+ 116:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	);
+ 117:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** }
+ 118:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 119:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** #ifndef F_CPU
+ 120:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /* prevent compiler error by supplying a default */
+ 121:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** # warning "F_CPU not defined for <avr/delay.h>"
+ 122:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** # define F_CPU 1000000UL
+ 123:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** #endif
+ 124:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 125:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /**
+ 126:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    \ingroup avr_delay
+ 127:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 128:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    Perform a delay of \c __us microseconds, using _delay_loop_1().
+ 129:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 130:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 131:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 132:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 133:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    The maximal possible delay is 768 us / F_CPU in MHz.
+ 134:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****  */
+ 135:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** static __inline__ void
+ 136:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** _delay_us(double __us)
+ 137:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** {
+ 138:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	uint8_t __ticks;
+ 139:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	double __tmp = ((F_CPU) / 3e6) * __us;
+ 140:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	if (__tmp < 1.0)
+ 141:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		__ticks = 1;
+ 142:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	else if (__tmp > 255)
+ 143:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		__ticks = 0;	/* i.e. 256 */
+ 144:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	else
+ 145:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		__ticks = (uint8_t)__tmp;
+ 146:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	_delay_loop_1(__ticks);
+ 147:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** }
+ 148:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 149:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 150:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** /**
+ 151:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    \ingroup avr_delay
+ 152:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 153:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    Perform a delay of \c __ms milliseconds, using _delay_loop_2().
+ 154:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 155:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 156:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 157:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 
+ 158:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****    The maximal possible delay is 262.14 ms / F_CPU in MHz.
+ 159:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h ****  */
+ 160:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** static __inline__ void
+ 161:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** _delay_ms(double __ms)
+ 162:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** {
+ 163:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	uint16_t __ticks;
+ 164:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	double __tmp = ((F_CPU) / 4e3) * __ms;
+ 165:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	if (__tmp < 1.0)
+ 166:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		__ticks = 1;
+ 167:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	else if (__tmp > 65535)
+ 168:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		__ticks = 0;	/* i.e. 65536 */
+ 169:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 	else
+ 170:C:/WINAVR/BIN/../lib/gcc/avr/3.4.3/../../../../avr/include/avr/delay.h **** 		__ticks = (uint16_t)__tmp;
+ 413               	.LM52:
+ 414 01a0 00E4      		ldi r16,lo8(-25536)
+ 415 01a2 1CE9      		ldi r17,hi8(-25536)
+ 416               	.LBB4:
+ 417               	.LBB5:
+ 419               	.LM53:
+ 420 01a4 C801      		movw r24,r16
+ 421               	/* #APP */
+ 422 01a6 0197      		1: sbiw r24,1
+ 423 01a8 F1F7      		brne 1b
+ 424               	/* #NOAPP */
+ 425               	.LBE5:
+ 426               	.LBE4:
+ 427               	.LBE3:
+ 428               	.LBE2:
+ 430               	.Ltext2:
+ 194:test_eeprom.c ****  		    _delay_ms(10);
+ 195:test_eeprom.c **** 	d7segment_display(g_mode,2);
+ 432               	.LM54:
+ 433 01aa 62E0      		ldi r22,lo8(2)
+ 434 01ac 8C2F      		mov r24,r28
+ 435 01ae 0E94 0000 		call d7segment_display
+ 436               	.LBB6:
+ 437               	.LBB7:
+ 438               	.LBB8:
+ 439               	.LBB9:
+ 441               	.Ltext3:
+ 443               	.LM55:
+ 444 01b2 C801      		movw r24,r16
+ 445               	/* #APP */
+ 446 01b4 0197      		1: sbiw r24,1
+ 447 01b6 F1F7      		brne 1b
+ 448               	/* #NOAPP */
+ 449               	.LBE9:
+ 450               	.LBE8:
+ 451               	.LBE7:
+ 452               	.LBE6:
+ 453 01b8 99CF      		rjmp .L6
+ 454               	/* epilogue: frame size=0 */
+ 455               	/* epilogue: noreturn */
+ 456               	/* epilogue end (size=0) */
+ 457               	/* function main size 150 (146) */
+ 476               	.Lscope2:
+ 477               		.text
+ 479               	Letext:
+ 480               	/* File "test_eeprom.c": code  228 = 0x00e4 ( 156), prologues  38, epilogues  34 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 test_eeprom.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccqcbaaa.s:62     .text:00000000 __vector_13
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccqcbaaa.s:118    .text:0000004a __vector_14
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccqcbaaa.s:190    .text:0000009c main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccqcbaaa.s:479    .text:000001ba Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+uart_put_RX
+uart_get_TX
+__stack
+d7segment_init
+uart_init
+i2ceeprom_init
+i2c_set_localdeviceaddr
+uart_puts
+i2ceeprom_write_byte
+i2ceeprom_read_byte
+uart_getc
+uart_putc
+d7segment_display

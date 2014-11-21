@@ -1,0 +1,891 @@
+   1               		.file	"Eboot.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  89               	.global	jump_to_app
+  90               	.global	jump_to_app
+  91               		.section .bss
+  94               	jump_to_app:
+  95 0000 0000      		.skip 2,0
+  96               		.text
+  98               	.global	get_hex_value
+ 100               	get_hex_value:
+   1:Eboot.c       **** /******************************************************************************
+   2:Eboot.c       ****  * Filename: EBoot.c
+   3:Eboot.c       ****  *
+   4:Eboot.c       ****  * Modified  from Boot.c
+   5:Eboot.c       ****  * Author: Preston K. Manwaring
+   6:Eboot.c       ****  *
+   7:Eboot.c       ****  * Date: Monday, August 22, 2005 13:38:36 -0600
+   8:Eboot.c       ****  *
+   9:Eboot.c       ****  * License: Free to use. Please mention the contributing authors in the source
+  10:Eboot.c       ****  * code.
+  11:Eboot.c       ****  *
+  12:Eboot.c       ****  * Description: This is a bootloader designed for the AVR processor family
+  13:Eboot.c       ****  * which allows new firmware to be uploaded via the UART in Intel Hex format.
+  14:Eboot.c       ****  * An interface for uploading such as Hyperterm is envisioned.
+  15:Eboot.c       ****  * This code correctly parses the Intel Hex strings and upon reception of
+  16:Eboot.c       ****  * a complete page (processor specific) of data, writes the data to flash.
+  17:Eboot.c       ****  * Minimal error handling is implemented. Errors during program upload are
+  18:Eboot.c       ****  *
+  19:Eboot.c       ****  * ERR 1 - File upload synchronization is off (i.e. the ':' was not found)
+  20:Eboot.c       ****  * ERR 2 - the checksum failed.
+  21:Eboot.c       ****  *
+  22:Eboot.c       ****  * Typical Intel hex format is supported in unix mode (LF not LF,CR). So
+  23:Eboot.c       ****  * be sure to strip the extra CR from the hex file or have this program
+  24:Eboot.c       ****  * strip the CR.
+  25:Eboot.c       ****  *
+  26:Eboot.c       ****  * The user menu is as follows:
+  27:Eboot.c       ****  * U - upload the hex file. A 'READY' will return when the MCU is ready to
+  28:Eboot.c       ****  *     receive the file. As the file uploads, a '*' prints for every page
+  29:Eboot.c       ****  *     written to flash. When complete, 'OK' is transmitted. If an error
+  30:Eboot.c       ****  *     occurs, 'ERR' followed by a number is printed.
+  31:Eboot.c       ****  *
+  32:Eboot.c       ****  * X - exit this program and start the user application.
+  33:Eboot.c       ****  *
+  34:Eboot.c       ****  * NOTE: This software is not optimized. It fits as it currently stands
+  35:Eboot.c       ****  * in a BLS of 1024. Optimizations could be easily made, but the code is 
+  36:Eboot.c       ****  * much easier to  understand with the way it currently stands. I spent
+  37:Eboot.c       ****  * a lot of time reading manuals and looking at other's code to figure out
+  38:Eboot.c       ****  * all I wanted to know. So I hope this is easily understood. Due to the 
+  39:Eboot.c       ****  * lack of optimization, the most common error you will get using this
+  40:Eboot.c       ****  * code will be ERR 1 as synchronization fails. This failure will occur
+  41:Eboot.c       ****  * because your BAUD rate setting is too high and the program cannot
+  42:Eboot.c       ****  * keep up the incoming data. Slowing down the data transfer rate should
+  43:Eboot.c       ****  * fix this or you can optimize the code.
+  44:Eboot.c       ****  *
+  45:Eboot.c       ****  * A special thanks needs to go to Martin Thomas for writing some excelent code
+  46:Eboot.c       ****  * which helped me get started. In fact, you will see some files and macros 
+  47:Eboot.c       ****  * of his which I use including chipdef.h. His project can be found at
+  48:Eboot.c       ****  * http://www.siwawi.arubi.uni-kl.de/avr_projects/
+  49:Eboot.c       ****  *
+  50:Eboot.c       ****  * If you have any questions or comments, feel free to write.
+  51:Eboot.c       ****  * manjagu@byu.edu
+  52:Eboot.c       ****  
+  53:Eboot.c       ****  * Modified by Wichai Tossamartvorakul
+  54:Eboot.c       ****  * Date 2 Aug 2007 
+  55:Eboot.c       ****  * Test with ATMEGA32 at 16 Mhz
+  56:Eboot.c       ****  *
+  57:Eboot.c       ****  * To remove pin for select bootloader use keypress from terminal program
+  58:Eboot.c       ****  * Enter boot mode condition
+  59:Eboot.c       ****  *   	1.No program at 0x0000 ( Read 0xFF )
+  60:Eboot.c       ****  * 		2.Press 2 buttons at E_IO while press reset key
+  61:Eboot.c       ****  * Enter program mode condition
+  62:Eboot.c       ****  * 	    1  There are program at 0x0000  (Checked when press Reset)
+  63:Eboot.c       ****  *     	2  Press x  at bootmode  
+  64:Eboot.c       ****  *  
+  65:Eboot.c       ****  *
+  66:Eboot.c       ****  ******************************************************************************/
+  67:Eboot.c       **** 
+  68:Eboot.c       **** /*--- INCLUDE FILES ----------------------------------------------------------*/
+  69:Eboot.c       **** #include <inttypes.h>
+  70:Eboot.c       **** #include <avr/io.h>
+  71:Eboot.c       **** #include <avr/interrupt.h>
+  72:Eboot.c       **** #include <avr/wdt.h>
+  73:Eboot.c       **** #include <avr/boot.h>
+  74:Eboot.c       **** #include <avr/pgmspace.h>
+  75:Eboot.c       **** #include "avr_serial.h"
+  76:Eboot.c       **** 
+  77:Eboot.c       **** 
+  78:Eboot.c       **** /* Select Boot Size (select one, comment out the others) */
+  79:Eboot.c       **** // MAYBE: #define _B512 
+  80:Eboot.c       **** //#define _B1024 
+  81:Eboot.c       **** #define _B2048
+  82:Eboot.c       **** 
+  83:Eboot.c       **** /* From Martin Thomas */
+  84:Eboot.c       **** #include "chipdef.h"
+  85:Eboot.c       **** 
+  86:Eboot.c       ****  
+  87:Eboot.c       **** 
+  88:Eboot.c       **** /* Bootloader Version */
+  89:Eboot.c       **** #define VER_HIGH_BYTE '0'
+  90:Eboot.c       **** #define VER_LOW_BYTE  '1'
+  91:Eboot.c       **** 
+  92:Eboot.c       **** // TRUE and FALSE
+  93:Eboot.c       **** #define TRUE  1
+  94:Eboot.c       **** #define FALSE 0
+  95:Eboot.c       **** 
+  96:Eboot.c       **** /*--- GLOBAL VARIABLES -------------------------------------------------------*/
+  97:Eboot.c       **** unsigned char page_data[SPM_PAGESIZE]; // create temporary location for program 
+  98:Eboot.c       **** 				       // data
+  99:Eboot.c       **** unsigned long buf_address;
+ 100:Eboot.c       **** 
+ 101:Eboot.c       **** /*--- FUNCTION PROTOTYPES ----------------------------------------------------*/
+ 102:Eboot.c       **** uint8_t get_hex_value(void);
+ 103:Eboot.c       **** char ihex_load(void);
+ 104:Eboot.c       **** void (*jump_to_app)(void) = 0x0000;
+ 105:Eboot.c       **** 
+ 106:Eboot.c       ****   
+ 107:Eboot.c       **** 
+ 108:Eboot.c       **** /*--- MAIN -------------------------------------------------------------------*/
+ 109:Eboot.c       **** int main(void)
+ 110:Eboot.c       **** {
+ 111:Eboot.c       ****     char temp_char,tmp;
+ 112:Eboot.c       ****  	uint8_t bootFlag = TRUE;
+ 113:Eboot.c       ****     
+ 114:Eboot.c       ****     cli();
+ 115:Eboot.c       **** 	
+ 116:Eboot.c       ****     /* the following code moves the interrupt vector pointer to the bootloader
+ 117:Eboot.c       ****        section. The problem is the compiler doesn't understand where to put
+ 118:Eboot.c       ****        the IV table. */
+ 119:Eboot.c       ****     GICR = _BV(IVCE);       
+ 120:Eboot.c       ****     GICR = _BV(IVSEL); //move interruptvectors to the Boot sector  ** WRITE 0 TO IVCE use = not |
+ 121:Eboot.c       ****  
+ 122:Eboot.c       ****     /* The slow baud rate is required because of the intel hex parsing overhead.
+ 123:Eboot.c       ****        If I could figure out how to enable interrupts in the BLS (compiler issue)
+ 124:Eboot.c       ****        then a higher speed could be used by switching to an interrupt based
+ 125:Eboot.c       ****        UART ISR. The code could also be optimized. */
+ 126:Eboot.c       ****        uart_init( UART_INTERRUPT,UART_8_N_1,UART_38400);   
+ 127:Eboot.c       ****  
+ 128:Eboot.c       **** 	   // poll USART receive complete flag 64k times to catch the 'i' reliably
+ 129:Eboot.c       ****  
+ 130:Eboot.c       ****  
+ 131:Eboot.c       **** 	bootFlag = TRUE;
+ 132:Eboot.c       **** // test if flash is empty (i.e. flash content is 0xff)
+ 133:Eboot.c       **** 	if(pgm_read_byte_near(0x0000) != 0xFF) {
+ 134:Eboot.c       **** 		bootFlag = FALSE; 
+ 135:Eboot.c       **** 	}
+ 136:Eboot.c       **** 	while (!(tmp  = uart_read()));
+ 137:Eboot.c       **** 	if (tmp == 'b')
+ 138:Eboot.c       **** 	     bootFlag = TRUE;
+ 139:Eboot.c       **** 		 
+ 140:Eboot.c       **** 		 
+ 141:Eboot.c       ****     uart_write_str ("\nBoot V ");
+ 142:Eboot.c       **** 	uart_write_char (VER_HIGH_BYTE);
+ 143:Eboot.c       **** 	uart_write_char (VER_LOW_BYTE);
+ 144:Eboot.c       **** 	uart_write_str ("\r\n");
+ 145:Eboot.c       ****     
+ 146:Eboot.c       ****  
+ 147:Eboot.c       ****     
+ 148:Eboot.c       ****     /* this main loop is the user 'menu'. */
+ 149:Eboot.c       ****     while(bootFlag)                             
+ 150:Eboot.c       ****     {
+ 151:Eboot.c       **** 			   
+ 152:Eboot.c       **** 	if( (tmp = uart_read()) ) 
+ 153:Eboot.c       **** 	{
+ 154:Eboot.c       ****  	   switch(tmp)
+ 155:Eboot.c       **** 	   {
+ 156:Eboot.c       **** 		case 'u': // download new program
+ 157:Eboot.c       **** 		{
+ 158:Eboot.c       **** 		    /* erase the main flash excepting BLS */
+ 159:Eboot.c       **** 		    buf_address = 0; 
+ 160:Eboot.c       **** 		    while ( APP_END > buf_address )
+ 161:Eboot.c       **** 		    {
+ 162:Eboot.c       **** 			boot_page_erase(buf_address);	// Perform page erase
+ 163:Eboot.c       **** 			boot_spm_busy_wait();		// Wait until the memory is erased.
+ 164:Eboot.c       **** 			buf_address += SPM_PAGESIZE;
+ 165:Eboot.c       **** 		    }
+ 166:Eboot.c       **** 		    buf_address = 0;
+ 167:Eboot.c       **** 
+ 168:Eboot.c       **** 		    /* load new program */
+ 169:Eboot.c       **** 			uart_write_str("READY \n");
+ 170:Eboot.c       **** 		    if(( temp_char = ihex_load()))
+ 171:Eboot.c       **** 		    {
+ 172:Eboot.c       **** 				uart_write_str("ERR ");
+ 173:Eboot.c       **** 				uart_write_char(temp_char + '0' );
+ 174:Eboot.c       **** 				uart_write_char('\n');
+ 175:Eboot.c       **** 		    }
+ 176:Eboot.c       **** 		    else
+ 177:Eboot.c       **** 			{
+ 178:Eboot.c       **** 				bootFlag = FALSE ;  // Exit to run
+ 179:Eboot.c       **** 			}
+ 180:Eboot.c       **** 		}
+ 181:Eboot.c       **** 		break;
+ 182:Eboot.c       **** 		
+ 183:Eboot.c       **** 		case 'x':                   //Exit upgrade
+ 184:Eboot.c       **** 		{
+ 185:Eboot.c       **** 			GICR = _BV(IVCE); 
+ 186:Eboot.c       **** 			GICR &= ~(_BV(IVSEL) | _BV(IVCE)); //move interruptvectors to the Application sector  Write 0 to
+ 187:Eboot.c       **** 		    jump_to_app(); // Jump to application sector
+ 188:Eboot.c       **** //		    wdt_enable(WDTO_15MS); // Enable Watchdog Timer to give reset
+ 189:Eboot.c       **** 		}
+ 190:Eboot.c       **** 		break;
+ 191:Eboot.c       **** 		case '?':
+ 192:Eboot.c       **** 			uart_write_str(" u - Upload or x - Execute \n");
+ 193:Eboot.c       **** 		break;
+ 194:Eboot.c       **** 		default:
+ 195:Eboot.c       **** 		{
+ 196:Eboot.c       **** 		   uart_write_char(tmp);
+ 197:Eboot.c       **** 		}
+ 198:Eboot.c       **** 	   } // end switch
+ 199:Eboot.c       **** 	}  
+ 200:Eboot.c       ****     }	// end while(1)
+ 201:Eboot.c       **** // Start to application
+ 202:Eboot.c       **** 
+ 203:Eboot.c       **** 	 GICR = _BV(IVCE); 
+ 204:Eboot.c       **** 	 GICR &= ~(_BV(IVSEL) | _BV(IVCE)); //move interruptvectors to the Application sector  Write 0 to 
+ 205:Eboot.c       **** 	 jump_to_app(); // Jump to application sector
+ 206:Eboot.c       **** 
+ 207:Eboot.c       ****     return 0;
+ 208:Eboot.c       **** }
+ 209:Eboot.c       **** 
+ 210:Eboot.c       **** /*--- char ihex_load( void ) -------------------------------------------------*/
+ 211:Eboot.c       **** /* This function pulls intel hex formatted code from the serial port and loads 
+ 212:Eboot.c       ****    it into a temporary location. Once a complete SPM page length is stored,
+ 213:Eboot.c       ****    it executes a flash memory write.
+ 214:Eboot.c       ****     Return Error
+ 215:Eboot.c       **** 	* ERR 1 - File upload synchronization is off (i.e. the ':' was not found)
+ 216:Eboot.c       **** 	* ERR 2 - the checksum failed.
+ 217:Eboot.c       **** 
+ 218:Eboot.c       ****  */
+ 219:Eboot.c       **** char ihex_load(void)
+ 220:Eboot.c       **** {
+ 221:Eboot.c       ****     uint8_t
+ 222:Eboot.c       **** 	i,temp_char,
+ 223:Eboot.c       **** 	byte_count = 0,
+ 224:Eboot.c       **** 	data_pairs,
+ 225:Eboot.c       **** 	data_type,
+ 226:Eboot.c       **** 	temp_byte,
+ 227:Eboot.c       **** 	temp_store,
+ 228:Eboot.c       **** 	address_lo,
+ 229:Eboot.c       **** 	address_hi;
+ 230:Eboot.c       **** 
+ 231:Eboot.c       ****     unsigned int data; // temporary location to store program words
+ 232:Eboot.c       ****     
+ 233:Eboot.c       ****     unsigned long temp_address = 0ul;   //Tmp page fill address ??
+ 234:Eboot.c       **** 	
+ 235:Eboot.c       **** 	
+ 236:Eboot.c       ****     do
+ 237:Eboot.c       ****     {
+ 238:Eboot.c       **** 	// Wait for characters 
+ 239:Eboot.c       **** 	    do
+ 240:Eboot.c       **** 		{
+ 241:Eboot.c       **** 			temp_char = uart_read();
+ 242:Eboot.c       **** 			if ( (temp_char == 13)  || (temp_char == 10))   // get and dispose of the CR or LF
+ 243:Eboot.c       **** 					temp_char = 0;                           // Wait for first character of line
+ 244:Eboot.c       **** 		} while (!temp_char);
+ 245:Eboot.c       **** 	   if(temp_char != ':') // check to make sure the first character is ':'
+ 246:Eboot.c       **** 	   {
+ 247:Eboot.c       **** 	    return(1);
+ 248:Eboot.c       **** 	   }
+ 249:Eboot.c       **** 	
+ 250:Eboot.c       **** 	
+ 251:Eboot.c       **** 	/* get the count of data pairs */
+ 252:Eboot.c       ****  
+ 253:Eboot.c       **** 	data_pairs  = get_hex_value();
+ 254:Eboot.c       **** 	
+ 255:Eboot.c       **** 	/* get the address to put the data */
+ 256:Eboot.c       **** 	/* although we collect this data, we do not use it.  All data
+ 257:Eboot.c       **** 	   programmed through this bootloader starts at application program
+ 258:Eboot.c       **** 	   space location 0x0000. The collection is neccessary only for
+ 259:Eboot.c       **** 	   the checksum calculation. */
+ 260:Eboot.c       **** 	address_hi = get_hex_value();
+ 261:Eboot.c       **** 	address_lo = get_hex_value();
+ 262:Eboot.c       **** 	
+ 263:Eboot.c       **** 	/* get the data type */
+ 264:Eboot.c       **** 	data_type  = get_hex_value();
+ 265:Eboot.c       **** 	
+ 266:Eboot.c       **** 	temp_store = data_pairs + address_hi + address_lo + data_type;
+ 267:Eboot.c       **** 	
+ 268:Eboot.c       **** 	for( i = 0; i < data_pairs; i++ )
+ 269:Eboot.c       **** 	{
+ 270:Eboot.c       **** 
+ 271:Eboot.c       **** 		temp_byte = get_hex_value();		
+ 272:Eboot.c       **** 	    page_data[byte_count] = temp_byte;	
+ 273:Eboot.c       **** 		byte_count++;
+ 274:Eboot.c       **** 	    temp_store += temp_byte;
+ 275:Eboot.c       **** 	}
+ 276:Eboot.c       **** 	    
+ 277:Eboot.c       **** 	/* get the checksum */
+ 278:Eboot.c       ****     temp_byte = get_hex_value();
+ 279:Eboot.c       **** 	
+ 280:Eboot.c       **** 
+ 281:Eboot.c       **** 	
+ 282:Eboot.c       **** 
+ 283:Eboot.c       **** 	/* check the data and checksum */
+ 284:Eboot.c       **** 	if( (char)(temp_store + temp_byte) )
+ 285:Eboot.c       **** 	{
+ 286:Eboot.c       **** 	    return(2);
+ 287:Eboot.c       **** 	}
+ 288:Eboot.c       **** 
+ 289:Eboot.c       **** 	/* fill the rest of the page buffer with 0xFF if the last records are not 
+ 290:Eboot.c       **** 	   a full page in length */
+ 291:Eboot.c       **** 	if( data_type)   // End of File record 
+ 292:Eboot.c       **** 	{
+ 293:Eboot.c       **** 	
+ 294:Eboot.c       **** //???		for (i= 0 ; i < 10 ;i++);
+ 295:Eboot.c       **** 		
+ 296:Eboot.c       **** 		for(byte_count; byte_count < SPM_PAGESIZE; byte_count++ )
+ 297:Eboot.c       **** 	    {
+ 298:Eboot.c       **** 			page_data[byte_count] = 0xFF;
+ 299:Eboot.c       **** 	    }
+ 300:Eboot.c       **** 	}
+ 301:Eboot.c       **** 
+ 302:Eboot.c       **** 	/* if the page buffer is full, write the buffer to the temp flash buffer */
+ 303:Eboot.c       **** 	if( byte_count >= SPM_PAGESIZE )
+ 304:Eboot.c       **** 	{
+ 305:Eboot.c       **** 	    byte_count = 0;
+ 306:Eboot.c       **** 
+ 307:Eboot.c       **** 	    /* store data in temp buffer and write to flash */
+ 308:Eboot.c       **** 	    for( i = 0; i < SPM_PAGESIZE; i += 2 )
+ 309:Eboot.c       **** 	    {
+ 310:Eboot.c       **** 		/* swap the bytes for little endian format */
+ 311:Eboot.c       **** 		data = page_data[i];
+ 312:Eboot.c       **** 		data |= ( page_data[ i + 1 ] << 8 );
+ 313:Eboot.c       **** 		boot_page_fill( temp_address, data ); // call asm routine to load temporary flash buffer
+ 314:Eboot.c       **** 		temp_address += 2; // select next word in temporary buffer
+ 315:Eboot.c       **** 	    }
+ 316:Eboot.c       **** 
+ 317:Eboot.c       **** 	    /* write to the flash */
+ 318:Eboot.c       **** 	    boot_page_write( temp_address - SPM_PAGESIZE );
+ 319:Eboot.c       **** 	    boot_spm_busy_wait();	
+ 320:Eboot.c       **** 	    boot_rww_enable();				//Re-enable the RWW section
+ 321:Eboot.c       **** 	    uart_write_char('*');
+ 322:Eboot.c       **** 	}
+ 323:Eboot.c       ****  
+ 324:Eboot.c       ****    } while( data_type != 1);            // Do while not end of File
+ 325:Eboot.c       **** 	
+ 326:Eboot.c       **** 	uart_write_char('E');                // End of file
+ 327:Eboot.c       ****     return(0);
+ 328:Eboot.c       **** }
+ 329:Eboot.c       **** 
+ 330:Eboot.c       **** 
+ 331:Eboot.c       **** /* This fuction returns the hex value of the  2 consequence received ascii characters (HEX) */
+ 332:Eboot.c       **** uint8_t get_hex_value()
+ 333:Eboot.c       **** {
+ 102               	.LM1:
+ 103               	/* prologue: frame size=0 */
+ 104 0000 CF93      		push r28
+ 105               	/* prologue end (size=1) */
+ 106               	.L2:
+ 334:Eboot.c       **** ) */
+ 335:Eboot.c       **** uint8_t get_hex_value()
+ 336:Eboot.c       **** {
+ 108               	.LM2:
+ 109 0002 0E94 0000 		call uart_read
+ 110 0006 8823      		tst r24
+ 111 0008 E1F3      		breq .L2
+ 337:Eboot.c       **** ) */
+ 338:Eboot.c       **** uint8_t get_hex_value()
+ 113               	.LM3:
+ 114 000a 8134      		cpi r24,lo8(65)
+ 115 000c 10F4      		brsh .L5
+ 339:Eboot.c       **** HEX) */
+ 340:Eboot.c       **** uint8_t get_hex_value()
+ 117               	.LM4:
+ 118 000e 8053      		subi r24,lo8(-(-48))
+ 119 0010 01C0      		rjmp .L6
+ 120               	.L5:
+ 341:Eboot.c       **** HEX) */
+ 342:Eboot.c       **** uint8_t get_hex_value()
+ 343:Eboot.c       **** {
+ 344:Eboot.c       ****      uint8_t data;
+ 345:Eboot.c       **** 	 uint8_t temp_byte;
+ 122               	.LM5:
+ 123 0012 8753      		subi r24,lo8(-(-55))
+ 124               	.L6:
+ 346:Eboot.c       **** t data;
+ 347:Eboot.c       **** 	 uint8_t temp_byte;
+ 126               	.LM6:
+ 127 0014 C82F      		mov r28,r24
+ 128 0016 C295      		swap r28
+ 129 0018 C07F      		andi r28,0xf0
+ 130               	.L7:
+ 348:Eboot.c       **** t data;
+ 132               	.LM7:
+ 133 001a 0E94 0000 		call uart_read
+ 134 001e 8823      		tst r24
+ 135 0020 E1F3      		breq .L7
+ 349:Eboot.c       **** _value()
+ 350:Eboot.c       **** {
+ 137               	.LM8:
+ 138 0022 8134      		cpi r24,lo8(65)
+ 139 0024 10F4      		brsh .L10
+ 351:Eboot.c       **** ) */
+ 352:Eboot.c       **** uint8_t get_hex_value()
+ 141               	.LM9:
+ 142 0026 8053      		subi r24,lo8(-(-48))
+ 143 0028 01C0      		rjmp .L11
+ 144               	.L10:
+ 353:Eboot.c       **** HEX) */
+ 354:Eboot.c       **** uint8_t get_hex_value()
+ 355:Eboot.c       **** {
+ 356:Eboot.c       ****      uint8_t data;
+ 146               	.LM10:
+ 147 002a 8753      		subi r24,lo8(-(-55))
+ 148               	.L11:
+ 357:Eboot.c       **** _value()
+ 358:Eboot.c       **** {
+ 359:Eboot.c       ****      uint8_t data;
+ 150               	.LM11:
+ 151 002c C82B      		or r28,r24
+ 360:Eboot.c       **** _value()
+ 361:Eboot.c       **** {
+ 362:Eboot.c       ****      uint8_t data;
+ 153               	.LM12:
+ 154 002e 8C2F      		mov r24,r28
+ 155 0030 9927      		clr r25
+ 156               	/* epilogue: frame size=0 */
+ 157 0032 CF91      		pop r28
+ 158 0034 0895      		ret
+ 159               	/* epilogue end (size=2) */
+ 160               	/* function get_hex_value size 27 (24) */
+ 166               	.Lscope0:
+ 168               	.global	ihex_load
+ 170               	ihex_load:
+ 172               	.LM13:
+ 173               	/* prologue: frame size=0 */
+ 174 0036 AF92      		push r10
+ 175 0038 BF92      		push r11
+ 176 003a CF92      		push r12
+ 177 003c DF92      		push r13
+ 178 003e EF92      		push r14
+ 179 0040 FF92      		push r15
+ 180 0042 0F93      		push r16
+ 181 0044 1F93      		push r17
+ 182 0046 CF93      		push r28
+ 183               	/* prologue end (size=9) */
+ 185               	.LM14:
+ 186 0048 BB24      		clr r11
+ 188               	.LM15:
+ 189 004a CC24      		clr r12
+ 190 004c DD24      		clr r13
+ 191 004e 7601      		movw r14,r12
+ 192               	.L49:
+ 194               	.LM16:
+ 195 0050 0E94 0000 		call uart_read
+ 197               	.LM17:
+ 198 0054 8D30      		cpi r24,lo8(13)
+ 199 0056 E1F3      		breq .L49
+ 200 0058 8A30      		cpi r24,lo8(10)
+ 201 005a D1F3      		breq .L49
+ 203               	.LM18:
+ 204 005c 8823      		tst r24
+ 205 005e C1F3      		breq .L49
+ 207               	.LM19:
+ 208 0060 8A33      		cpi r24,lo8(58)
+ 209 0062 19F0      		breq .L21
+ 211               	.LM20:
+ 212 0064 81E0      		ldi r24,lo8(1)
+ 213 0066 90E0      		ldi r25,hi8(1)
+ 214 0068 6EC0      		rjmp .L12
+ 215               	.L21:
+ 217               	.LM21:
+ 218 006a 0E94 0000 		call get_hex_value
+ 219 006e 082F      		mov r16,r24
+ 221               	.LM22:
+ 222 0070 0E94 0000 		call get_hex_value
+ 223 0074 C82F      		mov r28,r24
+ 225               	.LM23:
+ 226 0076 0E94 0000 		call get_hex_value
+ 227 007a 182F      		mov r17,r24
+ 229               	.LM24:
+ 230 007c 0E94 0000 		call get_hex_value
+ 231 0080 A82E      		mov r10,r24
+ 233               	.LM25:
+ 234 0082 C00F      		add r28,r16
+ 235 0084 C10F      		add r28,r17
+ 236 0086 C80F      		add r28,r24
+ 238               	.LM26:
+ 239 0088 10E0      		ldi r17,lo8(0)
+ 240               	.L48:
+ 241 008a 1017      		cp r17,r16
+ 242 008c 58F4      		brsh .L41
+ 244               	.LM27:
+ 245 008e 0E94 0000 		call get_hex_value
+ 247               	.LM28:
+ 248 0092 EB2D      		mov r30,r11
+ 249 0094 FF27      		clr r31
+ 250 0096 E050      		subi r30,lo8(-(page_data))
+ 251 0098 F040      		sbci r31,hi8(-(page_data))
+ 252 009a 8083      		st Z,r24
+ 254               	.LM29:
+ 255 009c B394      		inc r11
+ 257               	.LM30:
+ 258 009e C80F      		add r28,r24
+ 260               	.LM31:
+ 261 00a0 1F5F      		subi r17,lo8(-(1))
+ 262 00a2 F3CF      		rjmp .L48
+ 263               	.L41:
+ 265               	.LM32:
+ 266 00a4 0E94 0000 		call get_hex_value
+ 268               	.LM33:
+ 269 00a8 C80F      		add r28,r24
+ 270 00aa 19F0      		breq .L26
+ 272               	.LM34:
+ 273 00ac 82E0      		ldi r24,lo8(2)
+ 274 00ae 90E0      		ldi r25,hi8(2)
+ 275 00b0 4AC0      		rjmp .L12
+ 276               	.L26:
+ 278               	.LM35:
+ 279 00b2 AA20      		tst r10
+ 280 00b4 59F0      		breq .L27
+ 282               	.LM36:
+ 283 00b6 B7FC      		sbrc r11,7
+ 284 00b8 09C0      		rjmp .L27
+ 285 00ba 8FEF      		ldi r24,lo8(-1)
+ 286               	.L31:
+ 288               	.LM37:
+ 289 00bc EB2D      		mov r30,r11
+ 290 00be FF27      		clr r31
+ 291 00c0 E050      		subi r30,lo8(-(page_data))
+ 292 00c2 F040      		sbci r31,hi8(-(page_data))
+ 293 00c4 8083      		st Z,r24
+ 295               	.LM38:
+ 296 00c6 B394      		inc r11
+ 297 00c8 B7FE      		sbrs r11,7
+ 298 00ca F8CF      		rjmp .L31
+ 299               	.L27:
+ 301               	.LM39:
+ 302 00cc B7FE      		sbrs r11,7
+ 303 00ce 32C0      		rjmp .L15
+ 305               	.LM40:
+ 306 00d0 10E0      		ldi r17,lo8(0)
+ 308               	.LM41:
+ 309 00d2 B12E      		mov r11,r17
+ 310 00d4 41E0      		ldi r20,lo8(1)
+ 311               	.L36:
+ 313               	.LM42:
+ 314 00d6 E12F      		mov r30,r17
+ 315 00d8 FF27      		clr r31
+ 316 00da E050      		subi r30,lo8(-(page_data))
+ 317 00dc F040      		sbci r31,hi8(-(page_data))
+ 318 00de 8081      		ld r24,Z
+ 319 00e0 9927      		clr r25
+ 321               	.LM43:
+ 322 00e2 2181      		ldd r18,Z+1
+ 323 00e4 3327      		clr r19
+ 324 00e6 322F      		mov r19,r18
+ 325 00e8 2227      		clr r18
+ 326 00ea 822B      		or r24,r18
+ 327 00ec 932B      		or r25,r19
+ 328               	.LBB2:
+ 330               	.LM44:
+ 331               	/* #APP */
+ 332 00ee 0C01      		movw  r0, r24
+ 333 00f0 F601      		movw r30, r12
+ 334 00f2 4093 5700 		sts 87, r20
+ 335 00f6 E895      		spm
+ 336 00f8 1124      		clr  r1
+ 337               		
+ 338               	/* #NOAPP */
+ 339               	.LBE2:
+ 341               	.LM45:
+ 342 00fa 82E0      		ldi r24,lo8(2)
+ 343 00fc 90E0      		ldi r25,hi8(2)
+ 344 00fe A0E0      		ldi r26,hlo8(2)
+ 345 0100 B0E0      		ldi r27,hhi8(2)
+ 346 0102 C80E      		add r12,r24
+ 347 0104 D91E      		adc r13,r25
+ 348 0106 EA1E      		adc r14,r26
+ 349 0108 FB1E      		adc r15,r27
+ 351               	.LM46:
+ 352 010a 1E5F      		subi r17,lo8(-(2))
+ 353 010c 17FF      		sbrs r17,7
+ 354 010e E3CF      		rjmp .L36
+ 355               	.LBB3:
+ 357               	.LM47:
+ 358 0110 25E0      		ldi r18,lo8(5)
+ 359 0112 C601      		movw r24,r12
+ 360 0114 8058      		subi r24,lo8(-(-128))
+ 361 0116 9040      		sbci r25,hi8(-(-128))
+ 362               	/* #APP */
+ 363 0118 FC01      		movw r30, r24
+ 364 011a 2093 5700 		sts 87, r18
+ 365 011e E895      		spm
+ 366               		
+ 367               	/* #NOAPP */
+ 368               	.L37:
+ 369               	.LBE3:
+ 371               	.LM48:
+ 372 0120 07B6      		in __tmp_reg__,87-0x20
+ 373 0122 00FC      		sbrc __tmp_reg__,0
+ 374 0124 FDCF      		rjmp .L37
+ 375               	.LBB4:
+ 377               	.LM49:
+ 378 0126 81E1      		ldi r24,lo8(17)
+ 379               	/* #APP */
+ 380 0128 8093 5700 		sts 87, r24
+ 381 012c E895      		spm
+ 382               		
+ 383               	/* #NOAPP */
+ 384               	.LBE4:
+ 386               	.LM50:
+ 387 012e 8AE2      		ldi r24,lo8(42)
+ 388 0130 0E94 0000 		call uart_write_char
+ 389               	.L15:
+ 391               	.LM51:
+ 392 0134 91E0      		ldi r25,lo8(1)
+ 393 0136 A916      		cp r10,r25
+ 394 0138 09F0      		breq .+2
+ 395 013a 8ACF      		rjmp .L49
+ 397               	.LM52:
+ 398 013c 85E4      		ldi r24,lo8(69)
+ 399 013e 0E94 0000 		call uart_write_char
+ 401               	.LM53:
+ 402 0142 80E0      		ldi r24,lo8(0)
+ 403 0144 90E0      		ldi r25,hi8(0)
+ 404               	.L12:
+ 405               	/* epilogue: frame size=0 */
+ 406 0146 CF91      		pop r28
+ 407 0148 1F91      		pop r17
+ 408 014a 0F91      		pop r16
+ 409 014c FF90      		pop r15
+ 410 014e EF90      		pop r14
+ 411 0150 DF90      		pop r13
+ 412 0152 CF90      		pop r12
+ 413 0154 BF90      		pop r11
+ 414 0156 AF90      		pop r10
+ 415 0158 0895      		ret
+ 416               	/* epilogue end (size=10) */
+ 417               	/* function ihex_load size 160 (141) */
+ 431               	.Lscope1:
+ 432               		.data
+ 433               	.LC0:
+ 434 0000 0A42 6F6F 		.string	"\nBoot V "
+ 434      7420 5620 
+ 434      00
+ 435               	.LC1:
+ 436 0009 0D0A 00   		.string	"\r\n"
+ 437               	.LC2:
+ 438 000c 5245 4144 		.string	"READY \n"
+ 438      5920 0A00 
+ 439               	.LC3:
+ 440 0014 4552 5220 		.string	"ERR "
+ 440      00
+ 441               	.LC4:
+ 442 0019 2075 202D 		.string	" u - Upload or x - Execute \n"
+ 442      2055 706C 
+ 442      6F61 6420 
+ 442      6F72 2078 
+ 442      202D 2045 
+ 443               		.text
+ 445               	.global	main
+ 447               	main:
+ 449               	.LM54:
+ 450               	/* prologue: frame size=0 */
+ 451 015a C0E0      		ldi r28,lo8(__stack - 0)
+ 452 015c D0E0      		ldi r29,hi8(__stack - 0)
+ 453 015e DEBF      		out __SP_H__,r29
+ 454 0160 CDBF      		out __SP_L__,r28
+ 455               	/* prologue end (size=4) */
+ 457               	.LM55:
+ 458               	/* #APP */
+ 459 0162 F894      		cli
+ 461               	.LM56:
+ 462               	/* #NOAPP */
+ 463 0164 11E0      		ldi r17,lo8(1)
+ 464 0166 1BBF      		out 91-0x20,r17
+ 466               	.LM57:
+ 467 0168 82E0      		ldi r24,lo8(2)
+ 468 016a 8BBF      		out 91-0x20,r24
+ 470               	.LM58:
+ 471 016c 49E1      		ldi r20,lo8(25)
+ 472 016e 50E0      		ldi r21,hi8(25)
+ 473 0170 66E8      		ldi r22,lo8(-122)
+ 474 0172 88E9      		ldi r24,lo8(-104)
+ 475 0174 0E94 0000 		call uart_init
+ 476               	.LBB5:
+ 478               	.LM59:
+ 479 0178 E0E0      		ldi r30,lo8(0)
+ 480 017a F0E0      		ldi r31,hi8(0)
+ 481               	/* #APP */
+ 482 017c 8491      		lpm r24, Z
+ 483               		
+ 484               	/* #NOAPP */
+ 485               	.LBE5:
+ 486 017e 8F3F      		cpi r24,lo8(-1)
+ 487 0180 09F0      		breq .L52
+ 489               	.LM60:
+ 490 0182 10E0      		ldi r17,lo8(0)
+ 491               	.L52:
+ 493               	.LM61:
+ 494 0184 0E94 0000 		call uart_read
+ 495 0188 8823      		tst r24
+ 496 018a E1F3      		breq .L52
+ 498               	.LM62:
+ 499 018c 8236      		cpi r24,lo8(98)
+ 500 018e 09F4      		brne .L55
+ 502               	.LM63:
+ 503 0190 11E0      		ldi r17,lo8(1)
+ 504               	.L55:
+ 506               	.LM64:
+ 507 0192 80E0      		ldi r24,lo8(.LC0)
+ 508 0194 90E0      		ldi r25,hi8(.LC0)
+ 509 0196 0E94 0000 		call uart_write_str
+ 511               	.LM65:
+ 512 019a 80E3      		ldi r24,lo8(48)
+ 513 019c 0E94 0000 		call uart_write_char
+ 515               	.LM66:
+ 516 01a0 81E3      		ldi r24,lo8(49)
+ 517 01a2 0E94 0000 		call uart_write_char
+ 519               	.LM67:
+ 520 01a6 80E0      		ldi r24,lo8(.LC1)
+ 521 01a8 90E0      		ldi r25,hi8(.LC1)
+ 522               	.L79:
+ 523 01aa 0E94 0000 		call uart_write_str
+ 524               	.L80:
+ 526               	.LM68:
+ 527 01ae 1123      		tst r17
+ 528 01b0 09F4      		brne .+2
+ 529 01b2 6FC0      		rjmp .L75
+ 531               	.LM69:
+ 532 01b4 0E94 0000 		call uart_read
+ 533 01b8 8823      		tst r24
+ 534 01ba C9F3      		breq .L80
+ 536               	.LM70:
+ 537 01bc 282F      		mov r18,r24
+ 538 01be 3327      		clr r19
+ 539 01c0 2537      		cpi r18,117
+ 540 01c2 3105      		cpc r19,__zero_reg__
+ 541 01c4 69F0      		breq .L60
+ 542 01c6 2637      		cpi r18,118
+ 543 01c8 3105      		cpc r19,__zero_reg__
+ 544 01ca 2CF4      		brge .L72
+ 545 01cc 2F33      		cpi r18,63
+ 546 01ce 3105      		cpc r19,__zero_reg__
+ 547 01d0 09F4      		brne .+2
+ 548 01d2 59C0      		rjmp .L70
+ 549 01d4 5BC0      		rjmp .L71
+ 550               	.L72:
+ 551 01d6 2837      		cpi r18,120
+ 552 01d8 3105      		cpc r19,__zero_reg__
+ 553 01da 09F4      		brne .+2
+ 554 01dc 49C0      		rjmp .L69
+ 555 01de 56C0      		rjmp .L71
+ 556               	.L60:
+ 558               	.LM71:
+ 559 01e0 1092 0000 		sts buf_address,__zero_reg__
+ 560 01e4 1092 0000 		sts (buf_address)+1,__zero_reg__
+ 561 01e8 1092 0000 		sts (buf_address)+2,__zero_reg__
+ 562 01ec 1092 0000 		sts (buf_address)+3,__zero_reg__
+ 563 01f0 23E0      		ldi r18,lo8(3)
+ 564               	.L66:
+ 565               	.LBB6:
+ 567               	.LM72:
+ 568 01f2 8091 0000 		lds r24,buf_address
+ 569 01f6 9091 0000 		lds r25,(buf_address)+1
+ 570               	/* #APP */
+ 571 01fa FC01      		movw r30, r24
+ 572 01fc 2093 5700 		sts 87, r18
+ 573 0200 E895      		spm
+ 574               		
+ 575               	/* #NOAPP */
+ 576               	.L63:
+ 577               	.LBE6:
+ 579               	.LM73:
+ 580 0202 07B6      		in __tmp_reg__,87-0x20
+ 581 0204 00FC      		sbrc __tmp_reg__,0
+ 582 0206 FDCF      		rjmp .L63
+ 584               	.LM74:
+ 585 0208 8091 0000 		lds r24,buf_address
+ 586 020c 9091 0000 		lds r25,(buf_address)+1
+ 587 0210 A091 0000 		lds r26,(buf_address)+2
+ 588 0214 B091 0000 		lds r27,(buf_address)+3
+ 589 0218 8058      		subi r24,lo8(-(128))
+ 590 021a 9F4F      		sbci r25,hi8(-(128))
+ 591 021c AF4F      		sbci r26,hlo8(-(128))
+ 592 021e BF4F      		sbci r27,hhi8(-(128))
+ 593 0220 8093 0000 		sts buf_address,r24
+ 594 0224 9093 0000 		sts (buf_address)+1,r25
+ 595 0228 A093 0000 		sts (buf_address)+2,r26
+ 596 022c B093 0000 		sts (buf_address)+3,r27
+ 597 0230 8050      		subi r24,lo8(28672)
+ 598 0232 9047      		sbci r25,hi8(28672)
+ 599 0234 A040      		sbci r26,hlo8(28672)
+ 600 0236 B040      		sbci r27,hhi8(28672)
+ 601 0238 E0F2      		brlo .L66
+ 603               	.LM75:
+ 604 023a 1092 0000 		sts buf_address,__zero_reg__
+ 605 023e 1092 0000 		sts (buf_address)+1,__zero_reg__
+ 606 0242 1092 0000 		sts (buf_address)+2,__zero_reg__
+ 607 0246 1092 0000 		sts (buf_address)+3,__zero_reg__
+ 609               	.LM76:
+ 610 024a 80E0      		ldi r24,lo8(.LC2)
+ 611 024c 90E0      		ldi r25,hi8(.LC2)
+ 612 024e 0E94 0000 		call uart_write_str
+ 614               	.LM77:
+ 615 0252 0E94 0000 		call ihex_load
+ 616 0256 C82F      		mov r28,r24
+ 617 0258 8823      		tst r24
+ 618 025a D9F0      		breq .L75
+ 620               	.LM78:
+ 621 025c 80E0      		ldi r24,lo8(.LC3)
+ 622 025e 90E0      		ldi r25,hi8(.LC3)
+ 623 0260 0E94 0000 		call uart_write_str
+ 625               	.LM79:
+ 626 0264 8C2F      		mov r24,r28
+ 627 0266 805D      		subi r24,lo8(-(48))
+ 628 0268 0E94 0000 		call uart_write_char
+ 630               	.LM80:
+ 631 026c 8AE0      		ldi r24,lo8(10)
+ 632 026e 0EC0      		rjmp .L71
+ 633               	.L69:
+ 635               	.LM81:
+ 636 0270 81E0      		ldi r24,lo8(1)
+ 637 0272 8BBF      		out 91-0x20,r24
+ 639               	.LM82:
+ 640 0274 8BB7      		in r24,91-0x20
+ 641 0276 8C7F      		andi r24,lo8(-4)
+ 642 0278 8BBF      		out 91-0x20,r24
+ 644               	.LM83:
+ 645 027a E091 0000 		lds r30,jump_to_app
+ 646 027e F091 0000 		lds r31,(jump_to_app)+1
+ 647 0282 0995      		icall
+ 649               	.LM84:
+ 650 0284 94CF      		rjmp .L80
+ 651               	.L70:
+ 653               	.LM85:
+ 654 0286 80E0      		ldi r24,lo8(.LC4)
+ 655 0288 90E0      		ldi r25,hi8(.LC4)
+ 656 028a 8FCF      		rjmp .L79
+ 657               	.L71:
+ 659               	.LM86:
+ 660 028c 0E94 0000 		call uart_write_char
+ 661 0290 8ECF      		rjmp .L80
+ 662               	.L75:
+ 664               	.LM87:
+ 665 0292 81E0      		ldi r24,lo8(1)
+ 666 0294 8BBF      		out 91-0x20,r24
+ 668               	.LM88:
+ 669 0296 8BB7      		in r24,91-0x20
+ 670 0298 8C7F      		andi r24,lo8(-4)
+ 671 029a 8BBF      		out 91-0x20,r24
+ 673               	.LM89:
+ 674 029c E091 0000 		lds r30,jump_to_app
+ 675 02a0 F091 0000 		lds r31,(jump_to_app)+1
+ 676 02a4 0995      		icall
+ 678               	.LM90:
+ 679 02a6 80E0      		ldi r24,lo8(0)
+ 680 02a8 90E0      		ldi r25,hi8(0)
+ 681               	/* epilogue: frame size=0 */
+ 682 02aa 0C94 0000 		jmp exit
+ 683               	/* epilogue end (size=2) */
+ 684               	/* function main size 181 (175) */
+ 695               	.Lscope2:
+ 696               		.comm page_data,128,1
+ 697               		.comm buf_address,4,1
+ 701               		.text
+ 703               	Letext:
+ 704               	/* File "Eboot.c": code  368 = 0x0170 ( 340), prologues  14, epilogues  14 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 Eboot.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:94     .bss:00000000 jump_to_app
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:100    .text:00000000 get_hex_value
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:170    .text:00000036 ihex_load
+                            *COM*:00000080 page_data
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:447    .text:0000015a main
+                            *COM*:00000004 buf_address
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAZaaaa.s:703    .text:000002ae Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+uart_read
+uart_write_char
+__stack
+uart_init
+uart_write_str
+exit

@@ -1,0 +1,5 @@
+cd "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\"
+D:
+del "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.map"
+del "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.lst"
+"D:\Program Files\Atmel\AVR Tools\AvrAssembler\avrasm32.exe" -fI "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\AVCXMega128.asm" -o "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.hex" -d "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.obj" -e "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.eep" -I "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2" -I "D:\Program Files\Atmel\AVR Tools\AvrAssembler\AppNotes" -w  -m "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.map" -l "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU2\mcu2.lst"

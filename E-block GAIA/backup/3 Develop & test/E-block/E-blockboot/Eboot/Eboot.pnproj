@@ -1,0 +1,1 @@
+<Project name="Eboot"><File path="sercom.c"></File><File path="sercom.h"></File><File path="boot.c"></File><File path="chipdef.h"></File></Project>

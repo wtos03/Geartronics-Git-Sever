@@ -1,0 +1,304 @@
+   1               		.file	"Dual_7Segment.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  60               	.global	d7segment_display
+  62               	d7segment_display:
+   1:Dual_7Segment.c **** /*
+   2:Dual_7Segment.c **** 
+   3:Dual_7Segment.c ****  Module 				:   Dual_7Segment common  cathode
+   4:Dual_7Segment.c ****  Description 			:   Dual_7Segments common cathode
+   5:Dual_7Segment.c ****  Original written for 	:   ATMEGA32
+   6:Dual_7Segment.c ****  CPU port/tested		:   ATMEGA32
+   7:Dual_7Segment.c ****  Hardware use			:   Dual 7 Segments common cathode
+   8:Dual_7Segment.c **** 						:   2 Button Switch ( Press on release off)
+   9:Dual_7Segment.c ****  Port use				:   E_PORTA (0-7), E_PORTB (1-2)  7 Segments
+  10:Dual_7Segment.c **** 						:   E_INT1 (SW1)  E_PB0 (SW2)
+  11:Dual_7Segment.c **** 						
+  12:Dual_7Segment.c ****  Memory	FLASH			:   XXX
+  13:Dual_7Segment.c **** 		RAM				:   XXX
+  14:Dual_7Segment.c **** 		EEPROM			:   XXX
+  15:Dual_7Segment.c ****  Document				:   Document describe algorithm
+  16:Dual_7Segment.c ****  Written by 			:   Wichai  wichai@geartronics.net
+  17:Dual_7Segment.c ****  Date					:  	23/04/2006
+  18:Dual_7Segment.c ****   
+  19:Dual_7Segment.c ****  Update History
+  20:Dual_7Segment.c ****  
+  21:Dual_7Segment.c ****  Date			By 					Comments
+  22:Dual_7Segment.c ****  ----			--					---------
+  23:Dual_7Segment.c ****  
+  24:Dual_7Segment.c ****  
+  25:Dual_7Segment.c ****   */
+  26:Dual_7Segment.c **** /* Display numeric 0-9  on  digit 0 or 1 
+  27:Dual_7Segment.c ****   
+  28:Dual_7Segment.c **** 	INPUT
+  29:Dual_7Segment.c **** 	num		:	number to show
+  30:Dual_7Segment.c **** 	digit 	: 	Digit  to show
+  31:Dual_7Segment.c **** 	
+  32:Dual_7Segment.c **** 	OUTPUT	:	null
+  33:Dual_7Segment.c **** 	
+  34:Dual_7Segment.c **** */  
+  35:Dual_7Segment.c **** 
+  36:Dual_7Segment.c **** #include "Dual_7Segment.h"
+  37:Dual_7Segment.c **** 
+  38:Dual_7Segment.c **** void d7segment_display( int8_t num, uint8_t digit)
+  39:Dual_7Segment.c **** {
+  64               	.LM1:
+  65               	/* prologue: frame size=0 */
+  66               	/* prologue end (size=0) */
+  40:Dual_7Segment.c ****  switch (num)
+  68               	.LM2:
+  69 0000 9927      		clr r25
+  70 0002 87FD      		sbrc r24,7
+  71 0004 9095      		com r25
+  72 0006 8630      		cpi r24,6
+  73 0008 9105      		cpc r25,__zero_reg__
+  74 000a 09F4      		brne .+2
+  75 000c 41C0      		rjmp .L14
+  77               	.LM3:
+  78 000e 8730      		cpi r24,7
+  79 0010 9105      		cpc r25,__zero_reg__
+  80 0012 8CF4      		brge .L16
+  81 0014 8230      		cpi r24,2
+  82 0016 9105      		cpc r25,__zero_reg__
+  83 0018 59F1      		breq .L5
+  84 001a 8330      		cpi r24,3
+  85 001c 9105      		cpc r25,__zero_reg__
+  86 001e 2CF4      		brge .L17
+  87 0020 0097      		sbiw r24,0
+  88 0022 11F1      		breq .L3
+  89 0024 0197      		sbiw r24,1
+  90 0026 11F1      		breq .L4
+  91 0028 37C0      		rjmp .L2
+  92               	.L17:
+  93 002a 8430      		cpi r24,4
+  94 002c 9105      		cpc r25,__zero_reg__
+  95 002e 21F1      		breq .L7
+  96 0030 0597      		sbiw r24,5
+  97 0032 24F5      		brge .L8
+  98 0034 1FC0      		rjmp .L6
+  99               	.L16:
+ 100 0036 8930      		cpi r24,9
+ 101 0038 9105      		cpc r25,__zero_reg__
+ 102 003a 31F1      		breq .L12
+ 103 003c 8A30      		cpi r24,10
+ 104 003e 9105      		cpc r25,__zero_reg__
+ 105 0040 34F4      		brge .L18
+ 106 0042 8730      		cpi r24,7
+ 107 0044 9105      		cpc r25,__zero_reg__
+ 108 0046 E1F0      		breq .L10
+ 109 0048 0897      		sbiw r24,8
+ 110 004a E1F0      		breq .L11
+ 111 004c 25C0      		rjmp .L2
+ 112               	.L18:
+ 113 004e 8236      		cpi r24,98
+ 114 0050 9105      		cpc r25,__zero_reg__
+ 115 0052 F1F0      		breq .L14
+ 116 0054 8336      		cpi r24,99
+ 117 0056 9105      		cpc r25,__zero_reg__
+ 118 0058 1CF4      		brge .L19
+ 119 005a 0A97      		sbiw r24,10
+ 120 005c D9F0      		breq .L15
+ 121 005e 1CC0      		rjmp .L2
+ 122               	.L19:
+ 123 0060 8636      		cpi r24,102
+ 124 0062 9105      		cpc r25,__zero_reg__
+ 125 0064 99F0      		breq .L13
+ 126 0066 18C0      		rjmp .L2
+ 127               	.L3:
+  41:Dual_7Segment.c ****  {
+  42:Dual_7Segment.c **** 	case 0:
+  43:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_0;
+ 129               	.LM4:
+ 130 0068 8FE3      		ldi r24,lo8(63)
+ 131 006a 15C0      		rjmp .L22
+ 132               	.L4:
+  44:Dual_7Segment.c **** 		break;
+  45:Dual_7Segment.c **** 	case 1:
+  46:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_1;
+ 134               	.LM5:
+ 135 006c 86E0      		ldi r24,lo8(6)
+ 136 006e 13C0      		rjmp .L22
+ 137               	.L5:
+  47:Dual_7Segment.c **** 		break;
+  48:Dual_7Segment.c **** 	case 2:
+  49:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_2;
+ 139               	.LM6:
+ 140 0070 8BE5      		ldi r24,lo8(91)
+ 141 0072 11C0      		rjmp .L22
+ 142               	.L6:
+  50:Dual_7Segment.c **** 		break;
+  51:Dual_7Segment.c **** 	case 3:
+  52:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_3;
+ 144               	.LM7:
+ 145 0074 8FE4      		ldi r24,lo8(79)
+ 146 0076 0FC0      		rjmp .L22
+ 147               	.L7:
+  53:Dual_7Segment.c **** 		break;
+  54:Dual_7Segment.c **** 	case 4:
+  55:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_4;
+ 149               	.LM8:
+ 150 0078 86E6      		ldi r24,lo8(102)
+ 151 007a 0DC0      		rjmp .L22
+ 152               	.L8:
+  56:Dual_7Segment.c **** 		break;
+  57:Dual_7Segment.c **** 	case 5:
+  58:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_5;
+ 154               	.LM9:
+ 155 007c 8DE6      		ldi r24,lo8(109)
+ 156 007e 0BC0      		rjmp .L22
+ 157               	.L10:
+  59:Dual_7Segment.c **** 		break;
+  60:Dual_7Segment.c **** 	case 6:
+  61:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_6;
+  62:Dual_7Segment.c **** 		break;
+  63:Dual_7Segment.c **** 	case 7:
+  64:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_7;
+ 159               	.LM10:
+ 160 0080 87E0      		ldi r24,lo8(7)
+ 161 0082 09C0      		rjmp .L22
+ 162               	.L11:
+  65:Dual_7Segment.c **** 		break;
+  66:Dual_7Segment.c **** 	case 8:
+  67:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_8;
+ 164               	.LM11:
+ 165 0084 8FE7      		ldi r24,lo8(127)
+ 166 0086 07C0      		rjmp .L22
+ 167               	.L12:
+  68:Dual_7Segment.c **** 		break;
+  69:Dual_7Segment.c **** 	case 9:
+  70:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_9;
+ 169               	.LM12:
+ 170 0088 87E6      		ldi r24,lo8(103)
+ 171 008a 05C0      		rjmp .L22
+ 172               	.L13:
+  71:Dual_7Segment.c **** 	    break;
+  72:Dual_7Segment.c **** 	case 'f':
+  73:Dual_7Segment.c **** 	    _7SEGMENT_PORT = _7SEGMENT_C_F;
+ 174               	.LM13:
+ 175 008c 81E7      		ldi r24,lo8(113)
+ 176 008e 03C0      		rjmp .L22
+ 177               	.L14:
+  74:Dual_7Segment.c **** 		break;
+  75:Dual_7Segment.c **** 	case 'b':
+  76:Dual_7Segment.c **** 	    _7SEGMENT_PORT = _7SEGMENT_C_B;
+ 179               	.LM14:
+ 180 0090 8CE7      		ldi r24,lo8(124)
+ 181 0092 01C0      		rjmp .L22
+ 182               	.L15:
+  77:Dual_7Segment.c **** 		break;
+  78:Dual_7Segment.c **** 	case DOT:
+  79:Dual_7Segment.c **** 		_7SEGMENT_PORT = _7SEGMENT_DOT;
+ 184               	.LM15:
+ 185 0094 80E8      		ldi r24,lo8(-128)
+ 186               	.L22:
+ 187 0096 88BB      		out 56-0x20,r24
+ 188               	.L2:
+  80:Dual_7Segment.c **** 		break;
+  81:Dual_7Segment.c ****  
+  82:Dual_7Segment.c ****  }
+  83:Dual_7Segment.c **** // Out digit
+  84:Dual_7Segment.c **** 	 
+  85:Dual_7Segment.c ****     if ( digit == 1 )
+ 190               	.LM16:
+ 191 0098 6130      		cpi r22,lo8(1)
+ 192 009a 19F4      		brne .L20
+  86:Dual_7Segment.c **** 	{  // ON Digit 1 OFF  ( 1 Off  0 On)
+  87:Dual_7Segment.c **** 		_7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT1);
+ 194               	.LM17:
+ 195 009c AB98      		cbi 53-0x20,3
+  88:Dual_7Segment.c **** 	   // OFF Digit 2 
+  89:Dual_7Segment.c **** 	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT2;
+ 197               	.LM18:
+ 198 009e AC9A      		sbi 53-0x20,4
+ 199 00a0 0895      		ret
+ 200               	.L20:
+  90:Dual_7Segment.c **** 	}
+  91:Dual_7Segment.c **** 	if ( digit == 2 )
+ 202               	.LM19:
+ 203 00a2 6230      		cpi r22,lo8(2)
+ 204 00a4 11F4      		brne .L1
+  92:Dual_7Segment.c **** 	{  // ON Digit 2 OFF  ( 1 Off  0 On)
+  93:Dual_7Segment.c **** 		_7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT2);
+ 206               	.LM20:
+ 207 00a6 AC98      		cbi 53-0x20,4
+  94:Dual_7Segment.c **** 	   // OFF Digit 1
+  95:Dual_7Segment.c **** 	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT1;
+ 209               	.LM21:
+ 210 00a8 AB9A      		sbi 53-0x20,3
+ 211               	.L1:
+ 212 00aa 0895      		ret
+ 213               	/* epilogue: frame size=0 */
+ 214 00ac 0895      		ret
+ 215               	/* epilogue end (size=1) */
+ 216               	/* function d7segment_display size 91 (90) */
+ 218               	.Lscope0:
+ 220               	.global	d7segment_init
+ 222               	d7segment_init:
+  96:Dual_7Segment.c **** 	}	
+  97:Dual_7Segment.c **** 
+  98:Dual_7Segment.c **** }	
+  99:Dual_7Segment.c **** 
+ 100:Dual_7Segment.c **** 
+ 101:Dual_7Segment.c **** /* Initial 7 Segments. Set port to output before use 
+ 102:Dual_7Segment.c **** */
+ 103:Dual_7Segment.c **** void d7segment_init (void)
+ 104:Dual_7Segment.c **** {
+ 224               	.LM22:
+ 225               	/* prologue: frame size=0 */
+ 226               	/* prologue end (size=0) */
+ 105:Dual_7Segment.c **** // Set direction for output for 7 Segment
+ 106:Dual_7Segment.c **** 	_7SEGMENT_DIGIT_DIR   = 0xFF;
+ 228               	.LM23:
+ 229 00ae 8FEF      		ldi r24,lo8(-1)
+ 230 00b0 87BB      		out 55-0x20,r24
+ 107:Dual_7Segment.c **** 	_7SEGMENT_PORT_DIR	  |= _7SEGMENT_DIGIT1 | _7SEGMENT_DIGIT2;
+ 232               	.LM24:
+ 233 00b2 84B3      		in r24,52-0x20
+ 234 00b4 8861      		ori r24,lo8(24)
+ 235 00b6 84BB      		out 52-0x20,r24
+ 108:Dual_7Segment.c ****  
+ 109:Dual_7Segment.c **** // Set direction for input for SW 
+ 110:Dual_7Segment.c **** 	_7SEGMENT_SW1_DIR	&=  ~(_7SEGMENT_SW1);
+ 237               	.LM25:
+ 238 00b8 8B98      		cbi 49-0x20,3
+ 111:Dual_7Segment.c **** 	_7SEGMENT_SW2_DIR	&=  ~(_7SEGMENT_SW2);
+ 240               	.LM26:
+ 241 00ba A298      		cbi 52-0x20,2
+ 112:Dual_7Segment.c **** 
+ 113:Dual_7Segment.c **** // Enable pull up
+ 114:Dual_7Segment.c ****     _7SEGMENT_SW1_PORT   |= _7SEGMENT_SW1;
+ 243               	.LM27:
+ 244 00bc 939A      		sbi 50-0x20,3
+ 115:Dual_7Segment.c ****     _7SEGMENT_SW2_PORT   |= _7SEGMENT_SW2;
+ 246               	.LM28:
+ 247 00be AA9A      		sbi 53-0x20,2
+ 248               	/* epilogue: frame size=0 */
+ 249 00c0 0895      		ret
+ 250               	/* epilogue end (size=1) */
+ 251               	/* function d7segment_init size 10 (9) */
+ 253               	.Lscope1:
+ 254               		.text
+ 256               	Letext:
+ 257               	/* File "Dual_7Segment.c": code  101 = 0x0065 (  99), prologues   0, epilogues   2 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 Dual_7Segment.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0iaaaa.s:62     .text:00000000 d7segment_display
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0iaaaa.s:222    .text:000000ae d7segment_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0iaaaa.s:256    .text:000000c2 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

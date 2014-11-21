@@ -1,0 +1,4720 @@
+   1               		.file	"stk500_2_boot.c"
+   2               		.arch atmega128
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  85               	.global	echo
+  86               	.global	echo
+  87               		.section .bss
+  90               	echo:
+  91 0000 00        		.skip 1,0
+  92               	.global	j
+  93               	.global	j
+  96               	j:
+  97 0001 0000      		.skip 2,0
+  98               	.global	i
+  99               	.global	i
+ 102               	i:
+ 103 0003 0000      		.skip 2,0
+ 104               	.global	answer_id
+ 105               	.global	answer_id
+ 108               	answer_id:
+ 109 0005 00        		.skip 1,0
+ 110               	.global	sequence_number
+ 111               	.global	sequence_number
+ 114               	sequence_number:
+ 115 0006 00        		.skip 1,0
+ 116               	.global	n_pages
+ 117               	.global	n_pages
+ 120               	n_pages:
+ 121 0007 00        		.skip 1,0
+ 122               	.global	n_bytes
+ 123               	.global	n_bytes
+ 126               	n_bytes:
+ 127 0008 0000      		.skip 2,0
+ 128               	.global	address_eeprom
+ 129               	.global	address_eeprom
+ 132               	address_eeprom:
+ 133 000a 0000      		.skip 2,0
+ 134               	.global	address_flash
+ 135               	.global	address_flash
+ 138               	address_flash:
+ 139 000c 0000 0000 		.skip 4,0
+ 140               	.global	msg_cs
+ 141               	.global	msg_cs
+ 144               	msg_cs:
+ 145 0010 00        		.skip 1,0
+ 146               	.global	msg_size
+ 147               	.global	msg_size
+ 150               	msg_size:
+ 151 0011 0000      		.skip 2,0
+ 152               	.global	answer_id_pntr
+ 153               		.data
+ 156               	answer_id_pntr:
+ 157 0000 0000      		.word	tx_buffer+5
+ 158               	.global	size_pntr
+ 161               	size_pntr:
+ 162 0002 0000      		.word	tx_buffer+2
+ 163               	.global	tx_pntr
+ 166               	tx_pntr:
+ 167 0004 0000      		.word	tx_buffer
+ 168               	.global	rx_pntr
+ 171               	rx_pntr:
+ 172 0006 0000      		.word	rx_buffer
+ 173               	.global	bootuart1
+ 174               	.global	bootuart1
+ 175               		.section .bss
+ 178               	bootuart1:
+ 179 0013 00        		.skip 1,0
+ 180               	.global	bootuart0
+ 181               	.global	bootuart0
+ 184               	bootuart0:
+ 185 0014 00        		.skip 1,0
+ 186               	.global	monitor_cnt
+ 187               	.global	monitor_cnt
+ 190               	monitor_cnt:
+ 191 0015 00        		.skip 1,0
+ 192               	.global	rtc
+ 193               		.data
+ 196               	rtc:
+ 197 0008 0060      		.word	24576
+ 198               		.section	.progmem.data,"a",@progbits
+ 201               	monitorError:
+ 202 0000 4572 726F 		.string	"Error\n"
+ 202      720A 00
+ 205               	monitorQuit:
+ 206 0007 5175 6974 		.string	"Quit...\n"
+ 206      2E2E 2E0A 
+ 206      00
+ 209               	monitorWelcome:
+ 210 0010 0A4D 6F6E 		.string	"\nMonitor\n"
+ 210      6974 6F72 
+ 210      0A00 
+ 211               		.text
+ 215               	.global	set_clock
+ 217               	set_clock:
+ 219               	.Ltext1:
+   1:rtc72423.c    **** /*************************************************************************
+   2:rtc72423.c    **** **  STK500 Protocol v2 Bootloader/monitor for ATmega128,AT90CAN128
+   3:rtc72423.c    **** **  clock functions for MB-128-XXX modules
+   4:rtc72423.c    **** **  (c) Milosz Klosowicz, MikloBit
+   5:rtc72423.c    **** **
+   6:rtc72423.c    **** **  Released under GNU GENERAL PUBLIC LICENSE
+   7:rtc72423.c    **** **  See gpl.txt
+   8:rtc72423.c    **** **
+   9:rtc72423.c    **** **  contact: 	support@miklobit.com
+  10:rtc72423.c    **** **  homepage:	www.miklobit.com
+  11:rtc72423.c    **** **
+  12:rtc72423.c    **** **************************************************************************/
+  13:rtc72423.c    **** 
+  14:rtc72423.c    **** struct date
+  15:rtc72423.c    **** {
+  16:rtc72423.c    ****     uint8_t year10 ;
+  17:rtc72423.c    ****     uint8_t year ;
+  18:rtc72423.c    ****     uint8_t month10 ;
+  19:rtc72423.c    ****     uint8_t month ;
+  20:rtc72423.c    ****     uint8_t day10 ;
+  21:rtc72423.c    ****     uint8_t day ;
+  22:rtc72423.c    ****     uint8_t week ;
+  23:rtc72423.c    **** };
+  24:rtc72423.c    **** 
+  25:rtc72423.c    **** struct time
+  26:rtc72423.c    **** {
+  27:rtc72423.c    ****     uint8_t hour10 ;
+  28:rtc72423.c    ****     uint8_t hour ;
+  29:rtc72423.c    ****     uint8_t min10 ;
+  30:rtc72423.c    ****     uint8_t min ;
+  31:rtc72423.c    ****     uint8_t sec10 ;
+  32:rtc72423.c    ****     uint8_t sec ;
+  33:rtc72423.c    **** };
+  34:rtc72423.c    **** 
+  35:rtc72423.c    **** 
+  36:rtc72423.c    **** 
+  37:rtc72423.c    **** uint8_t *rtc = 0x6000 ;  // clock address base with default GAL config
+  38:rtc72423.c    **** 
+  39:rtc72423.c    **** 
+  40:rtc72423.c    **** /* set date and time */
+  41:rtc72423.c    **** 
+  42:rtc72423.c    **** void set_clock( struct date *d, struct time *t )
+  43:rtc72423.c    **** {
+ 221               	.LM1:
+ 222               	/* prologue: frame size=0 */
+ 223 0000 CF93      		push r28
+ 224 0002 DF93      		push r29
+ 225               	/* prologue end (size=2) */
+ 226 0004 DC01      		movw r26,r24
+ 227 0006 EB01      		movw r28,r22
+  44:rtc72423.c    ****   rtc[15]  = 7 ;  /* init clock */
+ 229               	.LM2:
+ 230 0008 E091 0000 		lds r30,rtc
+ 231 000c F091 0000 		lds r31,(rtc)+1
+ 232 0010 87E0      		ldi r24,lo8(7)
+ 233 0012 8787      		std Z+15,r24
+  45:rtc72423.c    ****   if( d ) 
+ 235               	.LM3:
+ 236 0014 1097      		sbiw r26,0
+ 237 0016 B1F1      		breq .L2
+  46:rtc72423.c    ****   {
+  47:rtc72423.c    ****       rtc[12] = d->week ;
+ 239               	.LM4:
+ 240 0018 2091 0000 		lds r18,rtc
+ 241 001c 3091 0000 		lds r19,(rtc)+1
+ 242 0020 FD01      		movw r30,r26
+ 243 0022 8681      		ldd r24,Z+6
+ 244 0024 F901      		movw r30,r18
+ 245 0026 8487      		std Z+12,r24
+  48:rtc72423.c    ****       rtc[11] = d->year10 ;
+ 247               	.LM5:
+ 248 0028 E091 0000 		lds r30,rtc
+ 249 002c F091 0000 		lds r31,(rtc)+1
+ 250 0030 8C91      		ld r24,X
+ 251 0032 8387      		std Z+11,r24
+  49:rtc72423.c    ****       rtc[10] = d->year ;
+ 253               	.LM6:
+ 254 0034 2091 0000 		lds r18,rtc
+ 255 0038 3091 0000 		lds r19,(rtc)+1
+ 256 003c FD01      		movw r30,r26
+ 257 003e 8181      		ldd r24,Z+1
+ 258 0040 F901      		movw r30,r18
+ 259 0042 8287      		std Z+10,r24
+  50:rtc72423.c    ****       rtc[9] = d->month10 ;
+ 261               	.LM7:
+ 262 0044 2091 0000 		lds r18,rtc
+ 263 0048 3091 0000 		lds r19,(rtc)+1
+ 264 004c FD01      		movw r30,r26
+ 265 004e 8281      		ldd r24,Z+2
+ 266 0050 F901      		movw r30,r18
+ 267 0052 8187      		std Z+9,r24
+  51:rtc72423.c    ****       rtc[8] = d->month ;
+ 269               	.LM8:
+ 270 0054 2091 0000 		lds r18,rtc
+ 271 0058 3091 0000 		lds r19,(rtc)+1
+ 272 005c FD01      		movw r30,r26
+ 273 005e 8381      		ldd r24,Z+3
+ 274 0060 F901      		movw r30,r18
+ 275 0062 8087      		std Z+8,r24
+  52:rtc72423.c    ****       rtc[7] = d->day10 ;
+ 277               	.LM9:
+ 278 0064 2091 0000 		lds r18,rtc
+ 279 0068 3091 0000 		lds r19,(rtc)+1
+ 280 006c FD01      		movw r30,r26
+ 281 006e 8481      		ldd r24,Z+4
+ 282 0070 F901      		movw r30,r18
+ 283 0072 8783      		std Z+7,r24
+  53:rtc72423.c    ****       rtc[6] = d->day ;
+ 285               	.LM10:
+ 286 0074 2091 0000 		lds r18,rtc
+ 287 0078 3091 0000 		lds r19,(rtc)+1
+ 288 007c FD01      		movw r30,r26
+ 289 007e 8581      		ldd r24,Z+5
+ 290 0080 F901      		movw r30,r18
+ 291 0082 8683      		std Z+6,r24
+ 292               	.L2:
+  54:rtc72423.c    ****   }
+  55:rtc72423.c    ****   if( t )
+ 294               	.LM11:
+ 295 0084 2097      		sbiw r28,0
+ 296 0086 21F1      		breq .L3
+  56:rtc72423.c    ****   {
+  57:rtc72423.c    ****       rtc[5] = t->hour10 ;
+ 298               	.LM12:
+ 299 0088 E091 0000 		lds r30,rtc
+ 300 008c F091 0000 		lds r31,(rtc)+1
+ 301 0090 8881      		ld r24,Y
+ 302 0092 8583      		std Z+5,r24
+  58:rtc72423.c    ****       rtc[4] = t->hour ;
+ 304               	.LM13:
+ 305 0094 E091 0000 		lds r30,rtc
+ 306 0098 F091 0000 		lds r31,(rtc)+1
+ 307 009c 8981      		ldd r24,Y+1
+ 308 009e 8483      		std Z+4,r24
+  59:rtc72423.c    ****       rtc[3] = t->min10 ;
+ 310               	.LM14:
+ 311 00a0 E091 0000 		lds r30,rtc
+ 312 00a4 F091 0000 		lds r31,(rtc)+1
+ 313 00a8 8A81      		ldd r24,Y+2
+ 314 00aa 8383      		std Z+3,r24
+  60:rtc72423.c    ****       rtc[2] = t->min ;
+ 316               	.LM15:
+ 317 00ac E091 0000 		lds r30,rtc
+ 318 00b0 F091 0000 		lds r31,(rtc)+1
+ 319 00b4 8B81      		ldd r24,Y+3
+ 320 00b6 8283      		std Z+2,r24
+  61:rtc72423.c    ****       rtc[1] = t->sec10 ;
+ 322               	.LM16:
+ 323 00b8 E091 0000 		lds r30,rtc
+ 324 00bc F091 0000 		lds r31,(rtc)+1
+ 325 00c0 8C81      		ldd r24,Y+4
+ 326 00c2 8183      		std Z+1,r24
+  62:rtc72423.c    ****       rtc[0] = t->sec ;
+ 328               	.LM17:
+ 329 00c4 E091 0000 		lds r30,rtc
+ 330 00c8 F091 0000 		lds r31,(rtc)+1
+ 331 00cc 8D81      		ldd r24,Y+5
+ 332 00ce 8083      		st Z,r24
+ 333               	.L3:
+  63:rtc72423.c    ****   };
+  64:rtc72423.c    ****   rtc[13] = 0 ; /* start clock */
+ 335               	.LM18:
+ 336 00d0 E091 0000 		lds r30,rtc
+ 337 00d4 F091 0000 		lds r31,(rtc)+1
+ 338 00d8 1586      		std Z+13,__zero_reg__
+  65:rtc72423.c    ****   rtc[15] = 4 ;
+ 340               	.LM19:
+ 341 00da E091 0000 		lds r30,rtc
+ 342 00de F091 0000 		lds r31,(rtc)+1
+ 343 00e2 84E0      		ldi r24,lo8(4)
+ 344 00e4 8787      		std Z+15,r24
+ 345               	/* epilogue: frame size=0 */
+ 346 00e6 DF91      		pop r29
+ 347 00e8 CF91      		pop r28
+ 348 00ea 0895      		ret
+ 349               	/* epilogue end (size=3) */
+ 350               	/* function set_clock size 118 (113) */
+ 352               	.Lscope0:
+ 355               	.global	get_time
+ 357               	get_time:
+  66:rtc72423.c    **** }
+  67:rtc72423.c    **** 
+  68:rtc72423.c    **** /* read time HH:MM:SS */
+  69:rtc72423.c    **** 
+  70:rtc72423.c    **** struct time *get_time( struct time *t )
+  71:rtc72423.c    **** {
+ 359               	.LM20:
+ 360               	/* prologue: frame size=0 */
+ 361               	/* prologue end (size=0) */
+ 362 00ec DC01      		movw r26,r24
+  72:rtc72423.c    ****  t->hour10 = rtc[5] & 0x0f ;
+ 364               	.LM21:
+ 365 00ee E091 0000 		lds r30,rtc
+ 366 00f2 F091 0000 		lds r31,(rtc)+1
+ 367 00f6 8581      		ldd r24,Z+5
+ 368 00f8 8F70      		andi r24,lo8(15)
+ 369 00fa 8C93      		st X,r24
+  73:rtc72423.c    ****  t->hour = rtc[4] & 0x0f ;
+ 371               	.LM22:
+ 372 00fc E091 0000 		lds r30,rtc
+ 373 0100 F091 0000 		lds r31,(rtc)+1
+ 374 0104 8481      		ldd r24,Z+4
+ 375 0106 8F70      		andi r24,lo8(15)
+ 376 0108 FD01      		movw r30,r26
+ 377 010a 8183      		std Z+1,r24
+  74:rtc72423.c    ****  t->min10 = rtc[3] & 0x0f ;
+ 379               	.LM23:
+ 380 010c E091 0000 		lds r30,rtc
+ 381 0110 F091 0000 		lds r31,(rtc)+1
+ 382 0114 8381      		ldd r24,Z+3
+ 383 0116 8F70      		andi r24,lo8(15)
+ 384 0118 FD01      		movw r30,r26
+ 385 011a 8283      		std Z+2,r24
+  75:rtc72423.c    ****  t->min = rtc[2] & 0x0f ;
+ 387               	.LM24:
+ 388 011c E091 0000 		lds r30,rtc
+ 389 0120 F091 0000 		lds r31,(rtc)+1
+ 390 0124 8281      		ldd r24,Z+2
+ 391 0126 8F70      		andi r24,lo8(15)
+ 392 0128 FD01      		movw r30,r26
+ 393 012a 8383      		std Z+3,r24
+  76:rtc72423.c    ****  t->sec10 = rtc[1] & 0x0f ;
+ 395               	.LM25:
+ 396 012c E091 0000 		lds r30,rtc
+ 397 0130 F091 0000 		lds r31,(rtc)+1
+ 398 0134 8181      		ldd r24,Z+1
+ 399 0136 8F70      		andi r24,lo8(15)
+ 400 0138 FD01      		movw r30,r26
+ 401 013a 8483      		std Z+4,r24
+  77:rtc72423.c    ****  t->sec = rtc[0] & 0x0f ;
+ 403               	.LM26:
+ 404 013c E091 0000 		lds r30,rtc
+ 405 0140 F091 0000 		lds r31,(rtc)+1
+ 406 0144 8081      		ld r24,Z
+ 407 0146 8F70      		andi r24,lo8(15)
+ 408 0148 FD01      		movw r30,r26
+ 409 014a 8583      		std Z+5,r24
+  78:rtc72423.c    ****  return( t ) ;
+  79:rtc72423.c    **** }
+ 411               	.LM27:
+ 412 014c CD01      		movw r24,r26
+ 413               	/* epilogue: frame size=0 */
+ 414 014e 0895      		ret
+ 415               	/* epilogue end (size=1) */
+ 416               	/* function get_time size 50 (49) */
+ 418               	.Lscope1:
+ 421               	.global	get_date
+ 423               	get_date:
+  80:rtc72423.c    **** 
+  81:rtc72423.c    **** /* odczytanie daty YY:MM:DD */
+  82:rtc72423.c    **** 
+  83:rtc72423.c    **** struct date *get_date( struct date *d )
+  84:rtc72423.c    **** {
+ 425               	.LM28:
+ 426               	/* prologue: frame size=0 */
+ 427               	/* prologue end (size=0) */
+ 428 0150 DC01      		movw r26,r24
+  85:rtc72423.c    ****  d->week =  rtc[12] & 0x0f ;
+ 430               	.LM29:
+ 431 0152 E091 0000 		lds r30,rtc
+ 432 0156 F091 0000 		lds r31,(rtc)+1
+ 433 015a 8485      		ldd r24,Z+12
+ 434 015c 8F70      		andi r24,lo8(15)
+ 435 015e FD01      		movw r30,r26
+ 436 0160 8683      		std Z+6,r24
+  86:rtc72423.c    ****  d->year10 = rtc[11] & 0x0f ;
+ 438               	.LM30:
+ 439 0162 E091 0000 		lds r30,rtc
+ 440 0166 F091 0000 		lds r31,(rtc)+1
+ 441 016a 8385      		ldd r24,Z+11
+ 442 016c 8F70      		andi r24,lo8(15)
+ 443 016e 8C93      		st X,r24
+  87:rtc72423.c    ****  d->year = rtc[10] & 0x0f ;
+ 445               	.LM31:
+ 446 0170 E091 0000 		lds r30,rtc
+ 447 0174 F091 0000 		lds r31,(rtc)+1
+ 448 0178 8285      		ldd r24,Z+10
+ 449 017a 8F70      		andi r24,lo8(15)
+ 450 017c FD01      		movw r30,r26
+ 451 017e 8183      		std Z+1,r24
+  88:rtc72423.c    ****  d->month10 = rtc[9] & 0x0f ;
+ 453               	.LM32:
+ 454 0180 E091 0000 		lds r30,rtc
+ 455 0184 F091 0000 		lds r31,(rtc)+1
+ 456 0188 8185      		ldd r24,Z+9
+ 457 018a 8F70      		andi r24,lo8(15)
+ 458 018c FD01      		movw r30,r26
+ 459 018e 8283      		std Z+2,r24
+  89:rtc72423.c    ****  d->month = rtc[8] & 0x0f ;
+ 461               	.LM33:
+ 462 0190 E091 0000 		lds r30,rtc
+ 463 0194 F091 0000 		lds r31,(rtc)+1
+ 464 0198 8085      		ldd r24,Z+8
+ 465 019a 8F70      		andi r24,lo8(15)
+ 466 019c FD01      		movw r30,r26
+ 467 019e 8383      		std Z+3,r24
+  90:rtc72423.c    ****  d->day10 = rtc[7] & 0x0f ;
+ 469               	.LM34:
+ 470 01a0 E091 0000 		lds r30,rtc
+ 471 01a4 F091 0000 		lds r31,(rtc)+1
+ 472 01a8 8781      		ldd r24,Z+7
+ 473 01aa 8F70      		andi r24,lo8(15)
+ 474 01ac FD01      		movw r30,r26
+ 475 01ae 8483      		std Z+4,r24
+  91:rtc72423.c    ****  d->day = rtc[6] & 0x0f ;
+ 477               	.LM35:
+ 478 01b0 E091 0000 		lds r30,rtc
+ 479 01b4 F091 0000 		lds r31,(rtc)+1
+ 480 01b8 8681      		ldd r24,Z+6
+ 481 01ba 8F70      		andi r24,lo8(15)
+ 482 01bc FD01      		movw r30,r26
+ 483 01be 8583      		std Z+5,r24
+  92:rtc72423.c    ****  return( d );
+  93:rtc72423.c    **** }
+ 485               	.LM36:
+ 486 01c0 CD01      		movw r24,r26
+ 487               	/* epilogue: frame size=0 */
+ 488 01c2 0895      		ret
+ 489               	/* epilogue end (size=1) */
+ 490               	/* function get_date size 58 (57) */
+ 492               	.Lscope2:
+ 496               	.global	time2str
+ 498               	time2str:
+  94:rtc72423.c    **** 
+  95:rtc72423.c    **** 
+  96:rtc72423.c    **** /* convert time HH:MM:SS  to string */
+  97:rtc72423.c    **** 
+  98:rtc72423.c    **** uint8_t *time2str(struct time *t ,  uint8_t *str )
+  99:rtc72423.c    **** {
+ 500               	.LM37:
+ 501               	/* prologue: frame size=0 */
+ 502 01c4 CF93      		push r28
+ 503 01c6 DF93      		push r29
+ 504               	/* prologue end (size=2) */
+ 505 01c8 DC01      		movw r26,r24
+ 506 01ca FB01      		movw r30,r22
+ 100:rtc72423.c    ****   str[0] = ( t->hour10 + '0');
+ 508               	.LM38:
+ 509 01cc 8C91      		ld r24,X
+ 510 01ce 805D      		subi r24,lo8(-(48))
+ 511 01d0 8083      		st Z,r24
+ 101:rtc72423.c    ****   str[1] = ( t->hour + '0');
+ 513               	.LM39:
+ 514 01d2 ED01      		movw r28,r26
+ 515 01d4 8981      		ldd r24,Y+1
+ 516 01d6 805D      		subi r24,lo8(-(48))
+ 517 01d8 8183      		std Z+1,r24
+ 102:rtc72423.c    ****   str[2] = (':');
+ 519               	.LM40:
+ 520 01da 9AE3      		ldi r25,lo8(58)
+ 521 01dc 9283      		std Z+2,r25
+ 103:rtc72423.c    ****   str[3] = ( t->min10 + '0');
+ 523               	.LM41:
+ 524 01de 8A81      		ldd r24,Y+2
+ 525 01e0 805D      		subi r24,lo8(-(48))
+ 526 01e2 8383      		std Z+3,r24
+ 104:rtc72423.c    ****   str[4] = ( t->min + '0');
+ 528               	.LM42:
+ 529 01e4 8B81      		ldd r24,Y+3
+ 530 01e6 805D      		subi r24,lo8(-(48))
+ 531 01e8 8483      		std Z+4,r24
+ 105:rtc72423.c    ****   str[5] = (':');
+ 533               	.LM43:
+ 534 01ea 9583      		std Z+5,r25
+ 106:rtc72423.c    ****   str[6] = (t->sec10 + '0');
+ 536               	.LM44:
+ 537 01ec 8C81      		ldd r24,Y+4
+ 538 01ee 805D      		subi r24,lo8(-(48))
+ 539 01f0 8683      		std Z+6,r24
+ 107:rtc72423.c    ****   str[7] = (t->sec + '0');
+ 541               	.LM45:
+ 542 01f2 8D81      		ldd r24,Y+5
+ 543 01f4 805D      		subi r24,lo8(-(48))
+ 544 01f6 8783      		std Z+7,r24
+ 108:rtc72423.c    ****   str[8] = 0 ;
+ 546               	.LM46:
+ 547 01f8 1086      		std Z+8,__zero_reg__
+ 109:rtc72423.c    ****   return str;
+ 110:rtc72423.c    **** }
+ 549               	.LM47:
+ 550 01fa CB01      		movw r24,r22
+ 551               	/* epilogue: frame size=0 */
+ 552 01fc DF91      		pop r29
+ 553 01fe CF91      		pop r28
+ 554 0200 0895      		ret
+ 555               	/* epilogue end (size=3) */
+ 556               	/* function time2str size 31 (26) */
+ 558               	.Lscope3:
+ 562               	.global	date2str
+ 564               	date2str:
+ 111:rtc72423.c    **** 
+ 112:rtc72423.c    **** 
+ 113:rtc72423.c    **** /* convert date YY:MM:DD  to string  */
+ 114:rtc72423.c    **** 
+ 115:rtc72423.c    **** uint8_t *date2str(struct date *d ,  uint8_t *str )
+ 116:rtc72423.c    **** {
+ 566               	.LM48:
+ 567               	/* prologue: frame size=0 */
+ 568 0202 CF93      		push r28
+ 569 0204 DF93      		push r29
+ 570               	/* prologue end (size=2) */
+ 571 0206 DC01      		movw r26,r24
+ 572 0208 FB01      		movw r30,r22
+ 117:rtc72423.c    **** 
+ 118:rtc72423.c    ****   str[0] = ( d->year10 + '0');
+ 574               	.LM49:
+ 575 020a 8C91      		ld r24,X
+ 576 020c 805D      		subi r24,lo8(-(48))
+ 577 020e 8083      		st Z,r24
+ 119:rtc72423.c    ****   str[1] = ( d->year + '0');
+ 579               	.LM50:
+ 580 0210 ED01      		movw r28,r26
+ 581 0212 8981      		ldd r24,Y+1
+ 582 0214 805D      		subi r24,lo8(-(48))
+ 583 0216 8183      		std Z+1,r24
+ 120:rtc72423.c    ****   str[2] = ('/');
+ 585               	.LM51:
+ 586 0218 9FE2      		ldi r25,lo8(47)
+ 587 021a 9283      		std Z+2,r25
+ 121:rtc72423.c    ****   str[3] = ( d->month10 + '0');
+ 589               	.LM52:
+ 590 021c 8A81      		ldd r24,Y+2
+ 591 021e 805D      		subi r24,lo8(-(48))
+ 592 0220 8383      		std Z+3,r24
+ 122:rtc72423.c    ****   str[4] = ( d->month + '0');
+ 594               	.LM53:
+ 595 0222 8B81      		ldd r24,Y+3
+ 596 0224 805D      		subi r24,lo8(-(48))
+ 597 0226 8483      		std Z+4,r24
+ 123:rtc72423.c    ****   str[5] = ('/');
+ 599               	.LM54:
+ 600 0228 9583      		std Z+5,r25
+ 124:rtc72423.c    ****   str[6] = (d->day10 + '0');
+ 602               	.LM55:
+ 603 022a 8C81      		ldd r24,Y+4
+ 604 022c 805D      		subi r24,lo8(-(48))
+ 605 022e 8683      		std Z+6,r24
+ 125:rtc72423.c    ****   str[7] = (d->day + '0');
+ 607               	.LM56:
+ 608 0230 8D81      		ldd r24,Y+5
+ 609 0232 805D      		subi r24,lo8(-(48))
+ 610 0234 8783      		std Z+7,r24
+ 126:rtc72423.c    ****   str[8] = 0 ;
+ 612               	.LM57:
+ 613 0236 1086      		std Z+8,__zero_reg__
+ 127:rtc72423.c    ****   return str;
+ 128:rtc72423.c    **** }
+ 615               	.LM58:
+ 616 0238 CB01      		movw r24,r22
+ 617               	/* epilogue: frame size=0 */
+ 618 023a DF91      		pop r29
+ 619 023c CF91      		pop r28
+ 620 023e 0895      		ret
+ 621               	/* epilogue end (size=3) */
+ 622               	/* function date2str size 31 (26) */
+ 624               	.Lscope4:
+ 626               	.global	initPorts
+ 628               	initPorts:
+ 630               	.Ltext2:
+   1:stk500_2_boot.c **** /*************************************************************************
+   2:stk500_2_boot.c **** **  STK500 Protocol v2 Bootloader/monitor for ATmega128,AT90CAN128
+   3:stk500_2_boot.c **** **  require AVR Studio 4.11 build 401 or later
+   4:stk500_2_boot.c **** **  (c) Milosz Klosowicz, MikloBit
+   5:stk500_2_boot.c **** **
+   6:stk500_2_boot.c **** **  Released under GNU GENERAL PUBLIC LICENSE
+   7:stk500_2_boot.c **** **  See gpl.txt
+   8:stk500_2_boot.c **** **
+   9:stk500_2_boot.c **** **  contact: 	support@miklobit.com
+  10:stk500_2_boot.c **** **  homepage:	www.miklobit.com
+  11:stk500_2_boot.c **** **
+  12:stk500_2_boot.c **** ** 
+  13:stk500_2_boot.c **** **  
+  14:stk500_2_boot.c **** **  based partly on oryginal code: 
+  15:stk500_2_boot.c **** **  (c) Michael Wolf, webmaster@mictronics.de 
+  16:stk500_2_boot.c **** **  (c) Erik Lins, chip45.com      
+  17:stk500_2_boot.c **** **	(c) Jason P. Kyle, avr1.org
+  18:stk500_2_boot.c **** **
+  19:stk500_2_boot.c **** **************************************************************************/
+  20:stk500_2_boot.c **** #include <ctype.h>
+  21:stk500_2_boot.c **** #include <avr/io.h>
+  22:stk500_2_boot.c **** #include <avr/boot.h>
+  23:stk500_2_boot.c **** #include <avr/pgmspace.h>
+  24:stk500_2_boot.c **** #include <stdlib.h>
+  25:stk500_2_boot.c **** 
+  26:stk500_2_boot.c **** #include "command_v2.h"
+  27:stk500_2_boot.c **** 
+  28:stk500_2_boot.c **** /* monitor functions will only be compiled when using ATmega64/128/CAN128, 
+  29:stk500_2_boot.c ****  * due to bootblock size constraints 
+  30:stk500_2_boot.c **** */
+  31:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)
+  32:stk500_2_boot.c **** #define MONITOR
+  33:stk500_2_boot.c **** #include "rtc72423.c"
+  34:stk500_2_boot.c **** #endif
+  35:stk500_2_boot.c **** 
+  36:stk500_2_boot.c **** 
+  37:stk500_2_boot.c **** 
+  38:stk500_2_boot.c **** 
+  39:stk500_2_boot.c **** 
+  40:stk500_2_boot.c **** 
+  41:stk500_2_boot.c **** #define app_start()	 asm volatile("jmp 0x0000");	      
+  42:stk500_2_boot.c **** 
+  43:stk500_2_boot.c **** #define	STATE_READY		      0x00
+  44:stk500_2_boot.c **** #define STATE_START           0x01
+  45:stk500_2_boot.c **** #define STATE_GET_SEQ_NUM     0x02
+  46:stk500_2_boot.c **** #define STATE_GET_MSG_SIZE1   0x03
+  47:stk500_2_boot.c **** #define STATE_GET_MSG_SIZE2   0x04
+  48:stk500_2_boot.c **** #define STATE_GET_TOKEN       0x05
+  49:stk500_2_boot.c **** #define STATE_GET_DATA        0x06
+  50:stk500_2_boot.c **** #define STATE_GET_CS          0x07
+  51:stk500_2_boot.c **** 
+  52:stk500_2_boot.c **** /* Set values as required supress popup messages in AVR-Studio */
+  53:stk500_2_boot.c **** #define HARDWARE_VERSION      0x02
+  54:stk500_2_boot.c **** #define SOFTWARE_MAJOR        0x02
+  55:stk500_2_boot.c **** #define SOFTWARE_MINOR        0x01
+  56:stk500_2_boot.c **** 
+  57:stk500_2_boot.c **** /* values for possible topcard */
+  58:stk500_2_boot.c **** #define STK501		0xAA
+  59:stk500_2_boot.c **** #define STK502		0x55
+  60:stk500_2_boot.c **** #define STK503		0xFA
+  61:stk500_2_boot.c **** #define STK504		0xEE
+  62:stk500_2_boot.c **** #define STK505		0xE4
+  63:stk500_2_boot.c **** #define STK520		0xDD		
+  64:stk500_2_boot.c **** 
+  65:stk500_2_boot.c **** /* value for vtarget: always return 5.0V */
+  66:stk500_2_boot.c **** #define VTARGET		0x32
+  67:stk500_2_boot.c **** /* value for vadjust: always return 5.0V */
+  68:stk500_2_boot.c **** #define VADJUST		0x32
+  69:stk500_2_boot.c **** /* prescalled clock frequesncy equal to system clock */
+  70:stk500_2_boot.c **** #define PSCALE_FSYS 0x01
+  71:stk500_2_boot.c **** #define CMATCH_DEF	0x01
+  72:stk500_2_boot.c **** #define SCK_DURATION_DEF 0x01
+  73:stk500_2_boot.c **** 
+  74:stk500_2_boot.c **** #define BAUD_RATE		115200
+  75:stk500_2_boot.c **** 
+  76:stk500_2_boot.c **** #define MAX_BUF_SIZE	300
+  77:stk500_2_boot.c **** 
+  78:stk500_2_boot.c **** /* Adjust to suit whatever pin your hardware uses to enter the bootloader */
+  79:stk500_2_boot.c **** 
+  80:stk500_2_boot.c **** /* ATmega128 has two UARTS so two pins are used to enter bootloader and select UART */
+  81:stk500_2_boot.c **** /* BL0... means UART0, BL1... means UART1 */
+  82:stk500_2_boot.c **** #ifdef __AVR_ATmega128__
+  83:stk500_2_boot.c **** #define BL_DDR  DDRF
+  84:stk500_2_boot.c **** #define BL_PORT PORTF
+  85:stk500_2_boot.c **** #define BL_PIN  PINF
+  86:stk500_2_boot.c **** #define BL0     PINF7
+  87:stk500_2_boot.c **** #define BL1     PINF6
+  88:stk500_2_boot.c **** #elif defined __AVR_AT90CAN128__
+  89:stk500_2_boot.c **** #define BL_DDR  DDRF
+  90:stk500_2_boot.c **** #define BL_PORT PORTF
+  91:stk500_2_boot.c **** #define BL_PIN  PINF
+  92:stk500_2_boot.c **** #define BL0     PINF7
+  93:stk500_2_boot.c **** #define BL1     PINF6
+  94:stk500_2_boot.c **** #else
+  95:stk500_2_boot.c **** /* other ATmegas have only one UART, so only one pin is defined to enter bootloader */
+  96:stk500_2_boot.c **** #define BL_DDR  DDRD
+  97:stk500_2_boot.c **** #define BL_PORT PORTD
+  98:stk500_2_boot.c **** #define BL_PIN  PIND
+  99:stk500_2_boot.c **** #define BL      PIND6
+ 100:stk500_2_boot.c **** #endif
+ 101:stk500_2_boot.c **** 
+ 102:stk500_2_boot.c **** 
+ 103:stk500_2_boot.c **** 
+ 104:stk500_2_boot.c **** #define SIG1	0x1E	// Always Atmel
+ 105:stk500_2_boot.c **** #if defined __AVR_ATmega128__
+ 106:stk500_2_boot.c **** #define SIG2	0x97
+ 107:stk500_2_boot.c **** #define SIG3	0x02
+ 108:stk500_2_boot.c **** #define UART0
+ 109:stk500_2_boot.c **** #elif defined __AVR_AT90CAN128__
+ 110:stk500_2_boot.c **** #define SIG2	0x97
+ 111:stk500_2_boot.c **** #define SIG3	0x81
+ 112:stk500_2_boot.c **** #define UART0
+ 113:stk500_2_boot.c **** #elif defined __AVR_ATmega64__
+ 114:stk500_2_boot.c **** #define SIG2	0x96
+ 115:stk500_2_boot.c **** #define SIG3	0x02
+ 116:stk500_2_boot.c **** #define UART0
+ 117:stk500_2_boot.c **** #elif defined __AVR_ATmega32__
+ 118:stk500_2_boot.c **** #define SIG2	0x95
+ 119:stk500_2_boot.c **** #define SIG3	0x02
+ 120:stk500_2_boot.c **** #elif defined __AVR_ATmega16__
+ 121:stk500_2_boot.c **** #define SIG2	0x94
+ 122:stk500_2_boot.c **** #define SIG3	0x03
+ 123:stk500_2_boot.c **** #elif defined __AVR_ATmega8__
+ 124:stk500_2_boot.c **** #define SIG2	0x93
+ 125:stk500_2_boot.c **** #define SIG3	0x07
+ 126:stk500_2_boot.c **** #elif defined __AVR_ATmega162__
+ 127:stk500_2_boot.c **** #define SIG2	0x94
+ 128:stk500_2_boot.c **** #define SIG3	0x04
+ 129:stk500_2_boot.c **** #define UART0
+ 130:stk500_2_boot.c **** #elif defined __AVR_ATmega163__
+ 131:stk500_2_boot.c **** #define SIG2	0x94
+ 132:stk500_2_boot.c **** #define SIG3	0x02
+ 133:stk500_2_boot.c **** #elif defined __AVR_ATmega169__
+ 134:stk500_2_boot.c **** #define SIG2	0x94
+ 135:stk500_2_boot.c **** #define SIG3	0x05
+ 136:stk500_2_boot.c **** #elif defined __AVR_ATmega8515__
+ 137:stk500_2_boot.c **** #define SIG2	0x93
+ 138:stk500_2_boot.c **** #define SIG3	0x06
+ 139:stk500_2_boot.c **** #elif defined __AVR_ATmega8535__
+ 140:stk500_2_boot.c **** #define SIG2	0x93
+ 141:stk500_2_boot.c **** #define SIG3	0x08
+ 142:stk500_2_boot.c **** #endif
+ 143:stk500_2_boot.c **** 
+ 144:stk500_2_boot.c **** 
+ 145:stk500_2_boot.c **** 
+ 146:stk500_2_boot.c **** void putch(char);
+ 147:stk500_2_boot.c **** char getch(void);
+ 148:stk500_2_boot.c **** void initPorts(void); // init port pins for bootloader start
+ 149:stk500_2_boot.c **** void initUart(void);  // check uart selected and init
+ 150:stk500_2_boot.c **** void bootCheck(void); // check bootloader/application start
+ 151:stk500_2_boot.c **** void handleMessage(void) ; 
+ 152:stk500_2_boot.c **** void sendResponse(void);
+ 153:stk500_2_boot.c **** void cmdSignOn(void);
+ 154:stk500_2_boot.c **** void cmdReadSignatureIsp(void);
+ 155:stk500_2_boot.c **** void cmdSetParameter(void);
+ 156:stk500_2_boot.c **** void cmdEnterProgmodeIsp(void);
+ 157:stk500_2_boot.c **** void cmdLeaveProgmodeIsp(void);
+ 158:stk500_2_boot.c **** void cmdChipEraseIsp(void);
+ 159:stk500_2_boot.c **** void cmdLoadAddress(void);
+ 160:stk500_2_boot.c **** void cmdGetParameter(void);
+ 161:stk500_2_boot.c **** void cmdProgramFlashIsp(void);
+ 162:stk500_2_boot.c **** void cmdReadFlashIsp(void);
+ 163:stk500_2_boot.c **** void cmdProgramEepromIsp(void);
+ 164:stk500_2_boot.c **** void cmdReadEepromIsp(void);
+ 165:stk500_2_boot.c **** void cmdReadFuseLockIsp(void);
+ 166:stk500_2_boot.c **** void eeprom_wb(unsigned int uiAddress, unsigned char ucData);
+ 167:stk500_2_boot.c **** unsigned char eeprom_rb(unsigned int uiAddress);
+ 168:stk500_2_boot.c **** unsigned char readBits( unsigned int address ); // read lock/fuse bits
+ 169:stk500_2_boot.c **** 
+ 170:stk500_2_boot.c **** #ifdef MONITOR	
+ 171:stk500_2_boot.c **** #define MONITOR_FLAG '!' 
+ 172:stk500_2_boot.c **** #define MONITOR_PROMPT ':'
+ 173:stk500_2_boot.c **** #define MONITOR_BUFFER_SIZE 256 
+ 174:stk500_2_boot.c **** #define MONITOR_DISPLAY_LINES 8
+ 175:stk500_2_boot.c **** 
+ 176:stk500_2_boot.c **** #define MONITOR_CMD_TIME  'T'
+ 177:stk500_2_boot.c **** #define MONITOR_CMD_DATE  'D'
+ 178:stk500_2_boot.c **** #define MONITOR_CMD_FLASH 'F'
+ 179:stk500_2_boot.c **** #define MONITOR_CMD_RAM   'X'
+ 180:stk500_2_boot.c **** #define MONITOR_CMD_EEPROM  'E'
+ 181:stk500_2_boot.c **** #define MONITOR_CMD_QUIT 'Q'
+ 182:stk500_2_boot.c **** #define MONITOR_CMD_HELP '?'
+ 183:stk500_2_boot.c **** 
+ 184:stk500_2_boot.c **** #define MONITOR_MEM_FLASH  0
+ 185:stk500_2_boot.c **** #define MONITOR_MEM_RAM    1
+ 186:stk500_2_boot.c **** #define MONITOR_MEM_EEPROM 2
+ 187:stk500_2_boot.c **** 
+ 188:stk500_2_boot.c **** 	void monitorMain(void); 
+ 189:stk500_2_boot.c **** 	void monitorInit(void);
+ 190:stk500_2_boot.c **** 	uint32_t monitorDump( uint32_t address, uint8_t lineNum, uint8_t memType );
+ 191:stk500_2_boot.c **** 	void monitorChange( uint32_t address, uint8_t value, uint8_t memType );
+ 192:stk500_2_boot.c **** 	void print( char *s );
+ 193:stk500_2_boot.c **** 	void print_P( uint32_t address );
+ 194:stk500_2_boot.c **** 	char  *monitorReadLine( void );
+ 195:stk500_2_boot.c **** 	char *getValue( char *src,  uint32_t *value, uint8_t len );
+ 196:stk500_2_boot.c **** 	uint8_t htoi( uint8_t val );
+ 197:stk500_2_boot.c **** 
+ 198:stk500_2_boot.c **** static uint8_t monitorWelcome[] PROGMEM = "\nMonitor\n" ;	
+ 199:stk500_2_boot.c **** static uint8_t monitorQuit[] PROGMEM = "Quit...\n" ;	
+ 200:stk500_2_boot.c **** static uint8_t monitorError[] PROGMEM = "Error\n" ;	
+ 201:stk500_2_boot.c **** char monitorBuf[MONITOR_BUFFER_SIZE];
+ 202:stk500_2_boot.c **** unsigned char monitor_cnt = 0; // check if we enter monitor
+ 203:stk500_2_boot.c **** #endif
+ 204:stk500_2_boot.c **** 
+ 205:stk500_2_boot.c **** 
+ 206:stk500_2_boot.c **** 
+ 207:stk500_2_boot.c **** unsigned char bootuart0=0,bootuart1=0;
+ 208:stk500_2_boot.c **** unsigned char rx_buffer[MAX_BUF_SIZE];  // RX buffer
+ 209:stk500_2_boot.c **** unsigned char tx_buffer[MAX_BUF_SIZE];  // TX buffer
+ 210:stk500_2_boot.c **** unsigned char *rx_pntr = &rx_buffer[0];  // pointer to rx buffer
+ 211:stk500_2_boot.c **** unsigned char *tx_pntr = &tx_buffer[0];  // pointer to rx buffer
+ 212:stk500_2_boot.c **** unsigned char *size_pntr = &tx_buffer[2];    // pointer to msg size buffer field
+ 213:stk500_2_boot.c **** unsigned char *answer_id_pntr = &tx_buffer[5];    // pointer to answer id buffer field
+ 214:stk500_2_boot.c **** unsigned int msg_size=0x00;  // Rx message size
+ 215:stk500_2_boot.c **** unsigned char msg_cs=0x00;  // calculated message checksum
+ 216:stk500_2_boot.c **** unsigned long address_flash = 0L; // actual address in flash memory
+ 217:stk500_2_boot.c **** unsigned int address_eeprom = 0x00; // actual address in eeprom memory
+ 218:stk500_2_boot.c **** unsigned int n_bytes = 0x00;  // number of databytes in message
+ 219:stk500_2_boot.c **** unsigned char n_pages = 0x00;  // number of page to program
+ 220:stk500_2_boot.c **** unsigned char sequence_number=0x00;  // sequence number from host
+ 221:stk500_2_boot.c **** unsigned char answer_id=0x00;  // answer cmd id
+ 222:stk500_2_boot.c **** unsigned int i=0, j=0;  // for loop variables
+ 223:stk500_2_boot.c **** unsigned char echo = 0;  // rs232 terminal echo
+ 224:stk500_2_boot.c **** 
+ 225:stk500_2_boot.c **** 
+ 226:stk500_2_boot.c **** int main(void)
+ 227:stk500_2_boot.c **** {
+ 228:stk500_2_boot.c **** 	unsigned char rx_data;  // received USART data byte
+ 229:stk500_2_boot.c **** 	unsigned char state = STATE_READY;  // actual state
+ 230:stk500_2_boot.c **** 
+ 231:stk500_2_boot.c **** 	initPorts();
+ 232:stk500_2_boot.c **** 	bootCheck();
+ 233:stk500_2_boot.c **** 	initUart();
+ 234:stk500_2_boot.c **** 		
+ 235:stk500_2_boot.c **** 	for(;;)
+ 236:stk500_2_boot.c **** 	{
+ 237:stk500_2_boot.c **** 		rx_data=getch();  // get one byte from USART
+ 238:stk500_2_boot.c **** 		msg_cs ^= rx_data;
+ 239:stk500_2_boot.c **** 
+ 240:stk500_2_boot.c **** 
+ 241:stk500_2_boot.c **** 		switch( state )  {
+ 242:stk500_2_boot.c **** 			// start processing when byte received
+ 243:stk500_2_boot.c **** 			case STATE_READY :	
+ 244:stk500_2_boot.c **** 				if(rx_data == MESSAGE_START)  // wait for message start
+ 245:stk500_2_boot.c **** 	      		{
+ 246:stk500_2_boot.c **** 			        rx_pntr = &rx_buffer[0];  // reset pointer 
+ 247:stk500_2_boot.c **** 			        msg_size = 0x00;  // reset message size
+ 248:stk500_2_boot.c **** 			        state = STATE_GET_SEQ_NUM;  // get sequence number next
+ 249:stk500_2_boot.c **** 	      		}
+ 250:stk500_2_boot.c **** 	      		else {
+ 251:stk500_2_boot.c **** 	      			msg_cs = 0x00;  // clear old checksum
+ 252:stk500_2_boot.c **** #ifdef MONITOR	      		
+ 253:stk500_2_boot.c **** 	      			if ( rx_data == MONITOR_FLAG )  {
+ 254:stk500_2_boot.c **** 	      				monitor_cnt ++;
+ 255:stk500_2_boot.c **** 	      				if( monitor_cnt == 3 ) {
+ 256:stk500_2_boot.c **** 	      					monitorMain();	
+ 257:stk500_2_boot.c **** 	      				}
+ 258:stk500_2_boot.c **** 	      			}
+ 259:stk500_2_boot.c **** 	      			else {
+ 260:stk500_2_boot.c **** 	      				monitor_cnt = 0;	
+ 261:stk500_2_boot.c **** 	      			}
+ 262:stk500_2_boot.c **** #endif	      			
+ 263:stk500_2_boot.c **** 	      		}
+ 264:stk500_2_boot.c **** 	        	break;		
+ 265:stk500_2_boot.c **** 	        	
+ 266:stk500_2_boot.c **** 	        // Get Sequence Number	
+ 267:stk500_2_boot.c **** 			case STATE_GET_SEQ_NUM :
+ 268:stk500_2_boot.c **** 				sequence_number = rx_data;  // store sequence number
+ 269:stk500_2_boot.c **** 				state = STATE_GET_MSG_SIZE1;  // get message size LSB next			
+ 270:stk500_2_boot.c **** 				break; 	 
+ 271:stk500_2_boot.c **** 				
+ 272:stk500_2_boot.c **** 			// Get Message Size 1	
+ 273:stk500_2_boot.c **** 			case STATE_GET_MSG_SIZE1:	
+ 274:stk500_2_boot.c **** 				msg_size = (((unsigned int)rx_data)<<8);  // store message size MSB
+ 275:stk500_2_boot.c **** 				state = STATE_GET_MSG_SIZE2;  // get message size LSB next			
+ 276:stk500_2_boot.c **** 				break;
+ 277:stk500_2_boot.c **** 			
+ 278:stk500_2_boot.c **** 			// Get Message Size 2	
+ 279:stk500_2_boot.c **** 			case STATE_GET_MSG_SIZE2:
+ 280:stk500_2_boot.c **** 				msg_size += (unsigned int) rx_data; // make message size from MSB and LSB
+ 281:stk500_2_boot.c **** 		                                            // +1 because we check if >0
+ 282:stk500_2_boot.c **** 				state = STATE_GET_TOKEN;  // get token next			
+ 283:stk500_2_boot.c **** 				break;
+ 284:stk500_2_boot.c **** 				
+ 285:stk500_2_boot.c **** 			// Get Token		
+ 286:stk500_2_boot.c **** 			case STATE_GET_TOKEN:
+ 287:stk500_2_boot.c **** 				if(rx_data == TOKEN)  // check if token is correct
+ 288:stk500_2_boot.c **** 					state = STATE_GET_DATA;  // get data next
+ 289:stk500_2_boot.c **** 				else
+ 290:stk500_2_boot.c **** 					state = STATE_READY; // wait for new message			
+ 291:stk500_2_boot.c **** 				break;  
+ 292:stk500_2_boot.c **** 				
+ 293:stk500_2_boot.c **** 			// Get Data	
+ 294:stk500_2_boot.c **** 			case STATE_GET_DATA:
+ 295:stk500_2_boot.c **** 				*rx_pntr++ = rx_data;
+ 296:stk500_2_boot.c **** 				--msg_size;
+ 297:stk500_2_boot.c **** 				
+ 298:stk500_2_boot.c **** 				if(msg_size == 0)
+ 299:stk500_2_boot.c **** 				{
+ 300:stk500_2_boot.c **** 					state = STATE_GET_CS;
+ 301:stk500_2_boot.c **** 				}			
+ 302:stk500_2_boot.c **** 				break;	
+ 303:stk500_2_boot.c **** 		
+ 304:stk500_2_boot.c **** 			// Get Checksum and handle message if correct
+ 305:stk500_2_boot.c **** 			case STATE_GET_CS:
+ 306:stk500_2_boot.c **** 				if( msg_cs == 0x00) { // check for valid checksum
+ 307:stk500_2_boot.c **** 					handleMessage();
+ 308:stk500_2_boot.c **** 				} 			
+ 309:stk500_2_boot.c **** 				state = STATE_READY;
+ 310:stk500_2_boot.c **** 				break; 					       		
+ 311:stk500_2_boot.c **** 		}
+ 312:stk500_2_boot.c ****     
+ 313:stk500_2_boot.c **** 	}  // end for endless loop
+ 314:stk500_2_boot.c **** 
+ 315:stk500_2_boot.c **** 	return 0; // main return value
+ 316:stk500_2_boot.c **** 
+ 317:stk500_2_boot.c **** } // end of main
+ 318:stk500_2_boot.c ****  
+ 319:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/
+ 320:stk500_2_boot.c **** /* Handle message                                                             */
+ 321:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 322:stk500_2_boot.c **** void handleMessage(void) {
+ 323:stk500_2_boot.c **** 	 	
+ 324:stk500_2_boot.c **** // new code begin  	
+ 325:stk500_2_boot.c ****  		tx_pntr = &tx_buffer[0];
+ 326:stk500_2_boot.c ****  		*(tx_pntr++) = MESSAGE_START ;
+ 327:stk500_2_boot.c ****  		*(tx_pntr++) = sequence_number ; 
+ 328:stk500_2_boot.c ****  		tx_pntr += 2;  // space reserved for message size
+ 329:stk500_2_boot.c ****  		*(tx_pntr++) = TOKEN ;		
+ 330:stk500_2_boot.c ****         rx_pntr = &rx_buffer[0];  // reset pointer
+ 331:stk500_2_boot.c ****         
+ 332:stk500_2_boot.c ****         switch( *rx_pntr ) {
+ 333:stk500_2_boot.c ****         	case CMD_SIGN_ON:
+ 334:stk500_2_boot.c **** 				cmdSignOn();
+ 335:stk500_2_boot.c ****         		break;	
+ 336:stk500_2_boot.c ****         	case CMD_GET_PARAMETER:
+ 337:stk500_2_boot.c ****         		cmdGetParameter();
+ 338:stk500_2_boot.c ****         		break;
+ 339:stk500_2_boot.c ****         	case CMD_SET_PARAMETER:
+ 340:stk500_2_boot.c ****         		cmdSetParameter();
+ 341:stk500_2_boot.c ****         		break;
+ 342:stk500_2_boot.c ****         	case CMD_ENTER_PROGMODE_ISP:
+ 343:stk500_2_boot.c ****         		cmdEnterProgmodeIsp();
+ 344:stk500_2_boot.c ****         		break;
+ 345:stk500_2_boot.c ****         	case CMD_LEAVE_PROGMODE_ISP:
+ 346:stk500_2_boot.c ****         		cmdLeaveProgmodeIsp();
+ 347:stk500_2_boot.c ****         		break;
+ 348:stk500_2_boot.c ****         	case CMD_CHIP_ERASE_ISP:
+ 349:stk500_2_boot.c ****         		cmdChipEraseIsp();
+ 350:stk500_2_boot.c ****         		break;
+ 351:stk500_2_boot.c ****         	case CMD_READ_SIGNATURE_ISP:
+ 352:stk500_2_boot.c ****         		cmdReadSignatureIsp();
+ 353:stk500_2_boot.c ****         		break;
+ 354:stk500_2_boot.c ****         	case CMD_LOAD_ADDRESS:
+ 355:stk500_2_boot.c ****         		cmdLoadAddress();
+ 356:stk500_2_boot.c ****         		break;
+ 357:stk500_2_boot.c ****         	case CMD_PROGRAM_FLASH_ISP:
+ 358:stk500_2_boot.c ****         		cmdProgramFlashIsp();
+ 359:stk500_2_boot.c ****         		break;
+ 360:stk500_2_boot.c ****         	case CMD_READ_FLASH_ISP:
+ 361:stk500_2_boot.c **** 				cmdReadFlashIsp();        	
+ 362:stk500_2_boot.c ****         		break;	
+ 363:stk500_2_boot.c ****         	case CMD_PROGRAM_EEPROM_ISP:
+ 364:stk500_2_boot.c ****         		cmdProgramEepromIsp();
+ 365:stk500_2_boot.c ****         		break;
+ 366:stk500_2_boot.c ****         	case CMD_READ_EEPROM_ISP:
+ 367:stk500_2_boot.c ****         		cmdReadEepromIsp();
+ 368:stk500_2_boot.c ****         		break;      
+ 369:stk500_2_boot.c ****         	case CMD_READ_FUSE_ISP:
+ 370:stk500_2_boot.c ****         	case CMD_READ_LOCK_ISP:        	
+ 371:stk500_2_boot.c ****         		cmdReadFuseLockIsp();
+ 372:stk500_2_boot.c ****         		break;         		        		  			
+ 373:stk500_2_boot.c ****         			
+ 374:stk500_2_boot.c ****         }
+ 375:stk500_2_boot.c ****         
+ 376:stk500_2_boot.c ****         sendResponse();
+ 377:stk500_2_boot.c ****          
+ 378:stk500_2_boot.c ****         // leave bootloader at programming end
+ 379:stk500_2_boot.c **** /*
+ 380:stk500_2_boot.c ****         if( *answer_id_pntr == CMD_LEAVE_PROGMODE_ISP)
+ 381:stk500_2_boot.c ****         {
+ 382:stk500_2_boot.c ****         	if(pgm_read_byte_near(0x0000) != 0xFF) {	
+ 383:stk500_2_boot.c ****           		app_start();
+ 384:stk500_2_boot.c ****         	}	
+ 385:stk500_2_boot.c ****         }
+ 386:stk500_2_boot.c **** */        
+ 387:stk500_2_boot.c ****        	
+ 388:stk500_2_boot.c **** } // end handleMessage
+ 389:stk500_2_boot.c ****  
+ 390:stk500_2_boot.c **** 
+ 391:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 392:stk500_2_boot.c **** /* send response message                                                      */
+ 393:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/
+ 394:stk500_2_boot.c **** void sendResponse(void) {
+ 395:stk500_2_boot.c **** 	unsigned int msg_len, idx;
+ 396:stk500_2_boot.c **** 
+ 397:stk500_2_boot.c ****     size_pntr[0] = (unsigned char) (msg_size >> 8);
+ 398:stk500_2_boot.c ****     size_pntr[1]=  (unsigned char) (msg_size & 0xFF);
+ 399:stk500_2_boot.c **** 		
+ 400:stk500_2_boot.c **** 	msg_len = tx_pntr - tx_buffer;
+ 401:stk500_2_boot.c **** 	msg_cs = 0;
+ 402:stk500_2_boot.c **** 	for( idx = 0; idx < msg_len; idx++ )  {
+ 403:stk500_2_boot.c **** 		putch( tx_buffer[idx] );
+ 404:stk500_2_boot.c **** 		msg_cs ^= tx_buffer[idx];		
+ 405:stk500_2_boot.c **** 	}	
+ 406:stk500_2_boot.c **** 	putch(msg_cs);	
+ 407:stk500_2_boot.c **** 	msg_cs = 0x00;  // reset checksum
+ 408:stk500_2_boot.c **** }
+ 409:stk500_2_boot.c ****  
+ 410:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 411:stk500_2_boot.c **** /* execute command  CMD_SIGN_ON                                               */
+ 412:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 413:stk500_2_boot.c ****  
+ 414:stk500_2_boot.c **** void cmdSignOn(void)  {
+ 415:stk500_2_boot.c **** 
+ 416:stk500_2_boot.c **** 	msg_size = 11;  		// set message length
+ 417:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_SIGN_ON;
+ 418:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;
+ 419:stk500_2_boot.c **** 	
+ 420:stk500_2_boot.c **** 	*(tx_pntr++) = 0x08;  	// send signature length
+ 421:stk500_2_boot.c **** 	*(tx_pntr++) = 'S';		// send identifier
+ 422:stk500_2_boot.c **** 	*(tx_pntr++) = 'T';
+ 423:stk500_2_boot.c **** 	*(tx_pntr++) = 'K';
+ 424:stk500_2_boot.c **** 	*(tx_pntr++) = '5';
+ 425:stk500_2_boot.c **** 	*(tx_pntr++) = '0';
+ 426:stk500_2_boot.c **** 	*(tx_pntr++) = '0';
+ 427:stk500_2_boot.c **** 	*(tx_pntr++) = '_';
+ 428:stk500_2_boot.c **** 	*(tx_pntr++) = '2';
+ 429:stk500_2_boot.c **** 	
+ 430:stk500_2_boot.c **** } 
+ 431:stk500_2_boot.c ****  
+ 432:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 433:stk500_2_boot.c **** /* execute command  CMD_READ_SIGNATURE_ISP                                    */
+ 434:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 435:stk500_2_boot.c ****  
+ 436:stk500_2_boot.c **** void cmdReadSignatureIsp(void)  {
+ 437:stk500_2_boot.c **** 
+ 438:stk500_2_boot.c **** 	msg_size = 4;  		// set message length
+ 439:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_READ_SIGNATURE_ISP;
+ 440:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;
+ 441:stk500_2_boot.c **** 
+ 442:stk500_2_boot.c **** 	if( *(rx_pntr+4) == 0 )  {  // 1st sig byte
+ 443:stk500_2_boot.c **** 		*(tx_pntr++) = SIG1;	
+ 444:stk500_2_boot.c **** 	}    
+ 445:stk500_2_boot.c **** 	else if ( *(rx_pntr+4) == 1 ) { // 2nd sig byte
+ 446:stk500_2_boot.c **** 		*(tx_pntr++) = SIG2;								
+ 447:stk500_2_boot.c **** 	} 
+ 448:stk500_2_boot.c **** 	else if ( *(rx_pntr+4) == 2 ) { // 3rd sig byte
+ 449:stk500_2_boot.c **** 		*(tx_pntr++) = SIG3;								
+ 450:stk500_2_boot.c **** 	} 
+ 451:stk500_2_boot.c **** 	else {
+ 452:stk500_2_boot.c **** 		*(tx_pntr++) = 0x00;   // error 	
+ 453:stk500_2_boot.c **** 	}
+ 454:stk500_2_boot.c ****     *(tx_pntr++) = STATUS_CMD_OK;	
+ 455:stk500_2_boot.c **** 	
+ 456:stk500_2_boot.c **** }  
+ 457:stk500_2_boot.c ****  
+ 458:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 459:stk500_2_boot.c **** /* execute command  CMD_SET_PARAMETER                                         */
+ 460:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 461:stk500_2_boot.c ****  
+ 462:stk500_2_boot.c **** void cmdSetParameter(void)  {
+ 463:stk500_2_boot.c **** 
+ 464:stk500_2_boot.c **** 
+ 465:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 466:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_SET_PARAMETER;
+ 467:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 
+ 468:stk500_2_boot.c **** } 
+ 469:stk500_2_boot.c **** 
+ 470:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 471:stk500_2_boot.c **** /* execute command  CMD_ENTER_PROGMODE_ISP                                    */
+ 472:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 473:stk500_2_boot.c ****  
+ 474:stk500_2_boot.c **** void cmdEnterProgmodeIsp(void)  {
+ 475:stk500_2_boot.c **** 
+ 476:stk500_2_boot.c **** 
+ 477:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 478:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_ENTER_PROGMODE_ISP;
+ 479:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 
+ 480:stk500_2_boot.c **** } 
+ 481:stk500_2_boot.c **** 
+ 482:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 483:stk500_2_boot.c **** /* execute command  CMD_LEAVE_PROGMODE_ISP                                    */
+ 484:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 485:stk500_2_boot.c ****  
+ 486:stk500_2_boot.c **** void cmdLeaveProgmodeIsp(void)  {
+ 487:stk500_2_boot.c **** 
+ 488:stk500_2_boot.c **** 
+ 489:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 490:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_LEAVE_PROGMODE_ISP;
+ 491:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 
+ 492:stk500_2_boot.c **** } 
+ 493:stk500_2_boot.c ****  
+ 494:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 495:stk500_2_boot.c **** /* execute command  CMD_CHIP_ERASE_ISP                                        */
+ 496:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 497:stk500_2_boot.c ****  
+ 498:stk500_2_boot.c **** void cmdChipEraseIsp(void)  {
+ 499:stk500_2_boot.c **** 
+ 500:stk500_2_boot.c **** 	// clear only first page becuase of timeout in AvrStudio
+ 501:stk500_2_boot.c **** 	boot_page_erase((unsigned long)(0L));  	// clear 1st page
+ 502:stk500_2_boot.c **** 	while(boot_spm_busy());	        				
+ 503:stk500_2_boot.c ****     boot_rww_enable();  			// enable Read-While-Write section
+ 504:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 505:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_CHIP_ERASE_ISP;
+ 506:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 
+ 507:stk500_2_boot.c **** } 
+ 508:stk500_2_boot.c ****  
+ 509:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 510:stk500_2_boot.c **** /* execute command  CMD_LOAD_ADDRESS                                          */
+ 511:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 512:stk500_2_boot.c ****  
+ 513:stk500_2_boot.c **** void cmdLoadAddress(void)  {
+ 514:stk500_2_boot.c **** 
+ 515:stk500_2_boot.c ****     address_eeprom = ((*(rx_pntr+3)*256)+*(rx_pntr+4));
+ 516:stk500_2_boot.c ****     address_flash  = ((*(rx_pntr+3)*256)+*(rx_pntr+4))*2;
+ 517:stk500_2_boot.c **** 
+ 518:stk500_2_boot.c **** 
+ 519:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 520:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_LOAD_ADDRESS;
+ 521:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 
+ 522:stk500_2_boot.c **** }  
+ 523:stk500_2_boot.c ****  
+ 524:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 525:stk500_2_boot.c **** /* execute command  CMD_GET_PARAMETER                                         */
+ 526:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 527:stk500_2_boot.c ****  
+ 528:stk500_2_boot.c **** void cmdGetParameter(void)  {
+ 529:stk500_2_boot.c **** 
+ 530:stk500_2_boot.c **** 
+ 531:stk500_2_boot.c **** 	msg_size = 3;  			// set message length		
+ 532:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_GET_PARAMETER;
+ 533:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;
+ 534:stk500_2_boot.c **** 
+ 535:stk500_2_boot.c **** 	switch( *(rx_pntr+1) )  {
+ 536:stk500_2_boot.c **** 		case PARAM_HW_VER: 
+ 537:stk500_2_boot.c ****             *(tx_pntr++) = HARDWARE_VERSION;  // send hardware version          				
+ 538:stk500_2_boot.c **** 			break;
+ 539:stk500_2_boot.c **** 		case PARAM_SW_MAJOR: 
+ 540:stk500_2_boot.c ****             *(tx_pntr++) = SOFTWARE_MAJOR; // send software major version         				
+ 541:stk500_2_boot.c **** 			break;        			
+ 542:stk500_2_boot.c **** 		case PARAM_SW_MINOR: 
+ 543:stk500_2_boot.c ****             *(tx_pntr++) = SOFTWARE_MINOR;  // send software minor version          				
+ 544:stk500_2_boot.c **** 			break;			
+ 545:stk500_2_boot.c **** 		case PARAM_VTARGET: 
+ 546:stk500_2_boot.c ****             *(tx_pntr++) = VTARGET; // target supply voltage         				
+ 547:stk500_2_boot.c **** 			break;        			
+ 548:stk500_2_boot.c **** 		case PARAM_VADJUST: 
+ 549:stk500_2_boot.c ****             *(tx_pntr++) = VADJUST; // target VREF voltage          				
+ 550:stk500_2_boot.c **** 			break;  
+ 551:stk500_2_boot.c **** 		case PARAM_OSC_PSCALE: 
+ 552:stk500_2_boot.c ****             *(tx_pntr++) = PSCALE_FSYS; // oscilator prescaler value         				
+ 553:stk500_2_boot.c **** 			break;
+ 554:stk500_2_boot.c **** 		case PARAM_OSC_CMATCH: 
+ 555:stk500_2_boot.c ****             *(tx_pntr++) = CMATCH_DEF; // oscilator compare value         				
+ 556:stk500_2_boot.c **** 			break;			
+ 557:stk500_2_boot.c **** 		case PARAM_SCK_DURATION: 
+ 558:stk500_2_boot.c ****             *(tx_pntr++) = SCK_DURATION_DEF; // oscilator compare value         				
+ 559:stk500_2_boot.c ****         			break;        			       			        			        			
+ 560:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)
+ 561:stk500_2_boot.c **** 		case PARAM_TOPCARD_DETECT: 
+ 562:stk500_2_boot.c ****             *(tx_pntr++) =  STK501; // STK501 is expected          				
+ 563:stk500_2_boot.c **** 			break;		
+ 564:stk500_2_boot.c **** #endif        			
+ 565:stk500_2_boot.c **** 		default: 	
+ 566:stk500_2_boot.c ****             *(tx_pntr++) = 0x00; // send dummy value for not supported parameters   
+ 567:stk500_2_boot.c ****         break;      			
+ 568:stk500_2_boot.c **** 	}			
+ 569:stk500_2_boot.c **** } 
+ 570:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 571:stk500_2_boot.c **** /* execute command  CMD_PROGRAM_FLASH_ISP                                     */
+ 572:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 573:stk500_2_boot.c **** 
+ 574:stk500_2_boot.c **** void cmdProgramFlashIsp(void) {
+ 575:stk500_2_boot.c **** 	
+ 576:stk500_2_boot.c **** unsigned char byte1,byte2;
+ 577:stk500_2_boot.c **** unsigned long address, address_page1,address_page2,offset;
+ 578:stk500_2_boot.c **** 	
+ 579:stk500_2_boot.c **** 	n_bytes = ((*(rx_pntr+1)*256)+*(rx_pntr+2));  	// number of databytes to flash
+ 580:stk500_2_boot.c **** 	rx_pntr += 10;  								// set pointer to flash data
+ 581:stk500_2_boot.c **** 	address_page1 = address_flash - ( address_flash % SPM_PAGESIZE ); // addres of 1st page to program
+ 582:stk500_2_boot.c **** 	address_page2 = ( address_flash + n_bytes ) - 
+ 583:stk500_2_boot.c **** 	                ( ( address_flash + n_bytes ) % SPM_PAGESIZE ); // addres of last page to program
+ 584:stk500_2_boot.c **** 	n_pages = (( address_page2 - address_page1) / SPM_PAGESIZE ) + 1;  	// number of pages to flash	  
+ 585:stk500_2_boot.c **** 	offset = address_flash - address_page1 ;              		
+ 586:stk500_2_boot.c **** 	for( j = 0; j < n_pages; j++ )  { 					// do for all pages in message
+ 587:stk500_2_boot.c ****         for(i=0; i < SPM_PAGESIZE; i += 2)  		// load old content of flash page
+ 588:stk500_2_boot.c ****         {
+ 589:stk500_2_boot.c ****         	address = address_page1 + i;
+ 590:stk500_2_boot.c ****         	if( (address < address_flash  ) ||
+ 591:stk500_2_boot.c ****         	    (address > ( address_flash + n_bytes) ) )  {  // copy to buffer old data
+ 592:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)		
+ 593:stk500_2_boot.c **** 	    		byte1 = pgm_read_byte_far(address);
+ 594:stk500_2_boot.c **** 	    		byte2 = pgm_read_byte_far(address + 1);
+ 595:stk500_2_boot.c **** #else
+ 596:stk500_2_boot.c **** 	    		byte1 = pgm_read_byte(address_page1 + i );
+ 597:stk500_2_boot.c **** 	    		byte2 = pgm_read_byte(address_page1 + i + 1);    		
+ 598:stk500_2_boot.c **** #endif          
+ 599:stk500_2_boot.c **** 			}
+ 600:stk500_2_boot.c **** 			else  {			// copy to buffer new data
+ 601:stk500_2_boot.c **** 				byte1 = *rx_pntr;
+ 602:stk500_2_boot.c **** 				byte2 = *(rx_pntr+1);
+ 603:stk500_2_boot.c **** 				rx_pntr += 2;								
+ 604:stk500_2_boot.c **** 			}	
+ 605:stk500_2_boot.c **** 			boot_page_fill(i,(unsigned int)(byte1 |(byte2 << 8)));
+ 606:stk500_2_boot.c ****         }																			
+ 607:stk500_2_boot.c **** 		boot_page_erase((unsigned long)address_page1);  	// clear page
+ 608:stk500_2_boot.c ****         while(boot_spm_busy());	        				
+ 609:stk500_2_boot.c ****         boot_page_write((unsigned long)address_page1);  	// write page to flash
+ 610:stk500_2_boot.c ****         while(boot_spm_busy());
+ 611:stk500_2_boot.c ****         boot_rww_enable();  								// enable Read-While-Write section
+ 612:stk500_2_boot.c **** 		address_page1 += SPM_PAGESIZE ;
+ 613:stk500_2_boot.c **** 	}	
+ 614:stk500_2_boot.c **** 	address_flash += n_bytes ;
+ 615:stk500_2_boot.c **** 	for(i = 0; i < MAX_BUF_SIZE; i++) { 
+ 616:stk500_2_boot.c **** 		rx_buffer[i] = 0xFF;  // clear data buffer
+ 617:stk500_2_boot.c **** 	}
+ 618:stk500_2_boot.c **** 		
+ 619:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 620:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_PROGRAM_FLASH_ISP;
+ 621:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 	
+ 622:stk500_2_boot.c **** 	
+ 623:stk500_2_boot.c **** } // end of programFlashIsp
+ 624:stk500_2_boot.c ****  
+ 625:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 626:stk500_2_boot.c **** /* execute command  CMD_READ_FLASH_ISP                                        */
+ 627:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 628:stk500_2_boot.c ****  
+ 629:stk500_2_boot.c **** void cmdReadFlashIsp(void) {
+ 630:stk500_2_boot.c **** 
+ 631:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_READ_FLASH_ISP;
+ 632:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;
+ 633:stk500_2_boot.c **** 	
+ 634:stk500_2_boot.c **** 	n_bytes=((*(rx_pntr+1)*256)+*(rx_pntr+2));  // number of databytes to read from flash 
+ 635:stk500_2_boot.c **** 	for(i=0;i < n_bytes; i++) { // fill data buffer with n_bytes
+ 636:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)		
+ 637:stk500_2_boot.c ****     	*(tx_pntr++) = pgm_read_byte_far(address_flash++);
+ 638:stk500_2_boot.c **** #else
+ 639:stk500_2_boot.c ****     	*(tx_pntr++) = pgm_read_byte(address_flash++);
+ 640:stk500_2_boot.c **** #endif    	
+ 641:stk500_2_boot.c **** 	}
+ 642:stk500_2_boot.c **** 	msg_size = n_bytes + 3;  // set message length
+ 643:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;	
+ 644:stk500_2_boot.c **** 	
+ 645:stk500_2_boot.c **** }   // end of readFlashIsp
+ 646:stk500_2_boot.c ****  
+ 647:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 648:stk500_2_boot.c **** /* execute command  CMD_PROGRAM_EEPROM_ISP                                     */
+ 649:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 650:stk500_2_boot.c **** 
+ 651:stk500_2_boot.c **** void cmdProgramEepromIsp(void) {
+ 652:stk500_2_boot.c **** 	
+ 653:stk500_2_boot.c **** 	n_bytes = ((*(rx_pntr+1)*256)+*(rx_pntr+2));  	// number of databytes to flash
+ 654:stk500_2_boot.c **** 	rx_pntr += 10;  								// set pointer to flash data
+ 655:stk500_2_boot.c **** 	for( j = 0; j < n_bytes; j++ )  {
+ 656:stk500_2_boot.c **** 	    eeprom_wb(address_eeprom++,*(rx_pntr++));		
+ 657:stk500_2_boot.c **** 	}
+ 658:stk500_2_boot.c **** 
+ 659:stk500_2_boot.c **** 	for(i = 0; i < MAX_BUF_SIZE; i++) { 
+ 660:stk500_2_boot.c **** 		rx_buffer[i] = 0xFF;  // clear data buffer
+ 661:stk500_2_boot.c **** 	}
+ 662:stk500_2_boot.c **** 		
+ 663:stk500_2_boot.c **** 	msg_size = 2;  			// set message length		
+ 664:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_PROGRAM_EEPROM_ISP;
+ 665:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK; 	
+ 666:stk500_2_boot.c **** 	
+ 667:stk500_2_boot.c **** } // end of programEepromIsp 
+ 668:stk500_2_boot.c ****  
+ 669:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 670:stk500_2_boot.c **** /* execute command  CMD_READ_EEPROM_ISP                                        */
+ 671:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 672:stk500_2_boot.c ****  
+ 673:stk500_2_boot.c **** void cmdReadEepromIsp(void) {
+ 674:stk500_2_boot.c **** 
+ 675:stk500_2_boot.c **** 	*(tx_pntr++) = CMD_READ_EEPROM_ISP;
+ 676:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;
+ 677:stk500_2_boot.c **** 	
+ 678:stk500_2_boot.c **** 	n_bytes=((*(rx_pntr+1)*256)+*(rx_pntr+2));  // number of databytes to read from flash 
+ 679:stk500_2_boot.c **** 	for(i=0;i < n_bytes; i++) { // fill data buffer with n_bytes
+ 680:stk500_2_boot.c ****     	*(tx_pntr++) = eeprom_rb( address_eeprom++ );
+ 681:stk500_2_boot.c **** 	}
+ 682:stk500_2_boot.c **** 	msg_size = n_bytes + 3;  // set message length
+ 683:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;	
+ 684:stk500_2_boot.c **** 	
+ 685:stk500_2_boot.c **** }   // end of readEepromIsp 
+ 686:stk500_2_boot.c ****  
+ 687:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 688:stk500_2_boot.c **** /* execute command  CMD_READ_FUSE_ISP,CMD_READ_LOCK_ISP                       */
+ 689:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 690:stk500_2_boot.c ****  
+ 691:stk500_2_boot.c **** void cmdReadFuseLockIsp(void)  {
+ 692:stk500_2_boot.c **** 	unsigned int command,address;
+ 693:stk500_2_boot.c **** 
+ 694:stk500_2_boot.c **** 	msg_size = 4;  		// set message length
+ 695:stk500_2_boot.c **** 	*(tx_pntr++) = *rx_pntr;
+ 696:stk500_2_boot.c **** 	*(tx_pntr++) = STATUS_CMD_OK;
+ 697:stk500_2_boot.c **** 	
+ 698:stk500_2_boot.c **** 	command = *(rx_pntr+2) * 256 + *(rx_pntr+3);
+ 699:stk500_2_boot.c **** 	switch( command ) {
+ 700:stk500_2_boot.c **** 		case 0x5800: address = 0x0001; break; // lock bits		
+ 701:stk500_2_boot.c **** 		case 0x5000: address = 0x0000; break; // fuse low	
+ 702:stk500_2_boot.c **** 		case 0x5808: address = 0x0003; break; // fuse hi	
+ 703:stk500_2_boot.c **** 		case 0x5008: address = 0x0002; break; // fuse ext
+ 704:stk500_2_boot.c **** 		default: address = 0x0000;			
+ 705:stk500_2_boot.c **** 	}
+ 706:stk500_2_boot.c **** 	
+ 707:stk500_2_boot.c **** 	*(tx_pntr++) = readBits(address);	 
+ 708:stk500_2_boot.c **** 
+ 709:stk500_2_boot.c ****     *(tx_pntr++) = STATUS_CMD_OK;	
+ 710:stk500_2_boot.c **** 	
+ 711:stk500_2_boot.c **** }   
+ 712:stk500_2_boot.c ****  
+ 713:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 714:stk500_2_boot.c **** /* set pin direction for bootloader pin and enable pullup                     */
+ 715:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/
+ 716:stk500_2_boot.c **** void initPorts(void)  {
+ 632               	.LM59:
+ 633               	/* prologue: frame size=0 */
+ 634               	/* prologue end (size=0) */
+ 717:stk500_2_boot.c **** 
+ 718:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)
+ 719:stk500_2_boot.c ****   	BL_DDR &= ~(1 << BL0);
+ 636               	.LM60:
+ 637 0240 8091 6100 		lds r24,97
+ 638 0244 8F77      		andi r24,lo8(127)
+ 639 0246 8093 6100 		sts 97,r24
+ 720:stk500_2_boot.c ****   	BL_DDR &= ~(1 << BL1);
+ 641               	.LM61:
+ 642 024a 8091 6100 		lds r24,97
+ 643 024e 8F7B      		andi r24,lo8(-65)
+ 644 0250 8093 6100 		sts 97,r24
+ 721:stk500_2_boot.c ****   	BL_PORT |= (1 << BL0);
+ 646               	.LM62:
+ 647 0254 8091 6200 		lds r24,98
+ 648 0258 8068      		ori r24,lo8(-128)
+ 649 025a 8093 6200 		sts 98,r24
+ 722:stk500_2_boot.c ****   	BL_PORT |= (1 << BL1);
+ 651               	.LM63:
+ 652 025e 8091 6200 		lds r24,98
+ 653 0262 8064      		ori r24,lo8(64)
+ 654 0264 8093 6200 		sts 98,r24
+ 655               	/* epilogue: frame size=0 */
+ 656 0268 0895      		ret
+ 657               	/* epilogue end (size=1) */
+ 658               	/* function initPorts size 21 (20) */
+ 660               	.Lscope5:
+ 662               	.global	bootCheck
+ 664               	bootCheck:
+ 723:stk500_2_boot.c ****   	
+ 724:stk500_2_boot.c **** #else
+ 725:stk500_2_boot.c **** 	BL_DDR &= ~(1 << BL);
+ 726:stk500_2_boot.c **** 	BL_PORT |= (1 << BL);
+ 727:stk500_2_boot.c **** #endif
+ 728:stk500_2_boot.c **** 
+ 729:stk500_2_boot.c **** #ifdef MONITOR
+ 730:stk500_2_boot.c **** 
+ 731:stk500_2_boot.c **** #endif
+ 732:stk500_2_boot.c **** 
+ 733:stk500_2_boot.c **** } 
+ 734:stk500_2_boot.c ****  
+ 735:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 736:stk500_2_boot.c **** /* initialize UART(s) depending on CPU defined                                */
+ 737:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/ 
+ 738:stk500_2_boot.c **** void initUart(void)  {
+ 739:stk500_2_boot.c **** 
+ 740:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)
+ 741:stk500_2_boot.c ****  	if(bootuart0) {
+ 742:stk500_2_boot.c **** 	    UBRR0L = (uint8_t)(F_CPU/(BAUD_RATE*16L)-1);
+ 743:stk500_2_boot.c **** 	    UBRR0H = (F_CPU/(BAUD_RATE*16L)-1) >> 8;
+ 744:stk500_2_boot.c **** 	    UCSR0A = 0x00;
+ 745:stk500_2_boot.c **** 	    UCSR0C = 0x06;
+ 746:stk500_2_boot.c **** 	    UCSR0B = _BV(TXEN0)|_BV(RXEN0);
+ 747:stk500_2_boot.c **** 	}
+ 748:stk500_2_boot.c **** 	if(bootuart1) {
+ 749:stk500_2_boot.c **** 	    UBRR1L = (uint8_t)(F_CPU/(BAUD_RATE*16L)-1);
+ 750:stk500_2_boot.c **** 	    UBRR1H = (F_CPU/(BAUD_RATE*16L)-1) >> 8;
+ 751:stk500_2_boot.c **** 	    UCSR1A = 0x00;
+ 752:stk500_2_boot.c **** 	    UCSR1C = 0x06;
+ 753:stk500_2_boot.c **** 	    UCSR1B = _BV(TXEN1)|_BV(RXEN1);
+ 754:stk500_2_boot.c **** 	}
+ 755:stk500_2_boot.c **** #elif defined __AVR_ATmega163__
+ 756:stk500_2_boot.c **** 	UBRR = (uint8_t)(F_CPU/(BAUD_RATE*16L)-1);
+ 757:stk500_2_boot.c **** 	UBRRHI = (F_CPU/(BAUD_RATE*16L)-1) >> 8;
+ 758:stk500_2_boot.c **** 	UCSRA = 0x00;
+ 759:stk500_2_boot.c **** 	UCSRB = _BV(TXEN)|_BV(RXEN);	
+ 760:stk500_2_boot.c **** #else
+ 761:stk500_2_boot.c ****   /* m8,m16,m32,m169,m8515,m8535 */
+ 762:stk500_2_boot.c **** 	UBRRL = (uint8_t)(F_CPU/(BAUD_RATE*16L)-1);
+ 763:stk500_2_boot.c **** 	UBRRH = (F_CPU/(BAUD_RATE*16L)-1) >> 8;
+ 764:stk500_2_boot.c **** 	UCSRA = 0x00;
+ 765:stk500_2_boot.c **** 	UCSRC = 0x86;
+ 766:stk500_2_boot.c **** 	UCSRB = _BV(TXEN)|_BV(RXEN);
+ 767:stk500_2_boot.c **** #endif	
+ 768:stk500_2_boot.c **** 
+ 769:stk500_2_boot.c **** } // end of initUart
+ 770:stk500_2_boot.c ****  
+ 771:stk500_2_boot.c **** 
+ 772:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/
+ 773:stk500_2_boot.c **** /* check if flash is programmed already, if not start bootloader anyway       */
+ 774:stk500_2_boot.c **** /*----------------------------------------------------------------------------*/
+ 775:stk500_2_boot.c **** void bootCheck(void)  {
+ 666               	.LM64:
+ 667               	/* prologue: frame size=0 */
+ 668               	/* prologue end (size=0) */
+ 669               	.LBB2:
+ 776:stk500_2_boot.c **** 
+ 777:stk500_2_boot.c **** 	if(pgm_read_byte_near(0x0000) != 0xFF) {
+ 671               	.LM65:
+ 672 026a E0E0      		ldi r30,lo8(0)
+ 673 026c F0E0      		ldi r31,hi8(0)
+ 674               	/* #APP */
+ 675 026e 8491      		lpm r24, Z
+ 676               		
+ 677               	/* #NOAPP */
+ 678               	.LBE2:
+ 679 0270 8F3F      		cpi r24,lo8(-1)
+ 680 0272 71F0      		breq .L10
+ 778:stk500_2_boot.c **** 
+ 779:stk500_2_boot.c **** #ifdef __AVR_ATmega128__
+ 780:stk500_2_boot.c **** 	    /* check which UART should be used for booting */
+ 781:stk500_2_boot.c **** 	    if(bit_is_clear(BL_PIN,BL0)) {
+ 682               	.LM66:
+ 683 0274 0799      		sbic 32-0x20,7
+ 684 0276 04C0      		rjmp .L11
+ 782:stk500_2_boot.c **** 	      bootuart0 = 1;
+ 686               	.LM67:
+ 687 0278 81E0      		ldi r24,lo8(1)
+ 688 027a 8093 0000 		sts bootuart0,r24
+ 689 027e 08C0      		rjmp .L10
+ 690               	.L11:
+ 783:stk500_2_boot.c **** 	    }
+ 784:stk500_2_boot.c **** 	    else if(bit_is_clear(BL_PIN,BL1)) {
+ 692               	.LM68:
+ 693 0280 0699      		sbic 32-0x20,6
+ 694 0282 04C0      		rjmp .L13
+ 785:stk500_2_boot.c **** 	      bootuart1 = 1;
+ 696               	.LM69:
+ 697 0284 81E0      		ldi r24,lo8(1)
+ 698 0286 8093 0000 		sts bootuart1,r24
+ 699 028a 02C0      		rjmp .L10
+ 700               	.L13:
+ 786:stk500_2_boot.c **** 	    } else {
+ 787:stk500_2_boot.c **** 	      /* if no UART is being selected, start application */
+ 788:stk500_2_boot.c **** 
+ 789:stk500_2_boot.c **** 	      app_start();
+ 702               	.LM70:
+ 703               	/* #APP */
+ 704 028c 0C94 0000 		jmp 0x0000
+ 705               	/* #NOAPP */
+ 706               	.L10:
+ 790:stk500_2_boot.c **** 	    }
+ 791:stk500_2_boot.c **** #elif defined __AVR_AT90CAN128__
+ 792:stk500_2_boot.c **** 	    /* check which UART should be used for booting */
+ 793:stk500_2_boot.c **** 	    if(bit_is_clear(BL_PIN,BL0)) {
+ 794:stk500_2_boot.c **** 	      bootuart1 = 1;   
+ 795:stk500_2_boot.c **** 	    }
+ 796:stk500_2_boot.c **** 	    else if(bit_is_clear(BL_PIN,BL1)) {
+ 797:stk500_2_boot.c **** 	      bootuart0 = 1;
+ 798:stk500_2_boot.c **** 	    } else {
+ 799:stk500_2_boot.c **** 	      /* if no UART is being selected, start application */
+ 800:stk500_2_boot.c **** 	      app_start();
+ 801:stk500_2_boot.c **** 	    }
+ 802:stk500_2_boot.c **** #else
+ 803:stk500_2_boot.c **** 	    /* check if bootloader pin is set low */
+ 804:stk500_2_boot.c **** 	    if(bit_is_set(BL_PIN,BL)) app_start();
+ 805:stk500_2_boot.c **** #endif
+ 806:stk500_2_boot.c ****   }
+ 807:stk500_2_boot.c **** 
+ 808:stk500_2_boot.c **** #ifdef __AVR_ATmega128__
+ 809:stk500_2_boot.c ****   /* if no UART is being selected, default is RS232 */
+ 810:stk500_2_boot.c ****   if((bootuart0 == 0) && (bootuart1 == 0)) {
+ 708               	.LM71:
+ 709 0290 8091 0000 		lds r24,bootuart0
+ 710 0294 8823      		tst r24
+ 711 0296 39F4      		brne .L9
+ 712 0298 8091 0000 		lds r24,bootuart1
+ 713 029c 8823      		tst r24
+ 714 029e 19F4      		brne .L9
+ 811:stk500_2_boot.c ****     bootuart0 = 1;
+ 716               	.LM72:
+ 717 02a0 81E0      		ldi r24,lo8(1)
+ 718 02a2 8093 0000 		sts bootuart0,r24
+ 719               	.L9:
+ 720 02a6 0895      		ret
+ 721               	/* epilogue: frame size=0 */
+ 722 02a8 0895      		ret
+ 723               	/* epilogue end (size=1) */
+ 724               	/* function bootCheck size 35 (34) */
+ 730               	.Lscope6:
+ 732               	.global	initUart
+ 734               	initUart:
+ 736               	.LM73:
+ 737               	/* prologue: frame size=0 */
+ 738               	/* prologue end (size=0) */
+ 740               	.LM74:
+ 741 02aa 8091 0000 		lds r24,bootuart0
+ 742 02ae 8823      		tst r24
+ 743 02b0 51F0      		breq .L17
+ 745               	.LM75:
+ 746 02b2 85E0      		ldi r24,lo8(5)
+ 747 02b4 89B9      		out 41-0x20,r24
+ 749               	.LM76:
+ 750 02b6 1092 9000 		sts 144,__zero_reg__
+ 752               	.LM77:
+ 753 02ba 1BB8      		out 43-0x20,__zero_reg__
+ 755               	.LM78:
+ 756 02bc 86E0      		ldi r24,lo8(6)
+ 757 02be 8093 9500 		sts 149,r24
+ 759               	.LM79:
+ 760 02c2 88E1      		ldi r24,lo8(24)
+ 761 02c4 8AB9      		out 42-0x20,r24
+ 762               	.L17:
+ 764               	.LM80:
+ 765 02c6 8091 0000 		lds r24,bootuart1
+ 766 02ca 8823      		tst r24
+ 767 02cc 69F0      		breq .L16
+ 769               	.LM81:
+ 770 02ce 85E0      		ldi r24,lo8(5)
+ 771 02d0 8093 9900 		sts 153,r24
+ 773               	.LM82:
+ 774 02d4 1092 9800 		sts 152,__zero_reg__
+ 776               	.LM83:
+ 777 02d8 1092 9B00 		sts 155,__zero_reg__
+ 779               	.LM84:
+ 780 02dc 86E0      		ldi r24,lo8(6)
+ 781 02de 8093 9D00 		sts 157,r24
+ 783               	.LM85:
+ 784 02e2 88E1      		ldi r24,lo8(24)
+ 785 02e4 8093 9A00 		sts 154,r24
+ 786               	.L16:
+ 787 02e8 0895      		ret
+ 788               	/* epilogue: frame size=0 */
+ 789 02ea 0895      		ret
+ 790               	/* epilogue end (size=1) */
+ 791               	/* function initUart size 33 (32) */
+ 793               	.Lscope7:
+ 795               	.global	cmdSignOn
+ 797               	cmdSignOn:
+ 799               	.LM86:
+ 800               	/* prologue: frame size=0 */
+ 801 02ec CF93      		push r28
+ 802 02ee DF93      		push r29
+ 803               	/* prologue end (size=2) */
+ 805               	.LM87:
+ 806 02f0 8BE0      		ldi r24,lo8(11)
+ 807 02f2 90E0      		ldi r25,hi8(11)
+ 808 02f4 9093 0000 		sts (msg_size)+1,r25
+ 809 02f8 8093 0000 		sts msg_size,r24
+ 811               	.LM88:
+ 812 02fc E091 0000 		lds r30,tx_pntr
+ 813 0300 F091 0000 		lds r31,(tx_pntr)+1
+ 814 0304 81E0      		ldi r24,lo8(1)
+ 815 0306 8193      		st Z+,r24
+ 817               	.LM89:
+ 818 0308 DF01      		movw r26,r30
+ 819 030a 1D92      		st X+,__zero_reg__
+ 821               	.LM90:
+ 822 030c 88E0      		ldi r24,lo8(8)
+ 823 030e 8183      		std Z+1,r24
+ 824 0310 FD01      		movw r30,r26
+ 825 0312 3196      		adiw r30,1
+ 827               	.LM91:
+ 828 0314 83E5      		ldi r24,lo8(83)
+ 829 0316 ED01      		movw r28,r26
+ 830 0318 8983      		std Y+1,r24
+ 831 031a DF01      		movw r26,r30
+ 832 031c 1196      		adiw r26,1
+ 834               	.LM92:
+ 835 031e 84E5      		ldi r24,lo8(84)
+ 836 0320 8183      		std Z+1,r24
+ 837 0322 FD01      		movw r30,r26
+ 838 0324 3196      		adiw r30,1
+ 840               	.LM93:
+ 841 0326 8BE4      		ldi r24,lo8(75)
+ 842 0328 ED01      		movw r28,r26
+ 843 032a 8983      		std Y+1,r24
+ 844 032c DF01      		movw r26,r30
+ 845 032e 1196      		adiw r26,1
+ 847               	.LM94:
+ 848 0330 85E3      		ldi r24,lo8(53)
+ 849 0332 8183      		std Z+1,r24
+ 850 0334 FD01      		movw r30,r26
+ 851 0336 3196      		adiw r30,1
+ 853               	.LM95:
+ 854 0338 80E3      		ldi r24,lo8(48)
+ 855 033a ED01      		movw r28,r26
+ 856 033c 8983      		std Y+1,r24
+ 857 033e DF01      		movw r26,r30
+ 858 0340 1196      		adiw r26,1
+ 860               	.LM96:
+ 861 0342 8183      		std Z+1,r24
+ 862 0344 FD01      		movw r30,r26
+ 863 0346 3196      		adiw r30,1
+ 865               	.LM97:
+ 866 0348 8FE5      		ldi r24,lo8(95)
+ 867 034a ED01      		movw r28,r26
+ 868 034c 8983      		std Y+1,r24
+ 870               	.LM98:
+ 871 034e 82E3      		ldi r24,lo8(50)
+ 872 0350 8183      		std Z+1,r24
+ 873 0352 3296      		adiw r30,2
+ 874 0354 F093 0000 		sts (tx_pntr)+1,r31
+ 875 0358 E093 0000 		sts tx_pntr,r30
+ 876               	/* epilogue: frame size=0 */
+ 877 035c DF91      		pop r29
+ 878 035e CF91      		pop r28
+ 879 0360 0895      		ret
+ 880               	/* epilogue end (size=3) */
+ 881               	/* function cmdSignOn size 59 (54) */
+ 883               	.Lscope8:
+ 885               	.global	cmdGetParameter
+ 887               	cmdGetParameter:
+ 889               	.LM99:
+ 890               	/* prologue: frame size=0 */
+ 891 0362 CF93      		push r28
+ 892 0364 DF93      		push r29
+ 893               	/* prologue end (size=2) */
+ 895               	.LM100:
+ 896 0366 83E0      		ldi r24,lo8(3)
+ 897 0368 90E0      		ldi r25,hi8(3)
+ 898 036a 9093 0000 		sts (msg_size)+1,r25
+ 899 036e 8093 0000 		sts msg_size,r24
+ 901               	.LM101:
+ 902 0372 C091 0000 		lds r28,tx_pntr
+ 903 0376 D091 0000 		lds r29,(tx_pntr)+1
+ 904 037a 83E0      		ldi r24,lo8(3)
+ 905 037c 8993      		st Y+,r24
+ 907               	.LM102:
+ 908 037e DE01      		movw r26,r28
+ 909 0380 1D92      		st X+,__zero_reg__
+ 910 0382 B093 0000 		sts (tx_pntr)+1,r27
+ 911 0386 A093 0000 		sts tx_pntr,r26
+ 913               	.LM103:
+ 914 038a E091 0000 		lds r30,rx_pntr
+ 915 038e F091 0000 		lds r31,(rx_pntr)+1
+ 916 0392 8181      		ldd r24,Z+1
+ 917 0394 9927      		clr r25
+ 918 0396 8539      		cpi r24,149
+ 919 0398 9105      		cpc r25,__zero_reg__
+ 920 039a 19F1      		breq .L26
+ 922               	.LM104:
+ 923 039c 8639      		cpi r24,150
+ 924 039e 9105      		cpc r25,__zero_reg__
+ 925 03a0 8CF4      		brge .L32
+ 926 03a2 8139      		cpi r24,145
+ 927 03a4 9105      		cpc r25,__zero_reg__
+ 928 03a6 D9F0      		breq .L23
+ 929 03a8 8239      		cpi r24,146
+ 930 03aa 9105      		cpc r25,__zero_reg__
+ 931 03ac 24F4      		brge .L33
+ 932 03ae 8039      		cpi r24,144
+ 933 03b0 9105      		cpc r25,__zero_reg__
+ 934 03b2 A9F0      		breq .L23
+ 935 03b4 22C0      		rjmp .L31
+ 936               	.L33:
+ 937 03b6 8239      		cpi r24,146
+ 938 03b8 9105      		cpc r25,__zero_reg__
+ 939 03ba A9F0      		breq .L29
+ 940 03bc 8439      		cpi r24,148
+ 941 03be 9105      		cpc r25,__zero_reg__
+ 942 03c0 81F0      		breq .L26
+ 943 03c2 1BC0      		rjmp .L31
+ 944               	.L32:
+ 945 03c4 8739      		cpi r24,151
+ 946 03c6 9105      		cpc r25,__zero_reg__
+ 947 03c8 71F0      		breq .L29
+ 948 03ca 8739      		cpi r24,151
+ 949 03cc 9105      		cpc r25,__zero_reg__
+ 950 03ce 5CF0      		brlt .L29
+ 951 03d0 8839      		cpi r24,152
+ 952 03d2 9105      		cpc r25,__zero_reg__
+ 953 03d4 41F0      		breq .L29
+ 954 03d6 8A39      		cpi r24,154
+ 955 03d8 9105      		cpc r25,__zero_reg__
+ 956 03da 39F0      		breq .L30
+ 957 03dc 0EC0      		rjmp .L31
+ 958               	.L23:
+ 960               	.LM105:
+ 961 03de 82E0      		ldi r24,lo8(2)
+ 962 03e0 05C0      		rjmp .L34
+ 963               	.L26:
+ 965               	.LM106:
+ 966 03e2 82E3      		ldi r24,lo8(50)
+ 967 03e4 03C0      		rjmp .L34
+ 968               	.L29:
+ 970               	.LM107:
+ 971 03e6 81E0      		ldi r24,lo8(1)
+ 972 03e8 01C0      		rjmp .L34
+ 973               	.L30:
+ 975               	.LM108:
+ 976 03ea 8AEA      		ldi r24,lo8(-86)
+ 977               	.L34:
+ 978 03ec 8983      		std Y+1,r24
+ 979 03ee 1196      		adiw r26,1
+ 980 03f0 B093 0000 		sts (tx_pntr)+1,r27
+ 981 03f4 A093 0000 		sts tx_pntr,r26
+ 983               	.LM109:
+ 984 03f8 09C0      		rjmp .L20
+ 985               	.L31:
+ 987               	.LM110:
+ 988 03fa E091 0000 		lds r30,tx_pntr
+ 989 03fe F091 0000 		lds r31,(tx_pntr)+1
+ 990 0402 1192      		st Z+,__zero_reg__
+ 991 0404 F093 0000 		sts (tx_pntr)+1,r31
+ 992 0408 E093 0000 		sts tx_pntr,r30
+ 993               	.L20:
+ 994               	/* epilogue: frame size=0 */
+ 995 040c DF91      		pop r29
+ 996 040e CF91      		pop r28
+ 997 0410 0895      		ret
+ 998               	/* epilogue end (size=3) */
+ 999               	/* function cmdGetParameter size 88 (83) */
+ 1001               	.Lscope9:
+ 1003               	.global	cmdSetParameter
+ 1005               	cmdSetParameter:
+ 1007               	.LM111:
+ 1008               	/* prologue: frame size=0 */
+ 1009               	/* prologue end (size=0) */
+ 1011               	.LM112:
+ 1012 0412 82E0      		ldi r24,lo8(2)
+ 1013 0414 90E0      		ldi r25,hi8(2)
+ 1014 0416 9093 0000 		sts (msg_size)+1,r25
+ 1015 041a 8093 0000 		sts msg_size,r24
+ 1017               	.LM113:
+ 1018 041e E091 0000 		lds r30,tx_pntr
+ 1019 0422 F091 0000 		lds r31,(tx_pntr)+1
+ 1020 0426 82E0      		ldi r24,lo8(2)
+ 1021 0428 8193      		st Z+,r24
+ 1023               	.LM114:
+ 1024 042a 1192      		st Z+,__zero_reg__
+ 1025 042c F093 0000 		sts (tx_pntr)+1,r31
+ 1026 0430 E093 0000 		sts tx_pntr,r30
+ 1027               	/* epilogue: frame size=0 */
+ 1028 0434 0895      		ret
+ 1029               	/* epilogue end (size=1) */
+ 1030               	/* function cmdSetParameter size 18 (17) */
+ 1032               	.Lscope10:
+ 1034               	.global	cmdEnterProgmodeIsp
+ 1036               	cmdEnterProgmodeIsp:
+ 1038               	.LM115:
+ 1039               	/* prologue: frame size=0 */
+ 1040               	/* prologue end (size=0) */
+ 1042               	.LM116:
+ 1043 0436 82E0      		ldi r24,lo8(2)
+ 1044 0438 90E0      		ldi r25,hi8(2)
+ 1045 043a 9093 0000 		sts (msg_size)+1,r25
+ 1046 043e 8093 0000 		sts msg_size,r24
+ 1048               	.LM117:
+ 1049 0442 E091 0000 		lds r30,tx_pntr
+ 1050 0446 F091 0000 		lds r31,(tx_pntr)+1
+ 1051 044a 80E1      		ldi r24,lo8(16)
+ 1052 044c 8193      		st Z+,r24
+ 1054               	.LM118:
+ 1055 044e 1192      		st Z+,__zero_reg__
+ 1056 0450 F093 0000 		sts (tx_pntr)+1,r31
+ 1057 0454 E093 0000 		sts tx_pntr,r30
+ 1058               	/* epilogue: frame size=0 */
+ 1059 0458 0895      		ret
+ 1060               	/* epilogue end (size=1) */
+ 1061               	/* function cmdEnterProgmodeIsp size 18 (17) */
+ 1063               	.Lscope11:
+ 1065               	.global	cmdLeaveProgmodeIsp
+ 1067               	cmdLeaveProgmodeIsp:
+ 1069               	.LM119:
+ 1070               	/* prologue: frame size=0 */
+ 1071               	/* prologue end (size=0) */
+ 1073               	.LM120:
+ 1074 045a 82E0      		ldi r24,lo8(2)
+ 1075 045c 90E0      		ldi r25,hi8(2)
+ 1076 045e 9093 0000 		sts (msg_size)+1,r25
+ 1077 0462 8093 0000 		sts msg_size,r24
+ 1079               	.LM121:
+ 1080 0466 E091 0000 		lds r30,tx_pntr
+ 1081 046a F091 0000 		lds r31,(tx_pntr)+1
+ 1082 046e 81E1      		ldi r24,lo8(17)
+ 1083 0470 8193      		st Z+,r24
+ 1085               	.LM122:
+ 1086 0472 1192      		st Z+,__zero_reg__
+ 1087 0474 F093 0000 		sts (tx_pntr)+1,r31
+ 1088 0478 E093 0000 		sts tx_pntr,r30
+ 1089               	/* epilogue: frame size=0 */
+ 1090 047c 0895      		ret
+ 1091               	/* epilogue end (size=1) */
+ 1092               	/* function cmdLeaveProgmodeIsp size 18 (17) */
+ 1094               	.Lscope12:
+ 1096               	.global	cmdChipEraseIsp
+ 1098               	cmdChipEraseIsp:
+ 1100               	.LM123:
+ 1101               	/* prologue: frame size=0 */
+ 1102               	/* prologue end (size=0) */
+ 1103               	.LBB3:
+ 1105               	.LM124:
+ 1106 047e 23E0      		ldi r18,lo8(3)
+ 1107 0480 80E0      		ldi r24,lo8(0)
+ 1108 0482 90E0      		ldi r25,hi8(0)
+ 1109 0484 A0E0      		ldi r26,hlo8(0)
+ 1110 0486 B0E0      		ldi r27,hhi8(0)
+ 1111               	/* #APP */
+ 1112 0488 FC01      		movw r30, r24
+ 1113 048a A093 5B00 		sts  91, r26
+ 1114 048e 2093 6800 		sts 104, r18
+ 1115 0492 E895      		spm
+ 1116               		
+ 1117               	/* #NOAPP */
+ 1118               	.L39:
+ 1119               	.LBE3:
+ 1121               	.LM125:
+ 1122 0494 8091 6800 		lds r24,104
+ 1123 0498 80FD      		sbrc r24,0
+ 1124 049a FCCF      		rjmp .L39
+ 1125               	.LBB4:
+ 1127               	.LM126:
+ 1128 049c 81E1      		ldi r24,lo8(17)
+ 1129               	/* #APP */
+ 1130 049e 8093 6800 		sts 104, r24
+ 1131 04a2 E895      		spm
+ 1132               		
+ 1133               	/* #NOAPP */
+ 1134               	.LBE4:
+ 1136               	.LM127:
+ 1137 04a4 82E0      		ldi r24,lo8(2)
+ 1138 04a6 90E0      		ldi r25,hi8(2)
+ 1139 04a8 9093 0000 		sts (msg_size)+1,r25
+ 1140 04ac 8093 0000 		sts msg_size,r24
+ 1142               	.LM128:
+ 1143 04b0 E091 0000 		lds r30,tx_pntr
+ 1144 04b4 F091 0000 		lds r31,(tx_pntr)+1
+ 1145 04b8 82E1      		ldi r24,lo8(18)
+ 1146 04ba 8193      		st Z+,r24
+ 1148               	.LM129:
+ 1149 04bc 1192      		st Z+,__zero_reg__
+ 1150 04be F093 0000 		sts (tx_pntr)+1,r31
+ 1151 04c2 E093 0000 		sts tx_pntr,r30
+ 1152               	/* epilogue: frame size=0 */
+ 1153 04c6 0895      		ret
+ 1154               	/* epilogue end (size=1) */
+ 1155               	/* function cmdChipEraseIsp size 44 (43) */
+ 1157               	.Lscope13:
+ 1159               	.global	cmdReadSignatureIsp
+ 1161               	cmdReadSignatureIsp:
+ 1163               	.LM130:
+ 1164               	/* prologue: frame size=0 */
+ 1165 04c8 CF93      		push r28
+ 1166 04ca DF93      		push r29
+ 1167               	/* prologue end (size=2) */
+ 1169               	.LM131:
+ 1170 04cc 84E0      		ldi r24,lo8(4)
+ 1171 04ce 90E0      		ldi r25,hi8(4)
+ 1172 04d0 9093 0000 		sts (msg_size)+1,r25
+ 1173 04d4 8093 0000 		sts msg_size,r24
+ 1175               	.LM132:
+ 1176 04d8 C091 0000 		lds r28,tx_pntr
+ 1177 04dc D091 0000 		lds r29,(tx_pntr)+1
+ 1178 04e0 8BE1      		ldi r24,lo8(27)
+ 1179 04e2 8993      		st Y+,r24
+ 1181               	.LM133:
+ 1182 04e4 DE01      		movw r26,r28
+ 1183 04e6 1D92      		st X+,__zero_reg__
+ 1184 04e8 B093 0000 		sts (tx_pntr)+1,r27
+ 1185 04ec A093 0000 		sts tx_pntr,r26
+ 1187               	.LM134:
+ 1188 04f0 E091 0000 		lds r30,rx_pntr
+ 1189 04f4 F091 0000 		lds r31,(rx_pntr)+1
+ 1190 04f8 8481      		ldd r24,Z+4
+ 1191 04fa 8823      		tst r24
+ 1192 04fc 11F4      		brne .L42
+ 1194               	.LM135:
+ 1195 04fe 8EE1      		ldi r24,lo8(30)
+ 1196 0500 03C0      		rjmp .L49
+ 1197               	.L42:
+ 1199               	.LM136:
+ 1200 0502 8130      		cpi r24,lo8(1)
+ 1201 0504 41F4      		brne .L44
+ 1203               	.LM137:
+ 1204 0506 87E9      		ldi r24,lo8(-105)
+ 1205               	.L49:
+ 1206 0508 8983      		std Y+1,r24
+ 1207 050a 1196      		adiw r26,1
+ 1208 050c B093 0000 		sts (tx_pntr)+1,r27
+ 1209 0510 A093 0000 		sts tx_pntr,r26
+ 1210 0514 0CC0      		rjmp .L43
+ 1211               	.L44:
+ 1212 0516 9D01      		movw r18,r26
+ 1213 0518 2F5F      		subi r18,lo8(-(1))
+ 1214 051a 3F4F      		sbci r19,hi8(-(1))
+ 1216               	.LM138:
+ 1217 051c 8230      		cpi r24,lo8(2)
+ 1218 051e 11F4      		brne .L46
+ 1220               	.LM139:
+ 1221 0520 8983      		std Y+1,r24
+ 1222 0522 01C0      		rjmp .L48
+ 1223               	.L46:
+ 1225               	.LM140:
+ 1226 0524 1982      		std Y+1,__zero_reg__
+ 1227               	.L48:
+ 1228 0526 3093 0000 		sts (tx_pntr)+1,r19
+ 1229 052a 2093 0000 		sts tx_pntr,r18
+ 1230               	.L43:
+ 1232               	.LM141:
+ 1233 052e E091 0000 		lds r30,tx_pntr
+ 1234 0532 F091 0000 		lds r31,(tx_pntr)+1
+ 1235 0536 1192      		st Z+,__zero_reg__
+ 1236 0538 F093 0000 		sts (tx_pntr)+1,r31
+ 1237 053c E093 0000 		sts tx_pntr,r30
+ 1238               	/* epilogue: frame size=0 */
+ 1239 0540 DF91      		pop r29
+ 1240 0542 CF91      		pop r28
+ 1241 0544 0895      		ret
+ 1242               	/* epilogue end (size=3) */
+ 1243               	/* function cmdReadSignatureIsp size 63 (58) */
+ 1245               	.Lscope14:
+ 1247               	.global	cmdLoadAddress
+ 1249               	cmdLoadAddress:
+ 1251               	.LM142:
+ 1252               	/* prologue: frame size=0 */
+ 1253               	/* prologue end (size=0) */
+ 1255               	.LM143:
+ 1256 0546 E091 0000 		lds r30,rx_pntr
+ 1257 054a F091 0000 		lds r31,(rx_pntr)+1
+ 1258 054e 8381      		ldd r24,Z+3
+ 1259 0550 9927      		clr r25
+ 1260 0552 982F      		mov r25,r24
+ 1261 0554 8827      		clr r24
+ 1262 0556 2481      		ldd r18,Z+4
+ 1263 0558 820F      		add r24,r18
+ 1264 055a 911D      		adc r25,__zero_reg__
+ 1265 055c 9093 0000 		sts (address_eeprom)+1,r25
+ 1266 0560 8093 0000 		sts address_eeprom,r24
+ 1268               	.LM144:
+ 1269 0564 8381      		ldd r24,Z+3
+ 1270 0566 9927      		clr r25
+ 1271 0568 982F      		mov r25,r24
+ 1272 056a 8827      		clr r24
+ 1273 056c 2481      		ldd r18,Z+4
+ 1274 056e 820F      		add r24,r18
+ 1275 0570 911D      		adc r25,__zero_reg__
+ 1276 0572 880F      		add r24,r24
+ 1277 0574 991F      		adc r25,r25
+ 1278 0576 AA27      		clr r26
+ 1279 0578 97FD      		sbrc r25,7
+ 1280 057a A095      		com r26
+ 1281 057c BA2F      		mov r27,r26
+ 1282 057e 8093 0000 		sts address_flash,r24
+ 1283 0582 9093 0000 		sts (address_flash)+1,r25
+ 1284 0586 A093 0000 		sts (address_flash)+2,r26
+ 1285 058a B093 0000 		sts (address_flash)+3,r27
+ 1287               	.LM145:
+ 1288 058e 82E0      		ldi r24,lo8(2)
+ 1289 0590 90E0      		ldi r25,hi8(2)
+ 1290 0592 9093 0000 		sts (msg_size)+1,r25
+ 1291 0596 8093 0000 		sts msg_size,r24
+ 1293               	.LM146:
+ 1294 059a E091 0000 		lds r30,tx_pntr
+ 1295 059e F091 0000 		lds r31,(tx_pntr)+1
+ 1296 05a2 86E0      		ldi r24,lo8(6)
+ 1297 05a4 8193      		st Z+,r24
+ 1299               	.LM147:
+ 1300 05a6 1192      		st Z+,__zero_reg__
+ 1301 05a8 F093 0000 		sts (tx_pntr)+1,r31
+ 1302 05ac E093 0000 		sts tx_pntr,r30
+ 1303               	/* epilogue: frame size=0 */
+ 1304 05b0 0895      		ret
+ 1305               	/* epilogue end (size=1) */
+ 1306               	/* function cmdLoadAddress size 54 (53) */
+ 1308               	.Lscope15:
+ 1310               	.global	cmdProgramFlashIsp
+ 1312               	cmdProgramFlashIsp:
+ 1314               	.LM148:
+ 1315               	/* prologue: frame size=4 */
+ 1316 05b2 2F92      		push r2
+ 1317 05b4 3F92      		push r3
+ 1318 05b6 4F92      		push r4
+ 1319 05b8 5F92      		push r5
+ 1320 05ba 6F92      		push r6
+ 1321 05bc 7F92      		push r7
+ 1322 05be 8F92      		push r8
+ 1323 05c0 9F92      		push r9
+ 1324 05c2 AF92      		push r10
+ 1325 05c4 BF92      		push r11
+ 1326 05c6 CF92      		push r12
+ 1327 05c8 DF92      		push r13
+ 1328 05ca EF92      		push r14
+ 1329 05cc FF92      		push r15
+ 1330 05ce 0F93      		push r16
+ 1331 05d0 1F93      		push r17
+ 1332 05d2 CF93      		push r28
+ 1333 05d4 DF93      		push r29
+ 1334 05d6 CDB7      		in r28,__SP_L__
+ 1335 05d8 DEB7      		in r29,__SP_H__
+ 1336 05da 2497      		sbiw r28,4
+ 1337 05dc DEBF      		out __SP_H__,r29
+ 1338 05de CDBF      		out __SP_L__,r28
+ 1339               	/* prologue end (size=23) */
+ 1341               	.LM149:
+ 1342 05e0 E091 0000 		lds r30,rx_pntr
+ 1343 05e4 F091 0000 		lds r31,(rx_pntr)+1
+ 1344 05e8 8181      		ldd r24,Z+1
+ 1345 05ea 9927      		clr r25
+ 1346 05ec 982F      		mov r25,r24
+ 1347 05ee 8827      		clr r24
+ 1348 05f0 2281      		ldd r18,Z+2
+ 1349 05f2 820F      		add r24,r18
+ 1350 05f4 911D      		adc r25,__zero_reg__
+ 1351 05f6 9093 0000 		sts (n_bytes)+1,r25
+ 1352 05fa 8093 0000 		sts n_bytes,r24
+ 1354               	.LM150:
+ 1355 05fe 3A96      		adiw r30,10
+ 1356 0600 F093 0000 		sts (rx_pntr)+1,r31
+ 1357 0604 E093 0000 		sts rx_pntr,r30
+ 1359               	.LM151:
+ 1360 0608 A090 0000 		lds r10,address_flash
+ 1361 060c B090 0000 		lds r11,(address_flash)+1
+ 1362 0610 C090 0000 		lds r12,(address_flash)+2
+ 1363 0614 D090 0000 		lds r13,(address_flash)+3
+ 1364 0618 E12C      		mov r14,__zero_reg__
+ 1365 061a 7FEF      		ldi r23,hi8(-256)
+ 1366 061c F72E      		mov r15,r23
+ 1367 061e 7FEF      		ldi r23,hlo8(-256)
+ 1368 0620 072F      		mov r16,r23
+ 1369 0622 7FEF      		ldi r23,hhi8(-256)
+ 1370 0624 172F      		mov r17,r23
+ 1371 0626 EA20      		and r14,r10
+ 1372 0628 FB20      		and r15,r11
+ 1373 062a 0C21      		and r16,r12
+ 1374 062c 1D21      		and r17,r13
+ 1376               	.LM152:
+ 1377 062e 9C01      		movw r18,r24
+ 1378 0630 4427      		clr r20
+ 1379 0632 5527      		clr r21
+ 1380 0634 2A0D      		add r18,r10
+ 1381 0636 3B1D      		adc r19,r11
+ 1382 0638 4C1D      		adc r20,r12
+ 1383 063a 5D1D      		adc r21,r13
+ 1384 063c DA01      		movw r26,r20
+ 1385 063e C901      		movw r24,r18
+ 1386 0640 8070      		andi r24,lo8(-256)
+ 1388               	.LM153:
+ 1389 0642 8E19      		sub r24,r14
+ 1390 0644 9F09      		sbc r25,r15
+ 1391 0646 A00B      		sbc r26,r16
+ 1392 0648 B10B      		sbc r27,r17
+ 1393 064a 892F      		mov r24,r25
+ 1394 064c 9A2F      		mov r25,r26
+ 1395 064e AB2F      		mov r26,r27
+ 1396 0650 BB27      		clr r27
+ 1397 0652 8F5F      		subi r24,lo8(-(1))
+ 1398 0654 8093 0000 		sts n_pages,r24
+ 1400               	.LM154:
+ 1401 0658 1092 0000 		sts (j)+1,__zero_reg__
+ 1402 065c 1092 0000 		sts j,__zero_reg__
+ 1403 0660 9927      		clr r25
+ 1404 0662 0097      		sbiw r24,0
+ 1405 0664 09F4      		brne .+2
+ 1406 0666 89C0      		rjmp .L72
+ 1407 0668 3901      		movw r6,r18
+ 1408 066a 4A01      		movw r8,r20
+ 1409 066c 21E0      		ldi r18,lo8(1)
+ 1410 066e 322E      		mov r3,r18
+ 1411 0670 8983      		std Y+1,r24
+ 1412 0672 9A83      		std Y+2,r25
+ 1413 0674 B3E0      		ldi r27,lo8(3)
+ 1414 0676 4B2E      		mov r4,r27
+ 1415 0678 A5E0      		ldi r26,lo8(5)
+ 1416 067a 5A2E      		mov r5,r26
+ 1417 067c F1E1      		ldi r31,lo8(17)
+ 1418 067e 2F2E      		mov r2,r31
+ 1419               	.L66:
+ 1421               	.LM155:
+ 1422 0680 1092 0000 		sts (i)+1,__zero_reg__
+ 1423 0684 1092 0000 		sts i,__zero_reg__
+ 1424               	.L61:
+ 1426               	.LM156:
+ 1427 0688 2091 0000 		lds r18,i
+ 1428 068c 3091 0000 		lds r19,(i)+1
+ 1429 0690 2B83      		std Y+3,r18
+ 1430 0692 3C83      		std Y+4,r19
+ 1431 0694 A901      		movw r20,r18
+ 1432 0696 6627      		clr r22
+ 1433 0698 7727      		clr r23
+ 1434 069a 4E0D      		add r20,r14
+ 1435 069c 5F1D      		adc r21,r15
+ 1436 069e 601F      		adc r22,r16
+ 1437 06a0 711F      		adc r23,r17
+ 1439               	.LM157:
+ 1440 06a2 4A15      		cp r20,r10
+ 1441 06a4 5B05      		cpc r21,r11
+ 1442 06a6 6C05      		cpc r22,r12
+ 1443 06a8 7D05      		cpc r23,r13
+ 1444 06aa 28F0      		brlo .L59
+ 1445 06ac 6416      		cp r6,r20
+ 1446 06ae 7506      		cpc r7,r21
+ 1447 06b0 8606      		cpc r8,r22
+ 1448 06b2 9706      		cpc r9,r23
+ 1449 06b4 58F4      		brsh .L58
+ 1450               	.L59:
+ 1452               	.LM158:
+ 1453               	/* #APP */
+ 1454 06b6 6BBF      		out 59, r22
+ 1455 06b8 FA01      		movw r30, r20
+ 1456 06ba 2791      		elpm r18, Z+
+ 1457               		
+ 1458               	/* #NOAPP */
+ 1459               	.LBB5:
+ 1461               	.LM159:
+ 1462 06bc 4F5F      		subi r20,lo8(-(1))
+ 1463 06be 5F4F      		sbci r21,hi8(-(1))
+ 1464 06c0 6F4F      		sbci r22,hlo8(-(1))
+ 1465 06c2 7F4F      		sbci r23,hhi8(-(1))
+ 1466               	.LBE5:
+ 1467               	/* #APP */
+ 1468 06c4 6BBF      		out 59, r22
+ 1469 06c6 FA01      		movw r30, r20
+ 1470 06c8 4791      		elpm r20, Z+
+ 1471               		
+ 1472               	/* #NOAPP */
+ 1473 06ca 0BC0      		rjmp .L60
+ 1474               	.L58:
+ 1476               	.LM160:
+ 1477 06cc E091 0000 		lds r30,rx_pntr
+ 1478 06d0 F091 0000 		lds r31,(rx_pntr)+1
+ 1479 06d4 2081      		ld r18,Z
+ 1481               	.LM161:
+ 1482 06d6 4181      		ldd r20,Z+1
+ 1484               	.LM162:
+ 1485 06d8 3296      		adiw r30,2
+ 1486 06da F093 0000 		sts (rx_pntr)+1,r31
+ 1487 06de E093 0000 		sts rx_pntr,r30
+ 1488               	.L60:
+ 1489               	.LBB6:
+ 1491               	.LM163:
+ 1492 06e2 6B81      		ldd r22,Y+3
+ 1493 06e4 7C81      		ldd r23,Y+4
+ 1494 06e6 CB01      		movw r24,r22
+ 1495 06e8 AA27      		clr r26
+ 1496 06ea BB27      		clr r27
+ 1497 06ec 3327      		clr r19
+ 1498 06ee 5527      		clr r21
+ 1499 06f0 542F      		mov r21,r20
+ 1500 06f2 4427      		clr r20
+ 1501 06f4 242B      		or r18,r20
+ 1502 06f6 352B      		or r19,r21
+ 1503               	/* #APP */
+ 1504 06f8 0901      		movw  r0, r18
+ 1505 06fa FC01      		movw r30, r24
+ 1506 06fc A093 5B00 		sts 91, r26
+ 1507 0700 3092 6800 		sts 104, r3
+ 1508 0704 E895      		spm
+ 1509 0706 1124      		clr  r1
+ 1510               		
+ 1511               	/* #NOAPP */
+ 1512               	.LBE6:
+ 1514               	.LM164:
+ 1515 0708 CB01      		movw r24,r22
+ 1516 070a 0296      		adiw r24,2
+ 1517 070c 9093 0000 		sts (i)+1,r25
+ 1518 0710 8093 0000 		sts i,r24
+ 1519 0714 8F3F      		cpi r24,255
+ 1520 0716 9105      		cpc r25,__zero_reg__
+ 1521 0718 09F0      		breq .+2
+ 1522 071a 08F4      		brsh .+2
+ 1523 071c B5CF      		rjmp .L61
+ 1524               	.LBB7:
+ 1526               	.LM165:
+ 1527               	/* #APP */
+ 1528 071e F701      		movw r30, r14
+ 1529 0720 0093 5B00 		sts  91, r16
+ 1530 0724 4092 6800 		sts 104, r4
+ 1531 0728 E895      		spm
+ 1532               		
+ 1533               	/* #NOAPP */
+ 1534               	.L62:
+ 1535               	.LBE7:
+ 1537               	.LM166:
+ 1538 072a 8091 6800 		lds r24,104
+ 1539 072e 80FD      		sbrc r24,0
+ 1540 0730 FCCF      		rjmp .L62
+ 1541               	.LBB8:
+ 1543               	.LM167:
+ 1544               	/* #APP */
+ 1545 0732 F701      		movw r30, r14
+ 1546 0734 0093 5B00 		sts 91, r16
+ 1547 0738 5092 6800 		sts 104, r5
+ 1548 073c E895      		spm
+ 1549               		
+ 1550               	/* #NOAPP */
+ 1551               	.L64:
+ 1552               	.LBE8:
+ 1554               	.LM168:
+ 1555 073e 8091 6800 		lds r24,104
+ 1556 0742 80FD      		sbrc r24,0
+ 1557 0744 FCCF      		rjmp .L64
+ 1558               	.LBB9:
+ 1560               	.LM169:
+ 1561               	/* #APP */
+ 1562 0746 2092 6800 		sts 104, r2
+ 1563 074a E895      		spm
+ 1564               		
+ 1565               	/* #NOAPP */
+ 1566               	.LBE9:
+ 1568               	.LM170:
+ 1569 074c 80E0      		ldi r24,lo8(256)
+ 1570 074e 91E0      		ldi r25,hi8(256)
+ 1571 0750 A0E0      		ldi r26,hlo8(256)
+ 1572 0752 B0E0      		ldi r27,hhi8(256)
+ 1573 0754 E80E      		add r14,r24
+ 1574 0756 F91E      		adc r15,r25
+ 1575 0758 0A1F      		adc r16,r26
+ 1576 075a 1B1F      		adc r17,r27
+ 1578               	.LM171:
+ 1579 075c 8091 0000 		lds r24,j
+ 1580 0760 9091 0000 		lds r25,(j)+1
+ 1581 0764 0196      		adiw r24,1
+ 1582 0766 9093 0000 		sts (j)+1,r25
+ 1583 076a 8093 0000 		sts j,r24
+ 1584 076e A981      		ldd r26,Y+1
+ 1585 0770 BA81      		ldd r27,Y+2
+ 1586 0772 8A17      		cp r24,r26
+ 1587 0774 9B07      		cpc r25,r27
+ 1588 0776 08F4      		brsh .+2
+ 1589 0778 83CF      		rjmp .L66
+ 1590               	.L72:
+ 1592               	.LM172:
+ 1593 077a 8091 0000 		lds r24,n_bytes
+ 1594 077e 9091 0000 		lds r25,(n_bytes)+1
+ 1595 0782 9C01      		movw r18,r24
+ 1596 0784 4427      		clr r20
+ 1597 0786 5527      		clr r21
+ 1598 0788 8091 0000 		lds r24,address_flash
+ 1599 078c 9091 0000 		lds r25,(address_flash)+1
+ 1600 0790 A091 0000 		lds r26,(address_flash)+2
+ 1601 0794 B091 0000 		lds r27,(address_flash)+3
+ 1602 0798 820F      		add r24,r18
+ 1603 079a 931F      		adc r25,r19
+ 1604 079c A41F      		adc r26,r20
+ 1605 079e B51F      		adc r27,r21
+ 1606 07a0 8093 0000 		sts address_flash,r24
+ 1607 07a4 9093 0000 		sts (address_flash)+1,r25
+ 1608 07a8 A093 0000 		sts (address_flash)+2,r26
+ 1609 07ac B093 0000 		sts (address_flash)+3,r27
+ 1611               	.LM173:
+ 1612 07b0 1092 0000 		sts (i)+1,__zero_reg__
+ 1613 07b4 1092 0000 		sts i,__zero_reg__
+ 1614 07b8 8FEF      		ldi r24,lo8(-1)
+ 1615 07ba E0E0      		ldi r30,lo8(rx_buffer)
+ 1616 07bc F0E0      		ldi r31,hi8(rx_buffer)
+ 1617               	.L70:
+ 1619               	.LM174:
+ 1620 07be 8193      		st Z+,r24
+ 1622               	.LM175:
+ 1623 07c0 B0E0      		ldi r27,hi8(rx_buffer+299)
+ 1624 07c2 E030      		cpi r30,lo8(rx_buffer+299)
+ 1625 07c4 FB07      		cpc r31,r27
+ 1626 07c6 D9F3      		breq .L70
+ 1627 07c8 D0F3      		brlo .L70
+ 1628 07ca 8CE2      		ldi r24,lo8(300)
+ 1629 07cc 91E0      		ldi r25,hi8(300)
+ 1630 07ce 9093 0000 		sts (i)+1,r25
+ 1631 07d2 8093 0000 		sts i,r24
+ 1633               	.LM176:
+ 1634 07d6 82E0      		ldi r24,lo8(2)
+ 1635 07d8 90E0      		ldi r25,hi8(2)
+ 1636 07da 9093 0000 		sts (msg_size)+1,r25
+ 1637 07de 8093 0000 		sts msg_size,r24
+ 1639               	.LM177:
+ 1640 07e2 E091 0000 		lds r30,tx_pntr
+ 1641 07e6 F091 0000 		lds r31,(tx_pntr)+1
+ 1642 07ea 83E1      		ldi r24,lo8(19)
+ 1643 07ec 8193      		st Z+,r24
+ 1645               	.LM178:
+ 1646 07ee 1192      		st Z+,__zero_reg__
+ 1647 07f0 F093 0000 		sts (tx_pntr)+1,r31
+ 1648 07f4 E093 0000 		sts tx_pntr,r30
+ 1649               	/* epilogue: frame size=4 */
+ 1650 07f8 2496      		adiw r28,4
+ 1651 07fa DEBF      		out __SP_H__,r29
+ 1652 07fc CDBF      		out __SP_L__,r28
+ 1653 07fe DF91      		pop r29
+ 1654 0800 CF91      		pop r28
+ 1655 0802 1F91      		pop r17
+ 1656 0804 0F91      		pop r16
+ 1657 0806 FF90      		pop r15
+ 1658 0808 EF90      		pop r14
+ 1659 080a DF90      		pop r13
+ 1660 080c CF90      		pop r12
+ 1661 080e BF90      		pop r11
+ 1662 0810 AF90      		pop r10
+ 1663 0812 9F90      		pop r9
+ 1664 0814 8F90      		pop r8
+ 1665 0816 7F90      		pop r7
+ 1666 0818 6F90      		pop r6
+ 1667 081a 5F90      		pop r5
+ 1668 081c 4F90      		pop r4
+ 1669 081e 3F90      		pop r3
+ 1670 0820 2F90      		pop r2
+ 1671 0822 0895      		ret
+ 1672               	/* epilogue end (size=22) */
+ 1673               	/* function cmdProgramFlashIsp size 340 (295) */
+ 1682               	.Lscope16:
+ 1684               	.global	cmdReadFlashIsp
+ 1686               	cmdReadFlashIsp:
+ 1688               	.LM179:
+ 1689               	/* prologue: frame size=0 */
+ 1690               	/* prologue end (size=0) */
+ 1692               	.LM180:
+ 1693 0824 E091 0000 		lds r30,tx_pntr
+ 1694 0828 F091 0000 		lds r31,(tx_pntr)+1
+ 1695 082c 84E1      		ldi r24,lo8(20)
+ 1696 082e 8193      		st Z+,r24
+ 1698               	.LM181:
+ 1699 0830 1192      		st Z+,__zero_reg__
+ 1700 0832 F093 0000 		sts (tx_pntr)+1,r31
+ 1701 0836 E093 0000 		sts tx_pntr,r30
+ 1703               	.LM182:
+ 1704 083a E091 0000 		lds r30,rx_pntr
+ 1705 083e F091 0000 		lds r31,(rx_pntr)+1
+ 1706 0842 8181      		ldd r24,Z+1
+ 1707 0844 9927      		clr r25
+ 1708 0846 982F      		mov r25,r24
+ 1709 0848 8827      		clr r24
+ 1710 084a 2281      		ldd r18,Z+2
+ 1711 084c 820F      		add r24,r18
+ 1712 084e 911D      		adc r25,__zero_reg__
+ 1713 0850 9093 0000 		sts (n_bytes)+1,r25
+ 1714 0854 8093 0000 		sts n_bytes,r24
+ 1716               	.LM183:
+ 1717 0858 1092 0000 		sts (i)+1,__zero_reg__
+ 1718 085c 1092 0000 		sts i,__zero_reg__
+ 1719 0860 892B      		or r24,r25
+ 1720 0862 A1F1      		breq .L84
+ 1721               	.L82:
+ 1723               	.LM184:
+ 1724 0864 2091 0000 		lds r18,tx_pntr
+ 1725 0868 3091 0000 		lds r19,(tx_pntr)+1
+ 1726               	.LBB10:
+ 1727 086c 8091 0000 		lds r24,address_flash
+ 1728 0870 9091 0000 		lds r25,(address_flash)+1
+ 1729 0874 A091 0000 		lds r26,(address_flash)+2
+ 1730 0878 B091 0000 		lds r27,(address_flash)+3
+ 1731 087c AC01      		movw r20,r24
+ 1732 087e BD01      		movw r22,r26
+ 1733 0880 0196      		adiw r24,1
+ 1734 0882 A11D      		adc r26,__zero_reg__
+ 1735 0884 B11D      		adc r27,__zero_reg__
+ 1736 0886 8093 0000 		sts address_flash,r24
+ 1737 088a 9093 0000 		sts (address_flash)+1,r25
+ 1738 088e A093 0000 		sts (address_flash)+2,r26
+ 1739 0892 B093 0000 		sts (address_flash)+3,r27
+ 1740 0896 D901      		movw r26,r18
+ 1741 0898 2F5F      		subi r18,lo8(-(1))
+ 1742 089a 3F4F      		sbci r19,hi8(-(1))
+ 1743 089c 3093 0000 		sts (tx_pntr)+1,r19
+ 1744 08a0 2093 0000 		sts tx_pntr,r18
+ 1745               	/* #APP */
+ 1746 08a4 6BBF      		out 59, r22
+ 1747 08a6 FA01      		movw r30, r20
+ 1748 08a8 8791      		elpm r24, Z+
+ 1749               		
+ 1750               	/* #NOAPP */
+ 1751               	.LBE10:
+ 1752 08aa 8C93      		st X,r24
+ 1754               	.LM185:
+ 1755 08ac 8091 0000 		lds r24,i
+ 1756 08b0 9091 0000 		lds r25,(i)+1
+ 1757 08b4 0196      		adiw r24,1
+ 1758 08b6 9093 0000 		sts (i)+1,r25
+ 1759 08ba 8093 0000 		sts i,r24
+ 1760 08be 2091 0000 		lds r18,n_bytes
+ 1761 08c2 3091 0000 		lds r19,(n_bytes)+1
+ 1762 08c6 8217      		cp r24,r18
+ 1763 08c8 9307      		cpc r25,r19
+ 1764 08ca 60F2      		brlo .L82
+ 1765               	.L84:
+ 1767               	.LM186:
+ 1768 08cc 8091 0000 		lds r24,n_bytes
+ 1769 08d0 9091 0000 		lds r25,(n_bytes)+1
+ 1770 08d4 0396      		adiw r24,3
+ 1771 08d6 9093 0000 		sts (msg_size)+1,r25
+ 1772 08da 8093 0000 		sts msg_size,r24
+ 1774               	.LM187:
+ 1775 08de E091 0000 		lds r30,tx_pntr
+ 1776 08e2 F091 0000 		lds r31,(tx_pntr)+1
+ 1777 08e6 1192      		st Z+,__zero_reg__
+ 1778 08e8 F093 0000 		sts (tx_pntr)+1,r31
+ 1779 08ec E093 0000 		sts tx_pntr,r30
+ 1780               	/* epilogue: frame size=0 */
+ 1781 08f0 0895      		ret
+ 1782               	/* epilogue end (size=1) */
+ 1783               	/* function cmdReadFlashIsp size 108 (107) */
+ 1788               	.Lscope17:
+ 1791               	.global	putch
+ 1793               	putch:
+ 812:stk500_2_boot.c ****   }
+ 813:stk500_2_boot.c **** #elif defined __AVR_AT90CAN128__
+ 814:stk500_2_boot.c ****   /* if no UART is being selected, default is USB */
+ 815:stk500_2_boot.c ****   if((bootuart0 == 0) && (bootuart1 == 0)) {
+ 816:stk500_2_boot.c ****     bootuart1 = 1;
+ 817:stk500_2_boot.c ****   }  
+ 818:stk500_2_boot.c **** #endif	
+ 819:stk500_2_boot.c **** } // end of bootCheck 
+ 820:stk500_2_boot.c ****  
+ 821:stk500_2_boot.c **** void putch(char ch)
+ 822:stk500_2_boot.c **** {
+ 1795               	.LM188:
+ 1796               	/* prologue: frame size=0 */
+ 1797               	/* prologue end (size=0) */
+ 1798 08f2 982F      		mov r25,r24
+ 823:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)
+ 824:stk500_2_boot.c ****   if(bootuart0) {
+ 1800               	.LM189:
+ 1801 08f4 8091 0000 		lds r24,bootuart0
+ 1802 08f8 8823      		tst r24
+ 1803 08fa 21F0      		breq .L86
+ 1804               	.L87:
+ 825:stk500_2_boot.c ****     while (!(UCSR0A & _BV(UDRE0)));
+ 1806               	.LM190:
+ 1807 08fc 5D9B      		sbis 43-0x20,5
+ 1808 08fe FECF      		rjmp .L87
+ 826:stk500_2_boot.c ****     	UDR0 = ch;
+ 1810               	.LM191:
+ 1811 0900 9CB9      		out 44-0x20,r25
+ 1812 0902 0895      		ret
+ 1813               	.L86:
+ 827:stk500_2_boot.c ****   }
+ 828:stk500_2_boot.c ****   else if (bootuart1) {
+ 1815               	.LM192:
+ 1816 0904 8091 0000 		lds r24,bootuart1
+ 1817 0908 8823      		tst r24
+ 1818 090a 31F0      		breq .L85
+ 1819               	.L91:
+ 829:stk500_2_boot.c ****     while (!(UCSR1A & _BV(UDRE1)));
+ 1821               	.LM193:
+ 1822 090c 8091 9B00 		lds r24,155
+ 1823 0910 85FF      		sbrs r24,5
+ 1824 0912 FCCF      		rjmp .L91
+ 830:stk500_2_boot.c ****     	UDR1 = ch;
+ 1826               	.LM194:
+ 1827 0914 9093 9C00 		sts 156,r25
+ 1828               	.L85:
+ 1829 0918 0895      		ret
+ 1830               	/* epilogue: frame size=0 */
+ 1831 091a 0895      		ret
+ 1832               	/* epilogue end (size=1) */
+ 1833               	/* function putch size 21 (20) */
+ 1835               	.Lscope18:
+ 1837               	.global	getch
+ 1839               	getch:
+ 831:stk500_2_boot.c ****   }
+ 832:stk500_2_boot.c **** #else
+ 833:stk500_2_boot.c ****   /* m8,16,32,169,8515,8535,163 */
+ 834:stk500_2_boot.c ****   while (!(UCSRA & _BV(UDRE)));
+ 835:stk500_2_boot.c **** 	UDR = ch;
+ 836:stk500_2_boot.c **** #endif
+ 837:stk500_2_boot.c **** }  // end of putch
+ 838:stk500_2_boot.c **** 
+ 839:stk500_2_boot.c **** char getch(void)
+ 840:stk500_2_boot.c **** {
+ 1841               	.LM195:
+ 1842               	/* prologue: frame size=0 */
+ 1843 091c CF93      		push r28
+ 1844               	/* prologue end (size=1) */
+ 841:stk500_2_boot.c **** 	char tmp;
+ 842:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) || defined(__AVR_AT90CAN128__)
+ 843:stk500_2_boot.c ****   if(bootuart0) {
+ 1846               	.LM196:
+ 1847 091e 8091 0000 		lds r24,bootuart0
+ 1848 0922 8823      		tst r24
+ 1849 0924 21F0      		breq .L94
+ 1850               	.L95:
+ 844:stk500_2_boot.c ****     while(!(UCSR0A & _BV(RXC0)));
+ 1852               	.LM197:
+ 1853 0926 5F9B      		sbis 43-0x20,7
+ 1854 0928 FECF      		rjmp .L95
+ 845:stk500_2_boot.c ****      tmp = UDR0;
+ 1856               	.LM198:
+ 1857 092a CCB1      		in r28,44-0x20
+ 1858 092c 0AC0      		rjmp .L97
+ 1859               	.L94:
+ 846:stk500_2_boot.c ****   }
+ 847:stk500_2_boot.c ****   else if(bootuart1) {
+ 1861               	.LM199:
+ 1862 092e 8091 0000 		lds r24,bootuart1
+ 1863 0932 8823      		tst r24
+ 1864 0934 31F0      		breq .L97
+ 1865               	.L99:
+ 848:stk500_2_boot.c ****     while(!(UCSR1A & _BV(RXC1)));
+ 1867               	.LM200:
+ 1868 0936 8091 9B00 		lds r24,155
+ 1869 093a 8823      		tst r24
+ 1870 093c E4F7      		brge .L99
+ 849:stk500_2_boot.c ****      tmp = UDR1;
+ 1872               	.LM201:
+ 1873 093e C091 9C00 		lds r28,156
+ 1874               	.L97:
+ 850:stk500_2_boot.c ****   }
+ 851:stk500_2_boot.c **** #else
+ 852:stk500_2_boot.c ****   /* m8,16,32,169,8515,8535,163 */
+ 853:stk500_2_boot.c ****   while(!(UCSRA & _BV(RXC)));
+ 854:stk500_2_boot.c ****    tmp = UDR ;
+ 855:stk500_2_boot.c **** #endif
+ 856:stk500_2_boot.c ****   if( echo ) {
+ 1876               	.LM202:
+ 1877 0942 8091 0000 		lds r24,echo
+ 1878 0946 8823      		tst r24
+ 1879 0948 19F0      		breq .L101
+ 857:stk500_2_boot.c ****      putch( tmp ); 
+ 1881               	.LM203:
+ 1882 094a 8C2F      		mov r24,r28
+ 1883 094c 0E94 0000 		call putch
+ 1884               	.L101:
+ 858:stk500_2_boot.c ****   }     
+ 859:stk500_2_boot.c ****   return( tmp );
+ 860:stk500_2_boot.c **** 
+ 861:stk500_2_boot.c **** }  // end of getch
+ 1886               	.LM204:
+ 1887 0950 8C2F      		mov r24,r28
+ 1888 0952 9927      		clr r25
+ 1889               	/* epilogue: frame size=0 */
+ 1890 0954 CF91      		pop r28
+ 1891 0956 0895      		ret
+ 1892               	/* epilogue end (size=2) */
+ 1893               	/* function getch size 31 (28) */
+ 1898               	.Lscope19:
+ 1900               	.global	sendResponse
+ 1902               	sendResponse:
+ 1904               	.LM205:
+ 1905               	/* prologue: frame size=0 */
+ 1906 0958 0F93      		push r16
+ 1907 095a 1F93      		push r17
+ 1908 095c CF93      		push r28
+ 1909 095e DF93      		push r29
+ 1910               	/* prologue end (size=4) */
+ 1912               	.LM206:
+ 1913 0960 E091 0000 		lds r30,size_pntr
+ 1914 0964 F091 0000 		lds r31,(size_pntr)+1
+ 1915 0968 8091 0000 		lds r24,msg_size
+ 1916 096c 9091 0000 		lds r25,(msg_size)+1
+ 1917 0970 892F      		mov r24,r25
+ 1918 0972 9927      		clr r25
+ 1919 0974 8083      		st Z,r24
+ 1921               	.LM207:
+ 1922 0976 E091 0000 		lds r30,size_pntr
+ 1923 097a F091 0000 		lds r31,(size_pntr)+1
+ 1924 097e 8091 0000 		lds r24,msg_size
+ 1925 0982 8183      		std Z+1,r24
+ 1927               	.LM208:
+ 1928 0984 8091 0000 		lds r24,tx_pntr
+ 1929 0988 9091 0000 		lds r25,(tx_pntr)+1
+ 1930 098c 8050      		subi r24,lo8(tx_buffer)
+ 1931 098e 9040      		sbci r25,hi8(tx_buffer)
+ 1933               	.LM209:
+ 1934 0990 1092 0000 		sts msg_cs,__zero_reg__
+ 1936               	.LM210:
+ 1937 0994 0097      		sbiw r24,0
+ 1938 0996 89F0      		breq .L108
+ 1939 0998 00E0      		ldi r16,lo8(tx_buffer)
+ 1940 099a 10E0      		ldi r17,hi8(tx_buffer)
+ 1941 099c EC01      		movw r28,r24
+ 1942               	.L106:
+ 1944               	.LM211:
+ 1945 099e F801      		movw r30,r16
+ 1946 09a0 8081      		ld r24,Z
+ 1947 09a2 0E94 0000 		call putch
+ 1949               	.LM212:
+ 1950 09a6 8091 0000 		lds r24,msg_cs
+ 1951 09aa F801      		movw r30,r16
+ 1952 09ac 9191      		ld r25,Z+
+ 1953 09ae 8F01      		movw r16,r30
+ 1954 09b0 8927      		eor r24,r25
+ 1955 09b2 8093 0000 		sts msg_cs,r24
+ 1957               	.LM213:
+ 1958 09b6 2197      		sbiw r28,1
+ 1959 09b8 91F7      		brne .L106
+ 1960               	.L108:
+ 1962               	.LM214:
+ 1963 09ba 8091 0000 		lds r24,msg_cs
+ 1964 09be 0E94 0000 		call putch
+ 1966               	.LM215:
+ 1967 09c2 1092 0000 		sts msg_cs,__zero_reg__
+ 1968               	/* epilogue: frame size=0 */
+ 1969 09c6 DF91      		pop r29
+ 1970 09c8 CF91      		pop r28
+ 1971 09ca 1F91      		pop r17
+ 1972 09cc 0F91      		pop r16
+ 1973 09ce 0895      		ret
+ 1974               	/* epilogue end (size=5) */
+ 1975               	/* function sendResponse size 61 (52) */
+ 1981               	.Lscope20:
+ 1985               	.global	eeprom_wb
+ 1987               	eeprom_wb:
+ 862:stk500_2_boot.c **** 
+ 863:stk500_2_boot.c **** void eeprom_wb(unsigned int uiAddress, unsigned char ucData)
+ 864:stk500_2_boot.c **** {
+ 1989               	.LM216:
+ 1990               	/* prologue: frame size=0 */
+ 1991               	/* prologue end (size=0) */
+ 1992               	.L110:
+ 865:stk500_2_boot.c **** /* Wait for completion of previous write */
+ 866:stk500_2_boot.c **** while(EECR & (1<<EEWE))
+ 1994               	.LM217:
+ 1995 09d0 E199      		sbic 60-0x20,1
+ 1996 09d2 FECF      		rjmp .L110
+ 867:stk500_2_boot.c **** ;
+ 868:stk500_2_boot.c **** /* Set up address and data registers */
+ 869:stk500_2_boot.c **** EEAR = uiAddress;
+ 1998               	.LM218:
+ 1999 09d4 9FBB      		out (62)+1-0x20,r25
+ 2000 09d6 8EBB      		out 62-0x20,r24
+ 870:stk500_2_boot.c **** EEDR = ucData;
+ 2002               	.LM219:
+ 2003 09d8 6DBB      		out 61-0x20,r22
+ 871:stk500_2_boot.c **** /* Write logical one to EEMWE */
+ 872:stk500_2_boot.c **** EECR |= (1<<EEMWE);
+ 2005               	.LM220:
+ 2006 09da E29A      		sbi 60-0x20,2
+ 873:stk500_2_boot.c **** /* Start eeprom write by setting EEWE */
+ 874:stk500_2_boot.c **** EECR |= (1<<EEWE);
+ 2008               	.LM221:
+ 2009 09dc E19A      		sbi 60-0x20,1
+ 2010               	/* epilogue: frame size=0 */
+ 2011 09de 0895      		ret
+ 2012               	/* epilogue end (size=1) */
+ 2013               	/* function eeprom_wb size 8 (7) */
+ 2015               	.Lscope21:
+ 2017               	.global	cmdProgramEepromIsp
+ 2019               	cmdProgramEepromIsp:
+ 2021               	.LM222:
+ 2022               	/* prologue: frame size=0 */
+ 2023               	/* prologue end (size=0) */
+ 2025               	.LM223:
+ 2026 09e0 E091 0000 		lds r30,rx_pntr
+ 2027 09e4 F091 0000 		lds r31,(rx_pntr)+1
+ 2028 09e8 8181      		ldd r24,Z+1
+ 2029 09ea 9927      		clr r25
+ 2030 09ec 982F      		mov r25,r24
+ 2031 09ee 8827      		clr r24
+ 2032 09f0 2281      		ldd r18,Z+2
+ 2033 09f2 820F      		add r24,r18
+ 2034 09f4 911D      		adc r25,__zero_reg__
+ 2035 09f6 9093 0000 		sts (n_bytes)+1,r25
+ 2036 09fa 8093 0000 		sts n_bytes,r24
+ 2038               	.LM224:
+ 2039 09fe 3A96      		adiw r30,10
+ 2040 0a00 F093 0000 		sts (rx_pntr)+1,r31
+ 2041 0a04 E093 0000 		sts rx_pntr,r30
+ 2043               	.LM225:
+ 2044 0a08 1092 0000 		sts (j)+1,__zero_reg__
+ 2045 0a0c 1092 0000 		sts j,__zero_reg__
+ 2046 0a10 892B      		or r24,r25
+ 2047 0a12 39F1      		breq .L122
+ 2048               	.L116:
+ 2050               	.LM226:
+ 2051 0a14 E091 0000 		lds r30,rx_pntr
+ 2052 0a18 F091 0000 		lds r31,(rx_pntr)+1
+ 2053 0a1c 4191      		ld r20,Z+
+ 2054 0a1e F093 0000 		sts (rx_pntr)+1,r31
+ 2055 0a22 E093 0000 		sts rx_pntr,r30
+ 2056 0a26 8091 0000 		lds r24,address_eeprom
+ 2057 0a2a 9091 0000 		lds r25,(address_eeprom)+1
+ 2058 0a2e 9C01      		movw r18,r24
+ 2059 0a30 0196      		adiw r24,1
+ 2060 0a32 9093 0000 		sts (address_eeprom)+1,r25
+ 2061 0a36 8093 0000 		sts address_eeprom,r24
+ 2062 0a3a 642F      		mov r22,r20
+ 2063 0a3c C901      		movw r24,r18
+ 2064 0a3e 0E94 0000 		call eeprom_wb
+ 2066               	.LM227:
+ 2067 0a42 8091 0000 		lds r24,j
+ 2068 0a46 9091 0000 		lds r25,(j)+1
+ 2069 0a4a 0196      		adiw r24,1
+ 2070 0a4c 9093 0000 		sts (j)+1,r25
+ 2071 0a50 8093 0000 		sts j,r24
+ 2072 0a54 2091 0000 		lds r18,n_bytes
+ 2073 0a58 3091 0000 		lds r19,(n_bytes)+1
+ 2074 0a5c 8217      		cp r24,r18
+ 2075 0a5e 9307      		cpc r25,r19
+ 2076 0a60 C8F2      		brlo .L116
+ 2077               	.L122:
+ 2079               	.LM228:
+ 2080 0a62 1092 0000 		sts (i)+1,__zero_reg__
+ 2081 0a66 1092 0000 		sts i,__zero_reg__
+ 2082 0a6a 8FEF      		ldi r24,lo8(-1)
+ 2083 0a6c E0E0      		ldi r30,lo8(rx_buffer)
+ 2084 0a6e F0E0      		ldi r31,hi8(rx_buffer)
+ 2085               	.L120:
+ 2087               	.LM229:
+ 2088 0a70 8193      		st Z+,r24
+ 2090               	.LM230:
+ 2091 0a72 90E0      		ldi r25,hi8(rx_buffer+299)
+ 2092 0a74 E030      		cpi r30,lo8(rx_buffer+299)
+ 2093 0a76 F907      		cpc r31,r25
+ 2094 0a78 D9F3      		breq .L120
+ 2095 0a7a D0F3      		brlo .L120
+ 2096 0a7c 8CE2      		ldi r24,lo8(300)
+ 2097 0a7e 91E0      		ldi r25,hi8(300)
+ 2098 0a80 9093 0000 		sts (i)+1,r25
+ 2099 0a84 8093 0000 		sts i,r24
+ 2101               	.LM231:
+ 2102 0a88 82E0      		ldi r24,lo8(2)
+ 2103 0a8a 90E0      		ldi r25,hi8(2)
+ 2104 0a8c 9093 0000 		sts (msg_size)+1,r25
+ 2105 0a90 8093 0000 		sts msg_size,r24
+ 2107               	.LM232:
+ 2108 0a94 E091 0000 		lds r30,tx_pntr
+ 2109 0a98 F091 0000 		lds r31,(tx_pntr)+1
+ 2110 0a9c 85E1      		ldi r24,lo8(21)
+ 2111 0a9e 8193      		st Z+,r24
+ 2113               	.LM233:
+ 2114 0aa0 1192      		st Z+,__zero_reg__
+ 2115 0aa2 F093 0000 		sts (tx_pntr)+1,r31
+ 2116 0aa6 E093 0000 		sts tx_pntr,r30
+ 2117               	/* epilogue: frame size=0 */
+ 2118 0aaa 0895      		ret
+ 2119               	/* epilogue end (size=1) */
+ 2120               	/* function cmdProgramEepromIsp size 102 (101) */
+ 2122               	.Lscope22:
+ 2125               	.global	eeprom_rb
+ 2127               	eeprom_rb:
+ 875:stk500_2_boot.c **** }
+ 876:stk500_2_boot.c **** 
+ 877:stk500_2_boot.c **** unsigned char eeprom_rb(unsigned int uiAddress)
+ 878:stk500_2_boot.c **** {
+ 2129               	.LM234:
+ 2130               	/* prologue: frame size=0 */
+ 2131               	/* prologue end (size=0) */
+ 2132               	.L127:
+ 879:stk500_2_boot.c **** /* Wait for completion of previous write */
+ 880:stk500_2_boot.c **** while(EECR & (1<<EEWE))
+ 2134               	.LM235:
+ 2135 0aac E199      		sbic 60-0x20,1
+ 2136 0aae FECF      		rjmp .L127
+ 881:stk500_2_boot.c **** ;
+ 882:stk500_2_boot.c **** /* Set up address register */
+ 883:stk500_2_boot.c **** EEAR = uiAddress;
+ 2138               	.LM236:
+ 2139 0ab0 9FBB      		out (62)+1-0x20,r25
+ 2140 0ab2 8EBB      		out 62-0x20,r24
+ 884:stk500_2_boot.c **** /* Start eeprom read by writing EERE */
+ 885:stk500_2_boot.c **** EECR |= (1<<EERE);
+ 2142               	.LM237:
+ 2143 0ab4 E09A      		sbi 60-0x20,0
+ 886:stk500_2_boot.c **** /* Return data from data register */
+ 887:stk500_2_boot.c **** return EEDR;
+ 2145               	.LM238:
+ 2146 0ab6 8DB3      		in r24,61-0x20
+ 888:stk500_2_boot.c **** } 
+ 2148               	.LM239:
+ 2149 0ab8 9927      		clr r25
+ 2150               	/* epilogue: frame size=0 */
+ 2151 0aba 0895      		ret
+ 2152               	/* epilogue end (size=1) */
+ 2153               	/* function eeprom_rb size 8 (7) */
+ 2155               	.Lscope23:
+ 2157               	.global	cmdReadEepromIsp
+ 2159               	cmdReadEepromIsp:
+ 2161               	.LM240:
+ 2162               	/* prologue: frame size=0 */
+ 2163               	/* prologue end (size=0) */
+ 2165               	.LM241:
+ 2166 0abc E091 0000 		lds r30,tx_pntr
+ 2167 0ac0 F091 0000 		lds r31,(tx_pntr)+1
+ 2168 0ac4 86E1      		ldi r24,lo8(22)
+ 2169 0ac6 8193      		st Z+,r24
+ 2171               	.LM242:
+ 2172 0ac8 1192      		st Z+,__zero_reg__
+ 2173 0aca F093 0000 		sts (tx_pntr)+1,r31
+ 2174 0ace E093 0000 		sts tx_pntr,r30
+ 2176               	.LM243:
+ 2177 0ad2 E091 0000 		lds r30,rx_pntr
+ 2178 0ad6 F091 0000 		lds r31,(rx_pntr)+1
+ 2179 0ada 8181      		ldd r24,Z+1
+ 2180 0adc 9927      		clr r25
+ 2181 0ade 982F      		mov r25,r24
+ 2182 0ae0 8827      		clr r24
+ 2183 0ae2 2281      		ldd r18,Z+2
+ 2184 0ae4 820F      		add r24,r18
+ 2185 0ae6 911D      		adc r25,__zero_reg__
+ 2186 0ae8 9093 0000 		sts (n_bytes)+1,r25
+ 2187 0aec 8093 0000 		sts n_bytes,r24
+ 2189               	.LM244:
+ 2190 0af0 1092 0000 		sts (i)+1,__zero_reg__
+ 2191 0af4 1092 0000 		sts i,__zero_reg__
+ 2192 0af8 892B      		or r24,r25
+ 2193 0afa 31F1      		breq .L135
+ 2194               	.L133:
+ 2196               	.LM245:
+ 2197 0afc 8091 0000 		lds r24,address_eeprom
+ 2198 0b00 9091 0000 		lds r25,(address_eeprom)+1
+ 2199 0b04 9C01      		movw r18,r24
+ 2200 0b06 0196      		adiw r24,1
+ 2201 0b08 9093 0000 		sts (address_eeprom)+1,r25
+ 2202 0b0c 8093 0000 		sts address_eeprom,r24
+ 2203 0b10 C901      		movw r24,r18
+ 2204 0b12 0E94 0000 		call eeprom_rb
+ 2205 0b16 E091 0000 		lds r30,tx_pntr
+ 2206 0b1a F091 0000 		lds r31,(tx_pntr)+1
+ 2207 0b1e 8193      		st Z+,r24
+ 2208 0b20 F093 0000 		sts (tx_pntr)+1,r31
+ 2209 0b24 E093 0000 		sts tx_pntr,r30
+ 2211               	.LM246:
+ 2212 0b28 8091 0000 		lds r24,i
+ 2213 0b2c 9091 0000 		lds r25,(i)+1
+ 2214 0b30 0196      		adiw r24,1
+ 2215 0b32 9093 0000 		sts (i)+1,r25
+ 2216 0b36 8093 0000 		sts i,r24
+ 2217 0b3a 2091 0000 		lds r18,n_bytes
+ 2218 0b3e 3091 0000 		lds r19,(n_bytes)+1
+ 2219 0b42 8217      		cp r24,r18
+ 2220 0b44 9307      		cpc r25,r19
+ 2221 0b46 D0F2      		brlo .L133
+ 2222               	.L135:
+ 2224               	.LM247:
+ 2225 0b48 8091 0000 		lds r24,n_bytes
+ 2226 0b4c 9091 0000 		lds r25,(n_bytes)+1
+ 2227 0b50 0396      		adiw r24,3
+ 2228 0b52 9093 0000 		sts (msg_size)+1,r25
+ 2229 0b56 8093 0000 		sts msg_size,r24
+ 2231               	.LM248:
+ 2232 0b5a E091 0000 		lds r30,tx_pntr
+ 2233 0b5e F091 0000 		lds r31,(tx_pntr)+1
+ 2234 0b62 1192      		st Z+,__zero_reg__
+ 2235 0b64 F093 0000 		sts (tx_pntr)+1,r31
+ 2236 0b68 E093 0000 		sts tx_pntr,r30
+ 2237               	/* epilogue: frame size=0 */
+ 2238 0b6c 0895      		ret
+ 2239               	/* epilogue end (size=1) */
+ 2240               	/* function cmdReadEepromIsp size 89 (88) */
+ 2242               	.Lscope24:
+ 2245               	.global	readBits
+ 2247               	readBits:
+ 889:stk500_2_boot.c **** 
+ 890:stk500_2_boot.c **** /* read lock/fuse bits */
+ 891:stk500_2_boot.c **** unsigned char readBits( unsigned int address ) {	
+ 2249               	.LM249:
+ 2250               	/* prologue: frame size=0 */
+ 2251               	/* prologue end (size=0) */
+ 892:stk500_2_boot.c **** 
+ 893:stk500_2_boot.c **** 	asm volatile(
+ 2253               	.LM250:
+ 2254               	/* #APP */
+ 2255 0b6e F92F      		mov	r31,r25 
+ 2256 0b70 E82F      		mov	r30,r24 
+ 2257 0b72 8091 6800 		lds	r24,104 
+ 2258 0b76 8960      		ori	r24,0x09 
+ 2259 0b78 8093 6800 		sts	104,r24 
+ 2260 0b7c C895      		lpm	
+ 2261 0b7e 802D      		mov	r24,r0  
+ 2262               		
+ 2263               	/* #NOAPP */
+ 2264               	/* epilogue: frame size=0 */
+ 2265 0b80 0895      		ret
+ 2266               	/* epilogue end (size=1) */
+ 2267               	/* function readBits size 17 (16) */
+ 2269               	.Lscope25:
+ 2271               	.global	cmdReadFuseLockIsp
+ 2273               	cmdReadFuseLockIsp:
+ 2275               	.LM251:
+ 2276               	/* prologue: frame size=0 */
+ 2277               	/* prologue end (size=0) */
+ 2279               	.LM252:
+ 2280 0b82 84E0      		ldi r24,lo8(4)
+ 2281 0b84 90E0      		ldi r25,hi8(4)
+ 2282 0b86 9093 0000 		sts (msg_size)+1,r25
+ 2283 0b8a 8093 0000 		sts msg_size,r24
+ 2285               	.LM253:
+ 2286 0b8e E091 0000 		lds r30,tx_pntr
+ 2287 0b92 F091 0000 		lds r31,(tx_pntr)+1
+ 2288 0b96 A091 0000 		lds r26,rx_pntr
+ 2289 0b9a B091 0000 		lds r27,(rx_pntr)+1
+ 2290 0b9e 8C91      		ld r24,X
+ 2291 0ba0 8193      		st Z+,r24
+ 2293               	.LM254:
+ 2294 0ba2 1192      		st Z+,__zero_reg__
+ 2295 0ba4 F093 0000 		sts (tx_pntr)+1,r31
+ 2296 0ba8 E093 0000 		sts tx_pntr,r30
+ 2298               	.LM255:
+ 2299 0bac E091 0000 		lds r30,rx_pntr
+ 2300 0bb0 F091 0000 		lds r31,(rx_pntr)+1
+ 2301 0bb4 8281      		ldd r24,Z+2
+ 2302 0bb6 9927      		clr r25
+ 2303 0bb8 382F      		mov r19,r24
+ 2304 0bba 2227      		clr r18
+ 2305 0bbc 8381      		ldd r24,Z+3
+ 2306 0bbe 280F      		add r18,r24
+ 2307 0bc0 311D      		adc r19,__zero_reg__
+ 2309               	.LM256:
+ 2310 0bc2 80E5      		ldi r24,hi8(20488)
+ 2311 0bc4 2830      		cpi r18,lo8(20488)
+ 2312 0bc6 3807      		cpc r19,r24
+ 2313 0bc8 91F0      		breq .L142
+ 2315               	.LM257:
+ 2316 0bca 80E5      		ldi r24,hi8(20489)
+ 2317 0bcc 2930      		cpi r18,lo8(20489)
+ 2318 0bce 3807      		cpc r19,r24
+ 2319 0bd0 88F0      		brlo .L143
+ 2320 0bd2 88E5      		ldi r24,hi8(22528)
+ 2321 0bd4 2030      		cpi r18,lo8(22528)
+ 2322 0bd6 3807      		cpc r19,r24
+ 2323 0bd8 21F0      		breq .L139
+ 2324 0bda 2850      		subi r18,lo8(22536)
+ 2325 0bdc 3845      		sbci r19,hi8(22536)
+ 2326 0bde 21F0      		breq .L141
+ 2327 0be0 09C0      		rjmp .L143
+ 2328               	.L139:
+ 2330               	.LM258:
+ 2331 0be2 81E0      		ldi r24,lo8(1)
+ 2332 0be4 90E0      		ldi r25,hi8(1)
+ 2333 0be6 08C0      		rjmp .L138
+ 2334               	.L141:
+ 2336               	.LM259:
+ 2337 0be8 83E0      		ldi r24,lo8(3)
+ 2338 0bea 90E0      		ldi r25,hi8(3)
+ 2339 0bec 05C0      		rjmp .L138
+ 2340               	.L142:
+ 2342               	.LM260:
+ 2343 0bee 82E0      		ldi r24,lo8(2)
+ 2344 0bf0 90E0      		ldi r25,hi8(2)
+ 2345 0bf2 02C0      		rjmp .L138
+ 2346               	.L143:
+ 2348               	.LM261:
+ 2349 0bf4 80E0      		ldi r24,lo8(0)
+ 2350 0bf6 90E0      		ldi r25,hi8(0)
+ 2351               	.L138:
+ 2353               	.LM262:
+ 2354 0bf8 0E94 0000 		call readBits
+ 2355 0bfc E091 0000 		lds r30,tx_pntr
+ 2356 0c00 F091 0000 		lds r31,(tx_pntr)+1
+ 2357 0c04 8193      		st Z+,r24
+ 2359               	.LM263:
+ 2360 0c06 1192      		st Z+,__zero_reg__
+ 2361 0c08 F093 0000 		sts (tx_pntr)+1,r31
+ 2362 0c0c E093 0000 		sts tx_pntr,r30
+ 2363               	/* epilogue: frame size=0 */
+ 2364 0c10 0895      		ret
+ 2365               	/* epilogue end (size=1) */
+ 2366               	/* function cmdReadFuseLockIsp size 73 (72) */
+ 2372               	.Lscope26:
+ 2374               	.global	handleMessage
+ 2376               	handleMessage:
+ 2378               	.LM264:
+ 2379               	/* prologue: frame size=0 */
+ 2380               	/* prologue end (size=0) */
+ 2382               	.LM265:
+ 2383 0c12 8BE1      		ldi r24,lo8(27)
+ 2384 0c14 8093 0000 		sts tx_buffer,r24
+ 2386               	.LM266:
+ 2387 0c18 8091 0000 		lds r24,sequence_number
+ 2388 0c1c 8093 0000 		sts tx_buffer+1,r24
+ 2390               	.LM267:
+ 2391 0c20 8EE0      		ldi r24,lo8(14)
+ 2392 0c22 8093 0000 		sts tx_buffer+4,r24
+ 2393 0c26 80E0      		ldi r24,lo8(tx_buffer+5)
+ 2394 0c28 90E0      		ldi r25,hi8(tx_buffer+5)
+ 2395 0c2a 9093 0000 		sts (tx_pntr)+1,r25
+ 2396 0c2e 8093 0000 		sts tx_pntr,r24
+ 2398               	.LM268:
+ 2399 0c32 80E0      		ldi r24,lo8(rx_buffer)
+ 2400 0c34 90E0      		ldi r25,hi8(rx_buffer)
+ 2401 0c36 9093 0000 		sts (rx_pntr)+1,r25
+ 2402 0c3a 8093 0000 		sts rx_pntr,r24
+ 2404               	.LM269:
+ 2405 0c3e 8091 0000 		lds r24,rx_buffer
+ 2406 0c42 9927      		clr r25
+ 2407 0c44 8231      		cpi r24,18
+ 2408 0c46 9105      		cpc r25,__zero_reg__
+ 2409 0c48 09F4      		brne .+2
+ 2410 0c4a 3FC0      		rjmp .L152
+ 2412               	.LM270:
+ 2413 0c4c 8331      		cpi r24,19
+ 2414 0c4e 9105      		cpc r25,__zero_reg__
+ 2415 0c50 ACF4      		brge .L161
+ 2416 0c52 8330      		cpi r24,3
+ 2417 0c54 9105      		cpc r25,__zero_reg__
+ 2418 0c56 69F1      		breq .L148
+ 2419 0c58 8430      		cpi r24,4
+ 2420 0c5a 9105      		cpc r25,__zero_reg__
+ 2421 0c5c 34F4      		brge .L162
+ 2422 0c5e 8130      		cpi r24,1
+ 2423 0c60 9105      		cpc r25,__zero_reg__
+ 2424 0c62 21F1      		breq .L147
+ 2425 0c64 0297      		sbiw r24,2
+ 2426 0c66 41F1      		breq .L149
+ 2427 0c68 47C0      		rjmp .L146
+ 2428               	.L162:
+ 2429 0c6a 8031      		cpi r24,16
+ 2430 0c6c 9105      		cpc r25,__zero_reg__
+ 2431 0c6e 39F1      		breq .L150
+ 2432 0c70 8131      		cpi r24,17
+ 2433 0c72 9105      		cpc r25,__zero_reg__
+ 2434 0c74 3CF5      		brge .L151
+ 2435 0c76 0697      		sbiw r24,6
+ 2436 0c78 71F1      		breq .L154
+ 2437 0c7a 3EC0      		rjmp .L146
+ 2438               	.L161:
+ 2439 0c7c 8631      		cpi r24,22
+ 2440 0c7e 9105      		cpc r25,__zero_reg__
+ 2441 0c80 B1F1      		breq .L158
+ 2442 0c82 8731      		cpi r24,23
+ 2443 0c84 9105      		cpc r25,__zero_reg__
+ 2444 0c86 34F4      		brge .L163
+ 2445 0c88 8431      		cpi r24,20
+ 2446 0c8a 9105      		cpc r25,__zero_reg__
+ 2447 0c8c 51F1      		breq .L156
+ 2448 0c8e 4597      		sbiw r24,21
+ 2449 0c90 5CF5      		brge .L157
+ 2450 0c92 24C0      		rjmp .L155
+ 2451               	.L163:
+ 2452 0c94 8A31      		cpi r24,26
+ 2453 0c96 9105      		cpc r25,__zero_reg__
+ 2454 0c98 69F1      		breq .L160
+ 2455 0c9a 8B31      		cpi r24,27
+ 2456 0c9c 9105      		cpc r25,__zero_reg__
+ 2457 0c9e 1CF4      		brge .L164
+ 2458 0ca0 4897      		sbiw r24,24
+ 2459 0ca2 41F1      		breq .L160
+ 2460 0ca4 29C0      		rjmp .L146
+ 2461               	.L164:
+ 2462 0ca6 4B97      		sbiw r24,27
+ 2463 0ca8 99F0      		breq .L153
+ 2464 0caa 26C0      		rjmp .L146
+ 2465               	.L147:
+ 2467               	.LM271:
+ 2468 0cac 0E94 0000 		call cmdSignOn
+ 2470               	.LM272:
+ 2471 0cb0 23C0      		rjmp .L146
+ 2472               	.L148:
+ 2474               	.LM273:
+ 2475 0cb2 0E94 0000 		call cmdGetParameter
+ 2477               	.LM274:
+ 2478 0cb6 20C0      		rjmp .L146
+ 2479               	.L149:
+ 2481               	.LM275:
+ 2482 0cb8 0E94 0000 		call cmdSetParameter
+ 2484               	.LM276:
+ 2485 0cbc 1DC0      		rjmp .L146
+ 2486               	.L150:
+ 2488               	.LM277:
+ 2489 0cbe 0E94 0000 		call cmdEnterProgmodeIsp
+ 2491               	.LM278:
+ 2492 0cc2 1AC0      		rjmp .L146
+ 2493               	.L151:
+ 2495               	.LM279:
+ 2496 0cc4 0E94 0000 		call cmdLeaveProgmodeIsp
+ 2498               	.LM280:
+ 2499 0cc8 17C0      		rjmp .L146
+ 2500               	.L152:
+ 2502               	.LM281:
+ 2503 0cca 0E94 0000 		call cmdChipEraseIsp
+ 2505               	.LM282:
+ 2506 0cce 14C0      		rjmp .L146
+ 2507               	.L153:
+ 2509               	.LM283:
+ 2510 0cd0 0E94 0000 		call cmdReadSignatureIsp
+ 2512               	.LM284:
+ 2513 0cd4 11C0      		rjmp .L146
+ 2514               	.L154:
+ 2516               	.LM285:
+ 2517 0cd6 0E94 0000 		call cmdLoadAddress
+ 2519               	.LM286:
+ 2520 0cda 0EC0      		rjmp .L146
+ 2521               	.L155:
+ 2523               	.LM287:
+ 2524 0cdc 0E94 0000 		call cmdProgramFlashIsp
+ 2526               	.LM288:
+ 2527 0ce0 0BC0      		rjmp .L146
+ 2528               	.L156:
+ 2530               	.LM289:
+ 2531 0ce2 0E94 0000 		call cmdReadFlashIsp
+ 2533               	.LM290:
+ 2534 0ce6 08C0      		rjmp .L146
+ 2535               	.L157:
+ 2537               	.LM291:
+ 2538 0ce8 0E94 0000 		call cmdProgramEepromIsp
+ 2540               	.LM292:
+ 2541 0cec 05C0      		rjmp .L146
+ 2542               	.L158:
+ 2544               	.LM293:
+ 2545 0cee 0E94 0000 		call cmdReadEepromIsp
+ 2547               	.LM294:
+ 2548 0cf2 02C0      		rjmp .L146
+ 2549               	.L160:
+ 2551               	.LM295:
+ 2552 0cf4 0E94 0000 		call cmdReadFuseLockIsp
+ 2553               	.L146:
+ 2555               	.LM296:
+ 2556 0cf8 0E94 0000 		call sendResponse
+ 2557               	/* epilogue: frame size=0 */
+ 2558 0cfc 0895      		ret
+ 2559               	/* epilogue end (size=1) */
+ 2560               	/* function handleMessage size 123 (122) */
+ 2562               	.Lscope27:
+ 2564               	.global	monitorInit
+ 2566               	monitorInit:
+ 894:stk500_2_boot.c **** 				"mov	r31,r25 \n\t"	
+ 895:stk500_2_boot.c **** 		       	"mov	r30,r24 \n\t"	
+ 896:stk500_2_boot.c **** 				"lds	r24,%0 \n\t"		       	
+ 897:stk500_2_boot.c **** 				"ori	r24,0x09 \n\t"
+ 898:stk500_2_boot.c **** 				"sts	%0,r24 \n\t"									
+ 899:stk500_2_boot.c **** 		       	"lpm	\n\t" 
+ 900:stk500_2_boot.c **** 		       	"mov	r24,r0  \n\t" 
+ 901:stk500_2_boot.c **** 		       	: "=m" (SPMCSR)
+ 902:stk500_2_boot.c **** 				);     
+ 903:stk500_2_boot.c **** 				
+ 904:stk500_2_boot.c **** }
+ 905:stk500_2_boot.c **** 
+ 906:stk500_2_boot.c **** #ifdef MONITOR
+ 907:stk500_2_boot.c **** 
+ 908:stk500_2_boot.c **** void monitorMain( void )  {
+ 909:stk500_2_boot.c **** 	
+ 910:stk500_2_boot.c ****     uint8_t *buf ;
+ 911:stk500_2_boot.c ****     uint8_t convBuf[20];
+ 912:stk500_2_boot.c **** 	uint8_t quit = 0;
+ 913:stk500_2_boot.c **** 	uint32_t address ;
+ 914:stk500_2_boot.c **** 	uint8_t  value;
+ 915:stk500_2_boot.c **** 	uint8_t  cmd;
+ 916:stk500_2_boot.c **** 	uint8_t  lastCmd = 0;
+ 917:stk500_2_boot.c **** 	struct time t;
+ 918:stk500_2_boot.c **** 	struct date d;
+ 919:stk500_2_boot.c **** 
+ 920:stk500_2_boot.c **** 	monitorInit();
+ 921:stk500_2_boot.c ****    	print_P( (uint32_t)monitorWelcome ); 
+ 922:stk500_2_boot.c ****    	echo = 1;
+ 923:stk500_2_boot.c ****     while( ! quit ) {
+ 924:stk500_2_boot.c ****    		putch( MONITOR_PROMPT );    	
+ 925:stk500_2_boot.c ****     	buf = monitorReadLine();
+ 926:stk500_2_boot.c ****     	while( isblank( *buf ) ) {
+ 927:stk500_2_boot.c ****     		buf ++ ;	
+ 928:stk500_2_boot.c ****     	}	
+ 929:stk500_2_boot.c ****     	cmd = toupper(*(buf++));
+ 930:stk500_2_boot.c ****     	switch( cmd ) {
+ 931:stk500_2_boot.c ****     		case MONITOR_CMD_QUIT:
+ 932:stk500_2_boot.c ****     			echo = 0;
+ 933:stk500_2_boot.c ****     			quit = 1;
+ 934:stk500_2_boot.c ****     			monitor_cnt = 0; 
+ 935:stk500_2_boot.c ****     			print_P( (uint32_t)monitorQuit );
+ 936:stk500_2_boot.c ****     			break;
+ 937:stk500_2_boot.c ****     		case MONITOR_CMD_TIME:	
+ 938:stk500_2_boot.c ****     		 	buf = getValue( buf, &(t.hour10), 1 );
+ 939:stk500_2_boot.c ****     		 	if( buf ) {
+ 940:stk500_2_boot.c ****     		 		buf = getValue( buf, &(t.hour), 1 );
+ 941:stk500_2_boot.c ****     		 		buf = getValue( buf, &(t.min10), 1 );
+ 942:stk500_2_boot.c ****     		 		buf = getValue( buf, &(t.min), 1 );
+ 943:stk500_2_boot.c ****     		 		buf = getValue( buf, &(t.sec10), 1 );
+ 944:stk500_2_boot.c ****     		 		buf = getValue( buf, &(t.sec), 1 );
+ 945:stk500_2_boot.c ****     		 		set_clock( 0, &t );	
+ 946:stk500_2_boot.c ****     		 	}			 			    							
+ 947:stk500_2_boot.c **** 				print( time2str(get_time(&t),convBuf) );
+ 948:stk500_2_boot.c **** 				putch('\n');
+ 949:stk500_2_boot.c ****     			lastCmd = cmd;
+ 950:stk500_2_boot.c ****     			break;    			
+ 951:stk500_2_boot.c ****     		case MONITOR_CMD_DATE:	
+ 952:stk500_2_boot.c ****     		 	buf = getValue( buf, &(d.year10), 1 );
+ 953:stk500_2_boot.c ****     		 	if( buf ) {
+ 954:stk500_2_boot.c ****     		 		buf = getValue( buf, &(d.year), 1 );
+ 955:stk500_2_boot.c ****     		 		buf = getValue( buf, &(d.month10), 1 );
+ 956:stk500_2_boot.c ****     		 		buf = getValue( buf, &(d.month), 1 );
+ 957:stk500_2_boot.c ****     		 		buf = getValue( buf, &(d.day10), 1 );
+ 958:stk500_2_boot.c ****     		 		buf = getValue( buf, &(d.day), 1 );
+ 959:stk500_2_boot.c ****     		 		set_clock( &d, 0 );	
+ 960:stk500_2_boot.c ****     		 	}			 			    							
+ 961:stk500_2_boot.c **** 				print( date2str(get_date(&d),convBuf) );
+ 962:stk500_2_boot.c **** 				putch('\n');
+ 963:stk500_2_boot.c ****     			lastCmd = cmd;
+ 964:stk500_2_boot.c ****     			break;    			    			
+ 965:stk500_2_boot.c ****     		case MONITOR_CMD_FLASH:
+ 966:stk500_2_boot.c ****     			buf = getValue( buf, &address, 5 );
+ 967:stk500_2_boot.c ****     			if( buf )  {
+ 968:stk500_2_boot.c ****     				address = monitorDump( address,MONITOR_DISPLAY_LINES, MONITOR_MEM_FLASH );	
+ 969:stk500_2_boot.c ****     			}
+ 970:stk500_2_boot.c ****     			lastCmd = cmd;
+ 971:stk500_2_boot.c ****     			break;
+ 972:stk500_2_boot.c ****     		
+ 973:stk500_2_boot.c ****     		case MONITOR_CMD_RAM:
+ 974:stk500_2_boot.c ****     			buf = getValue( buf, &address, 4 );
+ 975:stk500_2_boot.c ****     			if( buf )  {
+ 976:stk500_2_boot.c ****     				buf = getValue( buf, &value, 2 );
+ 977:stk500_2_boot.c ****     				if( buf )  {
+ 978:stk500_2_boot.c ****     					monitorChange( address, value, MONITOR_MEM_RAM );	
+ 979:stk500_2_boot.c ****     					address = monitorDump( address,1, MONITOR_MEM_RAM );
+ 980:stk500_2_boot.c ****     				}
+ 981:stk500_2_boot.c ****     				else {    				
+ 982:stk500_2_boot.c ****     					address = monitorDump( address,MONITOR_DISPLAY_LINES, MONITOR_MEM_RAM );	
+ 983:stk500_2_boot.c ****     				}	
+ 984:stk500_2_boot.c ****     			}
+ 985:stk500_2_boot.c ****     			lastCmd = cmd;    			
+ 986:stk500_2_boot.c ****     			break;   		
+ 987:stk500_2_boot.c ****     			
+ 988:stk500_2_boot.c ****     		case MONITOR_CMD_EEPROM:
+ 989:stk500_2_boot.c ****     			buf = getValue( buf, &address, 3 );
+ 990:stk500_2_boot.c ****     			if( buf )  {
+ 991:stk500_2_boot.c ****     				buf = getValue( buf, &value, 2 );
+ 992:stk500_2_boot.c ****     				if( buf )  {
+ 993:stk500_2_boot.c ****     					monitorChange( address, value, MONITOR_MEM_EEPROM );
+ 994:stk500_2_boot.c ****     					address = monitorDump( address,1, MONITOR_MEM_EEPROM );	
+ 995:stk500_2_boot.c ****     				}
+ 996:stk500_2_boot.c ****     				else {
+ 997:stk500_2_boot.c ****     					address = monitorDump( address,MONITOR_DISPLAY_LINES, MONITOR_MEM_EEPROM );
+ 998:stk500_2_boot.c ****     				}		
+ 999:stk500_2_boot.c ****     			} 
+1000:stk500_2_boot.c ****     			lastCmd = cmd;    			
+1001:stk500_2_boot.c ****     			break;	
+1002:stk500_2_boot.c ****     		case MONITOR_CMD_HELP:
+1003:stk500_2_boot.c ****     			print_P( (uint32_t) PSTR("\nF AAAA    - dump flash\n") );
+1004:stk500_2_boot.c ****     			print_P( (uint32_t) PSTR("X AAAA XX - dump/modify ram\n") );
+1005:stk500_2_boot.c ****     			print_P( (uint32_t) PSTR("E AAAA XX - dump/modify eeprom\n") ); 
+1006:stk500_2_boot.c ****     			print_P( (uint32_t) PSTR("T HHMMSS - display/set time\n") ); 
+1007:stk500_2_boot.c ****     			print_P( (uint32_t) PSTR("D YYMMDD - display/set date\n") );    			   			  
+1008:stk500_2_boot.c **** 				print_P( (uint32_t) PSTR("Q         - quit monitor\n") ); 			    			
+1009:stk500_2_boot.c ****     			break;    			
+1010:stk500_2_boot.c ****     		case '\0':
+1011:stk500_2_boot.c ****     		case '\n':
+1012:stk500_2_boot.c ****     		case '\r':
+1013:stk500_2_boot.c ****     			switch( lastCmd ) {
+1014:stk500_2_boot.c ****     				case MONITOR_CMD_TIME:
+1015:stk500_2_boot.c ****     					print( time2str(get_time(&t),convBuf) );
+1016:stk500_2_boot.c ****     					putch('\n');
+1017:stk500_2_boot.c ****     					break;  
+1018:stk500_2_boot.c ****     				case MONITOR_CMD_DATE:
+1019:stk500_2_boot.c ****     					print( date2str(get_date(&d),convBuf) );
+1020:stk500_2_boot.c ****     					putch('\n');
+1021:stk500_2_boot.c ****     					break;     			    					   				
+1022:stk500_2_boot.c ****  		    		case MONITOR_CMD_FLASH:
+1023:stk500_2_boot.c ****     					address = monitorDump( address,MONITOR_DISPLAY_LINES, MONITOR_MEM_FLASH );	
+1024:stk500_2_boot.c ****     					break;   
+1025:stk500_2_boot.c ****  		    		case MONITOR_CMD_RAM:
+1026:stk500_2_boot.c ****     					address = monitorDump( address,MONITOR_DISPLAY_LINES, MONITOR_MEM_RAM );	
+1027:stk500_2_boot.c ****     					break; 
+1028:stk500_2_boot.c ****  		    		case MONITOR_CMD_EEPROM:
+1029:stk500_2_boot.c ****     					address = monitorDump( address,MONITOR_DISPLAY_LINES, MONITOR_MEM_EEPROM );	
+1030:stk500_2_boot.c ****     					break;     					    									
+1031:stk500_2_boot.c ****     			} 
+1032:stk500_2_boot.c ****     			break;
+1033:stk500_2_boot.c ****     		
+1034:stk500_2_boot.c ****     		default: 
+1035:stk500_2_boot.c ****     			print_P( (uint32_t) monitorError );
+1036:stk500_2_boot.c ****     			break;
+1037:stk500_2_boot.c ****     	}
+1038:stk500_2_boot.c **** 
+1039:stk500_2_boot.c ****     }
+1040:stk500_2_boot.c **** }
+1041:stk500_2_boot.c **** 
+1042:stk500_2_boot.c **** void monitorInit( void )  {
+ 2568               	.LM297:
+ 2569               	/* prologue: frame size=0 */
+ 2570               	/* prologue end (size=0) */
+1043:stk500_2_boot.c **** 	XMCRB = 0x00 ; // 60kb RAM available	
+ 2572               	.LM298:
+ 2573 0cfe 1092 6C00 		sts 108,__zero_reg__
+1044:stk500_2_boot.c **** #if defined(__AVR_ATmega128__) 	
+1045:stk500_2_boot.c **** 	XDIV  = 0x00; //xtal divider disabled
+ 2575               	.LM299:
+ 2576 0d02 1CBE      		out 92-0x20,__zero_reg__
+1046:stk500_2_boot.c **** 	XMCRA = 0x00; //ext ram one sector 1100-FFFF
+ 2578               	.LM300:
+ 2579 0d04 1092 6D00 		sts 109,__zero_reg__
+1047:stk500_2_boot.c **** 	MCUCR = ( 1 << SRE ); // ext ram enable	
+ 2581               	.LM301:
+ 2582 0d08 80E8      		ldi r24,lo8(-128)
+ 2583 0d0a 85BF      		out 85-0x20,r24
+ 2584               	/* epilogue: frame size=0 */
+ 2585 0d0c 0895      		ret
+ 2586               	/* epilogue end (size=1) */
+ 2587               	/* function monitorInit size 8 (7) */
+ 2589               	.Lscope28:
+ 2592               	.global	print_P
+ 2594               	print_P:
+1048:stk500_2_boot.c **** #elif defined(__AVR_AT90CAN128__)
+1049:stk500_2_boot.c **** 	CLKPR = 0x00; // clock divider disabled 
+1050:stk500_2_boot.c **** 	XMCRA = ( 1 << SRE ) ; // ext ram enable, one segment	
+1051:stk500_2_boot.c **** #endif	
+1052:stk500_2_boot.c **** }
+1053:stk500_2_boot.c **** 
+1054:stk500_2_boot.c **** uint32_t monitorDump( uint32_t address, uint8_t lineNum, uint8_t memType ) {
+1055:stk500_2_boot.c **** 	uint8_t charCnt ;
+1056:stk500_2_boot.c **** 	uint8_t lineCnt ;
+1057:stk500_2_boot.c **** 	uint8_t memByte ;
+1058:stk500_2_boot.c **** 	uint8_t bufHex[10];
+1059:stk500_2_boot.c **** 	uint8_t bufAsc[20];
+1060:stk500_2_boot.c **** 	
+1061:stk500_2_boot.c **** 	putch('\n');
+1062:stk500_2_boot.c **** 	for( lineCnt = 0; lineCnt < lineNum; lineCnt++ ) {
+1063:stk500_2_boot.c **** 		print( ultoa(address,bufHex,16) );
+1064:stk500_2_boot.c **** 		putch( ' ');
+1065:stk500_2_boot.c **** 		for( charCnt = 0; charCnt < 16; charCnt++ ) {
+1066:stk500_2_boot.c **** 			switch( memType ) {
+1067:stk500_2_boot.c **** 				case MONITOR_MEM_FLASH: 
+1068:stk500_2_boot.c **** 					memByte = pgm_read_byte_far( address++ );
+1069:stk500_2_boot.c **** 					break;
+1070:stk500_2_boot.c **** 				case MONITOR_MEM_RAM: 
+1071:stk500_2_boot.c **** 					memByte = *((uint8_t *)address++);
+1072:stk500_2_boot.c **** 					break;			
+1073:stk500_2_boot.c **** 				case MONITOR_MEM_EEPROM: 
+1074:stk500_2_boot.c **** 					memByte = eeprom_rb( address++ );
+1075:stk500_2_boot.c **** 			}
+1076:stk500_2_boot.c **** 			if( memByte < 0x10 )  {
+1077:stk500_2_boot.c **** 				putch('0');	
+1078:stk500_2_boot.c **** 			}
+1079:stk500_2_boot.c **** 			print( ultoa(memByte,bufHex,16) );
+1080:stk500_2_boot.c **** 			putch(' ');
+1081:stk500_2_boot.c **** 			bufAsc[charCnt] = isprint(memByte) ? memByte : '.';	
+1082:stk500_2_boot.c **** 		}
+1083:stk500_2_boot.c **** 		bufAsc[16] = '\0';
+1084:stk500_2_boot.c **** 		print( bufAsc );
+1085:stk500_2_boot.c **** 		putch('\n');	
+1086:stk500_2_boot.c **** 	}
+1087:stk500_2_boot.c **** 	return address ;
+1088:stk500_2_boot.c **** 	
+1089:stk500_2_boot.c **** }
+1090:stk500_2_boot.c **** 
+1091:stk500_2_boot.c **** void monitorChange( uint32_t address, uint8_t value, uint8_t memType ) {
+1092:stk500_2_boot.c **** 	switch( memType ) {
+1093:stk500_2_boot.c **** 		case MONITOR_MEM_RAM: 
+1094:stk500_2_boot.c **** 			*((uint8_t *)address) = value;
+1095:stk500_2_boot.c **** 			break;			
+1096:stk500_2_boot.c **** 		case MONITOR_MEM_EEPROM: 
+1097:stk500_2_boot.c **** 			eeprom_wb( address, value );
+1098:stk500_2_boot.c **** 			break;		
+1099:stk500_2_boot.c **** 	}	
+1100:stk500_2_boot.c **** }
+1101:stk500_2_boot.c **** 
+1102:stk500_2_boot.c **** 
+1103:stk500_2_boot.c **** 
+1104:stk500_2_boot.c **** char  *monitorReadLine( void ) {
+1105:stk500_2_boot.c **** 	unsigned int cnt;
+1106:stk500_2_boot.c **** 	char key;
+1107:stk500_2_boot.c **** 	
+1108:stk500_2_boot.c **** 	cnt = 0;
+1109:stk500_2_boot.c **** 	while( ((key = getch()) != '\n') && cnt < ( MONITOR_BUFFER_SIZE - 1) )  {
+1110:stk500_2_boot.c **** 		monitorBuf[ cnt++ ] = key ; 
+1111:stk500_2_boot.c **** 	}
+1112:stk500_2_boot.c **** 	monitorBuf[ cnt ] = '\0';
+1113:stk500_2_boot.c **** 	return monitorBuf ; 	
+1114:stk500_2_boot.c **** }
+1115:stk500_2_boot.c **** 
+1116:stk500_2_boot.c **** void print( char *s )  {
+1117:stk500_2_boot.c ****    while( *s ) {
+1118:stk500_2_boot.c ****    		putch( *s );
+1119:stk500_2_boot.c ****    		s++ ;
+1120:stk500_2_boot.c ****    }	
+1121:stk500_2_boot.c **** }
+1122:stk500_2_boot.c **** 
+1123:stk500_2_boot.c **** void print_P( uint32_t address ) {
+ 2596               	.LM302:
+ 2597               	/* prologue: frame size=0 */
+ 2598 0d0e EF92      		push r14
+ 2599 0d10 FF92      		push r15
+ 2600 0d12 0F93      		push r16
+ 2601 0d14 1F93      		push r17
+ 2602               	/* prologue end (size=4) */
+ 2603 0d16 7B01      		movw r14,r22
+ 2604 0d18 8C01      		movw r16,r24
+ 2605               	.LBB11:
+1124:stk500_2_boot.c ****    uint8_t c;
+1125:stk500_2_boot.c ****    while ((c = pgm_read_byte_far(address++))) {
+1126:stk500_2_boot.c **** 		putch(c);
+ 2607               	.LM303:
+ 2608 0d1a DC01      		movw r26,r24
+ 2609 0d1c CB01      		movw r24,r22
+ 2610 0d1e 0894      		sec
+ 2611 0d20 E11C      		adc r14,__zero_reg__
+ 2612 0d22 F11C      		adc r15,__zero_reg__
+ 2613 0d24 011D      		adc r16,__zero_reg__
+ 2614 0d26 111D      		adc r17,__zero_reg__
+ 2615               	.LBE11:
+ 2616               	/* #APP */
+ 2617 0d28 ABBF      		out 59, r26
+ 2618 0d2a FC01      		movw r30, r24
+ 2619 0d2c 8791      		elpm r24, Z+
+ 2620               		
+ 2621               	/* #NOAPP */
+ 2622 0d2e 8823      		tst r24
+ 2623 0d30 71F0      		breq .L171
+ 2624               	.L169:
+ 2626               	.LM304:
+ 2627 0d32 0E94 0000 		call putch
+ 2628               	.LBB12:
+ 2629 0d36 D801      		movw r26,r16
+ 2630 0d38 C701      		movw r24,r14
+ 2631 0d3a 0894      		sec
+ 2632 0d3c E11C      		adc r14,__zero_reg__
+ 2633 0d3e F11C      		adc r15,__zero_reg__
+ 2634 0d40 011D      		adc r16,__zero_reg__
+ 2635 0d42 111D      		adc r17,__zero_reg__
+ 2636               	/* #APP */
+ 2637 0d44 ABBF      		out 59, r26
+ 2638 0d46 FC01      		movw r30, r24
+ 2639 0d48 8791      		elpm r24, Z+
+ 2640               		
+ 2641               	/* #NOAPP */
+ 2642               	.LBE12:
+ 2643 0d4a 8823      		tst r24
+ 2644 0d4c 91F7      		brne .L169
+ 2645               	.L171:
+ 2646               	/* epilogue: frame size=0 */
+ 2647 0d4e 1F91      		pop r17
+ 2648 0d50 0F91      		pop r16
+ 2649 0d52 FF90      		pop r15
+ 2650 0d54 EF90      		pop r14
+ 2651 0d56 0895      		ret
+ 2652               	/* epilogue end (size=5) */
+ 2653               	/* function print_P size 47 (38) */
+ 2664               	.Lscope29:
+ 2666               	.global	monitorReadLine
+ 2668               	monitorReadLine:
+ 2670               	.LM305:
+ 2671               	/* prologue: frame size=0 */
+ 2672 0d58 0F93      		push r16
+ 2673 0d5a 1F93      		push r17
+ 2674 0d5c CF93      		push r28
+ 2675 0d5e DF93      		push r29
+ 2676               	/* prologue end (size=4) */
+ 2678               	.LM306:
+ 2679 0d60 C0E0      		ldi r28,lo8(0)
+ 2680 0d62 D0E0      		ldi r29,hi8(0)
+ 2681 0d64 00E0      		ldi r16,lo8(monitorBuf)
+ 2682 0d66 10E0      		ldi r17,hi8(monitorBuf)
+ 2684               	.LM307:
+ 2685 0d68 04C0      		rjmp .L173
+ 2686               	.L175:
+ 2688               	.LM308:
+ 2689 0d6a F801      		movw r30,r16
+ 2690 0d6c 8193      		st Z+,r24
+ 2691 0d6e 8F01      		movw r16,r30
+ 2692 0d70 2196      		adiw r28,1
+ 2693               	.L173:
+ 2694 0d72 0E94 0000 		call getch
+ 2695 0d76 8A30      		cpi r24,lo8(10)
+ 2696 0d78 19F0      		breq .L174
+ 2697 0d7a CF3F      		cpi r28,255
+ 2698 0d7c D105      		cpc r29,__zero_reg__
+ 2699 0d7e A8F3      		brlo .L175
+ 2700               	.L174:
+ 2702               	.LM309:
+ 2703 0d80 C050      		subi r28,lo8(-(monitorBuf))
+ 2704 0d82 D040      		sbci r29,hi8(-(monitorBuf))
+ 2705 0d84 1882      		st Y,__zero_reg__
+ 2707               	.LM310:
+ 2708 0d86 80E0      		ldi r24,lo8(monitorBuf)
+ 2709 0d88 90E0      		ldi r25,hi8(monitorBuf)
+ 2710               	/* epilogue: frame size=0 */
+ 2711 0d8a DF91      		pop r29
+ 2712 0d8c CF91      		pop r28
+ 2713 0d8e 1F91      		pop r17
+ 2714 0d90 0F91      		pop r16
+ 2715 0d92 0895      		ret
+ 2716               	/* epilogue end (size=5) */
+ 2717               	/* function monitorReadLine size 30 (21) */
+ 2723               	.Lscope30:
+ 2726               	.global	print
+ 2728               	print:
+ 2730               	.LM311:
+ 2731               	/* prologue: frame size=0 */
+ 2732 0d94 CF93      		push r28
+ 2733 0d96 DF93      		push r29
+ 2734               	/* prologue end (size=2) */
+ 2735 0d98 EC01      		movw r28,r24
+ 2737               	.LM312:
+ 2738 0d9a 8881      		ld r24,Y
+ 2739 0d9c 8823      		tst r24
+ 2740 0d9e 31F0      		breq .L181
+ 2741               	.L179:
+ 2743               	.LM313:
+ 2744 0da0 8991      		ld r24,Y+
+ 2745 0da2 0E94 0000 		call putch
+ 2747               	.LM314:
+ 2748 0da6 8881      		ld r24,Y
+ 2749 0da8 8823      		tst r24
+ 2750 0daa D1F7      		brne .L179
+ 2751               	.L181:
+ 2752               	/* epilogue: frame size=0 */
+ 2753 0dac DF91      		pop r29
+ 2754 0dae CF91      		pop r28
+ 2755 0db0 0895      		ret
+ 2756               	/* epilogue end (size=3) */
+ 2757               	/* function print size 15 (10) */
+ 2759               	.Lscope31:
+ 2764               	.global	monitorChange
+ 2766               	monitorChange:
+ 2768               	.LM315:
+ 2769               	/* prologue: frame size=0 */
+ 2770 0db2 CF93      		push r28
+ 2771 0db4 DF93      		push r29
+ 2772               	/* prologue end (size=2) */
+ 2773 0db6 EC01      		movw r28,r24
+ 2774 0db8 DB01      		movw r26,r22
+ 2776               	.LM316:
+ 2777 0dba 3327      		clr r19
+ 2778 0dbc 2130      		cpi r18,1
+ 2779 0dbe 3105      		cpc r19,__zero_reg__
+ 2780 0dc0 21F0      		breq .L184
+ 2782               	.LM317:
+ 2783 0dc2 2230      		cpi r18,2
+ 2784 0dc4 3105      		cpc r19,__zero_reg__
+ 2785 0dc6 21F0      		breq .L185
+ 2786 0dc8 07C0      		rjmp .L182
+ 2787               	.L184:
+ 2789               	.LM318:
+ 2790 0dca FD01      		movw r30,r26
+ 2791 0dcc 4083      		st Z,r20
+ 2793               	.LM319:
+ 2794 0dce 04C0      		rjmp .L182
+ 2795               	.L185:
+ 2797               	.LM320:
+ 2798 0dd0 642F      		mov r22,r20
+ 2799 0dd2 CD01      		movw r24,r26
+ 2800 0dd4 0E94 0000 		call eeprom_wb
+ 2801               	.L182:
+ 2802               	/* epilogue: frame size=0 */
+ 2803 0dd8 DF91      		pop r29
+ 2804 0dda CF91      		pop r28
+ 2805 0ddc 0895      		ret
+ 2806               	/* epilogue end (size=3) */
+ 2807               	/* function monitorChange size 22 (17) */
+ 2809               	.Lscope32:
+ 2814               	.global	monitorDump
+ 2816               	monitorDump:
+ 2818               	.LM321:
+ 2819               	/* prologue: frame size=30 */
+ 2820 0dde 5F92      		push r5
+ 2821 0de0 6F92      		push r6
+ 2822 0de2 7F92      		push r7
+ 2823 0de4 8F92      		push r8
+ 2824 0de6 9F92      		push r9
+ 2825 0de8 AF92      		push r10
+ 2826 0dea BF92      		push r11
+ 2827 0dec CF92      		push r12
+ 2828 0dee DF92      		push r13
+ 2829 0df0 EF92      		push r14
+ 2830 0df2 FF92      		push r15
+ 2831 0df4 0F93      		push r16
+ 2832 0df6 1F93      		push r17
+ 2833 0df8 CF93      		push r28
+ 2834 0dfa DF93      		push r29
+ 2835 0dfc CDB7      		in r28,__SP_L__
+ 2836 0dfe DEB7      		in r29,__SP_H__
+ 2837 0e00 6E97      		sbiw r28,30
+ 2838 0e02 DEBF      		out __SP_H__,r29
+ 2839 0e04 CDBF      		out __SP_L__,r28
+ 2840               	/* prologue end (size=20) */
+ 2841 0e06 7B01      		movw r14,r22
+ 2842 0e08 8C01      		movw r16,r24
+ 2843 0e0a 642E      		mov r6,r20
+ 2844 0e0c 522E      		mov r5,r18
+ 2846               	.LM322:
+ 2847 0e0e 8AE0      		ldi r24,lo8(10)
+ 2848 0e10 0E94 0000 		call putch
+ 2850               	.LM323:
+ 2851 0e14 7724      		clr r7
+ 2852               	.L207:
+ 2854               	.LM324:
+ 2855 0e16 7614      		cp r7,r6
+ 2856 0e18 08F0      		brlo .+2
+ 2857 0e1a 76C0      		rjmp .L204
+ 2859               	.LM325:
+ 2860 0e1c 20E1      		ldi r18,lo8(16)
+ 2861 0e1e 30E0      		ldi r19,hi8(16)
+ 2862 0e20 AE01      		movw r20,r28
+ 2863 0e22 4F5F      		subi r20,lo8(-(1))
+ 2864 0e24 5F4F      		sbci r21,hi8(-(1))
+ 2865 0e26 C801      		movw r24,r16
+ 2866 0e28 B701      		movw r22,r14
+ 2867 0e2a 0E94 0000 		call ultoa
+ 2868 0e2e 0E94 0000 		call print
+ 2870               	.LM326:
+ 2871 0e32 80E2      		ldi r24,lo8(32)
+ 2872 0e34 0E94 0000 		call putch
+ 2873 0e38 8824      		clr r8
+ 2874 0e3a 9924      		clr r9
+ 2875 0e3c 5FE0      		ldi r21,lo8(15)
+ 2876 0e3e A52E      		mov r10,r21
+ 2877               	.L201:
+ 2879               	.LM327:
+ 2880 0e40 852D      		mov r24,r5
+ 2881 0e42 9927      		clr r25
+ 2882 0e44 8130      		cpi r24,1
+ 2883 0e46 9105      		cpc r25,__zero_reg__
+ 2884 0e48 A1F0      		breq .L195
+ 2885 0e4a 8230      		cpi r24,2
+ 2886 0e4c 9105      		cpc r25,__zero_reg__
+ 2887 0e4e 1CF4      		brge .L197
+ 2888 0e50 892B      		or r24,r25
+ 2889 0e52 21F0      		breq .L194
+ 2890 0e54 1FC0      		rjmp .L193
+ 2891               	.L197:
+ 2892 0e56 0297      		sbiw r24,2
+ 2893 0e58 A1F0      		breq .L196
+ 2894 0e5a 1CC0      		rjmp .L193
+ 2895               	.L194:
+ 2896               	.LBB13:
+ 2898               	.LM328:
+ 2899 0e5c D801      		movw r26,r16
+ 2900 0e5e C701      		movw r24,r14
+ 2901 0e60 0894      		sec
+ 2902 0e62 E11C      		adc r14,__zero_reg__
+ 2903 0e64 F11C      		adc r15,__zero_reg__
+ 2904 0e66 011D      		adc r16,__zero_reg__
+ 2905 0e68 111D      		adc r17,__zero_reg__
+ 2906               	.LBE13:
+ 2907               	/* #APP */
+ 2908 0e6a ABBF      		out 59, r26
+ 2909 0e6c FC01      		movw r30, r24
+ 2910 0e6e B790      		elpm r11, Z+
+ 2911               		
+ 2913               	.LM329:
+ 2914               	/* #NOAPP */
+ 2915 0e70 11C0      		rjmp .L193
+ 2916               	.L195:
+ 2918               	.LM330:
+ 2919 0e72 F701      		movw r30,r14
+ 2920 0e74 0894      		sec
+ 2921 0e76 E11C      		adc r14,__zero_reg__
+ 2922 0e78 F11C      		adc r15,__zero_reg__
+ 2923 0e7a 011D      		adc r16,__zero_reg__
+ 2924 0e7c 111D      		adc r17,__zero_reg__
+ 2925 0e7e B080      		ld r11,Z
+ 2927               	.LM331:
+ 2928 0e80 09C0      		rjmp .L193
+ 2929               	.L196:
+ 2931               	.LM332:
+ 2932 0e82 C701      		movw r24,r14
+ 2933 0e84 0894      		sec
+ 2934 0e86 E11C      		adc r14,__zero_reg__
+ 2935 0e88 F11C      		adc r15,__zero_reg__
+ 2936 0e8a 011D      		adc r16,__zero_reg__
+ 2937 0e8c 111D      		adc r17,__zero_reg__
+ 2938 0e8e 0E94 0000 		call eeprom_rb
+ 2939 0e92 B82E      		mov r11,r24
+ 2940               	.L193:
+ 2942               	.LM333:
+ 2943 0e94 8FE0      		ldi r24,lo8(15)
+ 2944 0e96 8B15      		cp r24,r11
+ 2945 0e98 18F0      		brlo .L198
+ 2947               	.LM334:
+ 2948 0e9a 80E3      		ldi r24,lo8(48)
+ 2949 0e9c 0E94 0000 		call putch
+ 2950               	.L198:
+ 2952               	.LM335:
+ 2953 0ea0 8B2D      		mov r24,r11
+ 2954 0ea2 9927      		clr r25
+ 2955 0ea4 AA27      		clr r26
+ 2956 0ea6 BB27      		clr r27
+ 2957 0ea8 20E1      		ldi r18,lo8(16)
+ 2958 0eaa 30E0      		ldi r19,hi8(16)
+ 2959 0eac AE01      		movw r20,r28
+ 2960 0eae 4F5F      		subi r20,lo8(-(1))
+ 2961 0eb0 5F4F      		sbci r21,hi8(-(1))
+ 2962 0eb2 BC01      		movw r22,r24
+ 2963 0eb4 CD01      		movw r24,r26
+ 2964 0eb6 0E94 0000 		call ultoa
+ 2965 0eba 0E94 0000 		call print
+ 2967               	.LM336:
+ 2968 0ebe 80E2      		ldi r24,lo8(32)
+ 2969 0ec0 0E94 0000 		call putch
+ 2971               	.LM337:
+ 2972 0ec4 6401      		movw r12,r8
+ 2973 0ec6 CC0E      		add r12,r28
+ 2974 0ec8 DD1E      		adc r13,r29
+ 2975 0eca EBE0      		ldi r30,lo8(11)
+ 2976 0ecc F0E0      		ldi r31,hi8(11)
+ 2977 0ece CE0E      		add r12,r30
+ 2978 0ed0 DF1E      		adc r13,r31
+ 2979 0ed2 8B2D      		mov r24,r11
+ 2980 0ed4 9927      		clr r25
+ 2981 0ed6 0E94 0000 		call isprint
+ 2982 0eda 892B      		or r24,r25
+ 2983 0edc 11F0      		breq .L199
+ 2984 0ede 8B2D      		mov r24,r11
+ 2985 0ee0 01C0      		rjmp .L200
+ 2986               	.L199:
+ 2987 0ee2 8EE2      		ldi r24,lo8(46)
+ 2988               	.L200:
+ 2989 0ee4 F601      		movw r30,r12
+ 2990 0ee6 8083      		st Z,r24
+ 2992               	.LM338:
+ 2993 0ee8 AA94      		dec r10
+ 2994 0eea 0894      		sec
+ 2995 0eec 811C      		adc r8,__zero_reg__
+ 2996 0eee 911C      		adc r9,__zero_reg__
+ 2997 0ef0 A7FE      		sbrs r10,7
+ 2998 0ef2 A6CF      		rjmp .L201
+ 3000               	.LM339:
+ 3001 0ef4 1B8E      		std Y+27,__zero_reg__
+ 3003               	.LM340:
+ 3004 0ef6 CE01      		movw r24,r28
+ 3005 0ef8 0B96      		adiw r24,11
+ 3006 0efa 0E94 0000 		call print
+ 3008               	.LM341:
+ 3009 0efe 8AE0      		ldi r24,lo8(10)
+ 3010 0f00 0E94 0000 		call putch
+ 3012               	.LM342:
+ 3013 0f04 7394      		inc r7
+ 3014 0f06 87CF      		rjmp .L207
+ 3015               	.L204:
+ 3017               	.LM343:
+ 3018 0f08 C801      		movw r24,r16
+ 3019 0f0a B701      		movw r22,r14
+ 3020               	/* epilogue: frame size=30 */
+ 3021 0f0c 6E96      		adiw r28,30
+ 3022 0f0e DEBF      		out __SP_H__,r29
+ 3023 0f10 CDBF      		out __SP_L__,r28
+ 3024 0f12 DF91      		pop r29
+ 3025 0f14 CF91      		pop r28
+ 3026 0f16 1F91      		pop r17
+ 3027 0f18 0F91      		pop r16
+ 3028 0f1a FF90      		pop r15
+ 3029 0f1c EF90      		pop r14
+ 3030 0f1e DF90      		pop r13
+ 3031 0f20 CF90      		pop r12
+ 3032 0f22 BF90      		pop r11
+ 3033 0f24 AF90      		pop r10
+ 3034 0f26 9F90      		pop r9
+ 3035 0f28 8F90      		pop r8
+ 3036 0f2a 7F90      		pop r7
+ 3037 0f2c 6F90      		pop r6
+ 3038 0f2e 5F90      		pop r5
+ 3039 0f30 0895      		ret
+ 3040               	/* epilogue end (size=19) */
+ 3041               	/* function monitorDump size 176 (137) */
+ 3050               	.Lscope33:
+ 3053               	.global	htoi
+ 3055               	htoi:
+1127:stk500_2_boot.c ****    }				
+1128:stk500_2_boot.c **** }
+1129:stk500_2_boot.c **** 
+1130:stk500_2_boot.c **** 
+1131:stk500_2_boot.c **** char *getValue( char *src,  uint32_t *value, uint8_t len )  {
+1132:stk500_2_boot.c **** 	char buf[10];
+1133:stk500_2_boot.c **** 	
+1134:stk500_2_boot.c **** 	*buf = '\0';
+1135:stk500_2_boot.c **** 	*value = 0;
+1136:stk500_2_boot.c ****     while( isblank( *src ) && ( *src != '\0' ) ) {
+1137:stk500_2_boot.c ****     	src ++ ;	
+1138:stk500_2_boot.c ****     }	
+1139:stk500_2_boot.c ****     if ( *src == '\0' || !isxdigit(*src) )  {
+1140:stk500_2_boot.c ****     	return 0; 	
+1141:stk500_2_boot.c ****     }
+1142:stk500_2_boot.c ****     else {
+1143:stk500_2_boot.c ****     	while( isxdigit( *src ) && len ) {
+1144:stk500_2_boot.c ****     		*value = (*value << 4) | htoi( *src );  
+1145:stk500_2_boot.c ****     		len-- ;	
+1146:stk500_2_boot.c ****     		src++ ;
+1147:stk500_2_boot.c ****     	}  	
+1148:stk500_2_boot.c ****  	    return src ;				
+1149:stk500_2_boot.c ****     }   
+1150:stk500_2_boot.c **** }
+1151:stk500_2_boot.c **** 
+1152:stk500_2_boot.c **** 
+1153:stk500_2_boot.c **** uint8_t htoi( uint8_t val ) {
+ 3057               	.LM344:
+ 3058               	/* prologue: frame size=0 */
+ 3059               	/* prologue end (size=0) */
+ 3060 0f32 982F      		mov r25,r24
+1154:stk500_2_boot.c **** 	if( val >= '0' && val <= '9' ) {
+ 3062               	.LM345:
+ 3063 0f34 8053      		subi r24,lo8(-(-48))
+ 3064 0f36 8A30      		cpi r24,lo8(10)
+ 3065 0f38 28F0      		brlo .L211
+1155:stk500_2_boot.c **** 		return (val - '0');
+1156:stk500_2_boot.c **** 	}
+1157:stk500_2_boot.c **** 	else {
+1158:stk500_2_boot.c **** 	    return ( toupper( val ) - 'A' + 10 );
+ 3067               	.LM346:
+ 3068 0f3a 892F      		mov r24,r25
+ 3069 0f3c 9927      		clr r25
+ 3070 0f3e 0E94 0000 		call toupper
+ 3071 0f42 8753      		subi r24,lo8(-(-55))
+ 3072               	.L211:
+ 3073 0f44 282F      		mov r18,r24
+ 3074 0f46 3327      		clr r19
+1159:stk500_2_boot.c **** 	}
+1160:stk500_2_boot.c **** }
+ 3076               	.LM347:
+ 3077 0f48 C901      		movw r24,r18
+ 3078               	/* epilogue: frame size=0 */
+ 3079 0f4a 0895      		ret
+ 3080               	/* epilogue end (size=1) */
+ 3081               	/* function htoi size 13 (12) */
+ 3083               	.Lscope34:
+ 3088               	.global	getValue
+ 3090               	getValue:
+ 3092               	.LM348:
+ 3093               	/* prologue: frame size=10 */
+ 3094 0f4c 8F92      		push r8
+ 3095 0f4e 9F92      		push r9
+ 3096 0f50 AF92      		push r10
+ 3097 0f52 BF92      		push r11
+ 3098 0f54 CF92      		push r12
+ 3099 0f56 DF92      		push r13
+ 3100 0f58 EF92      		push r14
+ 3101 0f5a FF92      		push r15
+ 3102 0f5c 0F93      		push r16
+ 3103 0f5e 1F93      		push r17
+ 3104 0f60 CF93      		push r28
+ 3105 0f62 DF93      		push r29
+ 3106 0f64 CDB7      		in r28,__SP_L__
+ 3107 0f66 DEB7      		in r29,__SP_H__
+ 3108 0f68 2A97      		sbiw r28,10
+ 3109 0f6a DEBF      		out __SP_H__,r29
+ 3110 0f6c CDBF      		out __SP_L__,r28
+ 3111               	/* prologue end (size=17) */
+ 3112 0f6e 6C01      		movw r12,r24
+ 3113 0f70 5B01      		movw r10,r22
+ 3114 0f72 842E      		mov r8,r20
+ 3116               	.LM349:
+ 3117 0f74 1982      		std Y+1,__zero_reg__
+ 3119               	.LM350:
+ 3120 0f76 FB01      		movw r30,r22
+ 3121 0f78 1082      		st Z,__zero_reg__
+ 3122 0f7a 1182      		std Z+1,__zero_reg__
+ 3123 0f7c 1282      		std Z+2,__zero_reg__
+ 3124 0f7e 1382      		std Z+3,__zero_reg__
+ 3126               	.LM351:
+ 3127 0f80 03C0      		rjmp .L213
+ 3128               	.L215:
+ 3130               	.LM352:
+ 3131 0f82 0894      		sec
+ 3132 0f84 C11C      		adc r12,__zero_reg__
+ 3133 0f86 D11C      		adc r13,__zero_reg__
+ 3134               	.L213:
+ 3135 0f88 F601      		movw r30,r12
+ 3136 0f8a E080      		ld r14,Z
+ 3137 0f8c 0E2D      		mov r16,r14
+ 3138 0f8e 1127      		clr r17
+ 3139 0f90 C801      		movw r24,r16
+ 3140 0f92 0E94 0000 		call isblank
+ 3141 0f96 892B      		or r24,r25
+ 3142 0f98 11F0      		breq .L214
+ 3143 0f9a EE20      		tst r14
+ 3144 0f9c 91F7      		brne .L215
+ 3145               	.L214:
+ 3147               	.LM353:
+ 3148 0f9e EE20      		tst r14
+ 3149 0fa0 29F0      		breq .L217
+ 3150 0fa2 C801      		movw r24,r16
+ 3151 0fa4 0E94 0000 		call isxdigit
+ 3152 0fa8 892B      		or r24,r25
+ 3153 0faa 11F5      		brne .L219
+ 3154               	.L217:
+ 3156               	.LM354:
+ 3157 0fac 80E0      		ldi r24,lo8(0)
+ 3158 0fae 90E0      		ldi r25,hi8(0)
+ 3159 0fb0 2AC0      		rjmp .L212
+ 3160               	.L221:
+ 3162               	.LM355:
+ 3163 0fb2 F501      		movw r30,r10
+ 3164 0fb4 E080      		ld r14,Z
+ 3165 0fb6 F180      		ldd r15,Z+1
+ 3166 0fb8 0281      		ldd r16,Z+2
+ 3167 0fba 1381      		ldd r17,Z+3
+ 3168 0fbc 64E0      		ldi r22,4
+ 3169 0fbe EE0C      	1:	lsl r14
+ 3170 0fc0 FF1C      		rol r15
+ 3171 0fc2 001F      		rol r16
+ 3172 0fc4 111F      		rol r17
+ 3173 0fc6 6A95      		dec r22
+ 3174 0fc8 D1F7      		brne 1b
+ 3175 0fca 892D      		mov r24,r9
+ 3176 0fcc 0E94 0000 		call htoi
+ 3177 0fd0 9927      		clr r25
+ 3178 0fd2 AA27      		clr r26
+ 3179 0fd4 BB27      		clr r27
+ 3180 0fd6 E82A      		or r14,r24
+ 3181 0fd8 F92A      		or r15,r25
+ 3182 0fda 0A2B      		or r16,r26
+ 3183 0fdc 1B2B      		or r17,r27
+ 3184 0fde F501      		movw r30,r10
+ 3185 0fe0 E082      		st Z,r14
+ 3186 0fe2 F182      		std Z+1,r15
+ 3187 0fe4 0283      		std Z+2,r16
+ 3188 0fe6 1383      		std Z+3,r17
+ 3190               	.LM356:
+ 3191 0fe8 8A94      		dec r8
+ 3193               	.LM357:
+ 3194 0fea 0894      		sec
+ 3195 0fec C11C      		adc r12,__zero_reg__
+ 3196 0fee D11C      		adc r13,__zero_reg__
+ 3197               	.L219:
+ 3198 0ff0 F601      		movw r30,r12
+ 3199 0ff2 9080      		ld r9,Z
+ 3200 0ff4 892D      		mov r24,r9
+ 3201 0ff6 9927      		clr r25
+ 3202 0ff8 0E94 0000 		call isxdigit
+ 3203 0ffc 892B      		or r24,r25
+ 3204 0ffe 11F0      		breq .L220
+ 3205 1000 8820      		tst r8
+ 3206 1002 B9F6      		brne .L221
+ 3207               	.L220:
+ 3209               	.LM358:
+ 3210 1004 C601      		movw r24,r12
+ 3211               	.L212:
+ 3212               	/* epilogue: frame size=10 */
+ 3213 1006 2A96      		adiw r28,10
+ 3214 1008 DEBF      		out __SP_H__,r29
+ 3215 100a CDBF      		out __SP_L__,r28
+ 3216 100c DF91      		pop r29
+ 3217 100e CF91      		pop r28
+ 3218 1010 1F91      		pop r17
+ 3219 1012 0F91      		pop r16
+ 3220 1014 FF90      		pop r15
+ 3221 1016 EF90      		pop r14
+ 3222 1018 DF90      		pop r13
+ 3223 101a CF90      		pop r12
+ 3224 101c BF90      		pop r11
+ 3225 101e AF90      		pop r10
+ 3226 1020 9F90      		pop r9
+ 3227 1022 8F90      		pop r8
+ 3228 1024 0895      		ret
+ 3229               	/* epilogue end (size=16) */
+ 3230               	/* function getValue size 109 (76) */
+ 3235               	.Lscope35:
+ 3236               		.section	.progmem.data
+ 3239               	__c.0:
+ 3240 001a 0A46 2041 		.string	"\nF AAAA    - dump flash\n"
+ 3240      4141 4120 
+ 3240      2020 202D 
+ 3240      2064 756D 
+ 3240      7020 666C 
+ 3243               	__c.1:
+ 3244 0033 5820 4141 		.string	"X AAAA XX - dump/modify ram\n"
+ 3244      4141 2058 
+ 3244      5820 2D20 
+ 3244      6475 6D70 
+ 3244      2F6D 6F64 
+ 3247               	__c.2:
+ 3248 0050 4520 4141 		.string	"E AAAA XX - dump/modify eeprom\n"
+ 3248      4141 2058 
+ 3248      5820 2D20 
+ 3248      6475 6D70 
+ 3248      2F6D 6F64 
+ 3251               	__c.3:
+ 3252 0070 5420 4848 		.string	"T HHMMSS - display/set time\n"
+ 3252      4D4D 5353 
+ 3252      202D 2064 
+ 3252      6973 706C 
+ 3252      6179 2F73 
+ 3255               	__c.4:
+ 3256 008d 4420 5959 		.string	"D YYMMDD - display/set date\n"
+ 3256      4D4D 4444 
+ 3256      202D 2064 
+ 3256      6973 706C 
+ 3256      6179 2F73 
+ 3259               	__c.5:
+ 3260 00aa 5120 2020 		.string	"Q         - quit monitor\n"
+ 3260      2020 2020 
+ 3260      2020 2D20 
+ 3260      7175 6974 
+ 3260      206D 6F6E 
+ 3261               		.text
+ 3263               	.global	monitorMain
+ 3265               	monitorMain:
+ 3267               	.LM359:
+ 3268               	/* prologue: frame size=38 */
+ 3269 1026 8F92      		push r8
+ 3270 1028 9F92      		push r9
+ 3271 102a AF92      		push r10
+ 3272 102c BF92      		push r11
+ 3273 102e CF92      		push r12
+ 3274 1030 DF92      		push r13
+ 3275 1032 EF92      		push r14
+ 3276 1034 FF92      		push r15
+ 3277 1036 0F93      		push r16
+ 3278 1038 1F93      		push r17
+ 3279 103a CF93      		push r28
+ 3280 103c DF93      		push r29
+ 3281 103e CDB7      		in r28,__SP_L__
+ 3282 1040 DEB7      		in r29,__SP_H__
+ 3283 1042 A697      		sbiw r28,38
+ 3284 1044 DEBF      		out __SP_H__,r29
+ 3285 1046 CDBF      		out __SP_L__,r28
+ 3286               	/* prologue end (size=17) */
+ 3288               	.LM360:
+ 3289 1048 8824      		clr r8
+ 3291               	.LM361:
+ 3292 104a 982C      		mov r9,r8
+ 3294               	.LM362:
+ 3295 104c 0E94 0000 		call monitorInit
+ 3297               	.LM363:
+ 3298 1050 80E0      		ldi r24,lo8(monitorWelcome)
+ 3299 1052 90E0      		ldi r25,hi8(monitorWelcome)
+ 3300 1054 9C01      		movw r18,r24
+ 3301 1056 4427      		clr r20
+ 3302 1058 37FD      		sbrc r19,7
+ 3303 105a 4095      		com r20
+ 3304 105c 542F      		mov r21,r20
+ 3305 105e CA01      		movw r24,r20
+ 3306 1060 B901      		movw r22,r18
+ 3307 1062 0E94 0000 		call print_P
+ 3309               	.LM364:
+ 3310 1066 81E0      		ldi r24,lo8(1)
+ 3311 1068 8093 0000 		sts echo,r24
+ 3312               	.L259:
+ 3314               	.LM365:
+ 3315 106c 8AE3      		ldi r24,lo8(58)
+ 3316 106e 0E94 0000 		call putch
+ 3318               	.LM366:
+ 3319 1072 0E94 0000 		call monitorReadLine
+ 3320               	.L227:
+ 3322               	.LM367:
+ 3323 1076 FC01      		movw r30,r24
+ 3324 1078 8191      		ld r24,Z+
+ 3325 107a 8F01      		movw r16,r30
+ 3326 107c E82E      		mov r14,r24
+ 3327 107e FF24      		clr r15
+ 3328 1080 C701      		movw r24,r14
+ 3329 1082 0E94 0000 		call isblank
+ 3330 1086 6C01      		movw r12,r24
+ 3331 1088 C801      		movw r24,r16
+ 3332 108a C114      		cp r12,__zero_reg__
+ 3333 108c D104      		cpc r13,__zero_reg__
+ 3334 108e 99F7      		brne .L227
+ 3336               	.LM368:
+ 3337 1090 C701      		movw r24,r14
+ 3338 1092 0E94 0000 		call toupper
+ 3339 1096 5C01      		movw r10,r24
+ 3340 1098 F82E      		mov r15,r24
+ 3342               	.LM369:
+ 3343 109a 9927      		clr r25
+ 3344 109c 8434      		cpi r24,68
+ 3345 109e 9105      		cpc r25,__zero_reg__
+ 3346 10a0 09F4      		brne .+2
+ 3347 10a2 6DC0      		rjmp .L232
+ 3348 10a4 8534      		cpi r24,69
+ 3349 10a6 9105      		cpc r25,__zero_reg__
+ 3350 10a8 9CF4      		brge .L256
+ 3351 10aa 8A30      		cpi r24,10
+ 3352 10ac 9105      		cpc r25,__zero_reg__
+ 3353 10ae 09F4      		brne .+2
+ 3354 10b0 40C1      		rjmp .L247
+ 3355 10b2 8B30      		cpi r24,11
+ 3356 10b4 9105      		cpc r25,__zero_reg__
+ 3357 10b6 24F4      		brge .L257
+ 3358 10b8 892B      		or r24,r25
+ 3359 10ba 09F4      		brne .+2
+ 3360 10bc 3AC1      		rjmp .L247
+ 3361 10be 7BC1      		rjmp .L255
+ 3362               	.L257:
+ 3363 10c0 8D30      		cpi r24,13
+ 3364 10c2 9105      		cpc r25,__zero_reg__
+ 3365 10c4 09F4      		brne .+2
+ 3366 10c6 35C1      		rjmp .L247
+ 3367 10c8 CF97      		sbiw r24,63
+ 3368 10ca 09F4      		brne .+2
+ 3369 10cc F8C0      		rjmp .L244
+ 3370 10ce 73C1      		rjmp .L255
+ 3371               	.L256:
+ 3372 10d0 8135      		cpi r24,81
+ 3373 10d2 9105      		cpc r25,__zero_reg__
+ 3374 10d4 A1F0      		breq .L229
+ 3375 10d6 8235      		cpi r24,82
+ 3376 10d8 9105      		cpc r25,__zero_reg__
+ 3377 10da 4CF4      		brge .L258
+ 3378 10dc 8534      		cpi r24,69
+ 3379 10de 9105      		cpc r25,__zero_reg__
+ 3380 10e0 09F4      		brne .+2
+ 3381 10e2 C1C0      		rjmp .L240
+ 3382 10e4 8634      		cpi r24,70
+ 3383 10e6 9105      		cpc r25,__zero_reg__
+ 3384 10e8 09F4      		brne .+2
+ 3385 10ea 85C0      		rjmp .L234
+ 3386 10ec 64C1      		rjmp .L255
+ 3387               	.L258:
+ 3388 10ee 8435      		cpi r24,84
+ 3389 10f0 9105      		cpc r25,__zero_reg__
+ 3390 10f2 71F0      		breq .L230
+ 3391 10f4 8835      		cpi r24,88
+ 3392 10f6 9105      		cpc r25,__zero_reg__
+ 3393 10f8 09F4      		brne .+2
+ 3394 10fa 96C0      		rjmp .L236
+ 3395 10fc 5CC1      		rjmp .L255
+ 3396               	.L229:
+ 3398               	.LM370:
+ 3399 10fe 1092 0000 		sts echo,__zero_reg__
+ 3401               	.LM371:
+ 3402 1102 F1E0      		ldi r31,lo8(1)
+ 3403 1104 8F2E      		mov r8,r31
+ 3405               	.LM372:
+ 3406 1106 1092 0000 		sts monitor_cnt,__zero_reg__
+ 3408               	.LM373:
+ 3409 110a 80E0      		ldi r24,lo8(monitorQuit)
+ 3410 110c 90E0      		ldi r25,hi8(monitorQuit)
+ 3411 110e 55C1      		rjmp .L266
+ 3412               	.L230:
+ 3414               	.LM374:
+ 3415 1110 E5E1      		ldi r30,lo8(21)
+ 3416 1112 EE2E      		mov r14,r30
+ 3417 1114 F12C      		mov r15,__zero_reg__
+ 3418 1116 EC0E      		add r14,r28
+ 3419 1118 FD1E      		adc r15,r29
+ 3420 111a 41E0      		ldi r20,lo8(1)
+ 3421 111c B701      		movw r22,r14
+ 3422 111e C801      		movw r24,r16
+ 3423 1120 0E94 0000 		call getValue
+ 3425               	.LM375:
+ 3426 1124 0097      		sbiw r24,0
+ 3427 1126 11F1      		breq .L231
+ 3429               	.LM376:
+ 3430 1128 41E0      		ldi r20,lo8(1)
+ 3431 112a BE01      		movw r22,r28
+ 3432 112c 6A5E      		subi r22,lo8(-(22))
+ 3433 112e 7F4F      		sbci r23,hi8(-(22))
+ 3434 1130 0E94 0000 		call getValue
+ 3436               	.LM377:
+ 3437 1134 41E0      		ldi r20,lo8(1)
+ 3438 1136 BE01      		movw r22,r28
+ 3439 1138 695E      		subi r22,lo8(-(23))
+ 3440 113a 7F4F      		sbci r23,hi8(-(23))
+ 3441 113c 0E94 0000 		call getValue
+ 3443               	.LM378:
+ 3444 1140 41E0      		ldi r20,lo8(1)
+ 3445 1142 BE01      		movw r22,r28
+ 3446 1144 685E      		subi r22,lo8(-(24))
+ 3447 1146 7F4F      		sbci r23,hi8(-(24))
+ 3448 1148 0E94 0000 		call getValue
+ 3450               	.LM379:
+ 3451 114c 41E0      		ldi r20,lo8(1)
+ 3452 114e BE01      		movw r22,r28
+ 3453 1150 675E      		subi r22,lo8(-(25))
+ 3454 1152 7F4F      		sbci r23,hi8(-(25))
+ 3455 1154 0E94 0000 		call getValue
+ 3457               	.LM380:
+ 3458 1158 41E0      		ldi r20,lo8(1)
+ 3459 115a BE01      		movw r22,r28
+ 3460 115c 665E      		subi r22,lo8(-(26))
+ 3461 115e 7F4F      		sbci r23,hi8(-(26))
+ 3462 1160 0E94 0000 		call getValue
+ 3464               	.LM381:
+ 3465 1164 B701      		movw r22,r14
+ 3466 1166 C601      		movw r24,r12
+ 3467 1168 0E94 0000 		call set_clock
+ 3468               	.L231:
+ 3470               	.LM382:
+ 3471 116c C701      		movw r24,r14
+ 3472 116e 0E94 0000 		call get_time
+ 3473 1172 BE01      		movw r22,r28
+ 3474 1174 6F5F      		subi r22,lo8(-(1))
+ 3475 1176 7F4F      		sbci r23,hi8(-(1))
+ 3476 1178 0E94 0000 		call time2str
+ 3477 117c 36C0      		rjmp .L267
+ 3478               	.L232:
+ 3480               	.LM383:
+ 3481 117e 7BE1      		ldi r23,lo8(27)
+ 3482 1180 E72E      		mov r14,r23
+ 3483 1182 F12C      		mov r15,__zero_reg__
+ 3484 1184 EC0E      		add r14,r28
+ 3485 1186 FD1E      		adc r15,r29
+ 3486 1188 41E0      		ldi r20,lo8(1)
+ 3487 118a B701      		movw r22,r14
+ 3488 118c C801      		movw r24,r16
+ 3489 118e 0E94 0000 		call getValue
+ 3491               	.LM384:
+ 3492 1192 0097      		sbiw r24,0
+ 3493 1194 11F1      		breq .L233
+ 3495               	.LM385:
+ 3496 1196 41E0      		ldi r20,lo8(1)
+ 3497 1198 BE01      		movw r22,r28
+ 3498 119a 645E      		subi r22,lo8(-(28))
+ 3499 119c 7F4F      		sbci r23,hi8(-(28))
+ 3500 119e 0E94 0000 		call getValue
+ 3502               	.LM386:
+ 3503 11a2 41E0      		ldi r20,lo8(1)
+ 3504 11a4 BE01      		movw r22,r28
+ 3505 11a6 635E      		subi r22,lo8(-(29))
+ 3506 11a8 7F4F      		sbci r23,hi8(-(29))
+ 3507 11aa 0E94 0000 		call getValue
+ 3509               	.LM387:
+ 3510 11ae 41E0      		ldi r20,lo8(1)
+ 3511 11b0 BE01      		movw r22,r28
+ 3512 11b2 625E      		subi r22,lo8(-(30))
+ 3513 11b4 7F4F      		sbci r23,hi8(-(30))
+ 3514 11b6 0E94 0000 		call getValue
+ 3516               	.LM388:
+ 3517 11ba 41E0      		ldi r20,lo8(1)
+ 3518 11bc BE01      		movw r22,r28
+ 3519 11be 615E      		subi r22,lo8(-(31))
+ 3520 11c0 7F4F      		sbci r23,hi8(-(31))
+ 3521 11c2 0E94 0000 		call getValue
+ 3523               	.LM389:
+ 3524 11c6 41E0      		ldi r20,lo8(1)
+ 3525 11c8 BE01      		movw r22,r28
+ 3526 11ca 605E      		subi r22,lo8(-(32))
+ 3527 11cc 7F4F      		sbci r23,hi8(-(32))
+ 3528 11ce 0E94 0000 		call getValue
+ 3530               	.LM390:
+ 3531 11d2 B601      		movw r22,r12
+ 3532 11d4 C701      		movw r24,r14
+ 3533 11d6 0E94 0000 		call set_clock
+ 3534               	.L233:
+ 3536               	.LM391:
+ 3537 11da C701      		movw r24,r14
+ 3538 11dc 0E94 0000 		call get_date
+ 3539 11e0 BE01      		movw r22,r28
+ 3540 11e2 6F5F      		subi r22,lo8(-(1))
+ 3541 11e4 7F4F      		sbci r23,hi8(-(1))
+ 3542 11e6 0E94 0000 		call date2str
+ 3543               	.L267:
+ 3544 11ea 0E94 0000 		call print
+ 3546               	.LM392:
+ 3547 11ee 8AE0      		ldi r24,lo8(10)
+ 3548 11f0 0E94 0000 		call putch
+ 3549 11f4 17C0      		rjmp .L235
+ 3550               	.L234:
+ 3552               	.LM393:
+ 3553 11f6 45E0      		ldi r20,lo8(5)
+ 3554 11f8 BE01      		movw r22,r28
+ 3555 11fa 6E5D      		subi r22,lo8(-(34))
+ 3556 11fc 7F4F      		sbci r23,hi8(-(34))
+ 3557 11fe C801      		movw r24,r16
+ 3558 1200 0E94 0000 		call getValue
+ 3560               	.LM394:
+ 3561 1204 892B      		or r24,r25
+ 3562 1206 71F0      		breq .L235
+ 3564               	.LM395:
+ 3565 1208 20E0      		ldi r18,lo8(0)
+ 3566 120a 48E0      		ldi r20,lo8(8)
+ 3567 120c 6AA1      		ldd r22,Y+34
+ 3568 120e 7BA1      		ldd r23,Y+35
+ 3569 1210 8CA1      		ldd r24,Y+36
+ 3570 1212 9DA1      		ldd r25,Y+37
+ 3571 1214 0E94 0000 		call monitorDump
+ 3572 1218 DC01      		movw r26,r24
+ 3573 121a CB01      		movw r24,r22
+ 3574 121c 8AA3      		std Y+34,r24
+ 3575 121e 9BA3      		std Y+35,r25
+ 3576 1220 ACA3      		std Y+36,r26
+ 3577 1222 BDA3      		std Y+37,r27
+ 3578               	.L235:
+ 3580               	.LM396:
+ 3581 1224 9A2C      		mov r9,r10
+ 3583               	.LM397:
+ 3584 1226 D2C0      		rjmp .L223
+ 3585               	.L236:
+ 3587               	.LM398:
+ 3588 1228 44E0      		ldi r20,lo8(4)
+ 3589 122a BE01      		movw r22,r28
+ 3590 122c 6E5D      		subi r22,lo8(-(34))
+ 3591 122e 7F4F      		sbci r23,hi8(-(34))
+ 3592 1230 C801      		movw r24,r16
+ 3593 1232 0E94 0000 		call getValue
+ 3595               	.LM399:
+ 3596 1236 0097      		sbiw r24,0
+ 3597 1238 09F4      		brne .+2
+ 3598 123a 3FC0      		rjmp .L241
+ 3600               	.LM400:
+ 3601 123c 42E0      		ldi r20,lo8(2)
+ 3602 123e BE01      		movw r22,r28
+ 3603 1240 6A5D      		subi r22,lo8(-(38))
+ 3604 1242 7F4F      		sbci r23,hi8(-(38))
+ 3605 1244 0E94 0000 		call getValue
+ 3607               	.LM401:
+ 3608 1248 892B      		or r24,r25
+ 3609 124a 59F0      		breq .L238
+ 3611               	.LM402:
+ 3612 124c 21E0      		ldi r18,lo8(1)
+ 3613 124e 4EA1      		ldd r20,Y+38
+ 3614 1250 6AA1      		ldd r22,Y+34
+ 3615 1252 7BA1      		ldd r23,Y+35
+ 3616 1254 8CA1      		ldd r24,Y+36
+ 3617 1256 9DA1      		ldd r25,Y+37
+ 3618 1258 0E94 0000 		call monitorChange
+ 3620               	.LM403:
+ 3621 125c 21E0      		ldi r18,lo8(1)
+ 3622 125e 422F      		mov r20,r18
+ 3623 1260 20C0      		rjmp .L263
+ 3624               	.L238:
+ 3626               	.LM404:
+ 3627 1262 21E0      		ldi r18,lo8(1)
+ 3628 1264 1DC0      		rjmp .L268
+ 3629               	.L240:
+ 3631               	.LM405:
+ 3632 1266 43E0      		ldi r20,lo8(3)
+ 3633 1268 BE01      		movw r22,r28
+ 3634 126a 6E5D      		subi r22,lo8(-(34))
+ 3635 126c 7F4F      		sbci r23,hi8(-(34))
+ 3636 126e C801      		movw r24,r16
+ 3637 1270 0E94 0000 		call getValue
+ 3639               	.LM406:
+ 3640 1274 0097      		sbiw r24,0
+ 3641 1276 09F1      		breq .L241
+ 3643               	.LM407:
+ 3644 1278 42E0      		ldi r20,lo8(2)
+ 3645 127a BE01      		movw r22,r28
+ 3646 127c 6A5D      		subi r22,lo8(-(38))
+ 3647 127e 7F4F      		sbci r23,hi8(-(38))
+ 3648 1280 0E94 0000 		call getValue
+ 3650               	.LM408:
+ 3651 1284 892B      		or r24,r25
+ 3652 1286 59F0      		breq .L242
+ 3654               	.LM409:
+ 3655 1288 22E0      		ldi r18,lo8(2)
+ 3656 128a 4EA1      		ldd r20,Y+38
+ 3657 128c 6AA1      		ldd r22,Y+34
+ 3658 128e 7BA1      		ldd r23,Y+35
+ 3659 1290 8CA1      		ldd r24,Y+36
+ 3660 1292 9DA1      		ldd r25,Y+37
+ 3661 1294 0E94 0000 		call monitorChange
+ 3663               	.LM410:
+ 3664 1298 22E0      		ldi r18,lo8(2)
+ 3665 129a 41E0      		ldi r20,lo8(1)
+ 3666 129c 02C0      		rjmp .L263
+ 3667               	.L242:
+ 3669               	.LM411:
+ 3670 129e 22E0      		ldi r18,lo8(2)
+ 3671               	.L268:
+ 3672 12a0 48E0      		ldi r20,lo8(8)
+ 3673               	.L263:
+ 3674 12a2 6AA1      		ldd r22,Y+34
+ 3675 12a4 7BA1      		ldd r23,Y+35
+ 3676 12a6 8CA1      		ldd r24,Y+36
+ 3677 12a8 9DA1      		ldd r25,Y+37
+ 3678 12aa 0E94 0000 		call monitorDump
+ 3679 12ae DC01      		movw r26,r24
+ 3680 12b0 CB01      		movw r24,r22
+ 3681 12b2 8AA3      		std Y+34,r24
+ 3682 12b4 9BA3      		std Y+35,r25
+ 3683 12b6 ACA3      		std Y+36,r26
+ 3684 12b8 BDA3      		std Y+37,r27
+ 3685               	.L241:
+ 3687               	.LM412:
+ 3688 12ba 9F2C      		mov r9,r15
+ 3690               	.LM413:
+ 3691 12bc 87C0      		rjmp .L223
+ 3692               	.L244:
+ 3694               	.LM414:
+ 3695 12be 80E0      		ldi r24,lo8(__c.0)
+ 3696 12c0 90E0      		ldi r25,hi8(__c.0)
+ 3697 12c2 9C01      		movw r18,r24
+ 3698 12c4 4427      		clr r20
+ 3699 12c6 37FD      		sbrc r19,7
+ 3700 12c8 4095      		com r20
+ 3701 12ca 542F      		mov r21,r20
+ 3702 12cc CA01      		movw r24,r20
+ 3703 12ce B901      		movw r22,r18
+ 3704 12d0 0E94 0000 		call print_P
+ 3706               	.LM415:
+ 3707 12d4 80E0      		ldi r24,lo8(__c.1)
+ 3708 12d6 90E0      		ldi r25,hi8(__c.1)
+ 3709 12d8 9C01      		movw r18,r24
+ 3710 12da 4427      		clr r20
+ 3711 12dc 37FD      		sbrc r19,7
+ 3712 12de 4095      		com r20
+ 3713 12e0 542F      		mov r21,r20
+ 3714 12e2 CA01      		movw r24,r20
+ 3715 12e4 B901      		movw r22,r18
+ 3716 12e6 0E94 0000 		call print_P
+ 3718               	.LM416:
+ 3719 12ea 80E0      		ldi r24,lo8(__c.2)
+ 3720 12ec 90E0      		ldi r25,hi8(__c.2)
+ 3721 12ee 9C01      		movw r18,r24
+ 3722 12f0 4427      		clr r20
+ 3723 12f2 37FD      		sbrc r19,7
+ 3724 12f4 4095      		com r20
+ 3725 12f6 542F      		mov r21,r20
+ 3726 12f8 CA01      		movw r24,r20
+ 3727 12fa B901      		movw r22,r18
+ 3728 12fc 0E94 0000 		call print_P
+ 3730               	.LM417:
+ 3731 1300 80E0      		ldi r24,lo8(__c.3)
+ 3732 1302 90E0      		ldi r25,hi8(__c.3)
+ 3733 1304 9C01      		movw r18,r24
+ 3734 1306 4427      		clr r20
+ 3735 1308 37FD      		sbrc r19,7
+ 3736 130a 4095      		com r20
+ 3737 130c 542F      		mov r21,r20
+ 3738 130e CA01      		movw r24,r20
+ 3739 1310 B901      		movw r22,r18
+ 3740 1312 0E94 0000 		call print_P
+ 3742               	.LM418:
+ 3743 1316 80E0      		ldi r24,lo8(__c.4)
+ 3744 1318 90E0      		ldi r25,hi8(__c.4)
+ 3745 131a 9C01      		movw r18,r24
+ 3746 131c 4427      		clr r20
+ 3747 131e 37FD      		sbrc r19,7
+ 3748 1320 4095      		com r20
+ 3749 1322 542F      		mov r21,r20
+ 3750 1324 CA01      		movw r24,r20
+ 3751 1326 B901      		movw r22,r18
+ 3752 1328 0E94 0000 		call print_P
+ 3754               	.LM419:
+ 3755 132c 80E0      		ldi r24,lo8(__c.5)
+ 3756 132e 90E0      		ldi r25,hi8(__c.5)
+ 3757 1330 44C0      		rjmp .L266
+ 3758               	.L247:
+ 3760               	.LM420:
+ 3761 1332 892D      		mov r24,r9
+ 3762 1334 9927      		clr r25
+ 3763 1336 8634      		cpi r24,70
+ 3764 1338 9105      		cpc r25,__zero_reg__
+ 3765 133a 51F1      		breq .L251
+ 3766 133c 8734      		cpi r24,71
+ 3767 133e 9105      		cpc r25,__zero_reg__
+ 3768 1340 3CF4      		brge .L254
+ 3769 1342 8434      		cpi r24,68
+ 3770 1344 9105      		cpc r25,__zero_reg__
+ 3771 1346 A9F0      		breq .L250
+ 3772 1348 8534      		cpi r24,69
+ 3773 134a 9105      		cpc r25,__zero_reg__
+ 3774 134c 29F1      		breq .L253
+ 3775 134e 3EC0      		rjmp .L223
+ 3776               	.L254:
+ 3777 1350 8435      		cpi r24,84
+ 3778 1352 9105      		cpc r25,__zero_reg__
+ 3779 1354 21F0      		breq .L249
+ 3780 1356 8835      		cpi r24,88
+ 3781 1358 9105      		cpc r25,__zero_reg__
+ 3782 135a E1F0      		breq .L252
+ 3783 135c 37C0      		rjmp .L223
+ 3784               	.L249:
+ 3786               	.LM421:
+ 3787 135e CE01      		movw r24,r28
+ 3788 1360 4596      		adiw r24,21
+ 3789 1362 0E94 0000 		call get_time
+ 3790 1366 BE01      		movw r22,r28
+ 3791 1368 6F5F      		subi r22,lo8(-(1))
+ 3792 136a 7F4F      		sbci r23,hi8(-(1))
+ 3793 136c 0E94 0000 		call time2str
+ 3794 1370 09C0      		rjmp .L265
+ 3795               	.L250:
+ 3797               	.LM422:
+ 3798 1372 CE01      		movw r24,r28
+ 3799 1374 4B96      		adiw r24,27
+ 3800 1376 0E94 0000 		call get_date
+ 3801 137a BE01      		movw r22,r28
+ 3802 137c 6F5F      		subi r22,lo8(-(1))
+ 3803 137e 7F4F      		sbci r23,hi8(-(1))
+ 3804 1380 0E94 0000 		call date2str
+ 3805               	.L265:
+ 3806 1384 0E94 0000 		call print
+ 3808               	.LM423:
+ 3809 1388 8AE0      		ldi r24,lo8(10)
+ 3810 138a 0E94 0000 		call putch
+ 3812               	.LM424:
+ 3813 138e 1EC0      		rjmp .L223
+ 3814               	.L251:
+ 3816               	.LM425:
+ 3817 1390 20E0      		ldi r18,lo8(0)
+ 3818 1392 03C0      		rjmp .L264
+ 3819               	.L252:
+ 3821               	.LM426:
+ 3822 1394 21E0      		ldi r18,lo8(1)
+ 3823 1396 01C0      		rjmp .L264
+ 3824               	.L253:
+ 3826               	.LM427:
+ 3827 1398 22E0      		ldi r18,lo8(2)
+ 3828               	.L264:
+ 3829 139a 48E0      		ldi r20,lo8(8)
+ 3830 139c 6AA1      		ldd r22,Y+34
+ 3831 139e 7BA1      		ldd r23,Y+35
+ 3832 13a0 8CA1      		ldd r24,Y+36
+ 3833 13a2 9DA1      		ldd r25,Y+37
+ 3834 13a4 0E94 0000 		call monitorDump
+ 3835 13a8 DC01      		movw r26,r24
+ 3836 13aa CB01      		movw r24,r22
+ 3837 13ac 8AA3      		std Y+34,r24
+ 3838 13ae 9BA3      		std Y+35,r25
+ 3839 13b0 ACA3      		std Y+36,r26
+ 3840 13b2 BDA3      		std Y+37,r27
+ 3842               	.LM428:
+ 3843 13b4 0BC0      		rjmp .L223
+ 3844               	.L255:
+ 3846               	.LM429:
+ 3847 13b6 80E0      		ldi r24,lo8(monitorError)
+ 3848 13b8 90E0      		ldi r25,hi8(monitorError)
+ 3849               	.L266:
+ 3850 13ba 9C01      		movw r18,r24
+ 3851 13bc 4427      		clr r20
+ 3852 13be 37FD      		sbrc r19,7
+ 3853 13c0 4095      		com r20
+ 3854 13c2 542F      		mov r21,r20
+ 3855 13c4 CA01      		movw r24,r20
+ 3856 13c6 B901      		movw r22,r18
+ 3857 13c8 0E94 0000 		call print_P
+ 3858               	.L223:
+ 3860               	.LM430:
+ 3861 13cc 8820      		tst r8
+ 3862 13ce 09F4      		brne .+2
+ 3863 13d0 4DCE      		rjmp .L259
+ 3864               	/* epilogue: frame size=38 */
+ 3865 13d2 A696      		adiw r28,38
+ 3866 13d4 DEBF      		out __SP_H__,r29
+ 3867 13d6 CDBF      		out __SP_L__,r28
+ 3868 13d8 DF91      		pop r29
+ 3869 13da CF91      		pop r28
+ 3870 13dc 1F91      		pop r17
+ 3871 13de 0F91      		pop r16
+ 3872 13e0 FF90      		pop r15
+ 3873 13e2 EF90      		pop r14
+ 3874 13e4 DF90      		pop r13
+ 3875 13e6 CF90      		pop r12
+ 3876 13e8 BF90      		pop r11
+ 3877 13ea AF90      		pop r10
+ 3878 13ec 9F90      		pop r9
+ 3879 13ee 8F90      		pop r8
+ 3880 13f0 0895      		ret
+ 3881               	/* epilogue end (size=16) */
+ 3882               	/* function monitorMain size 486 (453) */
+ 3895               	.Lscope36:
+ 3897               	.global	main
+ 3899               	main:
+ 3901               	.LM431:
+ 3902               	/* prologue: frame size=0 */
+ 3903 13f2 C0E0      		ldi r28,lo8(__stack - 0)
+ 3904 13f4 D0E0      		ldi r29,hi8(__stack - 0)
+ 3905 13f6 DEBF      		out __SP_H__,r29
+ 3906 13f8 CDBF      		out __SP_L__,r28
+ 3907               	/* prologue end (size=4) */
+ 3909               	.LM432:
+ 3910 13fa C0E0      		ldi r28,lo8(0)
+ 3912               	.LM433:
+ 3913 13fc 0E94 0000 		call initPorts
+ 3915               	.LM434:
+ 3916 1400 0E94 0000 		call bootCheck
+ 3918               	.LM435:
+ 3919 1404 0E94 0000 		call initUart
+ 3920               	.L293:
+ 3922               	.LM436:
+ 3923 1408 0E94 0000 		call getch
+ 3924 140c 482F      		mov r20,r24
+ 3926               	.LM437:
+ 3927 140e 8091 0000 		lds r24,msg_cs
+ 3928 1412 8427      		eor r24,r20
+ 3929 1414 8093 0000 		sts msg_cs,r24
+ 3931               	.LM438:
+ 3932 1418 2C2F      		mov r18,r28
+ 3933 141a 3327      		clr r19
+ 3934 141c 2430      		cpi r18,4
+ 3935 141e 3105      		cpc r19,__zero_reg__
+ 3936 1420 09F4      		brne .+2
+ 3937 1422 48C0      		rjmp .L281
+ 3938 1424 2530      		cpi r18,5
+ 3939 1426 3105      		cpc r19,__zero_reg__
+ 3940 1428 54F4      		brge .L289
+ 3941 142a 2230      		cpi r18,2
+ 3942 142c 3105      		cpc r19,__zero_reg__
+ 3943 142e A1F1      		breq .L279
+ 3944 1430 2330      		cpi r18,3
+ 3945 1432 3105      		cpc r19,__zero_reg__
+ 3946 1434 ACF5      		brge .L280
+ 3947 1436 2115      		cp r18,__zero_reg__
+ 3948 1438 3105      		cpc r19,__zero_reg__
+ 3949 143a 71F0      		breq .L273
+ 3950 143c E5CF      		rjmp .L293
+ 3951               	.L289:
+ 3952 143e 2630      		cpi r18,6
+ 3953 1440 3105      		cpc r19,__zero_reg__
+ 3954 1442 09F4      		brne .+2
+ 3955 1444 47C0      		rjmp .L285
+ 3956 1446 2630      		cpi r18,6
+ 3957 1448 3105      		cpc r19,__zero_reg__
+ 3958 144a 0CF4      		brge .+2
+ 3959 144c 3FC0      		rjmp .L282
+ 3960 144e 2730      		cpi r18,7
+ 3961 1450 3105      		cpc r19,__zero_reg__
+ 3962 1452 09F4      		brne .+2
+ 3963 1454 56C0      		rjmp .L287
+ 3964 1456 D8CF      		rjmp .L293
+ 3965               	.L273:
+ 3967               	.LM439:
+ 3968 1458 4B31      		cpi r20,lo8(27)
+ 3969 145a 61F4      		brne .L274
+ 3971               	.LM440:
+ 3972 145c 80E0      		ldi r24,lo8(rx_buffer)
+ 3973 145e 90E0      		ldi r25,hi8(rx_buffer)
+ 3974 1460 9093 0000 		sts (rx_pntr)+1,r25
+ 3975 1464 8093 0000 		sts rx_pntr,r24
+ 3977               	.LM441:
+ 3978 1468 3093 0000 		sts (msg_size)+1,r19
+ 3979 146c 2093 0000 		sts msg_size,r18
+ 3981               	.LM442:
+ 3982 1470 C2E0      		ldi r28,lo8(2)
+ 3983 1472 CACF      		rjmp .L293
+ 3984               	.L274:
+ 3986               	.LM443:
+ 3987 1474 1092 0000 		sts msg_cs,__zero_reg__
+ 3989               	.LM444:
+ 3990 1478 4132      		cpi r20,lo8(33)
+ 3991 147a 59F4      		brne .L276
+ 3993               	.LM445:
+ 3994 147c 8091 0000 		lds r24,monitor_cnt
+ 3995 1480 8F5F      		subi r24,lo8(-(1))
+ 3996 1482 8093 0000 		sts monitor_cnt,r24
+ 3998               	.LM446:
+ 3999 1486 8330      		cpi r24,lo8(3)
+ 4000 1488 09F0      		breq .+2
+ 4001 148a BECF      		rjmp .L293
+ 4003               	.LM447:
+ 4004 148c 0E94 0000 		call monitorMain
+ 4005 1490 BBCF      		rjmp .L293
+ 4006               	.L276:
+ 4008               	.LM448:
+ 4009 1492 1092 0000 		sts monitor_cnt,__zero_reg__
+ 4011               	.LM449:
+ 4012 1496 B8CF      		rjmp .L293
+ 4013               	.L279:
+ 4015               	.LM450:
+ 4016 1498 4093 0000 		sts sequence_number,r20
+ 4018               	.LM451:
+ 4019 149c C3E0      		ldi r28,lo8(3)
+ 4021               	.LM452:
+ 4022 149e B4CF      		rjmp .L293
+ 4023               	.L280:
+ 4025               	.LM453:
+ 4026 14a0 842F      		mov r24,r20
+ 4027 14a2 9927      		clr r25
+ 4028 14a4 982F      		mov r25,r24
+ 4029 14a6 8827      		clr r24
+ 4030 14a8 9093 0000 		sts (msg_size)+1,r25
+ 4031 14ac 8093 0000 		sts msg_size,r24
+ 4033               	.LM454:
+ 4034 14b0 C4E0      		ldi r28,lo8(4)
+ 4036               	.LM455:
+ 4037 14b2 AACF      		rjmp .L293
+ 4038               	.L281:
+ 4040               	.LM456:
+ 4041 14b4 8091 0000 		lds r24,msg_size
+ 4042 14b8 9091 0000 		lds r25,(msg_size)+1
+ 4043 14bc 840F      		add r24,r20
+ 4044 14be 911D      		adc r25,__zero_reg__
+ 4045 14c0 9093 0000 		sts (msg_size)+1,r25
+ 4046 14c4 8093 0000 		sts msg_size,r24
+ 4048               	.LM457:
+ 4049 14c8 C5E0      		ldi r28,lo8(5)
+ 4051               	.LM458:
+ 4052 14ca 9ECF      		rjmp .L293
+ 4053               	.L282:
+ 4055               	.LM459:
+ 4056 14cc 4E30      		cpi r20,lo8(14)
+ 4057 14ce E9F4      		brne .L288
+ 4059               	.LM460:
+ 4060 14d0 C6E0      		ldi r28,lo8(6)
+ 4061 14d2 9ACF      		rjmp .L293
+ 4062               	.L285:
+ 4064               	.LM461:
+ 4065 14d4 E091 0000 		lds r30,rx_pntr
+ 4066 14d8 F091 0000 		lds r31,(rx_pntr)+1
+ 4067 14dc 4193      		st Z+,r20
+ 4068 14de F093 0000 		sts (rx_pntr)+1,r31
+ 4069 14e2 E093 0000 		sts rx_pntr,r30
+ 4071               	.LM462:
+ 4072 14e6 8091 0000 		lds r24,msg_size
+ 4073 14ea 9091 0000 		lds r25,(msg_size)+1
+ 4074 14ee 0197      		sbiw r24,1
+ 4075 14f0 9093 0000 		sts (msg_size)+1,r25
+ 4076 14f4 8093 0000 		sts msg_size,r24
+ 4078               	.LM463:
+ 4079 14f8 892B      		or r24,r25
+ 4080 14fa 09F0      		breq .+2
+ 4081 14fc 85CF      		rjmp .L293
+ 4083               	.LM464:
+ 4084 14fe C7E0      		ldi r28,lo8(7)
+ 4086               	.LM465:
+ 4087 1500 83CF      		rjmp .L293
+ 4088               	.L287:
+ 4090               	.LM466:
+ 4091 1502 8823      		tst r24
+ 4092 1504 11F4      		brne .L288
+ 4094               	.LM467:
+ 4095 1506 0E94 0000 		call handleMessage
+ 4096               	.L288:
+ 4098               	.LM468:
+ 4099 150a C0E0      		ldi r28,lo8(0)
+ 4101               	.LM469:
+ 4102 150c 7DCF      		rjmp .L293
+ 4103               	/* epilogue: frame size=0 */
+ 4104               	/* epilogue: noreturn */
+ 4105               	/* epilogue end (size=0) */
+ 4106               	/* function main size 141 (137) */
+ 4112               	.Lscope37:
+ 4113               		.comm monitorBuf,256,1
+ 4114               		.comm rx_buffer,300,1
+ 4115               		.comm tx_buffer,300,1
+ 4141               		.text
+ 4143               	Letext:
+ 4144               	/* File "stk500_2_boot.c": code 2767 = 0x0acf (2522), prologues 110, epilogues 135 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 stk500_2_boot.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:90     .bss:00000000 echo
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:96     .bss:00000001 j
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:102    .bss:00000003 i
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:108    .bss:00000005 answer_id
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:114    .bss:00000006 sequence_number
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:120    .bss:00000007 n_pages
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:126    .bss:00000008 n_bytes
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:132    .bss:0000000a address_eeprom
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:138    .bss:0000000c address_flash
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:144    .bss:00000010 msg_cs
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:150    .bss:00000011 msg_size
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:156    .data:00000000 answer_id_pntr
+                            *COM*:0000012c tx_buffer
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:161    .data:00000002 size_pntr
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:166    .data:00000004 tx_pntr
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:171    .data:00000006 rx_pntr
+                            *COM*:0000012c rx_buffer
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:178    .bss:00000013 bootuart1
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:184    .bss:00000014 bootuart0
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:190    .bss:00000015 monitor_cnt
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:196    .data:00000008 rtc
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:201    .progmem.data:00000000 monitorError
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:205    .progmem.data:00000007 monitorQuit
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:209    .progmem.data:00000010 monitorWelcome
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:217    .text:00000000 set_clock
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:357    .text:000000ec get_time
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:423    .text:00000150 get_date
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:498    .text:000001c4 time2str
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:564    .text:00000202 date2str
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:628    .text:00000240 initPorts
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:664    .text:0000026a bootCheck
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:734    .text:000002aa initUart
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:797    .text:000002ec cmdSignOn
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:887    .text:00000362 cmdGetParameter
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1005   .text:00000412 cmdSetParameter
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1036   .text:00000436 cmdEnterProgmodeIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1067   .text:0000045a cmdLeaveProgmodeIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1098   .text:0000047e cmdChipEraseIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1161   .text:000004c8 cmdReadSignatureIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1249   .text:00000546 cmdLoadAddress
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1312   .text:000005b2 cmdProgramFlashIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1686   .text:00000824 cmdReadFlashIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1793   .text:000008f2 putch
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1839   .text:0000091c getch
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1902   .text:00000958 sendResponse
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:1987   .text:000009d0 eeprom_wb
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2019   .text:000009e0 cmdProgramEepromIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2127   .text:00000aac eeprom_rb
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2159   .text:00000abc cmdReadEepromIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2247   .text:00000b6e readBits
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2273   .text:00000b82 cmdReadFuseLockIsp
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2376   .text:00000c12 handleMessage
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2566   .text:00000cfe monitorInit
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2594   .text:00000d0e print_P
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2668   .text:00000d58 monitorReadLine
+                            *COM*:00000100 monitorBuf
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2728   .text:00000d94 print
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2766   .text:00000db2 monitorChange
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:2816   .text:00000dde monitorDump
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3055   .text:00000f32 htoi
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3090   .text:00000f4c getValue
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3239   .progmem.data:0000001a __c.0
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3243   .progmem.data:00000033 __c.1
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3247   .progmem.data:00000050 __c.2
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3251   .progmem.data:00000070 __c.3
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3255   .progmem.data:0000008d __c.4
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3259   .progmem.data:000000aa __c.5
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3265   .text:00001026 monitorMain
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:3899   .text:000013f2 main
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/cc6dbaaa.s:4143   .text:0000150e Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+ultoa
+isprint
+toupper
+isblank
+isxdigit
+__stack

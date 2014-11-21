@@ -1,0 +1,16 @@
+Process 
+
+1) when finished copy tor E_block_XX_YY
+	XX = Main version
+	YY = Sub  version
+2) The currect version put in E_block
+
+E_block1 	 Eblock first release
+E_block_1_1	 Eblock proto v 1.1		22/2/07
+			Mega32  	V.1.1 (Change log in Eblock_RFC )
+			7Segment 	V.1.0
+(Work)
+E_block_1_2	
+		 Eblock_proto v 1.2		18/6/50  Expand vertical bar to the edge
+		 E_7Segment_1_1
+		 Mega32  V.1.1  (Not change)

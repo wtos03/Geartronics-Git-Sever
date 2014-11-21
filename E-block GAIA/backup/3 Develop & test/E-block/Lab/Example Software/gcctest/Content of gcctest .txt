@@ -1,0 +1,61 @@
+/*
+AVR-GCC test program #1
+	Flashes the LEDs on Port B with a hard coded delay loop
+
+AVR-GCC test program #2
+	Flashes the LEDs on Port B by using a timer interrupt
+
+AVR-GCC test program #3 
+	Falling edge on Port D2 creates the external interrupt INT0
+which toggles 4 LEDs on PortB. Riding edge on Port D3
+creates external INT1 which toggles the other 4 LEDs.
+Mega: INT0, INT are always low activated and triggered by
+input on Port D0, D1.
+
+AVR-GCC test program #4
+	Uses the UART to communicate with a terminal program on the pc.
+The "tranceive complete" interrupt is used to send the string 
+"Serial Data from AVR receiced###" continuously to the pc.
+When a byte was received from the pc, the "receive complete"
+interrupt is called, which outputs the byte to PortB where the
+LEDs visualize the 8 bits it consists of.
+UART format: 9600 baud, 8bit, 1 stopbit, no parity
+	
+	AVR-GCC test program #5
+	read and writes the built in EEprom via the interrupt driven UART.
+The "tranceive complete" interrupt is used to send the contents of
+the EEprom continuously to the PC.
+When a byte was received from the pc, the "receive complete"
+interrupt is called, which outputs the byte to PortB and stores
+it into the EEprom. UART format: 9600 baud, 8bit, 1 stopbit, no parity             
+
+AVR-GCC test program #6 
+	Demonstrates use of floating point library.
+Executes 4 simple floating point instructions.
+These are converted to 16bit fixed point
+and transmitted to the PC via the UART.
+The results can be watched with a terminal program:
+$0000 (start identifier)
+$006b = 107 = 10.0*(7.5+3.2)
+$002b =  43 = 10.0*(7.5-3.2)
+$00f0 = 240 = 10.0*(7.5*3.2)
+$0017 =  23 = 10.0*(7.5/3.2)
+
+AVR-GCC test program #7
+	Demonstrates simple printing to and reading from the UART
+
+AVR-GCC test program #8 
+	demonstrates how to access data in program memory
+which is not copied to RAM.
+
+AVR-GCC test program #9
+	Calculates the square root of unsigned 16bit values
+and outputs the 8bit results bitwise using the LEDs onPortB. 
+Also the results and calculation times are printed via 
+UART (9600 baud, 8 data bits, 1 stop bit, no parity)
+-shows how to inteface an assembler module in C.
+-implements simplified sprintf
+-implements buffered UART I/O
+-implememnts highres time measurement using 16bit TCNT1
+
+*/

@@ -1,0 +1,252 @@
+
+gcctest4_mo.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000122  00000000  00000000  00000094  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000022  00800060  00000122  000001b6  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000003  00800082  00800082  000001d8  2**0
+                  ALLOC
+  3 .noinit       00000000  00800085  00800085  000001d8  2**0
+                  CONTENTS
+  4 .eeprom       00000000  00810000  00810000  000001d8  2**0
+                  CONTENTS
+  5 .debug_aranges 00000014  00000000  00000000  000001d8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_pubnames 00000057  00000000  00000000  000001ec  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   00000151  00000000  00000000  00000243  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 000000c6  00000000  00000000  00000394  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   0000011a  00000000  00000000  0000045a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000000dd  00000000  00000000  00000574  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26
+   2:	2b c0       	rjmp	.+86     	; 0x5a
+   4:	2a c0       	rjmp	.+84     	; 0x5a
+   6:	29 c0       	rjmp	.+82     	; 0x5a
+   8:	28 c0       	rjmp	.+80     	; 0x5a
+   a:	27 c0       	rjmp	.+78     	; 0x5a
+   c:	26 c0       	rjmp	.+76     	; 0x5a
+   e:	25 c0       	rjmp	.+74     	; 0x5a
+  10:	24 c0       	rjmp	.+72     	; 0x5a
+  12:	23 c0       	rjmp	.+70     	; 0x5a
+  14:	22 c0       	rjmp	.+68     	; 0x5a
+  16:	4b c0       	rjmp	.+150    	; 0xae
+  18:	20 c0       	rjmp	.+64     	; 0x5a
+  1a:	20 c0       	rjmp	.+64     	; 0x5c
+  1c:	1e c0       	rjmp	.+60     	; 0x5a
+  1e:	1d c0       	rjmp	.+58     	; 0x5a
+  20:	1c c0       	rjmp	.+56     	; 0x5a
+  22:	1b c0       	rjmp	.+54     	; 0x5a
+  24:	1a c0       	rjmp	.+52     	; 0x5a
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_copy_data>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	e2 e2       	ldi	r30, 0x22	; 34
+  3a:	f1 e0       	ldi	r31, 0x01	; 1
+  3c:	02 c0       	rjmp	.+4      	; 0x42
+
+0000003e <.do_copy_data_loop>:
+  3e:	05 90       	lpm	r0, Z+
+  40:	0d 92       	st	X+, r0
+
+00000042 <.do_copy_data_start>:
+  42:	a2 38       	cpi	r26, 0x82	; 130
+  44:	b1 07       	cpc	r27, r17
+  46:	d9 f7       	brne	.-10     	; 0x3e
+
+00000048 <__do_clear_bss>:
+  48:	10 e0       	ldi	r17, 0x00	; 0
+  4a:	a2 e8       	ldi	r26, 0x82	; 130
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	01 c0       	rjmp	.+2      	; 0x52
+
+00000050 <.do_clear_bss_loop>:
+  50:	1d 92       	st	X+, r1
+
+00000052 <.do_clear_bss_start>:
+  52:	a5 38       	cpi	r26, 0x85	; 133
+  54:	b1 07       	cpc	r27, r17
+  56:	e1 f7       	brne	.-8      	; 0x50
+  58:	56 c0       	rjmp	.+172    	; 0x106
+
+0000005a <__bad_interrupt>:
+  5a:	d2 cf       	rjmp	.-92     	; 0x0
+
+0000005c <__vector_13>:
+
+
+SIGNAL(SIG_UART_TRANS)      
+/* signal handler for uart txd ready interrupt */
+{
+  5c:	1f 92       	push	r1
+  5e:	0f 92       	push	r0
+  60:	0f b6       	in	r0, 0x3f	; 63
+  62:	0f 92       	push	r0
+  64:	11 24       	eor	r1, r1
+  66:	8f 93       	push	r24
+  68:	9f 93       	push	r25
+  6a:	ef 93       	push	r30
+  6c:	ff 93       	push	r31
+    uart_data_ptr++;
+  6e:	e0 91 82 00 	lds	r30, 0x0082
+  72:	f0 91 83 00 	lds	r31, 0x0083
+  76:	31 96       	adiw	r30, 0x01	; 1
+  78:	f0 93 83 00 	sts	0x0083, r31
+  7c:	e0 93 82 00 	sts	0x0082, r30
+  80:	31 97       	sbiw	r30, 0x01	; 1
+
+    if (--uart_counter)
+  82:	80 91 84 00 	lds	r24, 0x0084
+  86:	81 50       	subi	r24, 0x01	; 1
+  88:	80 93 84 00 	sts	0x0084, r24
+  8c:	80 91 84 00 	lds	r24, 0x0084
+  90:	88 23       	and	r24, r24
+  92:	21 f0       	breq	.+8      	; 0x9c
+	UDR &= *uart_data_ptr;
+  94:	8c b1       	in	r24, 0x0c	; 12
+  96:	91 81       	ldd	r25, Z+1	; 0x01
+  98:	89 23       	and	r24, r25
+  9a:	8c b9       	out	0x0c, r24	; 12
+  9c:	ff 91       	pop	r31
+  9e:	ef 91       	pop	r30
+  a0:	9f 91       	pop	r25
+  a2:	8f 91       	pop	r24
+  a4:	0f 90       	pop	r0
+  a6:	0f be       	out	0x3f, r0	; 63
+  a8:	0f 90       	pop	r0
+  aa:	1f 90       	pop	r1
+  ac:	18 95       	reti
+
+000000ae <__vector_11>:
+//    outp(*uart_data_ptr, UDR);       /* write byte to data buffer */
+}
+
+
+SIGNAL(SIG_UART_RECV)      
+/* signal handler for receive complete interrupt */
+{
+  ae:	1f 92       	push	r1
+  b0:	0f 92       	push	r0
+  b2:	0f b6       	in	r0, 0x3f	; 63
+  b4:	0f 92       	push	r0
+  b6:	11 24       	eor	r1, r1
+  b8:	8f 93       	push	r24
+  ba:	9f 93       	push	r25
+    register char led;
+	led = UDR;
+  bc:	9c b1       	in	r25, 0x0c	; 12
+//  led = inp(UDR);        /* read byte for UART data buffer */
+	PORTC &= ~led;
+  be:	90 95       	com	r25
+  c0:	85 b3       	in	r24, 0x15	; 21
+  c2:	89 23       	and	r24, r25
+  c4:	85 bb       	out	0x15, r24	; 21
+  c6:	9f 91       	pop	r25
+  c8:	8f 91       	pop	r24
+  ca:	0f 90       	pop	r0
+  cc:	0f be       	out	0x3f, r0	; 63
+  ce:	0f 90       	pop	r0
+  d0:	1f 90       	pop	r1
+  d2:	18 95       	reti
+
+000000d4 <uart_send>:
+//  outp(~led, PORTB);     /* output received byte to PortB (LEDs) */
+}
+
+
+void uart_send(u08 *buf, u08 size)
+/* send buffer <buf> to uart */
+{   
+  d4:	fc 01       	movw	r30, r24
+    if (!uart_counter) {
+  d6:	80 91 84 00 	lds	r24, 0x0084
+  da:	88 23       	and	r24, r24
+  dc:	59 f4       	brne	.+22     	; 0xf4
+        /* write first byte to data buffer */
+        uart_data_ptr  = buf;
+  de:	f0 93 83 00 	sts	0x0083, r31
+  e2:	e0 93 82 00 	sts	0x0082, r30
+        uart_counter   = size;
+  e6:	60 93 84 00 	sts	0x0084, r22
+ //     outp(*buf, UDR); 
+		uart_send(*buf, UDR);
+  ea:	80 81       	ld	r24, Z
+  ec:	e8 2f       	mov	r30, r24
+  ee:	ff 27       	eor	r31, r31
+  f0:	6c b1       	in	r22, 0x0c	; 12
+  f2:	f1 cf       	rjmp	.-30     	; 0xd6
+  f4:	08 95       	ret
+  f6:	08 95       	ret
+
+000000f8 <uart_init>:
+    }
+}
+
+
+void uart_init(void)
+/* initialize uart */
+{
+    /* enable RxD/TxD and ints */
+    UCSRB &= ((1<<RXCIE)|(1<<TXCIE)|(1<<RXEN)|(1<<TXEN));
+  f8:	8a b1       	in	r24, 0x0a	; 10
+  fa:	88 7d       	andi	r24, 0xD8	; 216
+  fc:	8a b9       	out	0x0a, r24	; 10
+//	outp((1<<RXCIE)|(1<<TXCIE)|(1<<RXEN)|(1<<TXEN),UCSRB);       
+    /* set baud rate */
+	UBRRL&= ((u08)UART_BAUD_SELECT);
+  fe:	89 b1       	in	r24, 0x09	; 9
+ 100:	89 71       	andi	r24, 0x19	; 25
+ 102:	89 b9       	out	0x09, r24	; 9
+ 104:	08 95       	ret
+
+00000106 <main>:
+//    outp((u08)UART_BAUD_SELECT,UBRRL);          
+}
+
+
+int main(void)
+{
+ 106:	cf e5       	ldi	r28, 0x5F	; 95
+ 108:	d4 e0       	ldi	r29, 0x04	; 4
+ 10a:	de bf       	out	0x3e, r29	; 62
+ 10c:	cd bf       	out	0x3d, r28	; 61
+		DDRC = 0x7E;
+ 10e:	8e e7       	ldi	r24, 0x7E	; 126
+ 110:	84 bb       	out	0x14, r24	; 20
+		PORTC = 0x00;
+ 112:	15 ba       	out	0x15, r1	; 21
+
+//    outp(0x7E ,DDRC);      /* PortB output */
+//    outp(0x00, PORTB);     /* switch LEDs on */
+
+    uart_init();
+ 114:	f1 df       	rcall	.-30     	; 0xf8
+    sei();                 /* enable interrupts */
+ 116:	78 94       	sei
+
+    for (;;) {             /* loop forever */
+        uart_send("Serial Data from AVR received###", 32);
+ 118:	60 e2       	ldi	r22, 0x20	; 32
+ 11a:	80 e6       	ldi	r24, 0x60	; 96
+ 11c:	90 e0       	ldi	r25, 0x00	; 0
+ 11e:	da df       	rcall	.-76     	; 0xd4
+ 120:	fb cf       	rjmp	.-10     	; 0x118

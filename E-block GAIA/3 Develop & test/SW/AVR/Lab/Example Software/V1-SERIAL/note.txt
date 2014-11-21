@@ -1,0 +1,6 @@
+Pitfall
+======
+
+1) Forget to initial INPUT/OUTPUT 
+2) use &= ~()  and |=  for setting value to avoid affect others bits
+

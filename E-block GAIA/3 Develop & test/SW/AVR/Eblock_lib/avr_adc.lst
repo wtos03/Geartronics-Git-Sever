@@ -1,0 +1,364 @@
+   1               		.file	"avr_adc.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  88               	.global	adc_init
+  90               	adc_init:
+   1:../../Eblock_lib/avr_adc.c **** /*!  
+   2:../../Eblock_lib/avr_adc.c **** 	\file   	avr_adc.c
+   3:../../Eblock_lib/avr_adc.c **** 	\brief  	Analog to digital module
+   4:../../Eblock_lib/avr_adc.c **** 	\ingroup	avr_adc
+   5:../../Eblock_lib/avr_adc.c **** 	\par  		Convert analog voltage to Digital value 
+   6:../../Eblock_lib/avr_adc.c **** 	\n			There is two modes Polling using adc_read() and interrupt
+   7:../../Eblock_lib/avr_adc.c **** 	\n			using adc_int_read()  Need to call once to set ADC channel
+   8:../../Eblock_lib/avr_adc.c **** 	\n			Before initialize interrupt using adc_init()
+   9:../../Eblock_lib/avr_adc.c ****  	
+  10:../../Eblock_lib/avr_adc.c ****  	\n Original written for :   \b for bold ATMEGA32
+  11:../../Eblock_lib/avr_adc.c ****  	\n CPU port/tested		:   ATMEGA32
+  12:../../Eblock_lib/avr_adc.c ****  	\n Hardware use			:   E_Mega32
+  13:../../Eblock_lib/avr_adc.c ****  	\n Port use				:   ADC0 - ADC7
+  14:../../Eblock_lib/avr_adc.c ****  	\n Memory	FLASH		:   XXX
+  15:../../Eblock_lib/avr_adc.c ****  	\n		RAM				:   XXX
+  16:../../Eblock_lib/avr_adc.c ****  	\n		EEPROM			:   XXX
+  17:../../Eblock_lib/avr_adc.c ****  	\n Reference Document		:   Document describe algorithm
+  18:../../Eblock_lib/avr_adc.c **** 
+  19:../../Eblock_lib/avr_adc.c **** 	\version 0.1
+  20:../../Eblock_lib/avr_adc.c ****  	\author  Wichai / wichai@geartronics.net
+  21:../../Eblock_lib/avr_adc.c **** 	\date 	16/09/2008
+  22:../../Eblock_lib/avr_adc.c **** 
+  23:../../Eblock_lib/avr_adc.c **** 	\par Update History
+  24:../../Eblock_lib/avr_adc.c ****  	\nDate			By 					Comments
+  25:../../Eblock_lib/avr_adc.c ****  	\n----			--					--------
+  26:../../Eblock_lib/avr_adc.c **** 	\n 
+  27:../../Eblock_lib/avr_adc.c ****  
+  28:../../Eblock_lib/avr_adc.c **** */
+  29:../../Eblock_lib/avr_adc.c **** 
+  30:../../Eblock_lib/avr_adc.c **** 
+  31:../../Eblock_lib/avr_adc.c **** 
+  32:../../Eblock_lib/avr_adc.c **** 
+  33:../../Eblock_lib/avr_adc.c **** 
+  34:../../Eblock_lib/avr_adc.c **** 
+  35:../../Eblock_lib/avr_adc.c **** //! Include file
+  36:../../Eblock_lib/avr_adc.c **** #include <stdlib.h>
+  37:../../Eblock_lib/avr_adc.c **** #include <avr/interrupt.h>
+  38:../../Eblock_lib/avr_adc.c **** #include "avr_adc.h"
+  39:../../Eblock_lib/avr_adc.c **** #include "avr_serial.h"
+  40:../../Eblock_lib/avr_adc.c **** 
+  41:../../Eblock_lib/avr_adc.c **** //! Global variable
+  42:../../Eblock_lib/avr_adc.c **** 
+  43:../../Eblock_lib/avr_adc.c **** uint16_t g_value;    // ADC value from interrupt read
+  44:../../Eblock_lib/avr_adc.c **** 
+  45:../../Eblock_lib/avr_adc.c **** 
+  46:../../Eblock_lib/avr_adc.c **** // Start routine here
+  47:../../Eblock_lib/avr_adc.c **** 
+  48:../../Eblock_lib/avr_adc.c **** 
+  49:../../Eblock_lib/avr_adc.c **** /*!	\brief  Initial ADC Module
+  50:../../Eblock_lib/avr_adc.c **** 	\param  mode	Mode of operation and Clock prescale for division
+  51:../../Eblock_lib/avr_adc.c **** 	\n		Voltage reference for ADC
+  52:../../Eblock_lib/avr_adc.c **** 	\n			- 0 = AREF pin
+  53:../../Eblock_lib/avr_adc.c **** 	\n			- 1 = AVCC
+  54:../../Eblock_lib/avr_adc.c **** 	\n			- 3 = Internal 2.56 v
+  55:../../Eblock_lib/avr_adc.c **** 	\n		Interrupt Enable  Disable
+  56:../../Eblock_lib/avr_adc.c **** 	\n			DISABLE	Disable Interrupt
+  57:../../Eblock_lib/avr_adc.c ****     \n    		ENABLE 	Enable Interrupt
+  58:../../Eblock_lib/avr_adc.c **** 	\return None
+  59:../../Eblock_lib/avr_adc.c **** 	\par Port/Periheral Usage 
+  60:../../Eblock_lib/avr_adc.c **** 	\n   ADC0 - ADC7
+  61:../../Eblock_lib/avr_adc.c **** 	\par Theory of Operation   
+  62:../../Eblock_lib/avr_adc.c **** 	\n   To start interrupt enable  ADIE must be set
+  63:../../Eblock_lib/avr_adc.c **** 	\n   Interrrupt mode will turn on auto trigger mode 
+  64:../../Eblock_lib/avr_adc.c **** 	\n	 default mode is TIMER0 COMAPRE MATCH which using by Display 7 segments 
+  65:../../Eblock_lib/avr_adc.c **** 	\n	 (free running mean no trigger) to change mode set ADTS bits in SFIOR
+  66:../../Eblock_lib/avr_adc.c **** 	\n   To set ADSC  the ADC module will start conversion immediately 
+  67:../../Eblock_lib/avr_adc.c **** 	\n	
+  68:../../Eblock_lib/avr_adc.c **** 	\par Pseudo code
+  69:../../Eblock_lib/avr_adc.c **** 	\n   Set register ADMUX, ADCSRA depend on mode
+  70:../../Eblock_lib/avr_adc.c **** 	\note  If interrupt enable Need to use ??? to get value from ISR 
+  71:../../Eblock_lib/avr_adc.c **** 	\bug    <bug to fix>
+  72:../../Eblock_lib/avr_adc.c **** 
+  73:../../Eblock_lib/avr_adc.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  74:../../Eblock_lib/avr_adc.c **** 	\sa	 <see also two name joined by ::>
+  75:../../Eblock_lib/avr_adc.c **** */     
+  76:../../Eblock_lib/avr_adc.c **** 
+  77:../../Eblock_lib/avr_adc.c **** void adc_init(uint8_t mode, uint8_t voltage, uint8_t enable)
+  78:../../Eblock_lib/avr_adc.c **** {
+  92               	.LM1:
+  93               	/* prologue: frame size=0 */
+  94               	/* prologue end (size=0) */
+  95 0000 282F      		mov r18,r24
+  79:../../Eblock_lib/avr_adc.c ****   
+  80:../../Eblock_lib/avr_adc.c **** // Set voltage reference 	
+  81:../../Eblock_lib/avr_adc.c **** 	ADMUX  =  voltage;
+  97               	.LM2:
+  98 0002 67B9      		out 39-0x20,r22
+  82:../../Eblock_lib/avr_adc.c ****  
+  83:../../Eblock_lib/avr_adc.c **** 	if (enable)
+ 100               	.LM3:
+ 101 0004 4423      		tst r20
+ 102 0006 29F0      		breq .L2
+  84:../../Eblock_lib/avr_adc.c **** 	{
+  85:../../Eblock_lib/avr_adc.c **** 		mode  |= ((1 << ADATE) | (1 << ADIE) | (1<< ADSC) ); // Enable interrupt and start conversion in 
+ 104               	.LM4:
+ 105 0008 2866      		ori r18,lo8(104)
+  86:../../Eblock_lib/avr_adc.c ****         SFIOR |= ((1 << ADTS1) | (1 << ADTS0)); // Trigger on timer0 compare match
+ 107               	.LM5:
+ 108 000a 80B7      		in r24,80-0x20
+ 109 000c 8066      		ori r24,lo8(96)
+ 110 000e 80BF      		out 80-0x20,r24
+ 111 0010 01C0      		rjmp .L3
+ 112               	.L2:
+  87:../../Eblock_lib/avr_adc.c **** 	}
+  88:../../Eblock_lib/avr_adc.c **** 	else
+  89:../../Eblock_lib/avr_adc.c **** 	{
+  90:../../Eblock_lib/avr_adc.c **** 		mode  &= ~((1 << ADIE) | (1<< ADSC));  // Disable interrupt and stop conversion 
+ 114               	.LM6:
+ 115 0012 277B      		andi r18,lo8(-73)
+ 116               	.L3:
+  91:../../Eblock_lib/avr_adc.c **** 	}
+  92:../../Eblock_lib/avr_adc.c **** 	ADCSRA = mode;	
+ 118               	.LM7:
+ 119 0014 26B9      		out 38-0x20,r18
+ 120               	/* epilogue: frame size=0 */
+ 121 0016 0895      		ret
+ 122               	/* epilogue end (size=1) */
+ 123               	/* function adc_init size 12 (11) */
+ 125               	.Lscope0:
+ 128               	.global	adc_read
+ 130               	adc_read:
+  93:../../Eblock_lib/avr_adc.c **** }
+  94:../../Eblock_lib/avr_adc.c ****  
+  95:../../Eblock_lib/avr_adc.c ****  
+  96:../../Eblock_lib/avr_adc.c **** 
+  97:../../Eblock_lib/avr_adc.c **** 
+  98:../../Eblock_lib/avr_adc.c **** /*!	\brief  read ADC on specific channel
+  99:../../Eblock_lib/avr_adc.c **** 	\param  channel  to read adc  ( See table for Differential INput and Gain)
+ 100:../../Eblock_lib/avr_adc.c **** 	\return None
+ 101:../../Eblock_lib/avr_adc.c **** 	\par Port/Periheral Usage 
+ 102:../../Eblock_lib/avr_adc.c **** 	\n  ADC0 -ADC7
+ 103:../../Eblock_lib/avr_adc.c **** 	\par Theory of Operation   
+ 104:../../Eblock_lib/avr_adc.c **** 	\n   Convert ADC and wait to finished  
+ 105:../../Eblock_lib/avr_adc.c **** 	\par Pseudo code
+ 106:../../Eblock_lib/avr_adc.c **** 	\n   - Set channel
+ 107:../../Eblock_lib/avr_adc.c **** 	\n   - Start conversion
+ 108:../../Eblock_lib/avr_adc.c **** 	\n	 - Wait to finish
+ 109:../../Eblock_lib/avr_adc.c **** 	\n	 - Stop conversion
+ 110:../../Eblock_lib/avr_adc.c **** 	\note   
+ 111:../../Eblock_lib/avr_adc.c **** 	\bug    <bug to fix>
+ 112:../../Eblock_lib/avr_adc.c **** 
+ 113:../../Eblock_lib/avr_adc.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 114:../../Eblock_lib/avr_adc.c **** 	\sa	 <see also two name joined by ::>
+ 115:../../Eblock_lib/avr_adc.c **** */     
+ 116:../../Eblock_lib/avr_adc.c **** 
+ 117:../../Eblock_lib/avr_adc.c **** uint16_t adc_read(uint8_t channel)
+ 118:../../Eblock_lib/avr_adc.c **** {
+ 132               	.LM8:
+ 133               	/* prologue: frame size=0 */
+ 134               	/* prologue end (size=0) */
+ 119:../../Eblock_lib/avr_adc.c ****   int16_t  value;
+ 120:../../Eblock_lib/avr_adc.c ****   
+ 121:../../Eblock_lib/avr_adc.c **** // Before that need to clear ADATE and ADEN
+ 122:../../Eblock_lib/avr_adc.c ****     ADCSRA &= ~((1 << ADEN) | (1<< ADATE));
+ 136               	.LM9:
+ 137 0018 96B1      		in r25,38-0x20
+ 138 001a 9F75      		andi r25,lo8(95)
+ 139 001c 96B9      		out 38-0x20,r25
+ 123:../../Eblock_lib/avr_adc.c **** 
+ 124:../../Eblock_lib/avr_adc.c **** // Set channel
+ 125:../../Eblock_lib/avr_adc.c ****     ADMUX |= channel;
+ 141               	.LM10:
+ 142 001e 97B1      		in r25,39-0x20
+ 143 0020 982B      		or r25,r24
+ 144 0022 97B9      		out 39-0x20,r25
+ 126:../../Eblock_lib/avr_adc.c **** 	
+ 127:../../Eblock_lib/avr_adc.c **** // Enable and start conversion
+ 128:../../Eblock_lib/avr_adc.c **** 	ADCSRA |= ((1<<ADEN) |(1<<ADSC)) ;
+ 146               	.LM11:
+ 147 0024 86B1      		in r24,38-0x20
+ 148 0026 806C      		ori r24,lo8(-64)
+ 149 0028 86B9      		out 38-0x20,r24
+ 150               	.L5:
+ 129:../../Eblock_lib/avr_adc.c **** 
+ 130:../../Eblock_lib/avr_adc.c **** // Start conversion    
+ 131:../../Eblock_lib/avr_adc.c **** //       ADCSRA |= (1<<ADSC);        // do single conversion
+ 132:../../Eblock_lib/avr_adc.c **** 
+ 133:../../Eblock_lib/avr_adc.c **** //  while(!(ADCSRA & (1<<ADIF)));    // wait for conversion done, ADIF flag active  (Interrupt)
+ 134:../../Eblock_lib/avr_adc.c **** 	while(ADCSRA & (1 << ADSC));		// wait until conversion complete (Normal COnversion)
+ 152               	.LM12:
+ 153 002a 3699      		sbic 38-0x20,6
+ 154 002c FECF      		rjmp .L5
+ 135:../../Eblock_lib/avr_adc.c ****         
+ 136:../../Eblock_lib/avr_adc.c **** //Read value
+ 137:../../Eblock_lib/avr_adc.c ****  
+ 138:../../Eblock_lib/avr_adc.c **** 	value = ADCW;
+ 156               	.LM13:
+ 157 002e 84B1      		in r24,36-0x20
+ 158 0030 95B1      		in r25,(36)+1-0x20
+ 139:../../Eblock_lib/avr_adc.c **** 
+ 140:../../Eblock_lib/avr_adc.c **** // Stop conversion
+ 141:../../Eblock_lib/avr_adc.c ****     ADCSRA &= ~(1 << ADEN);
+ 160               	.LM14:
+ 161 0032 3798      		cbi 38-0x20,7
+ 162               	/* epilogue: frame size=0 */
+ 163 0034 0895      		ret
+ 164               	/* epilogue end (size=1) */
+ 165               	/* function adc_read size 15 (14) */
+ 170               	.Lscope1:
+ 173               	.global	adc_int_read
+ 175               	adc_int_read:
+ 142:../../Eblock_lib/avr_adc.c **** 	return value;
+ 143:../../Eblock_lib/avr_adc.c **** }
+ 144:../../Eblock_lib/avr_adc.c **** 
+ 145:../../Eblock_lib/avr_adc.c **** 
+ 146:../../Eblock_lib/avr_adc.c **** 
+ 147:../../Eblock_lib/avr_adc.c **** /*!	\brief  read ADC using Interrupt
+ 148:../../Eblock_lib/avr_adc.c **** 	\param  	channel  to read adc  ( Use to set channel for using interrupt ADC)
+ 149:../../Eblock_lib/avr_adc.c **** 	\return 	ADC Converted value
+ 150:../../Eblock_lib/avr_adc.c **** 				0  No value or 0 read
+ 151:../../Eblock_lib/avr_adc.c **** 	     
+ 152:../../Eblock_lib/avr_adc.c **** 	\par Port/Periheral Usage 
+ 153:../../Eblock_lib/avr_adc.c **** 	\n  ADC0 -ADC7
+ 154:../../Eblock_lib/avr_adc.c **** 	\par Theory of Operation   
+ 155:../../Eblock_lib/avr_adc.c **** 	\n
+ 156:../../Eblock_lib/avr_adc.c **** 	\par Pseudo code
+ 157:../../Eblock_lib/avr_adc.c **** 	\n
+ 158:../../Eblock_lib/avr_adc.c **** 	\note  How to differentiate value 0 and Convert not finished 
+ 159:../../Eblock_lib/avr_adc.c **** 	\bug    <bug to fix>
+ 160:../../Eblock_lib/avr_adc.c **** 
+ 161:../../Eblock_lib/avr_adc.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 162:../../Eblock_lib/avr_adc.c **** 	\sa	 <see also two name joined by ::>
+ 163:../../Eblock_lib/avr_adc.c **** */  
+ 164:../../Eblock_lib/avr_adc.c **** uint16_t adc_int_read(uint8_t channel)
+ 165:../../Eblock_lib/avr_adc.c **** {
+ 177               	.LM15:
+ 178               	/* prologue: frame size=0 */
+ 179               	/* prologue end (size=0) */
+ 166:../../Eblock_lib/avr_adc.c ****    uint16_t tmp = 0;
+ 181               	.LM16:
+ 182 0036 20E0      		ldi r18,lo8(0)
+ 183 0038 30E0      		ldi r19,hi8(0)
+ 167:../../Eblock_lib/avr_adc.c **** 
+ 168:../../Eblock_lib/avr_adc.c **** // Set channel
+ 169:../../Eblock_lib/avr_adc.c ****     ADMUX |= channel;
+ 185               	.LM17:
+ 186 003a 97B1      		in r25,39-0x20
+ 187 003c 982B      		or r25,r24
+ 188 003e 97B9      		out 39-0x20,r25
+ 170:../../Eblock_lib/avr_adc.c **** 	   
+ 171:../../Eblock_lib/avr_adc.c ****    if (g_value)   
+ 190               	.LM18:
+ 191 0040 8091 0000 		lds r24,g_value
+ 192 0044 9091 0000 		lds r25,(g_value)+1
+ 193 0048 0097      		sbiw r24,0
+ 194 004a 29F0      		breq .L9
+ 172:../../Eblock_lib/avr_adc.c ****    {
+ 173:../../Eblock_lib/avr_adc.c **** 		tmp = g_value;
+ 196               	.LM19:
+ 197 004c 9C01      		movw r18,r24
+ 174:../../Eblock_lib/avr_adc.c **** 		g_value = 0;   // Clear value for next read
+ 199               	.LM20:
+ 200 004e 1092 0000 		sts (g_value)+1,__zero_reg__
+ 201 0052 1092 0000 		sts g_value,__zero_reg__
+ 202               	.L9:
+ 175:../../Eblock_lib/avr_adc.c ****    } 
+ 176:../../Eblock_lib/avr_adc.c ****    return tmp;
+ 177:../../Eblock_lib/avr_adc.c **** }
+ 204               	.LM21:
+ 205 0056 C901      		movw r24,r18
+ 206               	/* epilogue: frame size=0 */
+ 207 0058 0895      		ret
+ 208               	/* epilogue end (size=1) */
+ 209               	/* function adc_int_read size 18 (17) */
+ 214               	.Lscope2:
+ 216               	.global	__vector_16
+ 218               	__vector_16:
+ 178:../../Eblock_lib/avr_adc.c **** 
+ 179:../../Eblock_lib/avr_adc.c **** 
+ 180:../../Eblock_lib/avr_adc.c **** 
+ 181:../../Eblock_lib/avr_adc.c **** /*!	\brief  read ADC using Interrupt
+ 182:../../Eblock_lib/avr_adc.c **** 	\param  	channel  to read adc  ( Use to set channel for using interrupt ADC)
+ 183:../../Eblock_lib/avr_adc.c **** 	\return 	ADC Converted value
+ 184:../../Eblock_lib/avr_adc.c **** 				0  No value or 0 read
+ 185:../../Eblock_lib/avr_adc.c **** 	     
+ 186:../../Eblock_lib/avr_adc.c **** 	\par Port/Periheral Usage 
+ 187:../../Eblock_lib/avr_adc.c **** 	\n  ADC0 -ADC7
+ 188:../../Eblock_lib/avr_adc.c **** 	\par Theory of Operation   
+ 189:../../Eblock_lib/avr_adc.c **** 	\n
+ 190:../../Eblock_lib/avr_adc.c **** 	\par Pseudo code
+ 191:../../Eblock_lib/avr_adc.c **** 	\n
+ 192:../../Eblock_lib/avr_adc.c **** 	\note  How to differentiate value 0 and Convert not finished 
+ 193:../../Eblock_lib/avr_adc.c **** 	\bug    <bug to fix>
+ 194:../../Eblock_lib/avr_adc.c **** 
+ 195:../../Eblock_lib/avr_adc.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 196:../../Eblock_lib/avr_adc.c **** 	\sa	 <see also two name joined by ::>
+ 197:../../Eblock_lib/avr_adc.c **** */  
+ 198:../../Eblock_lib/avr_adc.c **** SIGNAL(SIG_ADC)
+ 199:../../Eblock_lib/avr_adc.c **** {
+ 220               	.LM22:
+ 221               	/* prologue: frame size=20 */
+ 222 005a 1F92      		push __zero_reg__
+ 223 005c 0F92      		push __tmp_reg__
+ 224 005e 0FB6      		in __tmp_reg__,__SREG__
+ 225 0060 0F92      		push __tmp_reg__
+ 226 0062 1124      		clr __zero_reg__
+ 227 0064 8F93      		push r24
+ 228 0066 9F93      		push r25
+ 229 0068 CF93      		push r28
+ 230 006a DF93      		push r29
+ 231 006c CDB7      		in r28,__SP_L__
+ 232 006e DEB7      		in r29,__SP_H__
+ 233 0070 6497      		sbiw r28,20
+ 234 0072 DEBF      		out __SP_H__,r29
+ 235 0074 CDBF      		out __SP_L__,r28
+ 236               	/* prologue end (size=14) */
+ 200:../../Eblock_lib/avr_adc.c ****     uint8_t buffer[20];
+ 201:../../Eblock_lib/avr_adc.c ****     g_value = ADCW;
+ 238               	.LM23:
+ 239 0076 84B1      		in r24,36-0x20
+ 240 0078 95B1      		in r25,(36)+1-0x20
+ 241 007a 9093 0000 		sts (g_value)+1,r25
+ 242 007e 8093 0000 		sts g_value,r24
+ 243               	/* epilogue: frame size=20 */
+ 244 0082 6496      		adiw r28,20
+ 245 0084 F894      		cli
+ 246 0086 DEBF      		out __SP_H__,r29
+ 247 0088 CDBF      		out __SP_L__,r28
+ 248 008a DF91      		pop r29
+ 249 008c CF91      		pop r28
+ 250 008e 9F91      		pop r25
+ 251 0090 8F91      		pop r24
+ 252 0092 0F90      		pop __tmp_reg__
+ 253 0094 0FBE      		out __SREG__,__tmp_reg__
+ 254 0096 0F90      		pop __tmp_reg__
+ 255 0098 1F90      		pop __zero_reg__
+ 256 009a 1895      		reti
+ 257               	/* epilogue end (size=13) */
+ 258               	/* function __vector_16 size 33 (6) */
+ 263               	.Lscope3:
+ 264               		.comm g_value,2,1
+ 266               		.text
+ 268               	Letext:
+ 269               	/* File "../../Eblock_lib/avr_adc.c": code   78 = 0x004e (  48), prologues  14, epilogues  16 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 avr_adc.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:90     .text:00000000 adc_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:130    .text:00000018 adc_read
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:175    .text:00000036 adc_int_read
+                            *COM*:00000002 g_value
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:218    .text:0000005a __vector_16
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc0caaaa.s:268    .text:0000009c Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

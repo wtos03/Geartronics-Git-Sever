@@ -1,0 +1,307 @@
+ARM COMPILER V2.32a,  spi                                                                  18/05/08  02:36:15  PAGE 1   
+
+
+ARM COMPILER V2.32a, COMPILATION OF MODULE spi
+OBJECT MODULE PLACED IN spi.OBJ
+COMPILER INVOKED BY: C:\Keil\ARM\BIN\CA.exe spi.c THUMB TABS(4) 
+
+stmt  level    source
+
+    1          #include <LPC213X.H> /* LPC214x definitions */
+    2          
+    3          #include "type.h"
+    4          #include "spi.h"
+    5          
+    6          /*
+    7          * SPI and MMC commands related modules.
+    8          *
+    9          */
+   10          
+   11          void SPI_Init( void )
+   12          {
+   13   1          BYTE i, Dummy;
+   14   1      
+   15   1          /* Configure PIN connect block */
+   16   1          /* bit 32, 54, 76 are 0x10, bit 98 are 0x00
+   17   1          port 0 bits 17, 18, 19, 20 are SSP port SCK1, MISO1, MOSI1,
+   18   1          and SSEL1 set SSEL to GPIO pin that you will have the totoal
+   19   1          freedom to set/reset the SPI chip-select pin */
+   20   1      
+   21   1          SSPCR1 = 0x00; /* SSP master (off) in normal mode */
+   22   1      
+   23   1          PINSEL1 |=  0x000000A8;
+   24   1      
+   25   1          /* Set PCLK 1/2 of CCLK */
+   26   1          VPBDIV = 0x02;
+   27   1      
+   28   1          /* Set data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0,
+   29   1          and SCR is 15 */
+   30   1          SSPCR0 = 0x0707;
+   31   1      
+   32   1          /* SSPCPSR clock prescale register, master mode, minimum divisor
+   33   1          is 0x02*/
+   34   1          SSPCPSR = 0x2;
+   35   1      
+   36   1          /* Device select as master, SSP Enabled, normal operational mode */
+   37   1          SSPCR1 = 0x02;
+   38   1      
+   39   1          for ( i = 0; i < 8; i++ )
+   40   1          {
+   41   2              Dummy = SSPDR; /* clear the RxFIFO */
+   42   2          }
+   43   1          return;
+   44   1      }
+   45          
+   46          /*
+   47          * SPI Send a block of data based on the length
+   48          */
+   49          void SPI_Send( BYTE *buf, DWORD Length )
+   50          {
+   51   1          BYTE Dummy;
+   52   1          if ( Length == 0 )
+   53   1              return;
+   54   1          while ( Length != 0 )
+   55   1          {
+   56   2              /* as long as TNF bit is set, TxFIFO is not full, I can write */
+   57   2              while ( !(SSPSR & 0x02) );
+   58   2              SSPDR = *buf;
+   59   2              /* Wait until the Busy bit is cleared */
+ARM COMPILER V2.32a,  spi                                                                  18/05/08  02:36:15  PAGE 2   
+
+   60   2              while ( !(SSPSR & 0x04) );
+   61   2              Dummy = SSPDR; /* Flush the RxFIFO */
+   62   2              Length--;
+   63   2              buf++;
+   64   2          }
+   65   1          return;
+   66   1      }
+   67          
+   68          /*
+   69          * SPI receives a block of data based on the length
+   70          */
+   71          void SPI_Receive( BYTE *buf, DWORD Length )
+   72          {
+   73   1          DWORD i;
+   74   1          for ( i = 0; i < Length; i++ )
+   75   1          {
+   76   2              *buf = SPI_ReceiveByte();
+   77   2              buf++;
+   78   2          }
+   79   1          return;
+   80   1      }
+   81          
+   82          /*
+   83          * SPI Receive Byte, receive one byte only, return Data byte
+   84          * used a lot to check the status.
+   85          */
+   86          BYTE SPI_ReceiveByte( void )
+   87          {
+   88   1          BYTE data;
+   89   1      
+   90   1          /* wrtie dummy byte out to generate clock, then read data from
+   91   1          MISO */
+   92   1          SSPDR = 0xFF;
+   93   1          /* Wait until the Busy bit is cleared */
+   94   1          while ( SSPSR & 0x10 );
+   95   1          data = SSPDR;
+   96   1          return ( data );
+   97   1      }
+ARM COMPILER V2.32a,  spi                                                                  18/05/08  02:36:15  PAGE 3   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+
+*** PUBLICS:
+ PUBLIC         SPI_Init?T
+ PUBLIC         SPI_Send?T
+ PUBLIC         SPI_Receive?T
+ PUBLIC         SPI_ReceiveByte?T
+
+
+
+*** CODE SEGMENT '?PR?SPI_Init?T?spi':
+   12: {
+ 00000000            ; SCOPE-START
+   21:     SSPCR1 = 0x00; /* SSP master (off) in normal mode */
+ 00000000  2100      MOV         R1,#0x0
+ 00000002  4800      LDR         R0,=0xE0068004
+ 00000004  7001      STRB        R1,[R0,#0x0]
+   23:     PINSEL1 |=  0x000000A8;
+ 00000006  22A8      MOV         R2,#0xA8
+ 00000008  4800      LDR         R0,=0xE002C004
+ 0000000A  6801      LDR         R1,[R0,#0x0]
+ 0000000C  4311      ORR         R1,R2
+ 0000000E  6001      STR         R1,[R0,#0x0]
+   26:     VPBDIV = 0x02;
+ 00000010  2102      MOV         R1,#0x2
+ 00000012  4800      LDR         R0,=0xE01FC100
+ 00000014  7001      STRB        R1,[R0,#0x0]
+   30:     SSPCR0 = 0x0707;
+ 00000016  4800      LDRH        R1,=0x707
+ 00000018  4800      LDR         R0,=0xE0068000
+ 0000001A  8001      STRH        R1,[R0,#0x0]
+   34:     SSPCPSR = 0x2;
+ 0000001C  2102      MOV         R1,#0x2
+ 0000001E  4800      LDR         R0,=0xE0068010
+ 00000020  7001      STRB        R1,[R0,#0x0]
+   37:     SSPCR1 = 0x02;
+ 00000022  2102      MOV         R1,#0x2
+ 00000024  4800      LDR         R0,=0xE0068004
+ 00000026  7001      STRB        R1,[R0,#0x0]
+   39:     for ( i = 0; i < 8; i++ )
+ 00000028  2000      MOV         R0,#0x0
+ 0000002A  ---- Variable 'i' assigned to Register 'R0' ----
+ 0000002A  E004      B           L_3  ; T=0x00000036
+ 0000002C          L_4:
+   41:         Dummy = SSPDR; /* clear the RxFIFO */
+ 0000002C  4800      LDR         R1,=0xE0068008
+ 0000002E  8809      LDRH        R1,[R1,#0x0]
+   42:     }
+ 00000030  3001      ADD         R0,#0x1
+ 00000032  0600      LSL         R0,R0,#0x18
+ 00000034  0E00      LSR         R0,R0,#0x18
+ 00000036          L_3:
+ 00000036  1C01      MOV         R1,R0 ; i
+ 00000038  0609      LSL         R1,R1,#0x18 ; i
+ 0000003A  0E09      LSR         R1,R1,#0x18
+ 0000003C  2908      CMP         R1,#0x8
+ 0000003E  DBF5      BLT         L_4  ; T=0x0000002C
+   43:     return;
+ 00000040            ; SCOPE-END
+   44: }
+ 00000040  4770      BX          R14
+ 00000042          ENDP ; 'SPI_Init?T'
+
+
+*** CODE SEGMENT '?PR?SPI_Send?T?spi':
+   49: void SPI_Send( BYTE *buf, DWORD Length )
+ 00000000  ---- Variable 'Length' assigned to Register 'R1' ----
+ 00000000  ---- Variable 'buf' assigned to Register 'R0' ----
+   50: {
+ARM COMPILER V2.32a,  spi                                                                  18/05/08  02:36:15  PAGE 4   
+
+ 00000000            ; SCOPE-START
+   52:     if ( Length == 0 )
+ 00000000  1C0A      MOV         R2,R1 ; Length
+ 00000002  2A00      CMP         R2,#0x0 ; Length
+ 00000004  D016      BEQ         L_8  ; T=0x00000034
+   54:     while ( Length != 0 )
+ 00000006  E012      B           L_9  ; T=0x0000002E
+   57:         while ( !(SSPSR & 0x02) );
+ 00000008          L_16:
+ 00000008          L_13:
+ 00000008  4800      LDR         R2,=0xE006800C
+ 0000000A  7812      LDRB        R2,[R2,#0x0]
+ 0000000C  2302      MOV         R3,#0x2
+ 0000000E  421A      TST         R2,R3
+ 00000010  D0FA      BEQ         L_13  ; T=0x00000008
+   58:         SSPDR = *buf;
+ 00000012  1C02      MOV         R2,R0 ; buf
+ 00000014  7812      LDRB        R2,[R2,#0x0] ; buf
+ 00000016  1C13      MOV         R3,R2
+ 00000018  4800      LDR         R2,=0xE0068008
+ 0000001A  8013      STRH        R3,[R2,#0x0]
+   60:         while ( !(SSPSR & 0x04) );
+ 0000001C          L_17:
+ 0000001C  4800      LDR         R2,=0xE006800C
+ 0000001E  7812      LDRB        R2,[R2,#0x0]
+ 00000020  2304      MOV         R3,#0x4
+ 00000022  421A      TST         R2,R3
+ 00000024  D0FA      BEQ         L_17  ; T=0x0000001C
+   61:         Dummy = SSPDR; /* Flush the RxFIFO */
+ 00000026  4800      LDR         R2,=0xE0068008
+ 00000028  8812      LDRH        R2,[R2,#0x0]
+   62:         Length--;
+ 0000002A  3901      SUB         R1,#0x1
+   63:         buf++;
+ 0000002C  3001      ADD         R0,#0x1
+   64:     }
+ 0000002E          L_9:
+ 0000002E  1C0A      MOV         R2,R1 ; Length
+ 00000030  2A00      CMP         R2,#0x0 ; Length
+ 00000032  D1E9      BNE         L_16  ; T=0x00000008
+   65:     return;
+ 00000034            ; SCOPE-END
+   66: }
+ 00000034          L_8:
+ 00000034  4770      BX          R14
+ 00000036          ENDP ; 'SPI_Send?T'
+
+
+*** CODE SEGMENT '?PR?SPI_Receive?T?spi':
+   71: void SPI_Receive( BYTE *buf, DWORD Length )
+ 00000000  B570      PUSH        {R4-R6,LR}
+ 00000002  1C0E      MOV         R6,R1 ; Length
+ 00000004  ---- Variable 'Length' assigned to Register 'R6' ----
+ 00000004  1C05      MOV         R5,R0 ; buf
+ 00000006  ---- Variable 'buf' assigned to Register 'R5' ----
+   72: {
+ 00000006            ; SCOPE-START
+   74:     for ( i = 0; i < Length; i++ )
+ 00000006  2400      MOV         R4,#0x0
+ 00000008  ---- Variable 'i' assigned to Register 'R4' ----
+ 00000008  E005      B           L_23  ; T=0x00000016
+ 0000000A          L_24:
+   76:         *buf = SPI_ReceiveByte();
+ 0000000A  F7FF      BL          SPI_ReceiveByte?T  ; T=0x0001  (1)
+ 0000000C  FFF9      BL          SPI_ReceiveByte?T  ; T=0x0001  (2)
+ 0000000E  1C29      MOV         R1,R5 ; buf
+ 00000010  7008      STRB        R0,[R1,#0x0] ; buf
+   77:         buf++;
+ARM COMPILER V2.32a,  spi                                                                  18/05/08  02:36:15  PAGE 5   
+
+ 00000012  3501      ADD         R5,#0x1
+   78:     }
+ 00000014  3401      ADD         R4,#0x1
+ 00000016          L_23:
+ 00000016  1C31      MOV         R1,R6 ; Length
+ 00000018  1C20      MOV         R0,R4 ; i
+ 0000001A  4288      CMP         R0,R1 ; i
+ 0000001C  D3F5      BCC         L_24  ; T=0x0000000A
+   79:     return;
+ 0000001E            ; SCOPE-END
+   80: }
+ 0000001E  BC70      POP         {R4-R6}
+ 00000020  BC08      POP         {R3}
+ 00000022  4718      BX          R3
+ 00000024          ENDP ; 'SPI_Receive?T'
+
+
+*** CODE SEGMENT '?PR?SPI_ReceiveByte?T?spi':
+   87: {
+ 00000000            ; SCOPE-START
+   92:     SSPDR = 0xFF;
+ 00000000  21FF      MOV         R1,#0xFF
+ 00000002  4800      LDR         R0,=0xE0068008
+ 00000004  8001      STRH        R1,[R0,#0x0]
+   94:     while ( SSPSR & 0x10 );
+ 00000006          L_27:
+ 00000006  4800      LDR         R0,=0xE006800C
+ 00000008  7800      LDRB        R0,[R0,#0x0]
+ 0000000A  2110      MOV         R1,#0x10
+ 0000000C  4208      TST         R0,R1
+ 0000000E  D1FA      BNE         L_27  ; T=0x00000006
+   95:     data = SSPDR;
+ 00000010  4800      LDR         R0,=0xE0068008
+ 00000012  8801      LDRH        R1,[R0,#0x0]
+ 00000014  ---- Variable 'data' assigned to Register 'R1' ----
+   96:     return ( data );
+ 00000014  1C08      MOV         R0,R1 ; data
+ 00000016  0600      LSL         R0,R0,#0x18 ; data
+ 00000018  0E00      LSR         R0,R0,#0x18
+ 0000001A            ; SCOPE-END
+ 0000001A  4770      BX          R14
+ 0000001C          ENDP ; 'SPI_ReceiveByte?T'
+
+
+
+Module Information          Static
+----------------------------------
+  code size            =    ------
+  data size            =    ------
+  const size           =    ------
+End of Module Information.
+
+
+ARM COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

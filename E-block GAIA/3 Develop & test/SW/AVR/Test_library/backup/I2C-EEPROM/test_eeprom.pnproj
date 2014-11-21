@@ -1,0 +1,1 @@
+<Project name="test_eeprom"><File path="cpu.h"></File><File path="Dual_7Segment.c"></File><File path="Dual_7Segment.h"></File><File path="E_i2c.c"></File><File path="E_i2c.h"></File><File path="E_i2ceeprom.c"></File><File path="E_i2ceeprom.h"></File><File path="E_uart.c"></File><File path="E_uart.h"></File><File path="test_eeprom.c"></File></Project>

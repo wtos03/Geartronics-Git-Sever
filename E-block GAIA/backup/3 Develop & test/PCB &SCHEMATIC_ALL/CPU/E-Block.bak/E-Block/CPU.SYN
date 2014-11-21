@@ -1,0 +1,450 @@
+Protel Synchronization report
+=========================================================================
+Date : 17-Oct-2006
+Time : 10:46:04
+
+Reference document: Mega32.Sch
+Target document:    CPU.PCB
+=========================================================================
+
+ERRORS: 2 macros can not be executed:
+-------------------------------------------------------------------------
+Macro 1: New Net
+Add new net VCC
+Error: Net already exist
+
+Macro 2: Component Footprint Change
+Update component J6 footprint DB9FLE to SIP3
+Error: New footprint SIP3 not matching old footprint DB9FLE
+
+
+
+107 macros to be executed:
+-------------------------------------------------------------------------
+Macro 1: Redundant Node
+Remove node C8-1 from net VCC
+
+
+Macro 2: Redundant Node
+Remove node J3-3 from net VCC
+
+
+Macro 3: Redundant Node
+Remove node J3-2 from net VCC
+
+
+Macro 4: Redundant Node
+Remove node S2-8 from net VCC
+
+
+Macro 5: Redundant Node
+Remove node J4-3 from net VCC
+
+
+Macro 6: Redundant Node
+Remove node J4-2 from net VCC
+
+
+Macro 7: Redundant Node
+Remove node ATMEGA32-27 from net VCC
+
+
+Macro 8: Redundant Node
+Remove node C5-1 from net VCC
+
+
+Macro 9: Redundant Node
+Remove node CON1-1 from net VCC
+
+
+Macro 10: Redundant Node
+Remove node C3-1 from net VCC
+
+
+Macro 11: Redundant Node
+Remove node U2-16 from net VCC
+
+
+Macro 12: Redundant Node
+Remove node S1-2 from net VCC
+
+
+Macro 13: Redundant Node
+Remove node J5-3 from net VCC
+
+
+Macro 14: Redundant Node
+Remove node S1-1 from net VCC
+
+
+Macro 15: Redundant Node
+Remove node S1-8 from net VCC
+
+
+Macro 16: Redundant Node
+Remove node CON4-1 from net VCC
+
+
+Macro 17: Redundant Node
+Remove node SOCKET1-2 from net VCC
+
+
+Macro 18: Redundant Node
+Remove node C10-1 from net VCC
+
+
+Macro 19: Redundant Node
+Remove node C11-1 from net VCC
+
+
+Macro 20: Redundant Node
+Remove node C4-2 from net VCC
+
+
+Macro 21: Redundant Node
+Remove node J6-5 from net VCC
+
+
+Macro 22: Redundant Node
+Remove node R1-2 from net VCC
+
+
+Macro 23: Redundant Node
+Remove node CON3-1 from net VCC
+
+
+Macro 24: Redundant Node
+Remove node C4-1 from net NetU2_6
+
+
+Macro 25: Redundant Node
+Remove node J6-3 from net NetU2_14
+
+
+Macro 26: Redundant Net
+Remove redundant net NetJ6_1
+
+
+Macro 27: Redundant Net
+Remove redundant net NetJ6_7
+
+
+Macro 28: Component Designator Change
+Rename component designator Reset to Reset SW
+
+
+Macro 29: New Component
+Add new component B1
+
+
+Macro 30: New Component
+Add new component C9
+
+
+Macro 31: New Component
+Add new component JACK1
+
+
+Macro 32: New Component
+Add new component R9
+
+
+Macro 33: New Component
+Add new component R10
+
+
+Macro 34: New Component
+Add new component SOCKET2
+
+
+Macro 35: New Component
+Add new component X2
+
+
+Macro 36: Net Name Change
+Rename net name NetC6_1 to NetU2_1
+
+
+Macro 37: Net Name Change
+Rename net name NetJ6_2 to NetSOCKET2_2
+
+
+Macro 38: Net Name Change
+Rename net name VCC to GND
+
+
+Macro 39: New Net
+Add new net NetJ4_2
+
+
+Macro 40: New Net
+Add new net NetJ3_2
+
+
+Macro 41: New Net
+Add new net NetSOCKET2_1
+
+
+Macro 42: New Net
+Add new net NetSOCKET2_7
+
+
+Macro 43: Component Footprint Change
+Update component C8 footprint RAD-0.1 to CAPACITOR
+
+
+Macro 44: Component Footprint Change
+Update component C7 footprint RAD-0.1 to CAP_POLAR
+
+
+Macro 45: Component Footprint Change
+Update component C6 footprint RAD-0.1 to CAP_POLAR
+
+
+Macro 46: Component Footprint Change
+Update component C5 footprint RAD-0.1 to CAP_POLAR
+
+
+Macro 47: Component Footprint Change
+Update component C4 footprint RAD-0.1 to CAP_POLAR
+
+
+Macro 48: Component Footprint Change
+Update component C3 footprint RAD-0.1 to CAP_POLAR
+
+
+Macro 49: Component Footprint Change
+Update component C2 footprint RAD-0.1 to CAPACITOR
+
+
+Macro 50: Component Footprint Change
+Update component C1 footprint RAD-0.1 to CAPACITOR
+
+
+Macro 51: Component Footprint Change
+Update component SOCKET1 footprint HDR2X5 to IDC-10
+
+
+Macro 52: Component Footprint Change
+Update component R1 footprint AXIAL-0.4 to RES1/8
+
+
+Macro 53: Component Footprint Change
+Update component C10 footprint RAD-0.1 to CAP_POLAR
+
+
+Macro 54: Component Footprint Change
+Update component C11 footprint RAD-0.1 to CAPACITOR
+
+
+Macro 55: New Node
+Add node R9-1 to net NetS1_6
+
+
+Macro 56: New Node
+Add node R10-1 to net NetS1_5
+
+
+Macro 57: New Node
+Add node C9-2 to net NetATMEGA32_29
+
+
+Macro 58: New Node
+Add node J6-3 to net NetJ6_3
+
+
+Macro 59: New Node
+Add node J6-1 to net NetS2_7
+
+
+Macro 60: New Node
+Add node B1-1 to net NetB1_1
+
+
+Macro 61: New Node
+Add node X2-2 to net NetX2_2
+
+
+Macro 62: New Node
+Add node X2-1 to net NetX2_1
+
+
+Macro 63: New Node
+Add node SOCKET2-2 to net NetSOCKET2_2
+
+
+Macro 64: New Node
+Add node C4-1 to net GND
+
+
+Macro 65: New Node
+Add node SOCKET2-5 to net GND
+
+
+Macro 66: New Node
+Add node B1-2 to net GND
+
+
+Macro 67: New Node
+Add node C9-1 to net GND
+
+
+Macro 68: New Node
+Add node C4-2 to net NetU2_6
+
+
+Macro 69: New Node
+Add node SOCKET2-3 to net NetU2_14
+
+
+Macro 70: New Node
+Add node J4-2 to net NetJ4_2
+
+
+Macro 71: New Node
+Add node S1-2 to net NetJ4_2
+
+
+Macro 72: New Node
+Add node J3-2 to net NetJ3_2
+
+
+Macro 73: New Node
+Add node S1-1 to net NetJ3_2
+
+
+Macro 74: New Node
+Add node SOCKET2-1 to net NetSOCKET2_1
+
+
+Macro 75: New Node
+Add node SOCKET2-6 to net NetSOCKET2_1
+
+
+Macro 76: New Node
+Add node SOCKET2-4 to net NetSOCKET2_1
+
+
+Macro 77: New Node
+Add node S2-8 to net VCC
+
+
+Macro 78: New Node
+Add node C3-1 to net VCC
+
+
+Macro 79: New Node
+Add node U2-16 to net VCC
+
+
+Macro 80: New Node
+Add node C5-1 to net VCC
+
+
+Macro 81: New Node
+Add node R9-2 to net VCC
+
+
+Macro 82: New Node
+Add node R10-2 to net VCC
+
+
+Macro 83: New Node
+Add node S1-8 to net VCC
+
+
+Macro 84: New Node
+Add node ATMEGA32-27 to net VCC
+
+
+Macro 85: New Node
+Add node C11-1 to net VCC
+
+
+Macro 86: New Node
+Add node C10-1 to net VCC
+
+
+Macro 87: New Node
+Add node ATMEGA32-38 to net VCC
+
+
+Macro 88: New Node
+Add node J4-3 to net VCC
+
+
+Macro 89: New Node
+Add node J3-3 to net VCC
+
+
+Macro 90: New Node
+Add node J5-3 to net VCC
+
+
+Macro 91: New Node
+Add node CON3-1 to net VCC
+
+
+Macro 92: New Node
+Add node R1-2 to net VCC
+
+
+Macro 93: New Node
+Add node SOCKET1-2 to net VCC
+
+
+Macro 94: New Node
+Add node JACK1-1 to net VCC
+
+
+Macro 95: New Node
+Add node C8-1 to net VCC
+
+
+Macro 96: New Node
+Add node CON1-1 to net VCC
+
+
+Macro 97: New Node
+Add node CON4-1 to net VCC
+
+
+Macro 98: New Node
+Add node SOCKET2-7 to net NetSOCKET2_7
+
+
+Macro 99: New Node
+Add node SOCKET2-8 to net NetSOCKET2_7
+
+
+Macro 100: Component Comment Change
+Update component C7 comment 1uf to 1 uF
+
+
+Macro 101: Component Comment Change
+Update component C6 comment 1uf to 1 uF
+
+
+Macro 102: Component Comment Change
+Update component C5 comment 1uf to 1 uF
+
+
+Macro 103: Component Comment Change
+Update component C4 comment 1uf to 1 uF
+
+
+Macro 104: Component Comment Change
+Update component C3 comment 1uf to 1 uF
+
+
+Macro 105: Component Comment Change
+Update component U2 comment MAX232 to MAX232ACPE(16)
+
+
+Macro 106: Component Comment Change
+Update component ATMEGA32 comment  to AT90S8535_TQFP44
+
+
+Macro 107: Add Component Class
+Add Component Class (Mega32)
+

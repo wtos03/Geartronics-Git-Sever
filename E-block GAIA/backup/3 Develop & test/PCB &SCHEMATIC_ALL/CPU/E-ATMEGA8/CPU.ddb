@@ -1,0 +1,12 @@
+[Design Root]
+Version=1.0.0
+[Directory]
+CPU.PCB=PCB
+CPU.Sch=Sch
+CPU.lib=PCBLIB
+[CPU.PCB]
+Editor Kind=PCB
+[CPU.Sch]
+Editor Kind=Sch
+[CPU.lib]
+Editor Kind=PCBLIB

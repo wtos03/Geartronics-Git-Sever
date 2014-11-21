@@ -1,0 +1,404 @@
+Archive member included because of file (symbol)
+
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+                              stk500_2_boot.o (__do_clear_bss)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isblank.o)
+                              stk500_2_boot.o (isblank)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isprint.o)
+                              stk500_2_boot.o (isprint)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isxdigit.o)
+                              stk500_2_boot.o (isxdigit)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(toupper.o)
+                              stk500_2_boot.o (toupper)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ultoa.o)
+                              stk500_2_boot.o (ultoa)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(cty_isfalse.o)
+                              C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isblank.o) (__ctype_isfalse)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isalpha.o)
+                              C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(toupper.o) (isalpha)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isdigit.o)
+                              C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isxdigit.o) (isdigit)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
+                              C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ultoa.o) (strrev)
+C:/WinAVR/bin/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodsi4.o)
+                              C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ultoa.o) (__udivmodsi4)
+
+Allocating common symbols
+Common symbol       size              file
+
+monitorBuf          0x100             stk500_2_boot.o
+rx_buffer           0x12c             stk500_2_boot.o
+tx_buffer           0x12c             stk500_2_boot.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+Address of section .data set to 0x800100
+LOAD C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm128.o
+LOAD stk500_2_boot.o
+Address of section .text set to 0x1e000
+LOAD C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libm.a
+LOAD C:/WinAVR/bin/../lib/gcc/avr/3.4.3/avr5\libgcc.a
+LOAD C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a
+LOAD C:/WinAVR/bin/../lib/gcc/avr/3.4.3/avr5\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x0001e000     0x17ba
+ *(.vectors)
+ .vectors       0x0001e000       0x8c C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm128.o
+                0x0001e000                __vectors
+                0x0001e000                __vector_default
+                0x0001e08c                __ctors_start = .
+ *(.ctors)
+                0x0001e08c                __ctors_end = .
+                0x0001e08c                __dtors_start = .
+ *(.dtors)
+                0x0001e08c                __dtors_end = .
+ *(.progmem.gcc*)
+ *(.progmem*)
+ .progmem.data  0x0001e08c       0xc4 stk500_2_boot.o
+                0x0001e150                . = ALIGN (0x2)
+ *(.init0)
+ *(.init1)
+ *(.init2)
+ .init2         0x0001e150        0xc C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm128.o
+ *(.init3)
+ *(.init4)
+ .init4         0x0001e15c       0x1a C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm128.o
+                0x0001e15c                __do_copy_data
+ .init4         0x0001e176       0x10 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_clear_bss.o)
+                0x0001e176                __do_clear_bss
+ *(.init5)
+ *(.init6)
+ *(.init7)
+ *(.init8)
+ *(.init9)
+ .init9         0x0001e186        0x4 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm128.o
+ *(.text)
+ .text          0x0001e18a        0x4 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5/crtm128.o
+                0x0001e18a                __vector_22
+                0x0001e18a                __vector_28
+                0x0001e18a                __vector_1
+                0x0001e18a                __vector_32
+                0x0001e18a                __vector_34
+                0x0001e18a                __vector_24
+                0x0001e18a                __vector_12
+                0x0001e18a                __bad_interrupt
+                0x0001e18a                __vector_6
+                0x0001e18a                __vector_31
+                0x0001e18a                __vector_3
+                0x0001e18a                __vector_23
+                0x0001e18a                __vector_30
+                0x0001e18a                __vector_25
+                0x0001e18a                __vector_11
+                0x0001e18a                __vector_13
+                0x0001e18a                __vector_17
+                0x0001e18a                __vector_19
+                0x0001e18a                __vector_7
+                0x0001e18a                __vector_27
+                0x0001e18a                __vector_5
+                0x0001e18a                __vector_33
+                0x0001e18a                __vector_4
+                0x0001e18a                __vector_9
+                0x0001e18a                __vector_2
+                0x0001e18a                __vector_21
+                0x0001e18a                __vector_15
+                0x0001e18a                __vector_29
+                0x0001e18a                __vector_8
+                0x0001e18a                __vector_26
+                0x0001e18a                __vector_14
+                0x0001e18a                __vector_10
+                0x0001e18a                __vector_16
+                0x0001e18a                __vector_18
+                0x0001e18a                __vector_20
+ .text          0x0001e18e     0x150e stk500_2_boot.o
+                0x0001e390                date2str
+                0x0001e740                cmdProgramFlashIsp
+                0x0001e6d4                cmdLoadAddress
+                0x0001ef22                print
+                0x0001ef6c                monitorDump
+                0x0001ee8c                monitorInit
+                0x0001ec4a                cmdReadEepromIsp
+                0x0001e47a                cmdSignOn
+                0x0001f0da                getValue
+                0x0001e27a                get_time
+                0x0001eae6                sendResponse
+                0x0001ee9c                print_P
+                0x0001e3f8                bootCheck
+                0x0001e656                cmdReadSignatureIsp
+                0x0001e5a0                cmdSetParameter
+                0x0001e3ce                initPorts
+                0x0001ea80                putch
+                0x0001eaaa                getch
+                0x0001ec3a                eeprom_rb
+                0x0001f1b4                monitorMain
+                0x0001e60c                cmdChipEraseIsp
+                0x0001ef40                monitorChange
+                0x0001e5e8                cmdLeaveProgmodeIsp
+                0x0001e5c4                cmdEnterProgmodeIsp
+                0x0001f580                main
+                0x0001eb5e                eeprom_wb
+                0x0001ed10                cmdReadFuseLockIsp
+                0x0001e18e                set_clock
+                0x0001ecfc                readBits
+                0x0001eb6e                cmdProgramEepromIsp
+                0x0001e2de                get_date
+                0x0001e9b2                cmdReadFlashIsp
+                0x0001eee6                monitorReadLine
+                0x0001e352                time2str
+                0x0001e4f0                cmdGetParameter
+                0x0001eda0                handleMessage
+                0x0001e438                initUart
+                0x0001f0c0                htoi
+ .text          0x0001f69c       0x50 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(ultoa.o)
+                0x0001f69c                ultoa
+ .text          0x0001f6ec       0x20 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(strrev.o)
+                0x0001f6ec                strrev
+                0x0001f70c                . = ALIGN (0x2)
+ *(.text.*)
+ .text.ctype    0x0001f70c       0x12 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isblank.o)
+                0x0001f70c                isblank
+ .text.ctype    0x0001f71e       0x12 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isprint.o)
+                0x0001f71e                isgraph
+                0x0001f722                isprint
+ .text.ctype    0x0001f730       0x12 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isxdigit.o)
+                0x0001f730                isxdigit
+ .text.ctype    0x0001f742        0xc C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(toupper.o)
+                0x0001f742                toupper
+ .text.ctype    0x0001f74e        0x6 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(cty_isfalse.o)
+                0x0001f752                __ctype_istrue
+                0x0001f74e                __ctype_isfalse
+ .text.ctype    0x0001f754       0x14 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isalpha.o)
+                0x0001f75a                islower
+                0x0001f754                isupper
+                0x0001f758                isalpha
+ .text.ctype    0x0001f768        0xe C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/lib/avr5\libc.a(isdigit.o)
+                0x0001f768                isdigit
+ .text.libgcc   0x0001f776       0x44 C:/WinAVR/bin/../lib/gcc/avr/3.4.3/avr5\libgcc.a(_udivmodsi4.o)
+                0x0001f776                __udivmodsi4
+                0x0001f7ba                . = ALIGN (0x2)
+ *(.fini9)
+ *(.fini8)
+ *(.fini7)
+ *(.fini6)
+ *(.fini5)
+ *(.fini4)
+ *(.fini3)
+ *(.fini2)
+ *(.fini1)
+ *(.fini0)
+                0x0001f7ba                _etext = .
+
+.data           0x00800100        0xa load address 0x0001f7ba
+                0x00800100                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800100        0xa stk500_2_boot.o
+                0x00800106                rx_pntr
+                0x00800108                rtc
+                0x00800104                tx_pntr
+                0x00800100                answer_id_pntr
+                0x00800102                size_pntr
+ *(.gnu.linkonce.d*)
+                0x0080010a                . = ALIGN (0x2)
+                0x0080010a                _edata = .
+                0x0080010a                PROVIDE (__data_end, .)
+
+.bss            0x0080010a      0x36e
+                0x0080010a                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x0080010a       0x16 stk500_2_boot.o
+                0x0080010b                j
+                0x0080011f                monitor_cnt
+                0x00800116                address_flash
+                0x0080011d                bootuart1
+                0x0080010a                echo
+                0x0080011e                bootuart0
+                0x00800114                address_eeprom
+                0x0080010d                i
+                0x0080011a                msg_cs
+                0x0080010f                answer_id
+                0x00800111                n_pages
+                0x0080011b                msg_size
+                0x00800112                n_bytes
+                0x00800110                sequence_number
+ *(COMMON)
+ COMMON         0x00800120      0x358 stk500_2_boot.o
+                                  0x0 (size before relaxing)
+                0x00800120                monitorBuf
+                0x00800220                rx_buffer
+                0x0080034c                tx_buffer
+                0x00800478                PROVIDE (__bss_end, .)
+                0x0001f7ba                __data_load_start = LOADADDR (.data)
+                0x0001f7c4                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x00800478        0x0
+                0x00800478                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x00800478                PROVIDE (__noinit_end, .)
+                0x00800478                _end = .
+                0x00800478                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.stab           0x00000000     0x20ac
+ *(.stab)
+ .stab          0x00000000     0x20ac stk500_2_boot.o
+
+.stabstr        0x00000000     0x1149
+ *(.stabstr)
+ .stabstr       0x00000000     0x1149 stk500_2_boot.o
+                                  0x0 (size before relaxing)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info)
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+OUTPUT(bootloader_atmega128.elf elf32-avr)

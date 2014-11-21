@@ -1,0 +1,1179 @@
+   1               		.file	"backemf.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  79               	.global	g_cmd_decode
+  80               	.global	g_cmd_decode
+  81               		.section .bss
+  84               	g_cmd_decode:
+  85 0000 00        		.skip 1,0
+  86               	.global	g_mode2
+  87               	.global	g_mode2
+  90               	g_mode2:
+  91 0001 00        		.skip 1,0
+  92               	.global	g_mode1
+  93               	.global	g_mode1
+  96               	g_mode1:
+  97 0002 00        		.skip 1,0
+  98               		.text
+ 101               	.global	delay
+ 103               	delay:
+   1:backemf.c     **** /*
+   2:backemf.c     **** 
+   3:backemf.c     ****  Module 				:   IO Test Module
+   4:backemf.c     ****  Description 			:   IO  Test module for CHapter xxx
+   5:backemf.c     ****  Original written for 	:   ATMEGA32
+   6:backemf.c     ****  CPU port/tested		:   ATMEGA32
+   7:backemf.c     ****  Hardware use			:   Dual 7 Segments common cathode module
+   8:backemf.c     ****  Port use				:   E_PORTA (0-7), E_PORTB (0-1)
+   9:backemf.c     ****  Memory	FLASH			:   XXX
+  10:backemf.c     **** 		RAM				:   XXX
+  11:backemf.c     **** 		EEPROM			:   XXX
+  12:backemf.c     ****  Document				:   Document describe algorithm
+  13:backemf.c     ****  Written by 			:   Wichai  wichai@geartronics.net
+  14:backemf.c     ****  Date					:  	23/04/2006
+  15:backemf.c     ****   
+  16:backemf.c     ****  Update History
+  17:backemf.c     ****  
+  18:backemf.c     ****  Date			By 					Comments
+  19:backemf.c     ****  ----			--					---------
+  20:backemf.c     ****  
+  21:backemf.c     ****  
+  22:backemf.c     ****   */
+  23:backemf.c     **** 
+  24:backemf.c     **** #include <avr/interrupt.h>
+  25:backemf.c     **** #include <avr/io.h>
+  26:backemf.c     **** #include <avr/signal.h>
+  27:backemf.c     **** #include <stdlib.h>
+  28:backemf.c     **** #include "Dual_7Segment.h"
+  29:backemf.c     **** #include "DC_motor.h"
+  30:backemf.c     **** #include "ir_tv.h"
+  31:backemf.c     **** #include "E_uart.h"
+  32:backemf.c     **** #include "text_decode.h"
+  33:backemf.c     **** 
+  34:backemf.c     **** 
+  35:backemf.c     **** // Global variable
+  36:backemf.c     **** 
+  37:backemf.c     **** uint8_t  g_mode1  = MOTOR_STOP;
+  38:backemf.c     **** uint8_t  g_mode2  = MOTOR_STOP;
+  39:backemf.c     **** uint8_t  g_motor;             	// Motor number to process
+  40:backemf.c     **** uint8_t  g_speed;				// Speed Motor
+  41:backemf.c     **** int16_t  g_angle;	            // Motor Angle	
+  42:backemf.c     **** 
+  43:backemf.c     **** 
+  44:backemf.c     **** // ------ UART
+  45:backemf.c     **** uint8_t     g_rcv_buff[MAX_BUFF]; 
+  46:backemf.c     **** uint8_t		g_cmd_decode =0;				// 1 = Ready to decode 
+  47:backemf.c     **** 
+  48:backemf.c     **** 
+  49:backemf.c     **** 
+  50:backemf.c     **** void main(void);
+  51:backemf.c     **** void init_board(void);
+  52:backemf.c     **** 
+  53:backemf.c     **** 
+  54:backemf.c     **** 
+  55:backemf.c     **** void delay ( uint16_t  time)
+  56:backemf.c     **** {
+ 105               	.LM1:
+ 106               	/* prologue: frame size=0 */
+ 107               	/* prologue end (size=0) */
+ 108               	.L8:
+  57:backemf.c     ****    uint16_t i;
+  58:backemf.c     ****    for (i = 0 ; i < time; i++);
+ 110               	.LM2:
+ 111 0000 0097      		sbiw r24,0
+ 112 0002 11F0      		breq .L7
+ 114               	.LM3:
+ 115 0004 0197      		sbiw r24,1
+ 116 0006 FCCF      		rjmp .L8
+ 117               	.L7:
+ 118 0008 0895      		ret
+ 119               	/* epilogue: frame size=0 */
+ 120               	/* epilogue: noreturn */
+ 121               	/* epilogue end (size=0) */
+ 122               	/* function delay size 5 (5) */
+ 127               	.Lscope0:
+ 130               	.global	remote_decode
+ 132               	remote_decode:
+  59:backemf.c     **** 
+  60:backemf.c     **** }
+  61:backemf.c     **** 
+  62:backemf.c     **** 
+  63:backemf.c     **** /* This subroutine will handle IR remote decode by getting remote code from Interrupt handle for in
+  64:backemf.c     **** and will response  to each remote key. For other applications user can modified here for different 
+  65:backemf.c     **** However this routine support Sony remote control only
+  66:backemf.c     ****    global effect   g_irint;
+  67:backemf.c     **** */
+  68:backemf.c     **** 
+  69:backemf.c     **** uint8_t remote_decode ( uint16_t ircode)
+  70:backemf.c     **** { 
+ 134               	.LM4:
+ 135               	/* prologue: frame size=0 */
+ 136               	/* prologue end (size=0) */
+  71:backemf.c     ****   uint16_t pwm;
+  72:backemf.c     ****   uint8_t speed, found = 1;
+ 138               	.LM5:
+ 139 000a 31E0      		ldi r19,lo8(1)
+  73:backemf.c     ****   speed = 10;
+ 141               	.LM6:
+ 142 000c 2AE0      		ldi r18,lo8(10)
+  74:backemf.c     ****   switch ( ircode)
+ 144               	.LM7:
+ 145 000e 48E0      		ldi r20,hi8(2064)
+ 146 0010 8031      		cpi r24,lo8(2064)
+ 147 0012 9407      		cpc r25,r20
+ 148 0014 09F4      		brne .+2
+ 149 0016 63C0      		rjmp .L12
+ 151               	.LM8:
+ 152 0018 48E0      		ldi r20,hi8(2065)
+ 153 001a 8131      		cpi r24,lo8(2065)
+ 154 001c 9407      		cpc r25,r20
+ 155 001e 80F5      		brsh .L29
+ 156 0020 42E0      		ldi r20,hi8(528)
+ 157 0022 8031      		cpi r24,lo8(528)
+ 158 0024 9407      		cpc r25,r20
+ 159 0026 09F4      		brne .+2
+ 160 0028 60C0      		rjmp .L15
+ 161 002a 42E0      		ldi r20,hi8(529)
+ 162 002c 8131      		cpi r24,lo8(529)
+ 163 002e 9407      		cpc r25,r20
+ 164 0030 80F4      		brsh .L30
+ 165 0032 8039      		cpi r24,144
+ 166 0034 9105      		cpc r25,__zero_reg__
+ 167 0036 09F4      		brne .+2
+ 168 0038 65C0      		rjmp .L21
+ 169 003a 8139      		cpi r24,145
+ 170 003c 9105      		cpc r25,__zero_reg__
+ 171 003e 20F4      		brsh .L31
+ 172 0040 4097      		sbiw r24,16
+ 173 0042 09F4      		brne .+2
+ 174 0044 4AC0      		rjmp .L11
+ 175 0046 71C0      		rjmp .L28
+ 176               	.L31:
+ 177 0048 8051      		subi r24,lo8(272)
+ 178 004a 9140      		sbci r25,hi8(272)
+ 179 004c 09F4      		brne .+2
+ 180 004e 73C0      		rjmp .L37
+ 181 0050 6CC0      		rjmp .L28
+ 182               	.L30:
+ 183 0052 44E0      		ldi r20,hi8(1040)
+ 184 0054 8031      		cpi r24,lo8(1040)
+ 185 0056 9407      		cpc r25,r20
+ 186 0058 09F4      		brne .+2
+ 187 005a 43C0      		rjmp .L13
+ 188 005c 44E0      		ldi r20,hi8(1041)
+ 189 005e 8131      		cpi r24,lo8(1041)
+ 190 0060 9407      		cpc r25,r20
+ 191 0062 28F4      		brsh .L32
+ 192 0064 8059      		subi r24,lo8(656)
+ 193 0066 9240      		sbci r25,hi8(656)
+ 194 0068 09F4      		brne .+2
+ 195 006a 65C0      		rjmp .L37
+ 196 006c 5EC0      		rjmp .L28
+ 197               	.L32:
+ 198 006e 44E0      		ldi r20,hi8(1168)
+ 199 0070 8039      		cpi r24,lo8(1168)
+ 200 0072 9407      		cpc r25,r20
+ 201 0074 09F4      		brne .+2
+ 202 0076 4DC0      		rjmp .L26
+ 203 0078 8051      		subi r24,lo8(1552)
+ 204 007a 9640      		sbci r25,hi8(1552)
+ 205 007c D1F1      		breq .L17
+ 206 007e 55C0      		rjmp .L28
+ 207               	.L29:
+ 208 0080 4AE0      		ldi r20,hi8(2640)
+ 209 0082 8035      		cpi r24,lo8(2640)
+ 210 0084 9407      		cpc r25,r20
+ 211 0086 09F4      		brne .+2
+ 212 0088 56C0      		rjmp .L37
+ 213 008a 4AE0      		ldi r20,hi8(2641)
+ 214 008c 8135      		cpi r24,lo8(2641)
+ 215 008e 9407      		cpc r25,r20
+ 216 0090 80F4      		brsh .L33
+ 217 0092 49E0      		ldi r20,hi8(2320)
+ 218 0094 8031      		cpi r24,lo8(2320)
+ 219 0096 9407      		cpc r25,r20
+ 220 0098 81F1      		breq .L20
+ 221 009a 49E0      		ldi r20,hi8(2321)
+ 222 009c 8131      		cpi r24,lo8(2321)
+ 223 009e 9407      		cpc r25,r20
+ 224 00a0 20F4      		brsh .L34
+ 225 00a2 8059      		subi r24,lo8(2192)
+ 226 00a4 9840      		sbci r25,hi8(2192)
+ 227 00a6 89F1      		breq .L22
+ 228 00a8 40C0      		rjmp .L28
+ 229               	.L34:
+ 230 00aa 8051      		subi r24,lo8(2576)
+ 231 00ac 9A40      		sbci r25,hi8(2576)
+ 232 00ae F9F0      		breq .L16
+ 233 00b0 3CC0      		rjmp .L28
+ 234               	.L33:
+ 235 00b2 4CE0      		ldi r20,hi8(3088)
+ 236 00b4 8031      		cpi r24,lo8(3088)
+ 237 00b6 9407      		cpc r25,r20
+ 238 00b8 B1F0      		breq .L14
+ 239 00ba 4CE0      		ldi r20,hi8(3089)
+ 240 00bc 8131      		cpi r24,lo8(3089)
+ 241 00be 9407      		cpc r25,r20
+ 242 00c0 20F4      		brsh .L35
+ 243 00c2 8059      		subi r24,lo8(2704)
+ 244 00c4 9A40      		sbci r25,hi8(2704)
+ 245 00c6 B9F1      		breq .L37
+ 246 00c8 30C0      		rjmp .L28
+ 247               	.L35:
+ 248 00ca 4CE0      		ldi r20,hi8(3216)
+ 249 00cc 8039      		cpi r24,lo8(3216)
+ 250 00ce 9407      		cpc r25,r20
+ 251 00d0 31F1      		breq .L27
+ 252 00d2 8051      		subi r24,lo8(3600)
+ 253 00d4 9E40      		sbci r25,hi8(3600)
+ 254 00d6 79F0      		breq .L18
+ 255 00d8 28C0      		rjmp .L28
+ 256               	.L11:
+  75:backemf.c     **** 	   {
+  76:backemf.c     **** 	    case IR_TV_1:	
+  77:backemf.c     **** 			speed = 2;
+ 258               	.LM9:
+ 259 00da 22E0      		ldi r18,lo8(2)
+  78:backemf.c     **** 			 break;
+ 261               	.LM10:
+ 262 00dc 2CC0      		rjmp .L37
+ 263               	.L12:
+  79:backemf.c     **** 		case IR_TV_2:
+  80:backemf.c     **** 			speed = 3;
+ 265               	.LM11:
+ 266 00de 23E0      		ldi r18,lo8(3)
+  81:backemf.c     **** 			 break;
+ 268               	.LM12:
+ 269 00e0 2AC0      		rjmp .L37
+ 270               	.L13:
+  82:backemf.c     **** 	    case IR_TV_3:
+  83:backemf.c     **** 			speed = 4;
+ 272               	.LM13:
+ 273 00e2 24E0      		ldi r18,lo8(4)
+  84:backemf.c     **** 			 break;
+ 275               	.LM14:
+ 276 00e4 28C0      		rjmp .L37
+ 277               	.L14:
+  85:backemf.c     **** 		case IR_TV_4:
+  86:backemf.c     **** 			speed = 5;
+ 279               	.LM15:
+ 280 00e6 25E0      		ldi r18,lo8(5)
+  87:backemf.c     **** 			 break;
+ 282               	.LM16:
+ 283 00e8 26C0      		rjmp .L37
+ 284               	.L15:
+  88:backemf.c     **** 	    case IR_TV_5:
+  89:backemf.c     **** 			speed = 6;
+ 286               	.LM17:
+ 287 00ea 26E0      		ldi r18,lo8(6)
+  90:backemf.c     **** 			 break;
+ 289               	.LM18:
+ 290 00ec 24C0      		rjmp .L37
+ 291               	.L16:
+  91:backemf.c     **** 		case IR_TV_6:
+  92:backemf.c     **** 			speed = 7;
+ 293               	.LM19:
+ 294 00ee 27E0      		ldi r18,lo8(7)
+  93:backemf.c     **** 			 break;
+ 296               	.LM20:
+ 297 00f0 22C0      		rjmp .L37
+ 298               	.L17:
+  94:backemf.c     **** 	    case IR_TV_7:
+  95:backemf.c     **** 			speed = 8;
+ 300               	.LM21:
+ 301 00f2 28E0      		ldi r18,lo8(8)
+  96:backemf.c     **** 			break;
+ 303               	.LM22:
+ 304 00f4 20C0      		rjmp .L37
+ 305               	.L18:
+  97:backemf.c     **** 		case IR_TV_8:
+  98:backemf.c     **** 			speed = 9;
+ 307               	.LM23:
+ 308 00f6 29E0      		ldi r18,lo8(9)
+  99:backemf.c     **** 			break;
+ 310               	.LM24:
+ 311 00f8 1EC0      		rjmp .L37
+ 312               	.L20:
+ 100:backemf.c     **** 	    case IR_TV_9:
+ 101:backemf.c     **** 			speed = 10;
+ 102:backemf.c     **** 			break;
+ 103:backemf.c     **** 		case IR_TV_0:
+ 104:backemf.c     **** 			g_mode1  = MOTOR_STOP;
+ 314               	.LM25:
+ 315 00fa 1092 0000 		sts g_mode1,__zero_reg__
+ 105:backemf.c     **** 			g_mode2  = MOTOR_STOP;
+ 317               	.LM26:
+ 318 00fe 1092 0000 		sts g_mode2,__zero_reg__
+ 106:backemf.c     **** 			break;
+ 320               	.LM27:
+ 321 0102 19C0      		rjmp .L37
+ 322               	.L21:
+ 107:backemf.c     **** 		case IR_TV_CHUP:							
+ 108:backemf.c     ****         	g_mode1 = MOTOR_FORWARD;		
+ 324               	.LM28:
+ 325 0104 3093 0000 		sts g_mode1,r19
+ 326 0108 0DC0      		rjmp .L38
+ 327               	.L22:
+ 109:backemf.c     **** 			g_mode2 = MOTOR_FORWARD;
+ 110:backemf.c     **** 			break;
+ 111:backemf.c     **** 		case IR_TV_CHDOWN:							
+ 112:backemf.c     **** 			g_mode1 = MOTOR_BACKWARD;
+ 329               	.LM29:
+ 330 010a 82E0      		ldi r24,lo8(2)
+ 331 010c 8093 0000 		sts g_mode1,r24
+ 332 0110 03C0      		rjmp .L39
+ 333               	.L26:
+ 113:backemf.c     **** 			g_mode2 = MOTOR_BACKWARD;
+ 114:backemf.c     **** 			break;
+ 115:backemf.c     **** 		case IR_TV_TVMUTE:
+ 116:backemf.c     **** 			break;
+ 117:backemf.c     **** 		case  IR_TV_TVPOWER:
+ 118:backemf.c     **** 		  	break;
+ 119:backemf.c     **** 		case   IR_TV_TVAV:
+ 120:backemf.c     **** 		    break;
+ 121:backemf.c     **** 		case  IR_TV_VOLUP:
+ 122:backemf.c     ****             g_mode1 = MOTOR_FORWARD;		
+ 335               	.LM30:
+ 336 0112 3093 0000 		sts g_mode1,r19
+ 123:backemf.c     **** 			g_mode2 = MOTOR_BACKWARD;
+ 338               	.LM31:
+ 339 0116 82E0      		ldi r24,lo8(2)
+ 340               	.L39:
+ 341 0118 8093 0000 		sts g_mode2,r24
+ 124:backemf.c     **** 			break;
+ 343               	.LM32:
+ 344 011c 0CC0      		rjmp .L37
+ 345               	.L27:
+ 125:backemf.c     **** 		case  IR_TV_VOLDOWN:                 			
+ 126:backemf.c     **** 			g_mode1 = MOTOR_BACKWARD;
+ 347               	.LM33:
+ 348 011e 82E0      		ldi r24,lo8(2)
+ 349 0120 8093 0000 		sts g_mode1,r24
+ 350               	.L38:
+ 127:backemf.c     **** 			g_mode2 = MOTOR_FORWARD;
+ 352               	.LM34:
+ 353 0124 3093 0000 		sts g_mode2,r19
+ 128:backemf.c     **** 			break;
+ 355               	.LM35:
+ 356 0128 06C0      		rjmp .L37
+ 357               	.L28:
+ 129:backemf.c     **** 		default:
+ 130:backemf.c     **** 			found = 0;
+ 359               	.LM36:
+ 360 012a 30E0      		ldi r19,lo8(0)
+ 131:backemf.c     **** 			g_mode1  = MOTOR_STOP;
+ 362               	.LM37:
+ 363 012c 3093 0000 		sts g_mode1,r19
+ 132:backemf.c     **** 			g_mode2  = MOTOR_STOP;
+ 365               	.LM38:
+ 366 0130 3093 0000 		sts g_mode2,r19
+ 367 0134 08C0      		rjmp .L36
+ 368               	.L37:
+ 133:backemf.c     **** 			break;
+ 134:backemf.c     ****  	   }
+ 135:backemf.c     ****        if (found)
+ 136:backemf.c     **** 	   {	pwm = (speed * 100);             // Start from +  speed*2^4
+ 370               	.LM39:
+ 371 0136 84E6      		ldi r24,lo8(100)
+ 372 0138 289F      		mul r18,r24
+ 373 013a C001      		movw r24,r0
+ 374 013c 1124      		clr r1
+ 137:backemf.c     **** 			OCR1A = pwm;
+ 376               	.LM40:
+ 377 013e 9BBD      		out (74)+1-0x20,r25
+ 378 0140 8ABD      		out 74-0x20,r24
+ 138:backemf.c     **** 			OCR1B = pwm;
+ 380               	.LM41:
+ 381 0142 99BD      		out (72)+1-0x20,r25
+ 382 0144 88BD      		out 72-0x20,r24
+ 383               	.L36:
+ 139:backemf.c     **** 		}	
+ 140:backemf.c     **** 	   return found;
+ 141:backemf.c     **** 
+ 142:backemf.c     **** }
+ 385               	.LM42:
+ 386 0146 832F      		mov r24,r19
+ 387 0148 9927      		clr r25
+ 388               	/* epilogue: frame size=0 */
+ 389 014a 0895      		ret
+ 390               	/* epilogue end (size=1) */
+ 391               	/* function remote_decode size 169 (168) */
+ 398               	.Lscope1:
+ 399               		.data
+ 400               	.LC0:
+ 401 0000 436F 6D6D 		.string	"Command :"
+ 401      616E 6420 
+ 401      3A00 
+ 402               	.LC1:
+ 403 000a 4E65 6761 		.string	"Negative value"
+ 403      7469 7665 
+ 403      2076 616C 
+ 403      7565 00
+ 404               	.LC2:
+ 405 0019 436F 6D6D 		.string	"Command not found "
+ 405      616E 6420 
+ 405      6E6F 7420 
+ 405      666F 756E 
+ 405      6420 00
+ 406               		.text
+ 408               	.global	cmd_decode
+ 410               	cmd_decode:
+ 143:backemf.c     **** 
+ 144:backemf.c     **** 
+ 145:backemf.c     **** 
+ 146:backemf.c     **** 
+ 147:backemf.c     **** 
+ 148:backemf.c     **** /* Command decode from g_rcv_buffer  will decode and action according to command in buffer
+ 149:backemf.c     ****  
+ 150:backemf.c     **** */
+ 151:backemf.c     **** 
+ 152:backemf.c     **** int16_t cmd_decode (void)
+ 153:backemf.c     **** {
+ 412               	.LM43:
+ 413               	/* prologue: frame size=0 */
+ 414 014c CF93      		push r28
+ 415               	/* prologue end (size=1) */
+ 416               	.L53:
+ 154:backemf.c     **** 
+ 155:backemf.c     ****  uint8_t  cmd_no =0;
+ 156:backemf.c     ****  uint8_t  *cmd_argument;
+ 157:backemf.c     ****  uint8_t  *buffer_ptr;
+ 158:backemf.c     ****  
+ 159:backemf.c     ****  
+ 160:backemf.c     **** // Should repeat until end of buffer
+ 161:backemf.c     ****  
+ 162:backemf.c     **** // Loop until end of text
+ 163:backemf.c     **** 
+ 164:backemf.c     ****    buffer_ptr   = g_rcv_buff;
+ 165:backemf.c     ****    cmd_argument = g_rcv_buff;
+ 166:backemf.c     ****      
+ 167:backemf.c     ****    while ( cmd_no !=  CMD_LINE_END)
+ 168:backemf.c     ****    {
+ 169:backemf.c     ****  		cmd_no =  text_decode (buffer_ptr,cmd_argument);
+ 418               	.LM44:
+ 419 014e 60E0      		ldi r22,lo8(g_rcv_buff)
+ 420 0150 70E0      		ldi r23,hi8(g_rcv_buff)
+ 421 0152 CB01      		movw r24,r22
+ 422 0154 0E94 0000 		call text_decode
+ 423 0158 C82F      		mov r28,r24
+ 170:backemf.c     **** //		debug_value (cmd_no,10);
+ 171:backemf.c     **** 		uart_puts("Command :");
+ 425               	.LM45:
+ 426 015a 80E0      		ldi r24,lo8(.LC0)
+ 427 015c 90E0      		ldi r25,hi8(.LC0)
+ 428 015e 0E94 0000 		call uart_puts
+ 172:backemf.c     **** 		uart_putc(0x30+cmd_no);
+ 430               	.LM46:
+ 431 0162 8C2F      		mov r24,r28
+ 432 0164 805D      		subi r24,lo8(-(48))
+ 433 0166 0E94 0000 		call uart_putc
+ 173:backemf.c     **** 		uart_putc('*');
+ 435               	.LM47:
+ 436 016a 8AE2      		ldi r24,lo8(42)
+ 437 016c 0E94 0000 		call uart_putc
+ 174:backemf.c     **** 		uart_puts(cmd_argument);
+ 439               	.LM48:
+ 440 0170 80E0      		ldi r24,lo8(g_rcv_buff)
+ 441 0172 90E0      		ldi r25,hi8(g_rcv_buff)
+ 442 0174 0E94 0000 		call uart_puts
+ 175:backemf.c     ****   
+ 176:backemf.c     ****  		switch (cmd_no)
+ 444               	.LM49:
+ 445 0178 8C2F      		mov r24,r28
+ 446 017a 9927      		clr r25
+ 447 017c 8230      		cpi r24,2
+ 448 017e 9105      		cpc r25,__zero_reg__
+ 449 0180 81F0      		breq .L45
+ 451               	.LM50:
+ 452 0182 8330      		cpi r24,3
+ 453 0184 9105      		cpc r25,__zero_reg__
+ 454 0186 1CF4      		brge .L52
+ 455 0188 0197      		sbiw r24,1
+ 456 018a 21F0      		breq .L44
+ 457 018c 2BC0      		rjmp .L51
+ 458               	.L52:
+ 459 018e 0397      		sbiw r24,3
+ 460 0190 79F0      		breq .L46
+ 461 0192 28C0      		rjmp .L51
+ 462               	.L44:
+ 177:backemf.c     **** 		{
+ 178:backemf.c     **** 			case MOTOR_CMD: 
+ 179:backemf.c     **** 				g_motor = (uint8_t)atoi(cmd_argument);
+ 464               	.LM51:
+ 465 0194 80E0      		ldi r24,lo8(g_rcv_buff)
+ 466 0196 90E0      		ldi r25,hi8(g_rcv_buff)
+ 467 0198 0E94 0000 		call atoi
+ 468 019c 8093 0000 		sts g_motor,r24
+ 180:backemf.c     ****  				break;
+ 470               	.LM52:
+ 471 01a0 25C0      		rjmp .L41
+ 472               	.L45:
+ 181:backemf.c     **** 			case  SPEED_CMD:	
+ 182:backemf.c     **** 				g_speed = (uint8_t)atoi(cmd_argument);
+ 474               	.LM53:
+ 475 01a2 80E0      		ldi r24,lo8(g_rcv_buff)
+ 476 01a4 90E0      		ldi r25,hi8(g_rcv_buff)
+ 477 01a6 0E94 0000 		call atoi
+ 478 01aa 8093 0000 		sts g_speed,r24
+ 183:backemf.c     ****   				break;
+ 480               	.LM54:
+ 481 01ae 1EC0      		rjmp .L41
+ 482               	.L46:
+ 184:backemf.c     **** 			case  ANGLE_CMD:   // Can be - 
+ 185:backemf.c     **** 				g_angle = atoi(cmd_argument);
+ 484               	.LM55:
+ 485 01b0 80E0      		ldi r24,lo8(g_rcv_buff)
+ 486 01b2 90E0      		ldi r25,hi8(g_rcv_buff)
+ 487 01b4 0E94 0000 		call atoi
+ 488 01b8 9093 0000 		sts (g_angle)+1,r25
+ 489 01bc 8093 0000 		sts g_angle,r24
+ 186:backemf.c     **** 				if (g_angle > 0)
+ 491               	.LM56:
+ 492 01c0 1816      		cp __zero_reg__,r24
+ 493 01c2 1906      		cpc __zero_reg__,r25
+ 494 01c4 64F4      		brge .L47
+ 187:backemf.c     **** 				{
+ 188:backemf.c     **** 					if (g_motor == 1)
+ 496               	.LM57:
+ 497 01c6 8091 0000 		lds r24,g_motor
+ 498 01ca 9091 0000 		lds r25,g_angle
+ 499 01ce 8130      		cpi r24,lo8(1)
+ 500 01d0 19F4      		brne .L48
+ 189:backemf.c     **** 						g_mode1 = g_angle;
+ 502               	.LM58:
+ 503 01d2 9093 0000 		sts g_mode1,r25
+ 504 01d6 0AC0      		rjmp .L41
+ 505               	.L48:
+ 190:backemf.c     **** 					else
+ 191:backemf.c     **** 						g_mode2 = g_angle;
+ 507               	.LM59:
+ 508 01d8 9093 0000 		sts g_mode2,r25
+ 509 01dc 07C0      		rjmp .L41
+ 510               	.L47:
+ 192:backemf.c     **** 				}
+ 193:backemf.c     **** 				else
+ 194:backemf.c     **** 					uart_puts("Negative value");
+ 512               	.LM60:
+ 513 01de 80E0      		ldi r24,lo8(.LC1)
+ 514 01e0 90E0      		ldi r25,hi8(.LC1)
+ 515 01e2 02C0      		rjmp .L56
+ 516               	.L51:
+ 195:backemf.c     **** 				break;	
+ 196:backemf.c     **** //		    case  CMD_LINE_END:
+ 197:backemf.c     **** //				break;
+ 198:backemf.c     **** 			default:
+ 199:backemf.c     **** 			    uart_puts("Command not found ");
+ 518               	.LM61:
+ 519 01e4 80E0      		ldi r24,lo8(.LC2)
+ 520 01e6 90E0      		ldi r25,hi8(.LC2)
+ 521               	.L56:
+ 522 01e8 0E94 0000 		call uart_puts
+ 523               	.L41:
+ 200:backemf.c     **** // 				uart_putc('-');
+ 201:backemf.c     **** //				uart_puts(cmd_argument);
+ 202:backemf.c     **** 		        break;	  
+ 525               	.LM62:
+ 526 01ec CF3F      		cpi r28,lo8(-1)
+ 527 01ee 09F0      		breq .+2
+ 528 01f0 AECF      		rjmp .L53
+ 203:backemf.c     **** 		}		
+ 204:backemf.c     ****     }
+ 205:backemf.c     ****  return 0; 
+ 206:backemf.c     **** }
+ 530               	.LM63:
+ 531 01f2 80E0      		ldi r24,lo8(0)
+ 532 01f4 90E0      		ldi r25,hi8(0)
+ 533               	/* epilogue: frame size=0 */
+ 534 01f6 CF91      		pop r28
+ 535 01f8 0895      		ret
+ 536               	/* epilogue end (size=2) */
+ 537               	/* function cmd_decode size 89 (86) */
+ 542               	.Lscope2:
+ 543               		.lcomm i.0,2
+ 545               	.global	__vector_13
+ 547               	__vector_13:
+ 207:backemf.c     **** 
+ 208:backemf.c     **** 
+ 209:backemf.c     ****  
+ 210:backemf.c     ****  
+ 211:backemf.c     **** /* UART receiver ready
+ 212:backemf.c     **** */
+ 213:backemf.c     **** 
+ 214:backemf.c     **** SIGNAL(SIG_UART_RECV)
+ 215:backemf.c     **** {
+ 549               	.LM64:
+ 550               	/* prologue: frame size=0 */
+ 551 01fa 1F92      		push __zero_reg__
+ 552 01fc 0F92      		push __tmp_reg__
+ 553 01fe 0FB6      		in __tmp_reg__,__SREG__
+ 554 0200 0F92      		push __tmp_reg__
+ 555 0202 1124      		clr __zero_reg__
+ 556 0204 2F93      		push r18
+ 557 0206 8F93      		push r24
+ 558 0208 9F93      		push r25
+ 559 020a EF93      		push r30
+ 560 020c FF93      		push r31
+ 561               	/* prologue end (size=10) */
+ 216:backemf.c     ****   static uint16_t i= 0;
+ 217:backemf.c     ****   uint8_t ch;
+ 218:backemf.c     ****   ch = UDR;
+ 563               	.LM65:
+ 564 020e 2CB1      		in r18,44-0x20
+ 219:backemf.c     **** 
+ 220:backemf.c     **** 	g_rcv_buff[i] = ch;    
+ 566               	.LM66:
+ 567 0210 8091 0000 		lds r24,i.0
+ 568 0214 9091 0000 		lds r25,(i.0)+1
+ 569 0218 FC01      		movw r30,r24
+ 570 021a E050      		subi r30,lo8(-(g_rcv_buff))
+ 571 021c F040      		sbci r31,hi8(-(g_rcv_buff))
+ 572 021e 2083      		st Z,r18
+ 221:backemf.c     **** 	i++;
+ 574               	.LM67:
+ 575 0220 FC01      		movw r30,r24
+ 576 0222 3196      		adiw r30,1
+ 577 0224 F093 0000 		sts (i.0)+1,r31
+ 578 0228 E093 0000 		sts i.0,r30
+ 222:backemf.c     ****  
+ 223:backemf.c     **** // Found 0xOD or 0x0A end with null
+ 224:backemf.c     ****    if ((ch == 0x0D) || (ch == 0x0A)) // CANNOT USE UDR to compare
+ 580               	.LM68:
+ 581 022c 2D30      		cpi r18,lo8(13)
+ 582 022e 11F0      		breq .L59
+ 584               	.LM69:
+ 585 0230 2A30      		cpi r18,lo8(10)
+ 586 0232 51F4      		brne .L57
+ 587               	.L59:
+ 225:backemf.c     ****    {	
+ 226:backemf.c     ****     	g_rcv_buff[i]  = 0;   // End with null
+ 589               	.LM70:
+ 590 0234 E050      		subi r30,lo8(-(g_rcv_buff))
+ 591 0236 F040      		sbci r31,hi8(-(g_rcv_buff))
+ 592 0238 1082      		st Z,__zero_reg__
+ 227:backemf.c     **** 		i = 0;
+ 594               	.LM71:
+ 595 023a 1092 0000 		sts (i.0)+1,__zero_reg__
+ 596 023e 1092 0000 		sts i.0,__zero_reg__
+ 228:backemf.c     ****   		g_cmd_decode = 1;
+ 598               	.LM72:
+ 599 0242 81E0      		ldi r24,lo8(1)
+ 600 0244 8093 0000 		sts g_cmd_decode,r24
+ 601               	.L57:
+ 602               	/* epilogue: frame size=0 */
+ 603 0248 FF91      		pop r31
+ 604 024a EF91      		pop r30
+ 605 024c 9F91      		pop r25
+ 606 024e 8F91      		pop r24
+ 607 0250 2F91      		pop r18
+ 608 0252 0F90      		pop __tmp_reg__
+ 609 0254 0FBE      		out __SREG__,__tmp_reg__
+ 610 0256 0F90      		pop __tmp_reg__
+ 611 0258 1F90      		pop __zero_reg__
+ 612 025a 1895      		reti
+ 613               	/* epilogue end (size=10) */
+ 614               	/* function __vector_13 size 49 (29) */
+ 620               	.Lscope3:
+ 622               	.global	__vector_14
+ 624               	__vector_14:
+ 229:backemf.c     ****    }
+ 230:backemf.c     **** }
+ 231:backemf.c     **** 
+ 232:backemf.c     ****   
+ 233:backemf.c     **** 
+ 234:backemf.c     **** /*************************************************************************
+ 235:backemf.c     **** Function: UART Data Register Empty interrupt
+ 236:backemf.c     **** Purpose:  called when the UART is ready to transmit the next byte
+ 237:backemf.c     **** **************************************************************************/
+ 238:backemf.c     **** 
+ 239:backemf.c     **** SIGNAL(SIG_UART_DATA)
+ 240:backemf.c     **** { 
+ 626               	.LM73:
+ 627               	/* prologue: frame size=0 */
+ 628 025c 1F92      		push __zero_reg__
+ 629 025e 0F92      		push __tmp_reg__
+ 630 0260 0FB6      		in __tmp_reg__,__SREG__
+ 631 0262 0F92      		push __tmp_reg__
+ 632 0264 1124      		clr __zero_reg__
+ 633 0266 2F93      		push r18
+ 634 0268 3F93      		push r19
+ 635 026a 4F93      		push r20
+ 636 026c 5F93      		push r21
+ 637 026e 6F93      		push r22
+ 638 0270 7F93      		push r23
+ 639 0272 8F93      		push r24
+ 640 0274 9F93      		push r25
+ 641 0276 AF93      		push r26
+ 642 0278 BF93      		push r27
+ 643 027a EF93      		push r30
+ 644 027c FF93      		push r31
+ 645               	/* prologue end (size=17) */
+ 241:backemf.c     ****     uint8_t  ch;
+ 242:backemf.c     **** 	if ((ch = uart_get_TX()))
+ 647               	.LM74:
+ 648 027e 0E94 0000 		call uart_get_TX
+ 649 0282 8823      		tst r24
+ 650 0284 11F0      		breq .L61
+ 243:backemf.c     **** 	{
+ 244:backemf.c     ****  		UDR = ch;
+ 652               	.LM75:
+ 653 0286 8CB9      		out 44-0x20,r24
+ 654 0288 01C0      		rjmp .L60
+ 655               	.L61:
+ 245:backemf.c     **** 	}	
+ 246:backemf.c     **** 	else 
+ 247:backemf.c     **** // No character disable  interrupt to avoid repetable call Enable again when
+ 248:backemf.c     **** //	send character in putc procedure
+ 249:backemf.c     **** 	{
+ 250:backemf.c     **** 	    UCSRB &=  ~(1<<UDRIE);
+ 657               	.LM76:
+ 658 028a 5598      		cbi 42-0x20,5
+ 659               	.L60:
+ 660               	/* epilogue: frame size=0 */
+ 661 028c FF91      		pop r31
+ 662 028e EF91      		pop r30
+ 663 0290 BF91      		pop r27
+ 664 0292 AF91      		pop r26
+ 665 0294 9F91      		pop r25
+ 666 0296 8F91      		pop r24
+ 667 0298 7F91      		pop r23
+ 668 029a 6F91      		pop r22
+ 669 029c 5F91      		pop r21
+ 670 029e 4F91      		pop r20
+ 671 02a0 3F91      		pop r19
+ 672 02a2 2F91      		pop r18
+ 673 02a4 0F90      		pop __tmp_reg__
+ 674 02a6 0FBE      		out __SREG__,__tmp_reg__
+ 675 02a8 0F90      		pop __tmp_reg__
+ 676 02aa 1F90      		pop __zero_reg__
+ 677 02ac 1895      		reti
+ 678               	/* epilogue end (size=17) */
+ 679               	/* function __vector_14 size 41 (7) */
+ 684               	.Lscope4:
+ 686               	.global	__vector_6
+ 688               	__vector_6:
+ 251:backemf.c     **** 	}
+ 252:backemf.c     **** 	
+ 253:backemf.c     **** }
+ 254:backemf.c     **** 
+ 255:backemf.c     ****  
+ 256:backemf.c     ****  
+ 257:backemf.c     **** /* Interrupt handle for Input Capture
+ 258:backemf.c     **** This routine will detect/ process the Sony IR remote command. Protocol using Sony remote control
+ 259:backemf.c     **** INPUT   :  Infrared signal from  ICP pin
+ 260:backemf.c     **** 		   Command table 
+ 261:backemf.c     **** 		  
+ 262:backemf.c     **** 
+ 263:backemf.c     **** OUTPUT 	: g_num  Number of message to display
+ 264:backemf.c     **** 		: g_control.display_mode   Display mode of message
+ 265:backemf.c     **** 		: g_start_bit
+ 266:backemf.c     **** 		
+ 267:backemf.c     **** 
+ 268:backemf.c     **** */
+ 269:backemf.c     **** SIGNAL(SIG_INPUT_CAPTURE1)
+ 270:backemf.c     **** {
+ 690               	.LM77:
+ 691               	/* prologue: frame size=0 */
+ 692 02ae 1F92      		push __zero_reg__
+ 693 02b0 0F92      		push __tmp_reg__
+ 694 02b2 0FB6      		in __tmp_reg__,__SREG__
+ 695 02b4 0F92      		push __tmp_reg__
+ 696 02b6 1124      		clr __zero_reg__
+ 697 02b8 2F93      		push r18
+ 698 02ba 3F93      		push r19
+ 699 02bc 4F93      		push r20
+ 700 02be 5F93      		push r21
+ 701 02c0 6F93      		push r22
+ 702 02c2 7F93      		push r23
+ 703 02c4 8F93      		push r24
+ 704 02c6 9F93      		push r25
+ 705 02c8 AF93      		push r26
+ 706 02ca BF93      		push r27
+ 707 02cc EF93      		push r30
+ 708 02ce FF93      		push r31
+ 709               	/* prologue end (size=17) */
+ 271:backemf.c     **** 	uint16_t  ir_code;
+ 272:backemf.c     ****     ir_code = ICR1;
+ 711               	.LM78:
+ 712 02d0 26B5      		in r18,70-0x20
+ 713 02d2 37B5      		in r19,(70)+1-0x20
+ 273:backemf.c     **** 	cli(); 
+ 715               	.LM79:
+ 716               	/* #APP */
+ 717 02d4 F894      		cli
+ 274:backemf.c     **** 
+ 275:backemf.c     ****     TCCR1B  |= _BV(ICES1);	     // Rising edge
+ 719               	.LM80:
+ 720               	/* #NOAPP */
+ 721 02d6 8EB5      		in r24,78-0x20
+ 722 02d8 8064      		ori r24,lo8(64)
+ 723 02da 8EBD      		out 78-0x20,r24
+ 276:backemf.c     ****  	ir_code  = sony_ir_decode(ir_code);  
+ 725               	.LM81:
+ 726 02dc C901      		movw r24,r18
+ 727 02de 0E94 0000 		call sony_ir_decode
+ 277:backemf.c     **** 
+ 278:backemf.c     **** 	if (ir_code)
+ 729               	.LM82:
+ 730 02e2 0097      		sbiw r24,0
+ 731 02e4 29F0      		breq .L64
+ 279:backemf.c     **** 	{       //End code dispatch command    
+ 280:backemf.c     ****  
+ 281:backemf.c     **** 		remote_decode (ir_code);
+ 733               	.LM83:
+ 734 02e6 0E94 0000 		call remote_decode
+ 282:backemf.c     **** // Return to falling edge for Start		
+ 283:backemf.c     **** 		TCCR1B  &= ~(_BV(ICES1));
+ 736               	.LM84:
+ 737 02ea 8EB5      		in r24,78-0x20
+ 738 02ec 8F7B      		andi r24,lo8(-65)
+ 739 02ee 8EBD      		out 78-0x20,r24
+ 740               	.L64:
+ 284:backemf.c     **** 
+ 285:backemf.c     **** //Note if  SELFTEST is selected g_irint = 0;
+ 286:backemf.c     **** 	} 
+ 287:backemf.c     ****     sei();
+ 742               	.LM85:
+ 743               	/* #APP */
+ 744 02f0 7894      		sei
+ 745               	/* #NOAPP */
+ 746               	/* epilogue: frame size=0 */
+ 747 02f2 FF91      		pop r31
+ 748 02f4 EF91      		pop r30
+ 749 02f6 BF91      		pop r27
+ 750 02f8 AF91      		pop r26
+ 751 02fa 9F91      		pop r25
+ 752 02fc 8F91      		pop r24
+ 753 02fe 7F91      		pop r23
+ 754 0300 6F91      		pop r22
+ 755 0302 5F91      		pop r21
+ 756 0304 4F91      		pop r20
+ 757 0306 3F91      		pop r19
+ 758 0308 2F91      		pop r18
+ 759 030a 0F90      		pop __tmp_reg__
+ 760 030c 0FBE      		out __SREG__,__tmp_reg__
+ 761 030e 0F90      		pop __tmp_reg__
+ 762 0310 1F90      		pop __zero_reg__
+ 763 0312 1895      		reti
+ 764               	/* epilogue end (size=17) */
+ 765               	/* function __vector_6 size 53 (19) */
+ 770               	.Lscope5:
+ 772               	.global	init_board
+ 774               	init_board:
+ 288:backemf.c     ****  
+ 289:backemf.c     **** }
+ 290:backemf.c     **** 
+ 291:backemf.c     **** 
+ 292:backemf.c     **** void init_board()
+ 293:backemf.c     **** {
+ 776               	.LM86:
+ 777               	/* prologue: frame size=0 */
+ 778               	/* prologue end (size=0) */
+ 294:backemf.c     **** 	d7segment_init();
+ 780               	.LM87:
+ 781 0314 0E94 0000 		call d7segment_init
+ 295:backemf.c     **** 	init_ir();
+ 783               	.LM88:
+ 784 0318 0E94 0000 		call init_ir
+ 296:backemf.c     **** 	init_motor();
+ 786               	.LM89:
+ 787 031c 0E94 0000 		call init_motor
+ 297:backemf.c     **** 	uart_init(); 
+ 789               	.LM90:
+ 790 0320 0E94 0000 		call uart_init
+ 298:backemf.c     ****   
+ 299:backemf.c     **** 	g_cmd_decode = 0; 
+ 792               	.LM91:
+ 793 0324 1092 0000 		sts g_cmd_decode,__zero_reg__
+ 300:backemf.c     **** 	sei();
+ 795               	.LM92:
+ 796               	/* #APP */
+ 797 0328 7894      		sei
+ 798               	/* #NOAPP */
+ 799               	/* epilogue: frame size=0 */
+ 800 032a 0895      		ret
+ 801               	/* epilogue end (size=1) */
+ 802               	/* function init_board size 13 (12) */
+ 804               	.Lscope6:
+ 805               		.data
+ 806               	.LC3:
+ 807 002c 00        		.byte	0
+ 808 002d 66        		.byte	102
+ 809 002e 62        		.byte	98
+ 810               		.text
+ 812               	.global	main
+ 814               	main:
+ 301:backemf.c     **** }
+ 302:backemf.c     **** 
+ 303:backemf.c     **** void main()
+ 304:backemf.c     **** {
+ 816               	.LM93:
+ 817               	/* prologue: frame size=3 */
+ 818 032c C0E0      		ldi r28,lo8(__stack - 3)
+ 819 032e D0E0      		ldi r29,hi8(__stack - 3)
+ 820 0330 DEBF      		out __SP_H__,r29
+ 821 0332 CDBF      		out __SP_L__,r28
+ 822               	/* prologue end (size=4) */
+ 305:backemf.c     ****   uint8_t sw1,sw2;
+ 306:backemf.c     ****   uint16_t k;
+ 307:backemf.c     ****   int8_t d1,d2;
+ 308:backemf.c     ****   uint8_t show[3] = {0,'f','b'};
+ 824               	.LM94:
+ 825 0334 7E01      		movw r14,r28
+ 826 0336 0894      		sec
+ 827 0338 E11C      		adc r14,__zero_reg__
+ 828 033a F11C      		adc r15,__zero_reg__
+ 829 033c 83E0      		ldi r24,lo8(3)
+ 830 033e E0E0      		ldi r30,lo8(.LC3)
+ 831 0340 F0E0      		ldi r31,hi8(.LC3)
+ 832 0342 D701      		movw r26,r14
+ 833 0344 0190      		ld __tmp_reg__,Z+
+ 834 0346 0D92      		st X+,__tmp_reg__
+ 835 0348 8A95      		dec r24
+ 836 034a E1F7      		brne .-8
+ 309:backemf.c     ****   
+ 310:backemf.c     ****   
+ 311:backemf.c     **** //  enum {MOTOR_STOP,MOTOR_FORWARD,MOTOR_BACKWARD,MOTOR_BRAKE};
+ 312:backemf.c     ****   d7segment_init();   // Init both SW and 7 Segments
+ 838               	.LM95:
+ 839 034c 0E94 0000 		call d7segment_init
+ 313:backemf.c     ****   init_ir();
+ 841               	.LM96:
+ 842 0350 0E94 0000 		call init_ir
+ 314:backemf.c     ****   init_motor();
+ 844               	.LM97:
+ 845 0354 0E94 0000 		call init_motor
+ 315:backemf.c     ****   uart_init(); 
+ 847               	.LM98:
+ 848 0358 0E94 0000 		call uart_init
+ 316:backemf.c     ****    
+ 317:backemf.c     ****   sei();
+ 850               	.LM99:
+ 851               	/* #APP */
+ 852 035c 7894      		sei
+ 318:backemf.c     ****   d1 = 0;
+ 854               	.LM100:
+ 855               	/* #NOAPP */
+ 856 035e DD24      		clr r13
+ 319:backemf.c     ****   d2 = 0;
+ 858               	.LM101:
+ 859 0360 CD2C      		mov r12,r13
+ 860               	.L67:
+ 320:backemf.c     **** 
+ 321:backemf.c     ****   
+ 322:backemf.c     ****   while (1)
+ 323:backemf.c     ****   {
+ 324:backemf.c     ****    sw1 = _7SEGMENT_SW1_IN_PORT & _7SEGMENT_SW1; 
+ 862               	.LM102:
+ 863 0362 80B3      		in r24,48-0x20
+ 325:backemf.c     ****    
+ 326:backemf.c     ****    if (!sw1) // SW1  Press
+ 865               	.LM103:
+ 866 0364 982F      		mov r25,r24
+ 867 0366 9870      		andi r25,lo8(8)
+ 868 0368 83FD      		sbrc r24,3
+ 869 036a 11C0      		rjmp .L69
+ 327:backemf.c     ****     {   	
+ 328:backemf.c     **** 		d1++;
+ 871               	.LM104:
+ 872 036c C394      		inc r12
+ 329:backemf.c     **** 	     if (d1 > MOTOR_BACKWARD)
+ 874               	.LM105:
+ 875 036e B2E0      		ldi r27,lo8(2)
+ 876 0370 BC15      		cp r27,r12
+ 877 0372 0CF4      		brge .L70
+ 330:backemf.c     **** 			d1 = MOTOR_STOP;
+ 879               	.LM106:
+ 880 0374 C92E      		mov r12,r25
+ 881               	.L70:
+ 882 0376 03EF      		ldi r16,lo8(499)
+ 883 0378 11E0      		ldi r17,hi8(499)
+ 884               	.L74:
+ 331:backemf.c     **** 		for (k = 0; k < 500 ;k++)                         // Delay for key bounce
+ 332:backemf.c     **** 				delay(6000);						
+ 886               	.LM107:
+ 887 037a 80E7      		ldi r24,lo8(6000)
+ 888 037c 97E1      		ldi r25,hi8(6000)
+ 889 037e 0E94 0000 		call delay
+ 891               	.LM108:
+ 892 0382 0150      		subi r16,lo8(-(-1))
+ 893 0384 1040      		sbci r17,hi8(-(-1))
+ 894 0386 17FF      		sbrs r17,7
+ 895 0388 F8CF      		rjmp .L74
+ 333:backemf.c     **** 		g_mode1 = d1;
+ 897               	.LM109:
+ 898 038a C092 0000 		sts g_mode1,r12
+ 899               	.L69:
+ 334:backemf.c     **** 
+ 335:backemf.c     **** 	}
+ 336:backemf.c     ****    
+ 337:backemf.c     ****    sw2 = _7SEGMENT_SW2_IN_PORT & _7SEGMENT_SW2; 
+ 901               	.LM110:
+ 902 038e 83B3      		in r24,51-0x20
+ 338:backemf.c     ****    if (!sw2) // SW2 Press
+ 904               	.LM111:
+ 905 0390 982F      		mov r25,r24
+ 906 0392 9470      		andi r25,lo8(4)
+ 907 0394 82FD      		sbrc r24,2
+ 908 0396 11C0      		rjmp .L75
+ 339:backemf.c     ****    {
+ 340:backemf.c     ****         d2++;
+ 910               	.LM112:
+ 911 0398 D394      		inc r13
+ 341:backemf.c     **** 		if (d2 > MOTOR_BACKWARD)
+ 913               	.LM113:
+ 914 039a 82E0      		ldi r24,lo8(2)
+ 915 039c 8D15      		cp r24,r13
+ 916 039e 0CF4      		brge .L76
+ 342:backemf.c     **** 			d2 = MOTOR_STOP;
+ 918               	.LM114:
+ 919 03a0 D92E      		mov r13,r25
+ 920               	.L76:
+ 921 03a2 03EF      		ldi r16,lo8(499)
+ 922 03a4 11E0      		ldi r17,hi8(499)
+ 923               	.L80:
+ 343:backemf.c     ****  		for (k = 0; k < 500 ;k++)                         // Delay for key bounce		
+ 344:backemf.c     ****  				delay(6000);
+ 925               	.LM115:
+ 926 03a6 80E7      		ldi r24,lo8(6000)
+ 927 03a8 97E1      		ldi r25,hi8(6000)
+ 928 03aa 0E94 0000 		call delay
+ 930               	.LM116:
+ 931 03ae 0150      		subi r16,lo8(-(-1))
+ 932 03b0 1040      		sbci r17,hi8(-(-1))
+ 933 03b2 17FF      		sbrs r17,7
+ 934 03b4 F8CF      		rjmp .L80
+ 345:backemf.c     **** 		g_mode2 = d2;
+ 936               	.LM117:
+ 937 03b6 D092 0000 		sts g_mode2,r13
+ 938               	.L75:
+ 346:backemf.c     **** 	
+ 347:backemf.c     ****    }
+ 348:backemf.c     **** 
+ 349:backemf.c     ****  
+ 350:backemf.c     ****  
+ 351:backemf.c     **** // Command decode
+ 352:backemf.c     ****     if ( g_cmd_decode)
+ 940               	.LM118:
+ 941 03ba 8091 0000 		lds r24,g_cmd_decode
+ 942 03be 8823      		tst r24
+ 943 03c0 21F0      		breq .L81
+ 353:backemf.c     **** 	{
+ 354:backemf.c     **** // Decode command	
+ 355:backemf.c     ****    	     cmd_decode ();
+ 945               	.LM119:
+ 946 03c2 0E94 0000 		call cmd_decode
+ 356:backemf.c     **** 		 g_cmd_decode = 0;
+ 948               	.LM120:
+ 949 03c6 1092 0000 		sts g_cmd_decode,__zero_reg__
+ 950               	.L81:
+ 357:backemf.c     **** 	
+ 358:backemf.c     **** 	}
+ 359:backemf.c     **** 
+ 360:backemf.c     **** 
+ 361:backemf.c     **** // Motor contol section
+ 362:backemf.c     **** 
+ 363:backemf.c     **** 	motor_control(1, g_mode1);
+ 952               	.LM121:
+ 953 03ca 6091 0000 		lds r22,g_mode1
+ 954 03ce 81E0      		ldi r24,lo8(1)
+ 955 03d0 0E94 0000 		call motor_control
+ 364:backemf.c     **** 	motor_control(2, g_mode2);
+ 957               	.LM122:
+ 958 03d4 6091 0000 		lds r22,g_mode2
+ 959 03d8 82E0      		ldi r24,lo8(2)
+ 960 03da 0E94 0000 		call motor_control
+ 365:backemf.c     **** 	
+ 366:backemf.c     **** //  		for (k = 0; k < 10 ;k++)                         // Delay for key bounce
+ 367:backemf.c     **** //			delay (30000);
+ 368:backemf.c     **** //		motor_control (1, MOTOR_STOP);
+ 369:backemf.c     **** 
+ 370:backemf.c     ****    	d7segment_display(show[g_mode1],1);
+ 962               	.LM123:
+ 963 03de 8091 0000 		lds r24,g_mode1
+ 964 03e2 F701      		movw r30,r14
+ 965 03e4 E80F      		add r30,r24
+ 966 03e6 F11D      		adc r31,__zero_reg__
+ 967 03e8 61E0      		ldi r22,lo8(1)
+ 968 03ea 8081      		ld r24,Z
+ 969 03ec 0E94 0000 		call d7segment_display
+ 371:backemf.c     ****  			delay(12000);
+ 971               	.LM124:
+ 972 03f0 80EE      		ldi r24,lo8(12000)
+ 973 03f2 9EE2      		ldi r25,hi8(12000)
+ 974 03f4 0E94 0000 		call delay
+ 372:backemf.c     **** 	d7segment_display(show[g_mode2],2);
+ 976               	.LM125:
+ 977 03f8 8091 0000 		lds r24,g_mode2
+ 978 03fc F701      		movw r30,r14
+ 979 03fe E80F      		add r30,r24
+ 980 0400 F11D      		adc r31,__zero_reg__
+ 981 0402 62E0      		ldi r22,lo8(2)
+ 982 0404 8081      		ld r24,Z
+ 983 0406 0E94 0000 		call d7segment_display
+ 373:backemf.c     ****  			delay(12000);
+ 985               	.LM126:
+ 986 040a 80EE      		ldi r24,lo8(12000)
+ 987 040c 9EE2      		ldi r25,hi8(12000)
+ 988 040e 0E94 0000 		call delay
+ 989 0412 A7CF      		rjmp .L67
+ 990               	/* epilogue: frame size=3 */
+ 991               	/* epilogue: noreturn */
+ 992               	/* epilogue end (size=0) */
+ 993               	/* function main size 117 (113) */
+ 1003               	.Lscope7:
+ 1004               		.comm g_motor,1,1
+ 1005               		.comm g_speed,1,1
+ 1006               		.comm g_angle,2,1
+ 1007               		.comm g_rcv_buff,128,1
+ 1015               		.text
+ 1017               	Letext:
+ 1018               	/* File "backemf.c": code  536 = 0x0218 ( 439), prologues  49, epilogues  48 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 backemf.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:84     .bss:00000000 g_cmd_decode
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:90     .bss:00000001 g_mode2
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:96     .bss:00000002 g_mode1
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:103    .text:00000000 delay
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:132    .text:0000000a remote_decode
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:410    .text:0000014c cmd_decode
+                            *COM*:00000080 g_rcv_buff
+                            *COM*:00000001 g_motor
+                            *COM*:00000001 g_speed
+                            *COM*:00000002 g_angle
+                             .bss:00000003 i.0
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:547    .text:000001fa __vector_13
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:624    .text:0000025c __vector_14
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:688    .text:000002ae __vector_6
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:774    .text:00000314 init_board
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:814    .text:0000032c main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYbbaaa.s:1017   .text:00000414 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+text_decode
+uart_puts
+uart_putc
+atoi
+uart_get_TX
+sony_ir_decode
+d7segment_init
+init_ir
+init_motor
+uart_init
+__stack
+motor_control
+d7segment_display

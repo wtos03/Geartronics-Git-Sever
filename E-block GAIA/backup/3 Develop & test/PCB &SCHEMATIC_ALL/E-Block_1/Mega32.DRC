@@ -1,0 +1,69 @@
+Protel Design System Design Rule Check
+PCB File : Mega32.PCB
+Date     : 3-Jan-2007 
+Time     : 14:30:40
+
+Processing Rule : Clearance Constraint (Gap=0.254mm) (On the board ),(On the board )
+   Violation between Pad uC1-10(48.85601mm,59.436mm)  BottomLayer and                      Pad uC1-11(49.65601mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-13(51.75601mm,56.53601mm)  BottomLayer and                      Pad uC1-12(51.75601mm,57.336mm)  BottomLayer   
+   Violation between Pad uC1-2(42.456mm,59.436mm)  BottomLayer and                      Pad uC1-1(41.656mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-3(43.256mm,59.436mm)  BottomLayer and                      Pad uC1-2(42.456mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-4(44.056mm,59.436mm)  BottomLayer and                      Pad uC1-3(43.256mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-5(44.85599mm,59.436mm)  BottomLayer and                      Pad uC1-4(44.056mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-7(46.45602mm,59.436mm)  BottomLayer and                      Pad uC1-6(45.65602mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-8(47.25601mm,59.436mm)  BottomLayer and                      Pad uC1-7(46.45602mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-9(48.05601mm,59.436mm)  BottomLayer and                      Pad uC1-8(47.25601mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-10(48.85601mm,59.436mm)  BottomLayer and                      Pad uC1-9(48.05601mm,59.436mm)  BottomLayer   
+   Violation between Pad uC1-14(51.75601mm,55.73601mm)  BottomLayer and                      Pad uC1-13(51.75601mm,56.53601mm)  BottomLayer   
+   Violation between Pad uC1-15(51.75601mm,54.93598mm)  BottomLayer and                      Pad uC1-14(51.75601mm,55.73601mm)  BottomLayer   
+   Violation between Pad uC1-16(51.75601mm,54.13599mm)  BottomLayer and                      Pad uC1-15(51.75601mm,54.93598mm)  BottomLayer   
+   Violation between Pad uC1-17(51.75601mm,53.33599mm)  BottomLayer and                      Pad uC1-16(51.75601mm,54.13599mm)  BottomLayer   
+   Violation between Pad uC1-19(51.75601mm,51.73599mm)  BottomLayer and                      Pad uC1-18(51.75601mm,52.53599mm)  BottomLayer   
+   Violation between Pad uC1-20(51.75601mm,50.93599mm)  BottomLayer and                      Pad uC1-19(51.75601mm,51.73599mm)  BottomLayer   
+   Violation between Pad uC1-21(51.75601mm,50.13599mm)  BottomLayer and                      Pad uC1-20(51.75601mm,50.93599mm)  BottomLayer   
+   Violation between Pad uC1-22(51.75601mm,49.33599mm)  BottomLayer and                      Pad uC1-21(51.75601mm,50.13599mm)  BottomLayer   
+   Violation between Pad uC1-24(48.85601mm,47.236mm)  BottomLayer and                      Pad uC1-23(49.65601mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-25(48.05601mm,47.236mm)  BottomLayer and                      Pad uC1-24(48.85601mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-26(47.25601mm,47.236mm)  BottomLayer and                      Pad uC1-25(48.05601mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-27(46.45602mm,47.236mm)  BottomLayer and                      Pad uC1-26(47.25601mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-29(44.85599mm,47.236mm)  BottomLayer and                      Pad uC1-28(45.65602mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-27(46.45602mm,47.236mm)  BottomLayer and                      Pad uC1-28(45.65602mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-30(44.056mm,47.236mm)  BottomLayer and                      Pad uC1-29(44.85599mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-31(43.256mm,47.236mm)  BottomLayer and                      Pad uC1-30(44.056mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-32(42.456mm,47.236mm)  BottomLayer and                      Pad uC1-31(43.256mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-33(41.656mm,47.236mm)  BottomLayer and                      Pad uC1-32(42.456mm,47.236mm)  BottomLayer   
+   Violation between Pad uC1-35(39.556mm,50.13599mm)  BottomLayer and                      Pad uC1-34(39.556mm,49.33599mm)  BottomLayer   
+   Violation between Pad uC1-36(39.556mm,50.93599mm)  BottomLayer and                      Pad uC1-35(39.556mm,50.13599mm)  BottomLayer   
+   Violation between Pad uC1-37(39.556mm,51.73599mm)  BottomLayer and                      Pad uC1-36(39.556mm,50.93599mm)  BottomLayer   
+   Violation between Pad uC1-38(39.556mm,52.53599mm)  BottomLayer and                      Pad uC1-37(39.556mm,51.73599mm)  BottomLayer   
+   Violation between Pad uC1-38(39.556mm,52.53599mm)  BottomLayer and                      Pad uC1-39(39.556mm,53.33599mm)  BottomLayer   
+   Violation between Pad uC1-40(39.556mm,54.13599mm)  BottomLayer and                      Pad uC1-39(39.556mm,53.33599mm)  BottomLayer   
+   Violation between Pad uC1-41(39.556mm,54.93598mm)  BottomLayer and                      Pad uC1-40(39.556mm,54.13599mm)  BottomLayer   
+   Violation between Pad uC1-42(39.556mm,55.73601mm)  BottomLayer and                      Pad uC1-41(39.556mm,54.93598mm)  BottomLayer   
+   Violation between Pad uC1-43(39.556mm,56.53601mm)  BottomLayer and                      Pad uC1-42(39.556mm,55.73601mm)  BottomLayer   
+   Violation between Pad uC1-44(39.556mm,57.336mm)  BottomLayer and                      Pad uC1-43(39.556mm,56.53601mm)  BottomLayer   
+   Violation between Pad SOCKET2-8(47.5742mm,106.68mm)  MultiLayer and                      Pad U2-11(47.498mm,108.712mm)  BottomLayer   
+   Violation between Pad SOCKET2-7(44.8056mm,106.68mm)  MultiLayer and                      Pad U2-13(44.958mm,108.712mm)  BottomLayer   
+Rule Violations :40
+
+Processing Rule : Hole Size Constraint (Min=0.0254mm) (Max=2.54mm) (On the board )
+   Violation         Pad Free-0(33.975mm,112.433mm)  MultiLayer  Actual Hole Size = 5mm
+   Violation         Pad Free-0(33.975mm,24.179mm)  MultiLayer  Actual Hole Size = 5mm
+   Violation         Pad Free-0(58.229mm,24.179mm)  MultiLayer  Actual Hole Size = 5mm
+   Violation         Pad Free-0(58.229mm,112.433mm)  MultiLayer  Actual Hole Size = 5mm
+   Violation         Pad SOCKET2-(33.655mm,105.41mm)  MultiLayer  Actual Hole Size = 2.794mm
+   Violation         Pad SOCKET2-(58.6994mm,105.41mm)  MultiLayer  Actual Hole Size = 2.794mm
+Rule Violations :6
+
+Processing Rule : Width Constraint (Min=0.254mm) (Max=0.254mm) (Prefered=0.254mm) (On the board )
+Rule Violations :0
+
+Processing Rule : Broken-Net Constraint ( (On the board ) )
+Rule Violations :0
+
+Processing Rule : Short-Circuit Constraint (Allowed=Not Allowed) (On the board ),(On the board )
+Rule Violations :0
+
+
+Violations Detected : 46
+Time Elapsed        : 00:00:02

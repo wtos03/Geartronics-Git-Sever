@@ -1,0 +1,1018 @@
+
+Eboot.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000057a  00007000  00007000  00000094  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000003c  00800060  0000757a  0000060e  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000027c  0080009c  0080009c  0000064a  2**0
+                  ALLOC
+  3 .noinit       00000000  00800318  00800318  0000064a  2**0
+                  CONTENTS
+  4 .eeprom       00000000  00810000  00810000  0000064a  2**0
+                  CONTENTS
+  5 .stab         000014f4  00000000  00000000  0000064c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  6 .stabstr      00000d31  00000000  00000000  00001b40  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00007000 <__vectors>:
+    7000:	0c 94 2a 38 	jmp	0x7054 <__ctors_end>
+    7004:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7008:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    700c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7010:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7014:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7018:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    701c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7020:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7024:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7028:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    702c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7030:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7034:	0c 94 55 3a 	jmp	0x74aa <__vector_13>
+    7038:	0c 94 8f 3a 	jmp	0x751e <__vector_14>
+    703c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7040:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7044:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7048:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    704c:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+    7050:	0c 94 45 38 	jmp	0x708a <__bad_interrupt>
+
+00007054 <__ctors_end>:
+    7054:	11 24       	eor	r1, r1
+    7056:	1f be       	out	0x3f, r1	; 63
+    7058:	cf e5       	ldi	r28, 0x5F	; 95
+    705a:	d8 e0       	ldi	r29, 0x08	; 8
+    705c:	de bf       	out	0x3e, r29	; 62
+    705e:	cd bf       	out	0x3d, r28	; 61
+
+00007060 <__do_copy_data>:
+    7060:	10 e0       	ldi	r17, 0x00	; 0
+    7062:	a0 e6       	ldi	r26, 0x60	; 96
+    7064:	b0 e0       	ldi	r27, 0x00	; 0
+    7066:	ea e7       	ldi	r30, 0x7A	; 122
+    7068:	f5 e7       	ldi	r31, 0x75	; 117
+    706a:	02 c0       	rjmp	.+4      	; 0x7070 <.do_copy_data_start>
+
+0000706c <.do_copy_data_loop>:
+    706c:	05 90       	lpm	r0, Z+
+    706e:	0d 92       	st	X+, r0
+
+00007070 <.do_copy_data_start>:
+    7070:	ac 39       	cpi	r26, 0x9C	; 156
+    7072:	b1 07       	cpc	r27, r17
+    7074:	d9 f7       	brne	.-10     	; 0x706c <.do_copy_data_loop>
+
+00007076 <__do_clear_bss>:
+    7076:	13 e0       	ldi	r17, 0x03	; 3
+    7078:	ac e9       	ldi	r26, 0x9C	; 156
+    707a:	b0 e0       	ldi	r27, 0x00	; 0
+    707c:	01 c0       	rjmp	.+2      	; 0x7080 <.do_clear_bss_start>
+
+0000707e <.do_clear_bss_loop>:
+    707e:	1d 92       	st	X+, r1
+
+00007080 <.do_clear_bss_start>:
+    7080:	a8 31       	cpi	r26, 0x18	; 24
+    7082:	b1 07       	cpc	r27, r17
+    7084:	e1 f7       	brne	.-8      	; 0x707e <.do_clear_bss_loop>
+    7086:	0c 94 f8 38 	jmp	0x71f0 <main>
+
+0000708a <__bad_interrupt>:
+    708a:	0c 94 00 38 	jmp	0x7000 <__vectors>
+
+0000708e <get_hex_value>:
+
+
+/* This fuction returns the hex value of the  2 consequence received ascii characters (HEX) */
+uint8_t get_hex_value()
+{
+    708e:	cf 93       	push	r28
+     uint8_t data;
+	 uint8_t temp_byte;
+    while (!(data = uart_read()));
+    7090:	0e 94 3b 3a 	call	0x7476 <uart_read>
+    7094:	88 23       	and	r24, r24
+    7096:	e1 f3       	breq	.-8      	; 0x7090 <get_hex_value+0x2>
+// Put here to save calling subroutine overhead	
+	 if( data < 'A' )
+    7098:	81 34       	cpi	r24, 0x41	; 65
+    709a:	10 f4       	brcc	.+4      	; 0x70a0 <get_hex_value+0x12>
+    {
+	   data  -= '0';
+    709c:	80 53       	subi	r24, 0x30	; 48
+    709e:	01 c0       	rjmp	.+2      	; 0x70a2 <get_hex_value+0x14>
+    }
+    else
+    {
+	
+   data -=  55 ;
+    70a0:	87 53       	subi	r24, 0x37	; 55
+    }
+	temp_byte = data << 4;
+    70a2:	c8 2f       	mov	r28, r24
+    70a4:	c2 95       	swap	r28
+    70a6:	c0 7f       	andi	r28, 0xF0	; 240
+	 while (!(data = uart_read()));
+    70a8:	0e 94 3b 3a 	call	0x7476 <uart_read>
+    70ac:	88 23       	and	r24, r24
+    70ae:	e1 f3       	breq	.-8      	; 0x70a8 <get_hex_value+0x1a>
+// Put here to save calling subroutine overhead	
+	 if( data < 'A' )
+    70b0:	81 34       	cpi	r24, 0x41	; 65
+    70b2:	10 f4       	brcc	.+4      	; 0x70b8 <get_hex_value+0x2a>
+    {
+	   data  -= '0';
+    70b4:	80 53       	subi	r24, 0x30	; 48
+    70b6:	01 c0       	rjmp	.+2      	; 0x70ba <get_hex_value+0x2c>
+    }
+    else
+    {
+	   data -=  55 ;
+    70b8:	87 53       	subi	r24, 0x37	; 55
+    }
+	
+	temp_byte |= data;
+    70ba:	c8 2b       	or	r28, r24
+    return temp_byte;
+    
+}
+    70bc:	8c 2f       	mov	r24, r28
+    70be:	99 27       	eor	r25, r25
+    70c0:	cf 91       	pop	r28
+    70c2:	08 95       	ret
+
+000070c4 <ihex_load>:
+    70c4:	af 92       	push	r10
+    70c6:	bf 92       	push	r11
+    70c8:	cf 92       	push	r12
+    70ca:	df 92       	push	r13
+    70cc:	ef 92       	push	r14
+    70ce:	ff 92       	push	r15
+    70d0:	0f 93       	push	r16
+    70d2:	1f 93       	push	r17
+    70d4:	cf 93       	push	r28
+    70d6:	bb 24       	eor	r11, r11
+    70d8:	cc 24       	eor	r12, r12
+    70da:	dd 24       	eor	r13, r13
+    70dc:	76 01       	movw	r14, r12
+    70de:	0e 94 3b 3a 	call	0x7476 <uart_read>
+    70e2:	8d 30       	cpi	r24, 0x0D	; 13
+    70e4:	e1 f3       	breq	.-8      	; 0x70de <ihex_load+0x1a>
+    70e6:	8a 30       	cpi	r24, 0x0A	; 10
+    70e8:	d1 f3       	breq	.-12     	; 0x70de <ihex_load+0x1a>
+    70ea:	88 23       	and	r24, r24
+    70ec:	c1 f3       	breq	.-16     	; 0x70de <ihex_load+0x1a>
+    70ee:	8a 33       	cpi	r24, 0x3A	; 58
+    70f0:	19 f0       	breq	.+6      	; 0x70f8 <ihex_load+0x34>
+    70f2:	81 e0       	ldi	r24, 0x01	; 1
+    70f4:	90 e0       	ldi	r25, 0x00	; 0
+    70f6:	72 c0       	rjmp	.+228    	; 0x71dc <ihex_load+0x118>
+    70f8:	0e 94 47 38 	call	0x708e <get_hex_value>
+    70fc:	08 2f       	mov	r16, r24
+    70fe:	0e 94 47 38 	call	0x708e <get_hex_value>
+    7102:	c8 2f       	mov	r28, r24
+    7104:	0e 94 47 38 	call	0x708e <get_hex_value>
+    7108:	18 2f       	mov	r17, r24
+    710a:	0e 94 47 38 	call	0x708e <get_hex_value>
+    710e:	a8 2e       	mov	r10, r24
+    7110:	c0 0f       	add	r28, r16
+    7112:	c1 0f       	add	r28, r17
+    7114:	c8 0f       	add	r28, r24
+    7116:	10 e0       	ldi	r17, 0x00	; 0
+    7118:	10 17       	cp	r17, r16
+    711a:	58 f4       	brcc	.+22     	; 0x7132 <ihex_load+0x6e>
+    711c:	0e 94 47 38 	call	0x708e <get_hex_value>
+    7120:	eb 2d       	mov	r30, r11
+    7122:	ff 27       	eor	r31, r31
+    7124:	e0 56       	subi	r30, 0x60	; 96
+    7126:	ff 4f       	sbci	r31, 0xFF	; 255
+    7128:	80 83       	st	Z, r24
+    712a:	b3 94       	inc	r11
+    712c:	c8 0f       	add	r28, r24
+    712e:	1f 5f       	subi	r17, 0xFF	; 255
+    7130:	f3 cf       	rjmp	.-26     	; 0x7118 <ihex_load+0x54>
+    7132:	0e 94 47 38 	call	0x708e <get_hex_value>
+    7136:	c8 0f       	add	r28, r24
+    7138:	19 f0       	breq	.+6      	; 0x7140 <ihex_load+0x7c>
+    713a:	82 e0       	ldi	r24, 0x02	; 2
+    713c:	90 e0       	ldi	r25, 0x00	; 0
+    713e:	4e c0       	rjmp	.+156    	; 0x71dc <ihex_load+0x118>
+    7140:	aa 20       	and	r10, r10
+    7142:	59 f0       	breq	.+22     	; 0x715a <ihex_load+0x96>
+    7144:	b7 fc       	sbrc	r11, 7
+    7146:	09 c0       	rjmp	.+18     	; 0x715a <ihex_load+0x96>
+    7148:	8f ef       	ldi	r24, 0xFF	; 255
+    714a:	eb 2d       	mov	r30, r11
+    714c:	ff 27       	eor	r31, r31
+    714e:	e0 56       	subi	r30, 0x60	; 96
+    7150:	ff 4f       	sbci	r31, 0xFF	; 255
+    7152:	80 83       	st	Z, r24
+    7154:	b3 94       	inc	r11
+    7156:	b7 fe       	sbrs	r11, 7
+    7158:	f8 cf       	rjmp	.-16     	; 0x714a <ihex_load+0x86>
+    715a:	b7 fe       	sbrs	r11, 7
+    715c:	36 c0       	rjmp	.+108    	; 0x71ca <ihex_load+0x106>
+    715e:	10 e0       	ldi	r17, 0x00	; 0
+    7160:	b1 2e       	mov	r11, r17
+    7162:	41 e0       	ldi	r20, 0x01	; 1
+    7164:	e1 2f       	mov	r30, r17
+    7166:	ff 27       	eor	r31, r31
+    7168:	e0 56       	subi	r30, 0x60	; 96
+    716a:	ff 4f       	sbci	r31, 0xFF	; 255
+    716c:	80 81       	ld	r24, Z
+    716e:	99 27       	eor	r25, r25
+    7170:	21 81       	ldd	r18, Z+1	; 0x01
+    7172:	33 27       	eor	r19, r19
+    7174:	32 2f       	mov	r19, r18
+    7176:	22 27       	eor	r18, r18
+    7178:	82 2b       	or	r24, r18
+    717a:	93 2b       	or	r25, r19
+    717c:	0c 01       	movw	r0, r24
+    717e:	f6 01       	movw	r30, r12
+    7180:	40 93 57 00 	sts	0x0057, r20
+    7184:	e8 95       	spm
+    7186:	11 24       	eor	r1, r1
+    7188:	82 e0       	ldi	r24, 0x02	; 2
+    718a:	90 e0       	ldi	r25, 0x00	; 0
+    718c:	a0 e0       	ldi	r26, 0x00	; 0
+    718e:	b0 e0       	ldi	r27, 0x00	; 0
+    7190:	c8 0e       	add	r12, r24
+    7192:	d9 1e       	adc	r13, r25
+    7194:	ea 1e       	adc	r14, r26
+    7196:	fb 1e       	adc	r15, r27
+    7198:	1e 5f       	subi	r17, 0xFE	; 254
+    719a:	17 ff       	sbrs	r17, 7
+    719c:	e3 cf       	rjmp	.-58     	; 0x7164 <ihex_load+0xa0>
+    719e:	25 e0       	ldi	r18, 0x05	; 5
+    71a0:	c6 01       	movw	r24, r12
+    71a2:	80 58       	subi	r24, 0x80	; 128
+    71a4:	90 40       	sbci	r25, 0x00	; 0
+    71a6:	fc 01       	movw	r30, r24
+    71a8:	20 93 57 00 	sts	0x0057, r18
+    71ac:	e8 95       	spm
+    71ae:	07 b6       	in	r0, 0x37	; 55
+    71b0:	00 fc       	sbrc	r0, 0
+    71b2:	fd cf       	rjmp	.-6      	; 0x71ae <ihex_load+0xea>
+    71b4:	81 e1       	ldi	r24, 0x11	; 17
+    71b6:	80 93 57 00 	sts	0x0057, r24
+    71ba:	e8 95       	spm
+    71bc:	8a e2       	ldi	r24, 0x2A	; 42
+    71be:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    71c2:	83 e7       	ldi	r24, 0x73	; 115
+    71c4:	88 bb       	out	0x18, r24	; 24
+    71c6:	ab 98       	cbi	0x15, 3	; 21
+    71c8:	ac 9a       	sbi	0x15, 4	; 21
+    71ca:	91 e0       	ldi	r25, 0x01	; 1
+    71cc:	a9 16       	cp	r10, r25
+    71ce:	09 f0       	breq	.+2      	; 0x71d2 <ihex_load+0x10e>
+    71d0:	86 cf       	rjmp	.-244    	; 0x70de <ihex_load+0x1a>
+    71d2:	85 e4       	ldi	r24, 0x45	; 69
+    71d4:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    71d8:	80 e0       	ldi	r24, 0x00	; 0
+    71da:	90 e0       	ldi	r25, 0x00	; 0
+    71dc:	cf 91       	pop	r28
+    71de:	1f 91       	pop	r17
+    71e0:	0f 91       	pop	r16
+    71e2:	ff 90       	pop	r15
+    71e4:	ef 90       	pop	r14
+    71e6:	df 90       	pop	r13
+    71e8:	cf 90       	pop	r12
+    71ea:	bf 90       	pop	r11
+    71ec:	af 90       	pop	r10
+    71ee:	08 95       	ret
+
+000071f0 <main>:
+    71f0:	cf e5       	ldi	r28, 0x5F	; 95
+    71f2:	d8 e0       	ldi	r29, 0x08	; 8
+    71f4:	de bf       	out	0x3e, r29	; 62
+    71f6:	cd bf       	out	0x3d, r28	; 61
+    71f8:	11 e0       	ldi	r17, 0x01	; 1
+    71fa:	f8 94       	cli
+    71fc:	c1 e0       	ldi	r28, 0x01	; 1
+    71fe:	cb bf       	out	0x3b, r28	; 59
+    7200:	82 e0       	ldi	r24, 0x02	; 2
+    7202:	8b bf       	out	0x3b, r24	; 59
+    7204:	8f ef       	ldi	r24, 0xFF	; 255
+    7206:	87 bb       	out	0x17, r24	; 23
+    7208:	88 e1       	ldi	r24, 0x18	; 24
+    720a:	84 bb       	out	0x14, r24	; 20
+    720c:	85 b3       	in	r24, 0x15	; 21
+    720e:	84 62       	ori	r24, 0x24	; 36
+    7210:	85 bb       	out	0x15, r24	; 21
+    7212:	49 e1       	ldi	r20, 0x19	; 25
+    7214:	50 e0       	ldi	r21, 0x00	; 0
+    7216:	66 e8       	ldi	r22, 0x86	; 134
+    7218:	88 e9       	ldi	r24, 0x98	; 152
+    721a:	0e 94 29 3a 	call	0x7452 <uart_init>
+    721e:	e0 e0       	ldi	r30, 0x00	; 0
+    7220:	f0 e0       	ldi	r31, 0x00	; 0
+    7222:	84 91       	lpm	r24, Z
+    7224:	8f 3f       	cpi	r24, 0xFF	; 255
+    7226:	09 f0       	breq	.+2      	; 0x722a <main+0x3a>
+    7228:	10 e0       	ldi	r17, 0x00	; 0
+    722a:	83 b3       	in	r24, 0x13	; 19
+    722c:	84 72       	andi	r24, 0x24	; 36
+    722e:	09 f4       	brne	.+2      	; 0x7232 <main+0x42>
+    7230:	1c 2f       	mov	r17, r28
+    7232:	80 e6       	ldi	r24, 0x60	; 96
+    7234:	90 e0       	ldi	r25, 0x00	; 0
+    7236:	0e 94 3f 3a 	call	0x747e <uart_write_str>
+    723a:	8c e7       	ldi	r24, 0x7C	; 124
+    723c:	88 bb       	out	0x18, r24	; 24
+    723e:	ab 98       	cbi	0x15, 3	; 21
+    7240:	ac 9a       	sbi	0x15, 4	; 21
+    7242:	11 23       	and	r17, r17
+    7244:	09 f4       	brne	.+2      	; 0x7248 <main+0x58>
+    7246:	67 c0       	rjmp	.+206    	; 0x7316 <main+0x126>
+    7248:	0e 94 3b 3a 	call	0x7476 <uart_read>
+    724c:	88 23       	and	r24, r24
+    724e:	c9 f3       	breq	.-14     	; 0x7242 <main+0x52>
+    7250:	99 27       	eor	r25, r25
+    7252:	85 37       	cpi	r24, 0x75	; 117
+    7254:	91 05       	cpc	r25, r1
+    7256:	29 f0       	breq	.+10     	; 0x7262 <main+0x72>
+    7258:	88 37       	cpi	r24, 0x78	; 120
+    725a:	91 05       	cpc	r25, r1
+    725c:	09 f4       	brne	.+2      	; 0x7260 <main+0x70>
+    725e:	4b c0       	rjmp	.+150    	; 0x72f6 <main+0x106>
+    7260:	55 c0       	rjmp	.+170    	; 0x730c <main+0x11c>
+    7262:	10 92 20 01 	sts	0x0120, r1
+    7266:	10 92 21 01 	sts	0x0121, r1
+    726a:	10 92 22 01 	sts	0x0122, r1
+    726e:	10 92 23 01 	sts	0x0123, r1
+    7272:	23 e0       	ldi	r18, 0x03	; 3
+    7274:	80 91 20 01 	lds	r24, 0x0120
+    7278:	90 91 21 01 	lds	r25, 0x0121
+    727c:	fc 01       	movw	r30, r24
+    727e:	20 93 57 00 	sts	0x0057, r18
+    7282:	e8 95       	spm
+    7284:	07 b6       	in	r0, 0x37	; 55
+    7286:	00 fc       	sbrc	r0, 0
+    7288:	fd cf       	rjmp	.-6      	; 0x7284 <main+0x94>
+    728a:	80 91 20 01 	lds	r24, 0x0120
+    728e:	90 91 21 01 	lds	r25, 0x0121
+    7292:	a0 91 22 01 	lds	r26, 0x0122
+    7296:	b0 91 23 01 	lds	r27, 0x0123
+    729a:	80 58       	subi	r24, 0x80	; 128
+    729c:	9f 4f       	sbci	r25, 0xFF	; 255
+    729e:	af 4f       	sbci	r26, 0xFF	; 255
+    72a0:	bf 4f       	sbci	r27, 0xFF	; 255
+    72a2:	80 93 20 01 	sts	0x0120, r24
+    72a6:	90 93 21 01 	sts	0x0121, r25
+    72aa:	a0 93 22 01 	sts	0x0122, r26
+    72ae:	b0 93 23 01 	sts	0x0123, r27
+    72b2:	80 50       	subi	r24, 0x00	; 0
+    72b4:	90 47       	sbci	r25, 0x70	; 112
+    72b6:	a0 40       	sbci	r26, 0x00	; 0
+    72b8:	b0 40       	sbci	r27, 0x00	; 0
+    72ba:	e0 f2       	brcs	.-72     	; 0x7274 <main+0x84>
+    72bc:	10 92 20 01 	sts	0x0120, r1
+    72c0:	10 92 21 01 	sts	0x0121, r1
+    72c4:	10 92 22 01 	sts	0x0122, r1
+    72c8:	10 92 23 01 	sts	0x0123, r1
+    72cc:	8f e6       	ldi	r24, 0x6F	; 111
+    72ce:	90 e0       	ldi	r25, 0x00	; 0
+    72d0:	0e 94 3f 3a 	call	0x747e <uart_write_str>
+    72d4:	0e 94 62 38 	call	0x70c4 <ihex_load>
+    72d8:	c8 2f       	mov	r28, r24
+    72da:	88 23       	and	r24, r24
+    72dc:	e1 f0       	breq	.+56     	; 0x7316 <main+0x126>
+    72de:	87 e7       	ldi	r24, 0x77	; 119
+    72e0:	90 e0       	ldi	r25, 0x00	; 0
+    72e2:	0e 94 3f 3a 	call	0x747e <uart_write_str>
+    72e6:	8c 2f       	mov	r24, r28
+    72e8:	80 5d       	subi	r24, 0xD0	; 208
+    72ea:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    72ee:	8a e0       	ldi	r24, 0x0A	; 10
+    72f0:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    72f4:	a6 cf       	rjmp	.-180    	; 0x7242 <main+0x52>
+    72f6:	81 e0       	ldi	r24, 0x01	; 1
+    72f8:	8b bf       	out	0x3b, r24	; 59
+    72fa:	8b b7       	in	r24, 0x3b	; 59
+    72fc:	8c 7f       	andi	r24, 0xFC	; 252
+    72fe:	8b bf       	out	0x3b, r24	; 59
+    7300:	e0 91 9c 00 	lds	r30, 0x009C
+    7304:	f0 91 9d 00 	lds	r31, 0x009D
+    7308:	09 95       	icall
+    730a:	9b cf       	rjmp	.-202    	; 0x7242 <main+0x52>
+    730c:	8c e7       	ldi	r24, 0x7C	; 124
+    730e:	90 e0       	ldi	r25, 0x00	; 0
+    7310:	0e 94 3f 3a 	call	0x747e <uart_write_str>
+    7314:	96 cf       	rjmp	.-212    	; 0x7242 <main+0x52>
+    7316:	81 e0       	ldi	r24, 0x01	; 1
+    7318:	8b bf       	out	0x3b, r24	; 59
+    731a:	8b b7       	in	r24, 0x3b	; 59
+    731c:	8c 7f       	andi	r24, 0xFC	; 252
+    731e:	8b bf       	out	0x3b, r24	; 59
+    7320:	e0 91 9c 00 	lds	r30, 0x009C
+    7324:	f0 91 9d 00 	lds	r31, 0x009D
+    7328:	09 95       	icall
+    732a:	80 e0       	ldi	r24, 0x00	; 0
+    732c:	90 e0       	ldi	r25, 0x00	; 0
+    732e:	0c 94 bc 3a 	jmp	0x7578 <_exit>
+
+00007332 <uart_put_TX>:
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+uint8_t uart_put_TX ( uint8_t ch)
+{
+    7332:	98 2f       	mov	r25, r24
+// If exceed buffer do nothing until buffer is flushed
+    if ((g_tx_ptr > (MAX_BUFF-1))) 
+    7334:	80 91 9e 00 	lds	r24, 0x009E
+    7338:	8a 3f       	cpi	r24, 0xFA	; 250
+    733a:	18 f0       	brcs	.+6      	; 0x7342 <uart_put_TX+0x10>
+    {
+		return UART_BUFFER_FULL;   // No increase pointer
+    733c:	82 e0       	ldi	r24, 0x02	; 2
+    733e:	90 e0       	ldi	r25, 0x00	; 0
+    7340:	08 95       	ret
+    }
+	g_tx_buff[g_tx_ptr]= ch;
+    7342:	e8 2f       	mov	r30, r24
+    7344:	ff 27       	eor	r31, r31
+    7346:	e2 5e       	subi	r30, 0xE2	; 226
+    7348:	fd 4f       	sbci	r31, 0xFD	; 253
+    734a:	90 83       	st	Z, r25
+	g_tx_ptr++;
+    734c:	8f 5f       	subi	r24, 0xFF	; 255
+    734e:	80 93 9e 00 	sts	0x009E, r24
+	g_tx_buff[g_tx_ptr] = 0;    // Put null character at the end
+    7352:	e8 2f       	mov	r30, r24
+    7354:	ff 27       	eor	r31, r31
+    7356:	e2 5e       	subi	r30, 0xE2	; 226
+    7358:	fd 4f       	sbci	r31, 0xFD	; 253
+    735a:	10 82       	st	Z, r1
+	return 0;
+    735c:	80 e0       	ldi	r24, 0x00	; 0
+    735e:	90 e0       	ldi	r25, 0x00	; 0
+}
+    7360:	08 95       	ret
+
+00007362 <uart_write_char>:
+
+
+/*!	\brief  Get character from TX buffer to send and shift left all characters
+	\param  None  
+	\return Character to send 
+	\par Port/Periheral Usage 
+	\n   TX,RX
+	\par Theory of Operation   
+	\n   Get characters from buffer(FIFO) and shift all characters to left 
+ 	\par Pseudo code
+	\n   Check whether there is data in TX buffer
+	\n	 If yes  get characters  from TX buffer
+	\n
+	\note   Internal function  Do not call from outside
+	\bug    <bug to fix>
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+ 
+uint8_t uart_get_TX (void)
+{
+   uint8_t i,j,ch =0;
+   
+   if ( g_tx_ptr)   // There are data in TX buffer
+   {
+		i  =  g_tx_ptr;
+		g_tx_ptr--;
+		ch =  g_tx_buff[0];   // Start from 0 FIFO
+		j = 0;
+// Move left all characters Need to rewrite !!!
+        while (i)
+		{
+	      g_tx_buff[j] =  g_tx_buff[j+1];
+	      j++;
+	 	  i--;
+		}
+		return ch;
+   }
+   return 0;
+}
+
+
+
+ 
+
+/*!	\brief  Show debug value for short integer
+	\param  Value to show (16 bits)
+	\n		radix to show 10, 16,2	
+	\return none
+	\par Port/Periheral Usage 
+	\n   TX,RX
+	\par Theory of Operation   
+	\n   Convert value to string and show on UART port
+	\par Pseudo code
+	\n   Convert long integer to string with  
+	\note    
+	\bug    <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/ 
+#ifdef DEBUG    
+void  debug_value ( int16_t value, uint8_t radix)
+{
+   uint8_t  buff[20];
+  
+   itoa (value,buff, radix);
+   uart_write_str ( buff);
+}
+
+ 
+/*!	\brief  Show debug value in long format
+	\param  Value to show (32 bits)
+	\n		radix  to show  10, 16,2
+	\return None
+	\par Port/Periheral Usage 
+	\n  TX,RX
+	\par Theory of Operation   
+	\n   Convert value to string and show on UART port
+	\par Pseudo code
+	\n   Convert long integer to string with radix specified
+	\n	 Write string to UART port
+	\note   (Pseudo code)
+	\bug    <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+ 
+void  debug_lvalue ( int32_t value, uint8_t radix)
+{
+   uint8_t  buff[40];
+   
+   ltoa (value,buff, radix);
+   uart_write_str ( buff);
+}
+ 
+#endif 
+
+/*!	\brief  Initial serial Port UART
+	\param  mode  =  TX/RX  Mode of operation  (Intrrupt/Polling) Enable RX, TX
+			frame =  Set Data frame  8 bits  parity bits, stop bit
+			baud  =  Baud rate 
+			These parameter are predefined in avr_serial.h for easy set up
+ 	\return None
+	\par Port/Periheral Usage 
+	\n   TX, RX
+	\par Theory of Operation   
+	\n    Initial control register to set up for baud rate, data frame and mode of operations
+	\n    For receive we are using interrupt for RX and TX 
+	\par Pseudo code
+	\n    Set and initial register for UART mode
+	\note Future enhancement for error checking and overrun detect 
+	\bug    <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+void uart_init(uint8_t mode,uint8_t frame, uint16_t baud)
+{
+ 
+// Initialize UART  
+    
+    UCSRC  = frame;    // 8 bit non parity  1 stop bit
+    UCSRB  = mode;    // Enable RX Interrupt and Enable TX, RX pin
+	UBRRL  = (uint8_t) baud;
+	UBRRH  = (uint8_t)(baud >>8); 
+	g_rx_ptr = 0;
+	g_tx_ptr = 0;
+	receive_flag = ON;
+    send_flag = ON;
+    sei();
+}
+
+
+/*!	\brief  Get character from RX buffer
+	\param  None  
+	\return Read character from buffer  0 if none characters
+	\par Port/Periheral Usage 
+	\n   TX,RX
+	\par Theory of Operation   
+	\n    Read character from RX buffer reside inside this module
+	\par Pseudo code
+	\n
+	\note 
+	\bug    <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+uint8_t uart_read(void)
+{
+    uint8_t ch;
+	ch = uart_get_RX();
+    return ch ;
+}
+
+
+/*!	\brief  Write character
+	\param  None  
+	\return None
+	\par Port/Periheral Usage 
+	\n   E_PB0,E_PB3
+	\par Theory of Operation   
+	\n
+	\par Pseudo code
+	\n
+	\note   (Pseudo code)
+	\bug    <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+uint8_t uart_write_char(uint8_t c)
+{
+    7362:	cf 93       	push	r28
+    7364:	c8 2f       	mov	r28, r24
+   while (UART_BUFFER_FULL == uart_put_TX(c));  //If buffer full wait until buffer clear
+    7366:	8c 2f       	mov	r24, r28
+    7368:	0e 94 99 39 	call	0x7332 <uart_put_TX>
+    736c:	82 30       	cpi	r24, 0x02	; 2
+    736e:	d9 f3       	breq	.-10     	; 0x7366 <uart_write_char+0x4>
+// Enable interrupt UART Data Register empty
+  UCSRB  |=  (1<<UDRIE);	
+    7370:	55 9a       	sbi	0x0a, 5	; 10
+   return 0;
+}
+    7372:	80 e0       	ldi	r24, 0x00	; 0
+    7374:	90 e0       	ldi	r25, 0x00	; 0
+    7376:	cf 91       	pop	r28
+    7378:	08 95       	ret
+
+0000737a <uart_get_RX>:
+    737a:	cf 93       	push	r28
+    737c:	80 91 9f 00 	lds	r24, 0x009F
+    7380:	88 23       	and	r24, r24
+    7382:	19 f1       	breq	.+70     	; 0x73ca <uart_get_RX+0x50>
+    7384:	c0 91 24 01 	lds	r28, 0x0124
+    7388:	98 2f       	mov	r25, r24
+    738a:	91 50       	subi	r25, 0x01	; 1
+    738c:	90 93 9f 00 	sts	0x009F, r25
+    7390:	9f 5f       	subi	r25, 0xFF	; 255
+    7392:	20 e0       	ldi	r18, 0x00	; 0
+    7394:	e2 2f       	mov	r30, r18
+    7396:	ff 27       	eor	r31, r31
+    7398:	ec 5d       	subi	r30, 0xDC	; 220
+    739a:	fe 4f       	sbci	r31, 0xFE	; 254
+    739c:	81 81       	ldd	r24, Z+1	; 0x01
+    739e:	80 83       	st	Z, r24
+    73a0:	2f 5f       	subi	r18, 0xFF	; 255
+    73a2:	91 50       	subi	r25, 0x01	; 1
+    73a4:	b9 f7       	brne	.-18     	; 0x7394 <uart_get_RX+0x1a>
+    73a6:	80 91 9f 00 	lds	r24, 0x009F
+    73aa:	8a 30       	cpi	r24, 0x0A	; 10
+    73ac:	58 f4       	brcc	.+22     	; 0x73c4 <uart_get_RX+0x4a>
+    73ae:	80 91 9a 00 	lds	r24, 0x009A
+    73b2:	88 23       	and	r24, r24
+    73b4:	39 f4       	brne	.+14     	; 0x73c4 <uart_get_RX+0x4a>
+    73b6:	81 e0       	ldi	r24, 0x01	; 1
+    73b8:	80 93 9a 00 	sts	0x009A, r24
+    73bc:	81 e1       	ldi	r24, 0x11	; 17
+    73be:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    73c2:	57 9a       	sbi	0x0a, 7	; 10
+    73c4:	8c 2f       	mov	r24, r28
+    73c6:	99 27       	eor	r25, r25
+    73c8:	02 c0       	rjmp	.+4      	; 0x73ce <uart_get_RX+0x54>
+    73ca:	80 e0       	ldi	r24, 0x00	; 0
+    73cc:	90 e0       	ldi	r25, 0x00	; 0
+    73ce:	cf 91       	pop	r28
+    73d0:	08 95       	ret
+
+000073d2 <uart_put_RX>:
+    73d2:	98 2f       	mov	r25, r24
+    73d4:	80 91 9f 00 	lds	r24, 0x009F
+    73d8:	8a 3f       	cpi	r24, 0xFA	; 250
+    73da:	68 f4       	brcc	.+26     	; 0x73f6 <uart_put_RX+0x24>
+    73dc:	e8 2f       	mov	r30, r24
+    73de:	ff 27       	eor	r31, r31
+    73e0:	ec 5d       	subi	r30, 0xDC	; 220
+    73e2:	fe 4f       	sbci	r31, 0xFE	; 254
+    73e4:	90 83       	st	Z, r25
+    73e6:	8f 5f       	subi	r24, 0xFF	; 255
+    73e8:	80 93 9f 00 	sts	0x009F, r24
+    73ec:	e8 2f       	mov	r30, r24
+    73ee:	ff 27       	eor	r31, r31
+    73f0:	ec 5d       	subi	r30, 0xDC	; 220
+    73f2:	fe 4f       	sbci	r31, 0xFE	; 254
+    73f4:	10 82       	st	Z, r1
+    73f6:	80 91 9f 00 	lds	r24, 0x009F
+    73fa:	88 3c       	cpi	r24, 0xC8	; 200
+    73fc:	18 f4       	brcc	.+6      	; 0x7404 <uart_put_RX+0x32>
+    73fe:	80 e0       	ldi	r24, 0x00	; 0
+    7400:	90 e0       	ldi	r25, 0x00	; 0
+    7402:	08 95       	ret
+    7404:	80 91 9a 00 	lds	r24, 0x009A
+    7408:	81 30       	cpi	r24, 0x01	; 1
+    740a:	29 f4       	brne	.+10     	; 0x7416 <uart_put_RX+0x44>
+    740c:	83 e1       	ldi	r24, 0x13	; 19
+    740e:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    7412:	10 92 9a 00 	sts	0x009A, r1
+    7416:	82 e0       	ldi	r24, 0x02	; 2
+    7418:	90 e0       	ldi	r25, 0x00	; 0
+    741a:	08 95       	ret
+
+0000741c <uart_get_TX>:
+    741c:	80 91 9e 00 	lds	r24, 0x009E
+    7420:	88 23       	and	r24, r24
+    7422:	a1 f0       	breq	.+40     	; 0x744c <uart_get_TX+0x30>
+    7424:	28 2f       	mov	r18, r24
+    7426:	21 50       	subi	r18, 0x01	; 1
+    7428:	20 93 9e 00 	sts	0x009E, r18
+    742c:	2f 5f       	subi	r18, 0xFF	; 255
+    742e:	90 91 1e 02 	lds	r25, 0x021E
+    7432:	30 e0       	ldi	r19, 0x00	; 0
+    7434:	e3 2f       	mov	r30, r19
+    7436:	ff 27       	eor	r31, r31
+    7438:	e2 5e       	subi	r30, 0xE2	; 226
+    743a:	fd 4f       	sbci	r31, 0xFD	; 253
+    743c:	81 81       	ldd	r24, Z+1	; 0x01
+    743e:	80 83       	st	Z, r24
+    7440:	3f 5f       	subi	r19, 0xFF	; 255
+    7442:	21 50       	subi	r18, 0x01	; 1
+    7444:	b9 f7       	brne	.-18     	; 0x7434 <uart_get_TX+0x18>
+    7446:	89 2f       	mov	r24, r25
+    7448:	99 27       	eor	r25, r25
+    744a:	08 95       	ret
+    744c:	80 e0       	ldi	r24, 0x00	; 0
+    744e:	90 e0       	ldi	r25, 0x00	; 0
+    7450:	08 95       	ret
+
+00007452 <uart_init>:
+    7452:	38 2f       	mov	r19, r24
+    7454:	60 bd       	out	0x20, r22	; 32
+    7456:	3a b9       	out	0x0a, r19	; 10
+    7458:	49 b9       	out	0x09, r20	; 9
+    745a:	85 2f       	mov	r24, r21
+    745c:	99 27       	eor	r25, r25
+    745e:	80 bd       	out	0x20, r24	; 32
+    7460:	10 92 9f 00 	sts	0x009F, r1
+    7464:	10 92 9e 00 	sts	0x009E, r1
+    7468:	81 e0       	ldi	r24, 0x01	; 1
+    746a:	80 93 9a 00 	sts	0x009A, r24
+    746e:	80 93 99 00 	sts	0x0099, r24
+    7472:	78 94       	sei
+    7474:	08 95       	ret
+
+00007476 <uart_read>:
+    7476:	0e 94 bd 39 	call	0x737a <uart_get_RX>
+    747a:	99 27       	eor	r25, r25
+    747c:	08 95       	ret
+
+0000747e <uart_write_str>:
+
+
+
+/*!	\brief   Transmit string to UART1
+	\param   Pointer to String  
+	\return None
+	\par Port/Periheral Usage 
+	\n   TX,RX
+	\par Theory of Operation   
+	\n   Write each characters pointed by string pointer to UART until end of string
+	\par Pseudo code
+	\n    Write each char until NULL string found
+	\n	  Send CR + LF for new line
+	\note    
+	\bug    <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+void uart_write_str(const uint8_t *s)
+{
+    747e:	cf 93       	push	r28
+    7480:	df 93       	push	r29
+    7482:	ec 01       	movw	r28, r24
+ 
+    while (*s) 
+    {
+		uart_write_char(*s);
+	    if (*s ==  0x0A)
+		{
+			uart_write_char(0x0D); // CR
+//			uart_write_char(0x0A); // LF
+		}
+		s++;
+    7484:	88 81       	ld	r24, Y
+    7486:	88 23       	and	r24, r24
+    7488:	69 f0       	breq	.+26     	; 0x74a4 <uart_write_str+0x26>
+    748a:	88 81       	ld	r24, Y
+    748c:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    7490:	88 81       	ld	r24, Y
+    7492:	8a 30       	cpi	r24, 0x0A	; 10
+    7494:	19 f4       	brne	.+6      	; 0x749c <uart_write_str+0x1e>
+    7496:	8d e0       	ldi	r24, 0x0D	; 13
+    7498:	0e 94 b1 39 	call	0x7362 <uart_write_char>
+    749c:	21 96       	adiw	r28, 0x01	; 1
+    749e:	88 81       	ld	r24, Y
+    74a0:	88 23       	and	r24, r24
+    74a2:	99 f7       	brne	.-26     	; 0x748a <uart_write_str+0xc>
+    74a4:	df 91       	pop	r29
+    74a6:	cf 91       	pop	r28
+    74a8:	08 95       	ret
+
+000074aa <__vector_13>:
+	}
+	
+}
+
+
+/*!	\brief  Interrupt handler for RX 
+	\param     
+	\return Rx characters put in buffer
+	\par Port/Periheral Usage 
+	\n   TX,RX
+	\par Theory of Operation   
+	\n    
+	\par Pseudo code
+	\n   Put each received characters in buffer
+	\note  
+	\bug  <bug to fix>
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+/* UART receiver ready
+*/
+
+SIGNAL(SIG_UART_RECV)
+{  
+    74aa:	1f 92       	push	r1
+    74ac:	0f 92       	push	r0
+    74ae:	0f b6       	in	r0, 0x3f	; 63
+    74b0:	0f 92       	push	r0
+    74b2:	11 24       	eor	r1, r1
+    74b4:	2f 93       	push	r18
+    74b6:	3f 93       	push	r19
+    74b8:	4f 93       	push	r20
+    74ba:	5f 93       	push	r21
+    74bc:	6f 93       	push	r22
+    74be:	7f 93       	push	r23
+    74c0:	8f 93       	push	r24
+    74c2:	9f 93       	push	r25
+    74c4:	af 93       	push	r26
+    74c6:	bf 93       	push	r27
+    74c8:	ef 93       	push	r30
+    74ca:	ff 93       	push	r31
+   uint8_t ch;
+   uint8_t status;
+   
+   
+   ch =  UDR;
+    74cc:	8c b1       	in	r24, 0x0c	; 12
+   if (ch == XOFF)
+    74ce:	83 31       	cpi	r24, 0x13	; 19
+    74d0:	19 f4       	brne	.+6      	; 0x74d8 <__vector_13+0x2e>
+   {
+      send_flag = OFF;
+    74d2:	10 92 99 00 	sts	0x0099, r1
+	  return;
+    74d6:	12 c0       	rjmp	.+36     	; 0x74fc <__vector_13+0x52>
+   }
+   if (ch == XON)
+    74d8:	81 31       	cpi	r24, 0x11	; 17
+    74da:	21 f4       	brne	.+8      	; 0x74e4 <__vector_13+0x3a>
+   {
+      send_flag = ON;
+    74dc:	81 e0       	ldi	r24, 0x01	; 1
+    74de:	80 93 99 00 	sts	0x0099, r24
+	  return;
+    74e2:	0c c0       	rjmp	.+24     	; 0x74fc <__vector_13+0x52>
+   }
+   status = uart_put_RX (ch);    // Should not use UDR here to avoid characters missing
+    74e4:	0e 94 e9 39 	call	0x73d2 <uart_put_RX>
+   if (status == UART_BUFFER_FULL)
+    74e8:	82 30       	cpi	r24, 0x02	; 2
+    74ea:	41 f4       	brne	.+16     	; 0x74fc <__vector_13+0x52>
+   {
+   // Flush data
+ 
+      while ( UCSRA & (1 << RXC))
+	   {
+	      ch = UDR;
+		  uart_put_RX(ch);
+    74ec:	5f 9b       	sbis	0x0b, 7	; 11
+    74ee:	05 c0       	rjmp	.+10     	; 0x74fa <__vector_13+0x50>
+    74f0:	8c b1       	in	r24, 0x0c	; 12
+    74f2:	0e 94 e9 39 	call	0x73d2 <uart_put_RX>
+    74f6:	5f 99       	sbic	0x0b, 7	; 11
+    74f8:	fb cf       	rjmp	.-10     	; 0x74f0 <__vector_13+0x46>
+	   }
+   // Disable RX interrupt
+		UCSRB &=  ~(1<< RXCIE);
+    74fa:	57 98       	cbi	0x0a, 7	; 10
+    74fc:	ff 91       	pop	r31
+    74fe:	ef 91       	pop	r30
+    7500:	bf 91       	pop	r27
+    7502:	af 91       	pop	r26
+    7504:	9f 91       	pop	r25
+    7506:	8f 91       	pop	r24
+    7508:	7f 91       	pop	r23
+    750a:	6f 91       	pop	r22
+    750c:	5f 91       	pop	r21
+    750e:	4f 91       	pop	r20
+    7510:	3f 91       	pop	r19
+    7512:	2f 91       	pop	r18
+    7514:	0f 90       	pop	r0
+    7516:	0f be       	out	0x3f, r0	; 63
+    7518:	0f 90       	pop	r0
+    751a:	1f 90       	pop	r1
+    751c:	18 95       	reti
+
+0000751e <__vector_14>:
+
+//      uart_write_char ('*'); 
+   }
+
+}
+ 
+ 
+
+/*!	\brief   Interrupt service routine for UART TX Data Register Empty interrupt
+	\n		 Called when the UART is ready to transmit the next byte
+	\param   Pointer to String  
+	\return None
+	\par Port/Periheral Usage 
+	\n   TX,RX
+	\par Theory of Operation   
+	\n   When TX data register is empty to send the next characters. This routine will
+	\n   activate and the characters will be read from TX buffer until end of text. 
+	\n   If end of characers, this interrupt will be disable.
+	\par Pseudo code
+	\n   Send characters from TX buffer. If null char had found disable interrupt to avoid 
+	\n   repeat interrupt call
+	\note    
+	\bug    Send too fast get garbage
+
+	\author wichai tossamartvorakul  wichi@geartronics.net
+	\sa	 <see also two name joined by ::>
+*/     
+ 
+SIGNAL(SIG_UART_DATA)
+{ 
+    751e:	1f 92       	push	r1
+    7520:	0f 92       	push	r0
+    7522:	0f b6       	in	r0, 0x3f	; 63
+    7524:	0f 92       	push	r0
+    7526:	11 24       	eor	r1, r1
+    7528:	2f 93       	push	r18
+    752a:	3f 93       	push	r19
+    752c:	4f 93       	push	r20
+    752e:	5f 93       	push	r21
+    7530:	6f 93       	push	r22
+    7532:	7f 93       	push	r23
+    7534:	8f 93       	push	r24
+    7536:	9f 93       	push	r25
+    7538:	af 93       	push	r26
+    753a:	bf 93       	push	r27
+    753c:	ef 93       	push	r30
+    753e:	ff 93       	push	r31
+    uint8_t  ch;
+	if ( send_flag == ON)
+    7540:	80 91 99 00 	lds	r24, 0x0099
+    7544:	81 30       	cpi	r24, 0x01	; 1
+    7546:	39 f4       	brne	.+14     	; 0x7556 <__vector_14+0x38>
+	{
+		if ((ch = uart_get_TX()))  //Send until end of TX
+    7548:	0e 94 0e 3a 	call	0x741c <uart_get_TX>
+    754c:	88 23       	and	r24, r24
+    754e:	11 f0       	breq	.+4      	; 0x7554 <__vector_14+0x36>
+		{
+			UDR = ch;
+    7550:	8c b9       	out	0x0c, r24	; 12
+    7552:	01 c0       	rjmp	.+2      	; 0x7556 <__vector_14+0x38>
+		}	
+		else 
+// If there are no character,  disable interrupt to avoid repeat call again 
+		{
+			UCSRB &=  ~(1<<UDRIE);
+    7554:	55 98       	cbi	0x0a, 5	; 10
+    7556:	ff 91       	pop	r31
+    7558:	ef 91       	pop	r30
+    755a:	bf 91       	pop	r27
+    755c:	af 91       	pop	r26
+    755e:	9f 91       	pop	r25
+    7560:	8f 91       	pop	r24
+    7562:	7f 91       	pop	r23
+    7564:	6f 91       	pop	r22
+    7566:	5f 91       	pop	r21
+    7568:	4f 91       	pop	r20
+    756a:	3f 91       	pop	r19
+    756c:	2f 91       	pop	r18
+    756e:	0f 90       	pop	r0
+    7570:	0f be       	out	0x3f, r0	; 63
+    7572:	0f 90       	pop	r0
+    7574:	1f 90       	pop	r1
+    7576:	18 95       	reti
+
+00007578 <_exit>:
+    7578:	ff cf       	rjmp	.-2      	; 0x7578 <_exit>

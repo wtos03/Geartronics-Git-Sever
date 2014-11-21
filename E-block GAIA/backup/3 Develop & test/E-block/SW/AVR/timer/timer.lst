@@ -1,0 +1,227 @@
+   1               		.file	"timer.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  56               	.global	timer_init_mode
+  58               	timer_init_mode:
+   1:timer.c       ****  /*
+   2:timer.c       ****  
+   3:timer.c       **** 
+   4:timer.c       ****  Module 				:   Timer
+   5:timer.c       ****  Description 			:   Set timer, Counter mode
+   6:timer.c       ****  Original written for 	:   ATMEGA32
+   7:timer.c       ****  CPU port/tested		:   CPU/Microcontroller
+   8:timer.c       ****  Hardware use			:   ATMEGA32-16 (TQFP)
+   9:timer.c       ****  Port use				:   Timer0, Timer1, Timer2 
+  10:timer.c       **** 						:   OCn, OCnA, OCnB
+  11:timer.c       **** 						
+  12:timer.c       ****  Memory	FLASH	:   XXX
+  13:timer.c       **** 		RAM		:   XXX
+  14:timer.c       **** 		EEPROM	:   XXX
+  15:timer.c       ****  Document				:   Document describe algorithm
+  16:timer.c       ****  Written by 			:  Wichai Tossamrtvorakul / wichai@geartronics.net
+  17:timer.c       ****  Date					:  19/05/2006
+  18:timer.c       ****   
+  19:timer.c       ****  Update History
+  20:timer.c       ****  
+  21:timer.c       ****  Date			By 					Comments
+  22:timer.c       ****  ----			--					---------
+  23:timer.c       ****  
+  24:timer.c       ****  
+  25:timer.c       ****  
+  26:timer.c       ****  */
+  27:timer.c       ****  
+  28:timer.c       ****  
+  29:timer.c       ****  
+  30:timer.c       ****  #include <avr/io.h>
+  31:timer.c       ****  #include "timer.h"
+  32:timer.c       ****  
+  33:timer.c       ****  
+  34:timer.c       ****  // Global variable for timer mode in each timer
+  35:timer.c       ****  
+  36:timer.c       ****  
+  37:timer.c       ****  
+  38:timer.c       **** // Register pointer
+  39:timer.c       ****  
+  40:timer.c       ****  
+  41:timer.c       ****  
+  42:timer.c       ****  void main (void);
+  43:timer.c       ****  
+  44:timer.c       ****  
+  45:timer.c       ****  // Set correct register for each timer 
+  46:timer.c       ****   
+  47:timer.c       ****  
+  48:timer.c       ****  // Set timer mode for  timer 0, 1, 2
+  49:timer.c       **** uint8_t  timer_init_mode ( uint8_t timer, uint8_t mode)
+  50:timer.c       ****  {
+  60               	.LM1:
+  61               	/* prologue: frame size=0 */
+  62               	/* prologue end (size=0) */
+  63 0000 962F      		mov r25,r22
+  51:timer.c       ****     uint8_t status = 1;
+  65               	.LM2:
+  66 0002 21E0      		ldi r18,lo8(1)
+  52:timer.c       **** 	
+  53:timer.c       **** 	switch (timer| mode)
+  68               	.LM3:
+  69 0004 982B      		or r25,r24
+  70 0006 892F      		mov r24,r25
+  71 0008 9927      		clr r25
+  72 000a 8532      		cpi r24,37
+  73 000c 9105      		cpc r25,__zero_reg__
+  74 000e 2CF4      		brge .L20
+  76               	.LM4:
+  77 0010 8132      		cpi r24,33
+  78 0012 9105      		cpc r25,__zero_reg__
+  79 0014 6CF4      		brge .L2
+  80 0016 4197      		sbiw r24,17
+  81 0018 08C0      		rjmp .L21
+  82               	.L20:
+  83 001a 8133      		cpi r24,49
+  84 001c 9105      		cpc r25,__zero_reg__
+  85 001e 3CF0      		brlt .L19
+  86 0020 8533      		cpi r24,53
+  87 0022 9105      		cpc r25,__zero_reg__
+  88 0024 2CF0      		brlt .L2
+  89 0026 8154      		subi r24,lo8(-(-65))
+  90 0028 9040      		sbci r25,hi8(-(-65))
+  91               	.L21:
+  92 002a 0497      		sbiw r24,4
+  93 002c 08F0      		brlo .L2
+  94               	.L19:
+  54:timer.c       **** 	{
+  55:timer.c       **** 	  case (TIMER0 |TIMER_COUNTER_MODE ):
+  56:timer.c       **** 	  
+  57:timer.c       **** 	  break;
+  58:timer.c       **** 	  
+  59:timer.c       **** 	  case  (TIMER0 |TIMER_CLEAR_TIMER_MODE):
+  60:timer.c       **** 	  
+  61:timer.c       **** 	  break;
+  62:timer.c       **** 	
+  63:timer.c       **** 	  case (TIMER0 |  TIMER_FAST_PWM_MODE):
+  64:timer.c       **** 	  break;
+  65:timer.c       **** 	 
+  66:timer.c       **** 	  case (TIMER0 |  TIMER_PHASE_PWM_MODE):
+  67:timer.c       **** 	  break;
+  68:timer.c       **** 	
+  69:timer.c       **** 	
+  70:timer.c       **** 	 case (TIMER1A |TIMER_COUNTER_MODE ):
+  71:timer.c       **** 	  
+  72:timer.c       **** 	  break;
+  73:timer.c       **** 	  
+  74:timer.c       **** 	  case  (TIMER1A |TIMER_CLEAR_TIMER_MODE):
+  75:timer.c       **** 	  
+  76:timer.c       **** 	  break;
+  77:timer.c       **** 	
+  78:timer.c       **** 	  case (TIMER1A |  TIMER_FAST_PWM_MODE):
+  79:timer.c       **** 	  break;
+  80:timer.c       **** 	 
+  81:timer.c       **** 	  case (TIMER1A |  TIMER_PHASE_PWM_MODE):
+  82:timer.c       **** 	  break;
+  83:timer.c       **** 	  
+  84:timer.c       **** 	   case (TIMER1B |TIMER_COUNTER_MODE ):
+  85:timer.c       **** 	  
+  86:timer.c       **** 	  break;
+  87:timer.c       **** 	  
+  88:timer.c       **** 	  case  (TIMER1B |TIMER_CLEAR_TIMER_MODE):
+  89:timer.c       **** 	  
+  90:timer.c       **** 	  break;
+  91:timer.c       **** 	
+  92:timer.c       **** 	  case (TIMER1B |  TIMER_FAST_PWM_MODE):
+  93:timer.c       **** 	  break;
+  94:timer.c       **** 	 
+  95:timer.c       **** 	  case (TIMER1B |  TIMER_PHASE_PWM_MODE):
+  96:timer.c       **** 	  break;
+  97:timer.c       **** 	   case (TIMER2 |TIMER_COUNTER_MODE ):
+  98:timer.c       **** 	  
+  99:timer.c       **** 	  break;
+ 100:timer.c       **** 	  
+ 101:timer.c       **** 	  case  (TIMER2 |TIMER_CLEAR_TIMER_MODE):
+ 102:timer.c       **** 	  
+ 103:timer.c       **** 	  break;
+ 104:timer.c       **** 	
+ 105:timer.c       **** 	  case (TIMER2 |  TIMER_FAST_PWM_MODE):
+ 106:timer.c       **** 	  break;
+ 107:timer.c       **** 	 
+ 108:timer.c       **** 	  case (TIMER2 |  TIMER_PHASE_PWM_MODE):
+ 109:timer.c       **** 	  break;
+ 110:timer.c       **** 	  
+ 111:timer.c       **** 	  default:
+ 112:timer.c       **** 	    status = 0;   // Error set mode  
+  96               	.LM5:
+  97 002e 20E0      		ldi r18,lo8(0)
+  98               	.L2:
+ 113:timer.c       **** 	 
+ 114:timer.c       **** 	}
+ 115:timer.c       **** 	
+ 116:timer.c       ****  return status;
+ 117:timer.c       ****  
+ 118:timer.c       ****  }
+ 100               	.LM6:
+ 101 0030 822F      		mov r24,r18
+ 102 0032 9927      		clr r25
+ 103               	/* epilogue: frame size=0 */
+ 104 0034 0895      		ret
+ 105               	/* epilogue end (size=1) */
+ 106               	/* function timer_init_mode size 28 (27) */
+ 111               	.Lscope0:
+ 115               	.global	timer_set_clock
+ 117               	timer_set_clock:
+ 119:timer.c       ****  
+ 120:timer.c       ****  void timer_set_clock ( uint8_t timer,uint16_t freq)
+ 121:timer.c       ****  {
+ 119               	.LM7:
+ 120               	/* prologue: frame size=0 */
+ 121               	/* prologue end (size=0) */
+ 122               	/* epilogue: frame size=0 */
+ 123 0036 0895      		ret
+ 124               	/* epilogue end (size=1) */
+ 125               	/* function timer_set_clock size 1 (0) */
+ 127               	.Lscope1:
+ 129               	.global	main
+ 131               	main:
+ 122:timer.c       **** 	 
+ 123:timer.c       ****  
+ 124:timer.c       ****  }
+ 125:timer.c       ****  
+ 126:timer.c       ****  void  main ()
+ 127:timer.c       ****  {
+ 133               	.LM8:
+ 134               	/* prologue: frame size=0 */
+ 135 0038 C0E0      		ldi r28,lo8(__stack - 0)
+ 136 003a D0E0      		ldi r29,hi8(__stack - 0)
+ 137 003c DEBF      		out __SP_H__,r29
+ 138 003e CDBF      		out __SP_L__,r28
+ 139               	/* prologue end (size=4) */
+ 140               	/* epilogue: frame size=0 */
+ 141 0040 0C94 0000 		jmp exit
+ 142               	/* epilogue end (size=2) */
+ 143               	/* function main size 6 (0) */
+ 145               	.Lscope2:
+ 146               		.text
+ 148               	Letext:
+ 149               	/* File "timer.c": code   35 = 0x0023 (  27), prologues   4, epilogues   4 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 timer.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYTaaaa.s:58     .text:00000000 timer_init_mode
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYTaaaa.s:117    .text:00000036 timer_set_clock
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYTaaaa.s:131    .text:00000038 main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccYTaaaa.s:148    .text:00000044 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+__stack
+exit

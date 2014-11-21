@@ -1,0 +1,141 @@
+Export log for : Mega32.Sch
+Start export of symbol definitions for parts
+      Warning: Symbol name (PHONEJACK1), mode (Normal), part (1), changed to (PHONEJACK1_N).
+      Warning: Symbol name (CAPACITOR), mode (Normal), part (1), changed to (CAPACITOR_N).
+      Warning: Symbol name (CRYSTAL), mode (Normal), part (1), changed to (CRYSTAL_N).
+      Warning: Symbol name (CON10), mode (Normal), part (1), changed to (CON10_N).
+      Warning: Rectangle (0,-110)(30,0) exported as lines.
+      Warning: Symbol name (RES1), mode (Normal), part (1), changed to (RES1_N).
+      Warning: Symbol name (SW-PB), mode (Normal), part (1), changed to (SW-PB_N).
+      Warning: Elliptical arc is circle (3, -10)!
+      Warning: Elliptical arc is circle (27, -10)!
+      Warning: Symbol name (HEADER 5X2), mode (Normal), part (1), changed to (HEADER 5X2_N).
+      Warning: Rectangle (0,-60)(50,0) exported as lines.
+      Warning: Extra symbol (MAX232ACPE(16)B3) generated with visible hidden pins for symbol (MAX232ACPE(16)_H)
+      Warning: Symbol name (MAX232ACPE(16)_H), mode (Normal), part (1), changed to (MAX232ACPE(16)B3).
+      Warning: Rectangle (0,-70)(110,0) exported as lines.
+      Warning: Symbol name (MAX232ACPE(16)), mode (Normal), part (1), changed to (MAX232ACPE(16)_N).
+      Warning: Rectangle (0,-70)(110,0) exported as lines.
+      Warning: Symbol name (DB9), mode (Normal), part (1), changed to (DB9_N).
+      Warning: Ellipse approximated with normal arc (21, -20)!
+      Warning: Ellipse approximated with normal arc (21, -40)!
+      Warning: Ellipse approximated with normal arc (21, -60)!
+      Warning: Ellipse approximated with normal arc (21, -80)!
+      Warning: Ellipse approximated with normal arc (9, -10)!
+      Warning: Ellipse approximated with normal arc (9, -30)!
+      Warning: Ellipse approximated with normal arc (9, -50)!
+      Warning: Ellipse approximated with normal arc (9, -70)!
+      Warning: Ellipse approximated with normal arc (9, -90)!
+      Warning: Elliptical arc is circle (7, -4)!
+      Warning: Elliptical arc is circle (7, -96)!
+      Warning: Symbol name (CON3), mode (Normal), part (1), changed to (CON3_N).
+      Warning: Rectangle (0,-40)(20,0) exported as lines.
+      Warning: Symbol name (AT90S8535_TQFP44), mode (Normal), part (1), changed to (AT90S8535_TQFP85).
+      Warning: Rectangle (0,-250)(130,0) exported as lines.
+      Warning: Symbol name (24XX), mode (Normal), part (1), changed to (24XX_N).
+      Warning: Rectangle (-30,-30)(30,50) exported as lines.
+      Warning: Symbol name (DS1307), mode (Normal), part (1), changed to (DS1307_N).
+      Warning: Rectangle (-30,-40)(30,40) exported as lines.
+      Warning: Symbol name (BATTERY), mode (Normal), part (1), changed to (BATTERY_N).
+      Warning: Symbol name (CAPACITOR POL), mode (Normal), part (1), changed to (CAPACITOR POL_N).
+      Warning: Symbol name (LED), mode (Normal), part (1), changed to (LED_N).
+End export of symbol definitions for part
+Start export of default symbol definitions for power ports
+End export of symbol defintions for power ports
+Start export of component definitions
+   Exporting component (PHONEJACK1).
+
+   Exporting component (CAPACITOR).
+
+   Exporting component (CRYSTAL).
+
+   Exporting component (CON10).
+
+   Exporting component (RES1).
+
+   Exporting component (SW-PB).
+
+   Exporting component (HEADER 5X2).
+
+   Exporting component (MAX232ACPE(16)).
+      Warning: Extra component (MAX232ACPE(16)_H) generated from component (MAX232ACPE(16)_H) with visible pins.
+
+   Exporting component (DB9).
+
+   Exporting component (CON3).
+
+   Exporting component (AT90S8535_TQFP44).
+
+   Exporting component (24XX).
+
+   Exporting component (DS1307).
+
+   Exporting component (BATTERY).
+
+   Exporting component (CAPACITOR POL).
+
+   Exporting component (LED).
+
+End export of component definitions
+Start export component definitions for power ports.
+End export component definitions for powerports
+Start export of netlist
+Start export of component instances
+End export of component instances
+Start export of nets
+      Warning: Creating new net "PROTEL_NET000".
+      Warning: Creating new net "PROTEL_NET001".
+Start creation of designator names for powerports
+End creation of designator names for powerports
+End export of nets
+End export of netlist
+Start export of sheet objects for sheet "Mega32".
+Start export of wires
+End export of wires
+Start export of buses.
+End export of buses.
+Start export port objects
+End export port objects
+Start export sheet entry objects.
+End export sheet entry objects
+      Warning: Object kind not supported (Unknown)
+      Warning: Exporting powerport at (560 420) as component with designator "GNDPWR1"
+      Warning: Exporting powerport at (560 710) as component with designator "BAR1"
+      Warning: Exporting powerport at (160 640) as component with designator "BAR2"
+      Warning: Exporting powerport at (160 600) as component with designator "GNDPWR2"
+      Warning: Exporting powerport at (290 420) as component with designator "GNDPWR3"
+      Warning: Exporting powerport at (120 380) as component with designator "BAR3"
+      Warning: Exporting powerport at (150 360) as component with designator "GNDPWR4"
+      Warning: Exporting powerport at (310 350) as component with designator "GNDPWR5"
+      Warning: Exporting powerport at (360 360) as component with designator "BAR4"
+      Warning: Exporting powerport at (250 570) as component with designator "BAR5"
+      Warning: Exporting powerport at (250 430) as component with designator "GNDPWR6"
+      Warning: Exporting powerport at (190 550) as component with designator "BAR6"
+      Warning: Exporting powerport at (190 460) as component with designator "GNDPWR7"
+      Warning: Exporting powerport at (30 520) as component with designator "GNDPWR8"
+      Warning: Exporting powerport at (940 530) as component with designator "BAR7"
+      Warning: Exporting powerport at (1070 470) as component with designator "GNDPWR9"
+      Warning: Exporting powerport at (960 320) as component with designator "GNDPWR10"
+      Warning: Exporting powerport at (1090 630) as component with designator "GNDPWR11"
+      Warning: Exporting powerport at (650 490) as component with designator "GNDPWR12"
+      Warning: Exporting powerport at (700 420) as component with designator "GNDPWR13"
+      Warning: Exporting powerport at (760 440) as component with designator "GNDPWR14"
+      Warning: Exporting powerport at (810 480) as component with designator "BAR8"
+      Warning: Exporting powerport at (720 530) as component with designator "GNDPWR15"
+      Warning: Exporting powerport at (780 110) as component with designator "GNDPWR16"
+      Warning: Exporting powerport at (530 320) as component with designator "BAR9"
+      Warning: Exporting powerport at (960 210) as component with designator "BAR10"
+      Warning: Exporting powerport at (720 210) as component with designator "BAR11"
+      Warning: Exporting powerport at (760 370) as component with designator "BAR12"
+      Warning: Exporting powerport at (550 120) as component with designator "GNDPWR17"
+      Warning: Exporting powerport at (840 150) as component with designator "GNDPWR18"
+      Warning: Exporting powerport at (230 570) as component with designator "GNDPWR19"
+      Warning: Exporting powerport at (1030 260) as component with designator "BAR13"
+      Warning: Exporting powerport at (600 150) as component with designator "GNDPWR20"
+      Warning: Exporting powerport at (720 190) as component with designator "GNDPWR21"
+      Warning: Object kind not supported (ErrorMarker)
+      Warning: Object kind not supported (ErrorMarker)
+      Warning: Object kind not supported (ErrorMarker)
+End export sheet objects for sheet "Mega32".
+ 
+EndLog

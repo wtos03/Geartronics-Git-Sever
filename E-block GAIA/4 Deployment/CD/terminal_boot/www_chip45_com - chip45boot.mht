@@ -1,0 +1,802 @@
+From: <Saved by Microsoft Internet Explorer 5>
+Subject: www.chip45.com - chip45boot
+Date: Wed, 18 Jul 2007 08:59:00 +0700
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01C7C919.E22465B0"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.chip45.com/index.pl?page=chip45boot&lang=en
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- Name, Men=FCeintr=E4ge, Beschreibung --><!-- Layout --><!-- =
+Standard Layout with one Content Block =
+--><HTML><HEAD><TITLE>www.chip45.com - chip45boot</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META=20
+content=3D"chip45.com - Dr. Erik Lins, Official Atmel AVR Consultant, =
+chip45boot s-record bootloader for firmware upgrades."=20
+name=3Ddescription>
+<META content=3D"Dr. Erik Lins" name=3Dauthor>
+<META lang=3Dde=20
+content=3D"Atmel, AVR, Mikrocontroller, Microcontroller, ATmega128, =
+ATmega8, ATmega168, ISP, Download, programmieren, Programmierung, =
+Bootloader, WinAVR, AVR-GCC"=20
+name=3Dkeywords>
+<META lang=3Den=20
+content=3D"Atmel, AVR, microcontroller, microcontroller, ATmega128, =
+ATmega8, ATmega168, ISP, download, programming, bootloader, WinAVR, =
+AVR-GCC"=20
+name=3Dkeywords>
+<META content=3D2006-09-25 name=3Ddate>
+<META content=3Dfollow name=3Drobots><LINK=20
+href=3D"http://www.chip45.com/style/lins.css" type=3Dtext/css =
+rel=3Dstylesheet>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY><!-- Haupttabelle mit vier Zeilen und jeweils zwei Spalten -->
+<TABLE class=3Dlayout><!-- erste Zeile mit Logo und Bild -->
+  <TBODY>
+  <TR>
+    <TD class=3Dlayout-logo=20
+    style=3D"BACKGROUND-IMAGE: url(images/logo_200x100.gif); =
+BACKGROUND-REPEAT: no-repeat"=20
+    rowSpan=3D2></TD>
+    <TD class=3Dlayout-headimage=20
+    style=3D"BACKGROUND-IMAGE: url(images/img_general.jpg); =
+BACKGROUND-REPEAT: no-repeat"=20
+    rowSpan=3D2></TD>
+    <TD class=3Dlayout-headcolor1=20
+    style=3D"PADDING-RIGHT: 10px; VERTICAL-ALIGN: bottom; TEXT-ALIGN: =
+right"></TD></TR>
+  <TR>
+    <TD class=3Dlayout-headcolor2></TD></TR><!-- zweite Zeile mit =
+Uhrzeit und horizontalem Hauptmen=FC -->
+  <TR>
+    <TD class=3Dlayout-blackbox>
+      <DIV class=3Dblackbox>
+      <P class=3Dshowtime>Date: 18.07.2007&nbsp;&nbsp;&nbsp;&nbsp;Time:=20
+      04:22:40</P></DIV></TD>
+    <TD class=3Dlayout-topmenu colSpan=3D2>
+      <DIV class=3Dhorizmenu><A class=3Dhorizmenu=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DHome&amp;lang=3Den">&nbsp;&=
+nbsp;&nbsp;&nbsp;Home&nbsp;&nbsp;&nbsp;&nbsp;</A><A=20
+      class=3Dhorizmenu=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DKontakt&amp;lang=3Den">&nbs=
+p;&nbsp;&nbsp;&nbsp;Contact&nbsp;&nbsp;&nbsp;&nbsp;</A><A=20
+      class=3Dhorizmenu=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DHcubetseag&amp;lang=3Den">&=
+nbsp;&nbsp;&nbsp;&nbsp;Guestbook&nbsp;&nbsp;&nbsp;&nbsp;</A><A=20
+      class=3Dhorizmenu=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DImpressum&amp;lang=3Den">&n=
+bsp;&nbsp;&nbsp;&nbsp;Imprint&nbsp;&nbsp;&nbsp;&nbsp;</A><A=20
+      class=3Dhorizmenu=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DKundeninfo&amp;lang=3Den">&=
+nbsp;&nbsp;&nbsp;&nbsp;Terms=20
+      and Conditions&nbsp;&nbsp;&nbsp;&nbsp;</A><A class=3Dhorizmenu=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DCart&amp;lang=3Den">&nbsp;&=
+nbsp;&nbsp;&nbsp;Shopping=20
+      =
+Cart&nbsp;&nbsp;&nbsp;&nbsp;</A>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3Dchip45boot&amp;lang=3Dde"><=
+IMG=20
+      =
+src=3D"http://www.chip45.com/images/de.gif"></A>&nbsp;&nbsp;&nbsp;&nbsp;<=
+A=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3Dchip45boot&amp;lang=3Den"><=
+IMG=20
+      =
+src=3D"http://www.chip45.com/images/en.gif"></A></DIV></TD></TR><!-- =
+dritte Zeile (Navigation, Inhalt, Aktuelles) -->
+  <TR><!-- linke Spalte (Untermen=FC, Newsletter Abo, Suchbutton, =
+Counter) -->
+    <TD class=3Dlayout-sidebar><!-- Untermen=FC -->
+      <DIV class=3Dbluebox=20
+      style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 0px; MARGIN-BOTTOM: =
+80px; WIDTH: 178px"><A=20
+      class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DCrumbs&amp;lang=3Den">&nbsp=
+;&nbsp;&nbsp;&nbsp;Microcontroller=20
+      Modules</A><A class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DSavvyBOX&amp;lang=3Den">&nb=
+sp;&nbsp;&nbsp;&nbsp;SavvyBOX</A><A=20
+      class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DiDwaRF&amp;lang=3Den">&nbsp=
+;&nbsp;&nbsp;&nbsp;Wireless=20
+      Modules</A><A class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DProgrammieradapter&amp;lang=
+=3Den">&nbsp;&nbsp;&nbsp;&nbsp;Programmer</A><A=20
+      class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DSpecial&amp;lang=3Den">&nbs=
+p;&nbsp;&nbsp;&nbsp;Special=20
+      Functions</A><A class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DSoftware&amp;lang=3Den">&nb=
+sp;&nbsp;&nbsp;&nbsp;Software</A><A=20
+      class=3Dvertmenulight=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DPortableWinAVR&amp;lang=3De=
+n">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Portable=20
+      WinAVR</A><A class=3Dvertmenulight=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3Dchip45boot&amp;lang=3Den">&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;chip45boot</A><A=20
+      class=3Dvertmenulight=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DATmegaBOOT&amp;lang=3Den">&=
+nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ATmegaBOOT</A><A=20
+      class=3Dvertmenulight=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DExamples&amp;lang=3Den">&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Code=20
+      Examples</A><A class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DZubehoer&amp;lang=3Den">&nb=
+sp;&nbsp;&nbsp;&nbsp;Accessories</A><A=20
+      class=3Dvertmenu style=3D"MARGIN-TOP: 5px"=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DPROBOboards&amp;lang=3Den">=
+&nbsp;&nbsp;&nbsp;&nbsp;Mature=20
+      Products</A> </DIV><!-- Newsletter Abo -->
+      <DIV class=3Dbluebox>
+      <H3>Newsletter</H3>
+      <FORM style=3D"MARGIN: 0px" onsubmit=3D"return =
+check_newsletter(this)"=20
+      action=3Dindex.pl method=3Dpost><INPUT type=3Dhidden value=3Den =
+name=3Dlang> <INPUT=20
+      type=3Dhidden value=3Dsubscribe name=3Dnewslettre> <INPUT =
+type=3Dhidden=20
+      value=3Derik@lins.de name=3Dmailto> <INPUT type=3Dhidden =
+value=3DNewsabo=20
+      name=3Dpage>=20
+      <P class=3Dfigure>Stay informed on news and updates via email=20
+      newsletter.<BR>Email: <INPUT style=3D"FONT-SIZE: 10px" =
+maxLength=3D40 size=3D15=20
+      value=3DYour@E-Mail name=3Demailaddress></P>
+      <CENTER><INPUT style=3D"FONT-SIZE: 10px" type=3Dsubmit =
+value=3DSubscribe></CENTER></FORM>
+      <SCRIPT>=0A=
+<!--=0A=
+function check_newsletteremail(e) {=0A=
+  ok =3D =
+"1234567890qwertyuiop[]asdfghjklzxcvbnm.@-_QWERTYUIOPASDFGHJKLZXCVBNM";=0A=
+  for(i=3D0; i < e.length ;i++){=0A=
+    if(ok.indexOf(e.charAt(i))<0){ =0A=
+      return (false);=0A=
+    }	=0A=
+  } =0A=
+  if (document.images) {=0A=
+    re =3D /(@.*@)|(\.\.)|(^\.)|(^@)|(@$)|(\.$)|(@\.)/;=0A=
+    re_two =3D =
+/^.+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,6}|[0-9]{1,3})(\]?)$/;=0A=
+    if (!e.match(re) && e.match(re_two)) {=0A=
+      return (-1);		=0A=
+    } =0A=
+  }=0A=
+}=0A=
+function check_newsletter(f) { // f is the form (passed using the this =
+keyword)=0A=
+  if(!check_newsletteremail(f.emailaddress.value)){=0A=
+=0A=
+    alert("This Emailaddress is not valid.");=0A=
+    f.emailaddress.focus(); =0A=
+    if(document.all || document.getElementByID){=0A=
+      f.emailaddress.style.background =3D "yellow";=0A=
+    }=0A=
+    return false;=0A=
+  }=0A=
+}=0A=
+// -->=0A=
+</SCRIPT>
+      </DIV><!-- Suchbutton -->
+      <DIV class=3Dbluebox>
+      <H3>Search</H3>
+      <FORM style=3D"MARGIN: 0px" onsubmit=3D"return =
+check_searchform(this)"=20
+      action=3Dindex.pl method=3Dpost><INPUT type=3Dhidden value=3Den =
+name=3Dlang> <INPUT=20
+      type=3Dhidden value=3DSuchseite name=3Dpage>=20
+      <P class=3Dfigure>Searchterm: <INPUT style=3D"FONT-SIZE: 10px" =
+maxLength=3D40=20
+      size=3D15 name=3Dsearch></P>
+      <CENTER><INPUT style=3D"FONT-SIZE: 10px" type=3Dsubmit =
+value=3D"Start Search"></CENTER></FORM>
+      <SCRIPT>=0A=
+<!--=0A=
+function check_searchform(f) {=0A=
+  if(f.search.value.length < 1) {=0A=
+    alert("Bitte geben Sie einen Suchbegriff ein.");=0A=
+    f.search.focus(); =0A=
+    if(document.all || document.getElementByID) {=0A=
+      f.search.style.background =3D "yellow";=0A=
+    }=0A=
+    return false;=0A=
+  }=0A=
+}=0A=
+// -->=0A=
+</SCRIPT>
+      </DIV><!-- Counter -->
+      <DIV class=3Dbluebox>
+      <H3>Visitor Counter</H3>
+      <TABLE>
+        <TBODY>
+        <TR>
+          <TD class=3Dleft>
+            <H3>28898</H3></TD>
+          <TD class=3Dright>
+            <P class=3Dfigure>Visitors since<BR>July, 1st=20
+      2005</P></TD></TR></TBODY></TABLE></DIV></TD><!-- Ende linke =
+Spalte --><!-- rechte Spalte -->
+    <TD class=3Dlayout-content colSpan=3D2>
+      <H1>chip45boot &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<IMG=20
+      src=3D"http://www.chip45.com/images/dots.gif"></H1>
+      <P>Many other bootloaders try to emulate a certain ISP tool =
+protocol to be=20
+      compatible with the common desktop programming software, e.g. =
+emulate the=20
+      STK500 protocol to work with Atmel AVR-Studio - chip45boot does =
+not.</P>
+      <P>chip45boot goes a different way. chip45boot can read a standard =
+
+      Motorola s-record compatible file, which can be easily generated =
+from the=20
+      often used Intel hex file, through the UART of any AVR =
+microcontroller.=20
+      With this capability any terminal emulation program, like Windows=20
+      HypterTerminal, <A=20
+      =
+href=3D"http://hp.vector.co.jp/authors/VA002416/teraterm.html">TeraTermPr=
+o</A>=20
+      or <A href=3D"http://realterm.sourceforge.net/">RealTerm</A> can =
+be used as=20
+      desktop programming tool. This makes chip45boot fully desktop =
+platform=20
+      independent, since a terminal program is available on any known =
+desktop=20
+      operating system (Windows, Mac, Linux, etc.). Note: It is =
+necessary to=20
+      have a delay of 250msec after each line transmitted, but this can =
+be set=20
+      with almost any terminal program.</P>
+      <P>In case you want to automatize your download process, a simple =
+command=20
+      line tool "chip45prog" is available, which can be called from a =
+Makefile=20
+      or another application.</P>
+      <H2>Compiling</H2>
+      <P>chip45boot was programmed in C with the <A=20
+      href=3D"http://winavr.sourceforge.net/">WinAVR compiler =
+toolset</A> version=20
+      20060421. A Programmers Notepad project file as well as Makefile =
+is=20
+      included when you download the ZIP file.</P>
+      <P>If you want to adapt chip45boot to a new AVR microcontroller, =
+you have=20
+      to adjust the MCU_NAME and the bootloader flash page address in =
+the=20
+      Makefile as well as add some new register definitions in =
+mcudefs.h. Some=20
+      sample definitions are included (ATmega8, ATmega128, ATmega168) =
+and it=20
+      shouldn't be a problem to add a new one - depending on the MCU it =
+might be=20
+      sufficient to copy and rename an existing section of =
+mcudefs.h.</P>
+      <P>In case you ported chip45boot to another MCU, it would be nice =
+to send=20
+      back the Makefile and mcudefs.h changes. I will update the ZIP =
+file to=20
+      make the changes available to the community.</P>
+      <H2>Usage</H2>
+      <P>The usage of chip45boot and notes on the required s-record file =
+are=20
+      described in the chip45boot.c source code.</P>
+      <P>Very briefly:</P>
+      <UL>
+        <LI>Program chip45boot into a mcu.=20
+        <LI>Adjust the fuse bits to activate bootloader functionality.=20
+        <LI>Open a terminal program.=20
+        <LI>Hold key 'i' pressed during power up or reset of the MCU. (a =
+prompt=20
+        should appear)=20
+        <LI>Press 'f' or 'e' to program flash or EEPROM.=20
+        <LI>Drag and drop the .srec file into the terminal windows =
+(might not=20
+        work with any terminal program, if not start the upload of a =
+text file=20
+        through a menu option).=20
+        <LI>After programming, the bootloader starts again.=20
+        <LI>Press 'g' to start the application or reset the MCU. =
+</LI></UL>
+      <P>A simple test program is included in the chip45boot ZIP file, =
+which=20
+      toggles an IO pin (if connected, an LED will flash, e.g. <A=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DCrumb8-USB&amp;lang=3Den">C=
+rumb8-USB</A>).=20
+      It can be compiled with WinAVR, but is also included as =
+precompiled (for=20
+      ATmega8) .srec file for testing.</P>
+      <H2>Code Size</H2>
+      <P>Since a bootloader usually takes up program memory space, code =
+size=20
+      matters a lot - especially for MCUs with small flash memory, like =
+ATmega8.=20
+      The target was to make a bootloader which takes up less than =
+1kbyte of=20
+      program memory. Fortunately - and due to the high quality code =
+generated=20
+      by the WinAVR toolset - this could be achieved exclusively in C, =
+i.e. no=20
+      assembler routines are necessary.</P>
+      <P>Code size of chip45boot compiled for an ATmega8 MCU is 1022 =
+bytes.=20
+      Phew, that was a near thing!</P>
+      <H2>License</H2>
+      <P>chip45boot is provided under the terms of the Lesser General =
+Public=20
+      License (<A =
+href=3D"http://www.gnu.org/licenses/lgpl.html">LGPL</A>).</P>
+      <H2>Download</H2>
+      <TABLE>
+        <TBODY>
+        <TR>
+          <TD class=3Dleft style=3D"WIDTH: 200px" noWrap>
+            <P><A=20
+            =
+href=3D"http://www.chip45.com/download/chip45boot_070219.zip">chip45boot_=
+070219.zip</A></P></TD>
+          <TD class=3Dright>
+            <P>chip45boot Bootloader Source Code, Makefile and =
+Precompiled=20
+            Versions for ATmega8, ATmega32, ATmega168, ATmega128 and=20
+            AT90CAN128</P></TD></TR></TBODY></TABLE>
+      <TABLE>
+        <TBODY>
+        <TR>
+          <TD class=3Dleft style=3D"WIDTH: 200px" noWrap>
+            <P><A=20
+            =
+href=3D"http://www.chip45.com/download/chip45prog_060607.zip">chip45prog_=
+060607.zip</A></P></TD>
+          <TD class=3Dright>
+            <P>chip45prog desktop command line tools for=20
+        chip45boot.</P></TD></TR></TBODY></TABLE>
+      <P><BR><BR><IMG=20
+      =
+src=3D"http://www.chip45.com/images/dots2.gif">&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;=20
+      <A =
+href=3D"javascript:history.back();">Back</A>&nbsp;&nbsp;&nbsp;&nbsp;<A=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DHome&amp;lang=3Den">Home</A=
+>&nbsp;&nbsp;&nbsp;&nbsp;<A=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DKontakt&amp;lang=3Den">Cont=
+act</A>&nbsp;&nbsp;&nbsp;&nbsp;<A=20
+      =
+href=3D"http://www.chip45.com/index.pl?page=3DSitemap&amp;lang=3Den">Site=
+map</A></P></TD><!-- Ende rechte Spalte --></TR><!-- Ende dritte Zeile =
+--><!-- vierte Zeile -->
+  <TR>
+    <TD class=3Dlayout-redbox>&nbsp;</TD>
+    <TD class=3Dlayout-address colSpan=3D2>
+      <DIV class=3Dblackbox>&nbsp;chip45 GmbH &amp; Co. KG - Am Pfad 8 - =
+35440=20
+      Linden - Germany - Phone +49 (0)6403-925353 - Fax +49 =
+(0)6403-925350 <A=20
+      =
+href=3D"http://www.spreadfirefox.com/?q=3Daffiliates&amp;id=3D0&amp;t=3D8=
+3"><IMG=20
+      title=3D"Get Firefox!" style=3D"MARGIN-LEFT: 20px" alt=3D"Get =
+Firefox!"=20
+      =
+src=3D"http://sfx-images.mozilla.org/affiliates/Buttons/80x15/white_2.gif=
+"=20
+      align=3Dtop=20
+border=3D0></A></DIV></TD></TR><!-- Ende vierte Zeile =
+--></TBODY></TABLE><!-- Ende Haupttabelle --></BODY></HTML>
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: http://www.chip45.com/images/de.gif
+
+R0lGODlhFAAKAPcAAAAAABf2AN0iEf/MAPi/JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAFAAKAAAIKgABCBxI
+sKDBgwgTKiwooKHDhxAjSpxIsaLFiw0HaNzIsaPHjyBDiuwYEAA=
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: http://www.chip45.com/images/en.gif
+
+R0lGODlhFAAKAOYAAAAhcwIjdQcndgoqeQ0seg8vfA4ufRAuexAwfBEwfxQyfxYzfhU0f70QIb0R
+Ib8YKL8ZKcAaKsAbK8QpOcQqOcQrOsQsO8QtO8QuPbdmfbZmfrRpfrZqf9JaZtJjctJlc9VlcdRl
+ctZpdNNretNsetZue9dxfdZyftZzf1FZkVNaklFelWZjlGVmmGRmmWZnmmFnnGFom2dommB0qWB1
+qWR5q2d5rmh8rWt/r65viLJvh7lyhrxwhL9yhLZyiHKEsniJt6Wdu6ugu+ShqOanreivtemyt+q2
+u+q4veu4vuy5vrasw7qtwr2vxLqwx6ez0ru407K82LW+2cO+1+q+xe2/xsbC2enCx+fCyerBye7F
+y+/Fy+3FzfDIy/HKzu/a3vPU1/PU2PPU2vLW3fHY3vTc3vXe38/S5NDS4tHS5NTV5NXV5NfW5Nvd
+6tzc6d3d6dzf6vPe5PLg4/bg4vfk5gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwA
+AAAAFAAKAAAItAA9eGlDYwCAg08kRIByEICAFT46KIGhYYSWNTUQAEi4EAABFTpAHIHzI4CBFxlO
+dEFDI4rCKSlyiDDyBoiCAEFyLsEyBAydOBAejEFCxIwcJzmDYFjKdOkFBw0sNG1aoarVqhSgTrh6
+VYhXJl/KFElCJqiYOWGIXGniVYhJG2momNjRQopCKzfUaEHBQUaCADPOZCnBg8WCjQoZMsDBpgqJ
+DTG4hOjh4kBDjgwPFrjhZsuHgAA=
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: http://www.chip45.com/images/dots.gif
+
+R0lGODlhuQALALMAACUiHjIwLKslAJGPj7S0s8K8/9rZ2dHN/+He//Dv/////wAAAAAAAAAAAAAA
+AAAAACH5BAkAAAAALAAAAAC5AAsAAAj+AA0IHEjQgIKDCA8SWMiwIYGEEAdInEgRYsIAGDNqDGAR
+4caNHQ9+BNlxpMaQCkxmDKkSI8qWBkPGtPgwZM2OA0LmZPnyZYKfQH9yZImgqFGjQy0GOMC0adOk
+SgtInToV6kUBWLNmtXoRgNevXgPMtDg24U2aKHdaVKu0J8ugQbl6PEpXbkqneO2mpMrXbgCtgPUG
+AAtWLMqyCM9CVJyQbWO3JX3CFfqS7lG/eJ0K5kvVL2Ctggl/NSzTJkrGCB2nhtz27eQEgi0jZZn5
+6UvOVVl+3vpSdFjECIErQK0wrU7WEAW/hl1ZNgLMtQ9sxl3A824BoX2T7iic+HDjOJF1X5Q8ObZz
+6LWn47a+O7vo7WRNyw9PPzJP1+Wby0afWT1n9p+5Rxh8EHV3GnhriecReXCZtx9t0fnXl27XCViY
+cAoYOF+C9bVmX0nLOWgZf3ndRh2AgfWmXUEs2uSQQ2lRJONLLdFoko03llQjSzsq1aOPJgUEADs=
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: http://www.chip45.com/images/dots2.gif
+
+R0lGODlhuQALALMAACUiHjIwLKslAJGPj7S0s8K8/9rZ2dHN/+He//Dv/////wAAAAAAAAAAAAAA
+AAAAACH5BAkAAAAALAAAAAC5AAsAAAj+AAMIHEhQgcGDBwkqFIgQ4UKFDR0+HBjR4ESKFRVcDJBR
+48aOA0KKHNmRgMmTKAlkNMCypUsDAQDInCmTY8YAAnLq1GkzYoACQIMG7enzgNGjR4k6RMC0aVOl
+DhNInSoVasKOVg0OyLg1o0qvKzvCpEkzq8adaLP+FCrUbACkcNU6neuWKlW3WEFyLcm3ogGxMcnW
+xIp2p1q2bbHCRSp37lOsdqfivam3YteKXzGHXRlYsNvCPG8iHqp4sdHGjhHUjZxgckWzlxvGbpg5
+Ym2EfzkLHnwTdM7Dowu4NX36ZmqmqyO79lk54myEt6Fv9tuZ7GffwEcPJ47acXK7yxtwwt4LtnzE
+3NR3A7gOOjvi7aa704XMOrzD5rL7avYLWD37wu6xBd9i8jn13V15UUaec/rZNt151ZVFGHaiBTdg
+XMYdd6BkCb6GH0LPHRSdiA82BNNFWH30moorotjiRCnCeBOLzo1kY0kppbTSSy8FBAA7
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: application/octet-stream
+Content-Transfer-Encoding: base64
+Content-Location: http://sfx-images.mozilla.org/affiliates/Buttons/80x15/white_2.gif
+
+R0lGODlhUAAPAOYAAAAZLfndKbUFAABWkz4sK8J1Mv///wCJt86QWgArVObm5udaCNhPB19ZVf/M
+M5GRvSxBQgByrbtvQOzHjwMfcgmj1ZIuM9FAAgBDhu9oHlNfagESaL8UAMzMzEc+R+WYbQA6egBs
+oMyZM9RVESJfhxSu3uiPT/7rU+51JXyLiQAWVgCZzACEvotWMuduIa8uB85jJXwrGzEeTPCAPY1R
+KaR+aParagAxdd1LBABfoxGLxJkcGf7ZWP+ZM786BgBJi/f39+pkEm93QRdIWgB8tFM5KRUhOrQm
+AqtUKOy4Sw8/X9c9AOeCOIVhcMaGcr1FJbF6LThRbQAna4g4ExCCv/WeXBu35wAjZgBrrmA2RABm
+mQp9uKUkBAASS8spAO7u7pBfSham2QCNxF8oDQBSheRTAv7XQzFWXaQ5GdRNFoZ5Uv3PUcxHDtxj
+FABCevRuJ/abUA8ZZf7vbgB1tAAzZsyZZuFYETdKUMSNJO9+LxCSy/KIOwCSxfnq4HBaQeqkeCH5
+BAQUAP8ALAAAAABQAA8AAAf/gBSCg4SFhoeIiYdIWYIbUj8DOVhbVHolVpl6VFtYWkIBASKNFAam
+p6ipqqusral9bX8PcVIgP5E5KTVUYZlWOltbISRRLT0nDgWlrszNzqcfIyMyVzc3IBgaJjMeVCXf
+YcARw2pJaz1yPMvP7O2mQDBs8mAI9RJvb2hRemGbesEVKkRwQ8cPDwcn1rlbyOwLGx9pZsCpYsNG
+hotDiKwIqENPwIBEMNxIYESEmXWETAlSOehUSgMvYa5kSfOUAh8MggRZwHPBRTsxiPD5+HHFCj4R
+QICgQwcKSoUzV0aFSlWmy5aoOlzAUaZrzwU7j3g4wMeo2aN8WGCZE4KMkqdT+lnOlDk17lyrqIA0
+6cr3K88jR3yMgcCnsGEWLIgQwTKgwVNUdR9fhVxqbkwDChjw9er3AhsTE84cEENaDIs5EVJHGEBD
+ck2py17epTsZrwEnmznz1AljQp0hIYggZhFhMQYMOXL8IKCQofNUTwR46dszSAYUeQrcIRNijvcc
+GCIpxTBACvPn6PNaWLK5ugvse5i4GRAigncsSkFYu/Hjxvn06QFhwXR96RTEe3nsAQcZk2DhIH7W
+SCEhBi20BmB6X+xA4GYvcMHFCwAAUASDyZUI3gBXpHgFDUYo4uKLMA5yBAe5+fDCjVMkQIcbuJiY
+AwgpqqBCFzTgEQgAOw==
+
+------=_NextPart_000_0000_01C7C919.E22465B0
+Content-Type: text/css;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.chip45.com/style/lins.css
+
+H1 {
+	FONT-WEIGHT: normal; FONT-SIZE: 32px; MARGIN: 0px 0px 12px; COLOR: =
+#c0c0ff; FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+H2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 16px; MARGIN: 12px 0px 6px; COLOR: =
+#c0c0ff; FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+H3 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; MARGIN: 0px 0px 6px; COLOR: black; =
+FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+P {
+	FONT-WEIGHT: normal; FONT-SIZE: 12px; MARGIN: 0px 0px 6px; COLOR: =
+black; FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+P.figure {
+	FONT-WEIGHT: normal; FONT-SIZE: 9px; MARGIN: 0px; COLOR: black; =
+FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+P.showtime {
+	FONT-WEIGHT: normal; FONT-SIZE: 10px; MARGIN: 0px; COLOR: white; =
+FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+P.news {
+	FONT-WEIGHT: normal; FONT-SIZE: 11px; MARGIN: 0px 0px 6px; COLOR: =
+black; FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+UL {
+	MARGIN-TOP: 0px; PADDING-LEFT: 0px; MARGIN-LEFT: 25px; LIST-STYLE-TYPE: =
+disc
+}
+LI {
+	FONT-WEIGHT: normal; FONT-SIZE: 12px; MARGIN: 0px; COLOR: black; =
+FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+HR {
+	BORDER-RIGHT: 0px; BORDER-TOP: 0px; BACKGROUND: #c0c0ff; BORDER-LEFT: =
+0px; COLOR: #c0c0ff; BORDER-BOTTOM: 0px; HEIGHT: 1px
+}
+A {
+	COLOR: #a00000
+}
+A.maplinktop {
+	FONT-WEIGHT: bold; FONT-SIZE: 16px; COLOR: #c00000; FONT-STYLE: normal; =
+FONT-FAMILY: Arial,Helvetica,sans-serif; TEXT-DECORATION: underline
+}
+A.maplinksub {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #a0a0ff; FONT-STYLE: normal; =
+FONT-FAMILY: Arial,Helvetica,sans-serif; TEXT-DECORATION: underline
+}
+A.heisenews {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #c00000; FONT-STYLE: normal; =
+FONT-FAMILY: Arial,Helvetica,sans-serif; TEXT-DECORATION: underline
+}
+DIV.vertenu {
+	BACKGROUND-COLOR: transparent
+}
+A.vertmenu {
+	DISPLAY: block; FONT-WEIGHT: bold; FONT-SIZE: 12px; MARGIN: 0px; WIDTH: =
+178px; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: =
+Arial,Helvetica,sans-serif; TEXT-DECORATION: none
+}
+A.vertmenu:link {
+	COLOR: black; BACKGROUND-COLOR: #e0deff
+}
+A.vertmenu:visited {
+	COLOR: black; BACKGROUND-COLOR: #e0e0ff
+}
+A.vertmenu:hover {
+	COLOR: black; BACKGROUND-COLOR: white
+}
+A.vertmenu:active {
+	COLOR: black; BACKGROUND-COLOR: #e0e0ff
+}
+A.vertmenulight {
+	DISPLAY: block; FONT-WEIGHT: normal; FONT-SIZE: 12px; MARGIN: 0px; =
+WIDTH: 178px; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: =
+Arial,Helvetica,sans-serif; TEXT-DECORATION: none
+}
+A.vertmenulight:link {
+	BACKGROUND-COLOR: #f0f0ff
+}
+A.vertmenulight:visited {
+	BACKGROUND-COLOR: #f0f0ff
+}
+A.vertmenulight:hover {
+	BACKGROUND-COLOR: white
+}
+A.vertmenulight:active {
+	BACKGROUND-COLOR: #f0f0ff
+}
+A.vertmenulighter {
+	DISPLAY: block; FONT-WEIGHT: normal; FONT-SIZE: 12px; MARGIN: 0px; =
+WIDTH: 178px; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: =
+Arial,Helvetica,sans-serif; TEXT-DECORATION: none
+}
+A.vertmenulighter:link {
+	BACKGROUND-COLOR: #ffffff
+}
+A.vertmenulighter:visited {
+	BACKGROUND-COLOR: #ffffff
+}
+A.vertmenulighter:hover {
+	BACKGROUND-COLOR: #ffffff
+}
+A.vertmenulighter:active {
+	BACKGROUND-COLOR: #ffffff
+}
+A.vertmenutop {
+	DISPLAY: block; FONT-WEIGHT: bold; FONT-SIZE: 12px; MARGIN: 0px 0px =
+6px; WIDTH: 178px; COLOR: black; FONT-STYLE: normal; FONT-FAMILY: =
+Arial,Helvetica,sans-serif; TEXT-DECORATION: none
+}
+A.vertmenutop:link {
+	COLOR: black; BACKGROUND-COLOR: #f0f0ff
+}
+A.vertmenutop:visited {
+	COLOR: black; BACKGROUND-COLOR: #f0f0ff
+}
+A.vertmenutop:hover {
+	COLOR: black; BACKGROUND-COLOR: white
+}
+A.vertmenutop:active {
+	COLOR: black; BACKGROUND-COLOR: #f0f0ff
+}
+DIV.horizmenu {
+	BACKGROUND-COLOR: transparent
+}
+A.horizmenu {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; FONT-STYLE: normal; FONT-FAMILY: =
+Arial,Helvetica,sans-serif; BACKGROUND-COLOR: #a00000; TEXT-DECORATION: =
+none
+}
+A.horizmenu:link {
+	COLOR: white; BACKGROUND-COLOR: transparent
+}
+A.horizmenu:visited {
+	COLOR: white; BACKGROUND-COLOR: transparent
+}
+A.horizmenu:hover {
+	COLOR: black; BACKGROUND-COLOR: white
+}
+A.horizmenu:active {
+	COLOR: white; BACKGROUND-COLOR: transparent
+}
+DIV.whitebox {
+	BORDER-RIGHT: #c0c0ff 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: =
+#c0c0ff 1px solid; PADDING-LEFT: 10px; FONT-WEIGHT: normal; FONT-SIZE: =
+12px; PADDING-BOTTOM: 10px; MARGIN: 0px 0px 10px; BORDER-LEFT: #c0c0ff =
+1px solid; COLOR: black; PADDING-TOP: 10px; BORDER-BOTTOM: #c0c0ff 1px =
+solid; FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif; =
+BACKGROUND-COLOR: #e0e0ff
+}
+DIV.bluebox {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 10px; FONT-WEIGHT: normal; FONT-SIZE: 12px; =
+PADDING-BOTTOM: 10px; MARGIN: 10px; BORDER-LEFT: white 1px solid; COLOR: =
+black; PADDING-TOP: 10px; BORDER-BOTTOM: white 1px solid; FONT-STYLE: =
+normal; FONT-FAMILY: Arial,Helvetica,sans-serif; BACKGROUND-COLOR: =
+#e0e0ff; align: justify
+}
+BODY {
+	MARGIN: 0px
+}
+TABLE {
+	BORDER-COLLAPSE: collapse
+}
+TD.left {
+	PADDING-RIGHT: 10px; VERTICAL-ALIGN: top; align: left
+}
+TD.center {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; VERTICAL-ALIGN: top; align: =
+left
+}
+TD.right {
+	PADDING-LEFT: 10px; VERTICAL-ALIGN: top; align: left
+}
+TABLE.layout {
+	WIDTH: 980px; BORDER-COLLAPSE: collapse
+}
+TD.layout-logo {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; =
+BORDER-LEFT: white 1px solid; WIDTH: 200px; PADDING-TOP: 0px; =
+BORDER-BOTTOM: white 1px solid; HEIGHT: 100px; BACKGROUND-COLOR: white
+}
+TD.layout-headimage {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; =
+BORDER-LEFT: white 1px solid; WIDTH: 200px; PADDING-TOP: 0px; =
+BORDER-BOTTOM: white 1px solid; HEIGHT: 70px
+}
+TD.layout-headcolor1 {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; =
+BORDER-LEFT: white 1px solid; WIDTH: 580px; PADDING-TOP: 0px; =
+BORDER-BOTTOM: white 1px solid; HEIGHT: 70px; BACKGROUND-COLOR: #e0e0ff
+}
+TD.layout-headcolor2 {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; =
+BORDER-LEFT: white 1px solid; WIDTH: 580px; PADDING-TOP: 0px; =
+BORDER-BOTTOM: white 1px solid; HEIGHT: 30px; BACKGROUND-COLOR: #a0a0ff
+}
+TD.layout-blackbox {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; FONT-WEIGHT: normal; FONT-SIZE: 12px; =
+PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: white 1px solid; WIDTH: =
+200px; COLOR: white; PADDING-TOP: 0px; BORDER-BOTTOM: white 1px solid; =
+FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif; =
+BACKGROUND-COLOR: black
+}
+TD.layout-topmenu {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: 12px; =
+PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: white 1px solid; WIDTH: =
+780px; COLOR: white; PADDING-TOP: 0px; BORDER-BOTTOM: white 1px solid; =
+FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif; =
+BACKGROUND-COLOR: #a00000
+}
+TD.layout-sidebar {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; FONT-WEIGHT: normal; FONT-SIZE: 12px; =
+PADDING-BOTTOM: 0px; MARGIN: 0px; VERTICAL-ALIGN: top; BORDER-LEFT: =
+white 1px solid; WIDTH: 200px; COLOR: black; PADDING-TOP: 0px; =
+BORDER-BOTTOM: white 1px solid; FONT-STYLE: normal; FONT-FAMILY: =
+Arial,Helvetica,sans-serif; BACKGROUND-COLOR: #c0c0ff
+}
+TD.layout-content {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 10px; FONT-WEIGHT: normal; FONT-SIZE: 12px; =
+PADDING-BOTTOM: 10px; MARGIN: 0px; VERTICAL-ALIGN: top; BORDER-LEFT: =
+white 1px solid; COLOR: black; PADDING-TOP: 10px; BORDER-BOTTOM: white =
+1px solid; FONT-STYLE: normal; FONT-FAMILY: Arial,Helvetica,sans-serif; =
+BACKGROUND-COLOR: white
+}
+TD.layout-redbox {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; =
+BORDER-LEFT: white 1px solid; PADDING-TOP: 0px; BORDER-BOTTOM: white 1px =
+solid; BACKGROUND-COLOR: #a00000
+}
+TD.layout-address {
+	BORDER-RIGHT: white 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: white =
+1px solid; PADDING-LEFT: 0px; FONT-WEIGHT: normal; FONT-SIZE: 12px; =
+PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: white 1px solid; COLOR: =
+white; PADDING-TOP: 0px; BORDER-BOTTOM: white 1px solid; FONT-STYLE: =
+normal; FONT-FAMILY: Arial,Helvetica,sans-serif; BACKGROUND-COLOR: black
+}
+TD.guestbook-left {
+	BORDER-RIGHT: #c0c0ff 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: =
+#c0c0ff 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; MARGIN: 0px; =
+VERTICAL-ALIGN: top; BORDER-LEFT: #c0c0ff 1px solid; WIDTH: 200px; =
+PADDING-TOP: 5px; BORDER-BOTTOM: #c0c0ff 1px solid; BACKGROUND-COLOR: =
+#e0e0ff
+}
+TD.guestbook-right {
+	BORDER-RIGHT: #c0c0ff 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: =
+#c0c0ff 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; MARGIN: 0px; =
+VERTICAL-ALIGN: top; BORDER-LEFT: #c0c0ff 1px solid; WIDTH: 540px; =
+PADDING-TOP: 5px; BORDER-BOTTOM: #c0c0ff 1px solid; BACKGROUND-COLOR: =
+white
+}
+DIV.blackbox {
+	PADDING-LEFT: 5px
+}
+IMG {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: =
+0px; BORDER-RIGHT-WIDTH: 0px
+}
+IMG.content {
+	BORDER-RIGHT: black 1px solid; BORDER-TOP: black 1px solid; =
+BORDER-LEFT: black 1px solid; BORDER-BOTTOM: black 1px solid
+}
+INPUT {
+	BORDER-RIGHT: #c0c0ff 1px solid; BORDER-TOP: #c0c0ff 1px solid; =
+BORDER-LEFT: #c0c0ff 1px solid; BORDER-BOTTOM: #c0c0ff 1px solid; =
+BACKGROUND-COLOR: white
+}
+TEXTAREA {
+	BORDER-RIGHT: #c0c0ff 1px solid; BORDER-TOP: #c0c0ff 1px solid; =
+BORDER-LEFT: #c0c0ff 1px solid; BORDER-BOTTOM: #c0c0ff 1px solid; =
+BACKGROUND-COLOR: white
+}
+
+------=_NextPart_000_0000_01C7C919.E22465B0--

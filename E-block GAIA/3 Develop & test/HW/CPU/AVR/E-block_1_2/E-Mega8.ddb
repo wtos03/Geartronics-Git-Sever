@@ -1,0 +1,27 @@
+[Design Root]
+Version=1.0.0
+[Directory]
+CPU.PCB=PCB
+Mega8.Sch=Sch
+Mega32.Sch=Sch
+E_IO_Template.Sch=Sch
+E_CPU_Template.Sch=Sch
+E_7Segment.Sch=Sch
+E-block.Lib=SchLib
+DC_Motor_control.Sch=Sch
+[CPU.PCB]
+Editor Kind=PCB
+[Mega8.Sch]
+Editor Kind=Sch
+[Mega32.Sch]
+Editor Kind=Sch
+[E_IO_Template.Sch]
+Editor Kind=Sch
+[E_CPU_Template.Sch]
+Editor Kind=Sch
+[E_7Segment.Sch]
+Editor Kind=Sch
+[E-block.Lib]
+Editor Kind=SchLib
+[DC_Motor_control.Sch]
+Editor Kind=Sch

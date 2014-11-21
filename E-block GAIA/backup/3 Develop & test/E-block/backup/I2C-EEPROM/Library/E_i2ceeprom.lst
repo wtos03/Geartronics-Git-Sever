@@ -1,0 +1,223 @@
+   1               		.file	"E_i2ceeprom.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  58               	.global	i2ceeprom_init
+  60               	i2ceeprom_init:
+   1:E_i2ceeprom.c **** 
+   2:E_i2ceeprom.c **** /* 
+   3:E_i2ceeprom.c ****  Module 				:   I2C Eeprom
+   4:E_i2ceeprom.c ****  Description 			:   Read /Write data from Eeprom 24XX series 
+   5:E_i2ceeprom.c ****  Original written for 	:   ATMEGA32
+   6:E_i2ceeprom.c ****  CPU port/tested		:   ATMEGA32
+   7:E_i2ceeprom.c ****  Port use				:	PC0 (SCL)  Serial Clock line)   
+   8:E_i2ceeprom.c **** 							PC1 (SDA)  Serial Data Access 
+   9:E_i2ceeprom.c ****  Document				:
+  10:E_i2ceeprom.c ****  Written by 			: 	Wichai Tossamartvorakul (wichai@geartronics.net)
+  11:E_i2ceeprom.c ****  Date					:   3/4/2007
+  12:E_i2ceeprom.c ****  
+  13:E_i2ceeprom.c ****  
+  14:E_i2ceeprom.c ****  Update History
+  15:E_i2ceeprom.c ****  
+  16:E_i2ceeprom.c ****  Date			By 					Comments
+  17:E_i2ceeprom.c ****  ----			--					---------
+  18:E_i2ceeprom.c **** 2003.04.23   	Pascal Stang      This code is distributed under the GNU Public License
+  19:E_i2ceeprom.c **** 				Copyright (C) 2003				 
+  20:E_i2ceeprom.c ****  
+  21:E_i2ceeprom.c **** 2007.04.03		Wichai			  Modified to use with E-block project 
+  22:E_i2ceeprom.c ****  
+  23:E_i2ceeprom.c **** */
+  24:E_i2ceeprom.c **** 
+  25:E_i2ceeprom.c **** #include <avr/io.h>
+  26:E_i2ceeprom.c **** #include <avr/signal.h>
+  27:E_i2ceeprom.c **** #include <avr/interrupt.h>
+  28:E_i2ceeprom.c **** 
+  29:E_i2ceeprom.c **** #include "E_i2c.h"
+  30:E_i2ceeprom.c **** #include "E_i2ceeprom.h"
+  31:E_i2ceeprom.c **** 
+  32:E_i2ceeprom.c **** // Standard I2C bit rates are:
+  33:E_i2ceeprom.c **** // 100KHz for slow speed
+  34:E_i2ceeprom.c **** // 400KHz for high speed
+  35:E_i2ceeprom.c **** 
+  36:E_i2ceeprom.c **** // functions
+  37:E_i2ceeprom.c **** void i2ceeprom_init(void)
+  38:E_i2ceeprom.c **** {
+  62               	.LM1:
+  63               	/* prologue: frame size=0 */
+  64               	/* prologue end (size=0) */
+  39:E_i2ceeprom.c **** 	// although there is no code here
+  40:E_i2ceeprom.c **** 	// don't forget to initialize the I2C interface itself
+  41:E_i2ceeprom.c **** 	  i2c_init();
+  66               	.LM2:
+  67 0000 0E94 0000 		call i2c_init
+  68               	/* epilogue: frame size=0 */
+  69 0004 0895      		ret
+  70               	/* epilogue end (size=1) */
+  71               	/* function i2ceeprom_init size 3 (2) */
+  73               	.Lscope0:
+  77               	.global	i2ceeprom_read_byte
+  79               	i2ceeprom_read_byte:
+  42:E_i2ceeprom.c **** }
+  43:E_i2ceeprom.c **** 
+  44:E_i2ceeprom.c **** uint8_t i2ceeprom_read_byte(uint8_t i2cAddr, uint32_t memAddr)
+  45:E_i2ceeprom.c **** {
+  81               	.LM3:
+  82               	/* prologue: frame size=2 */
+  83 0006 FF92      		push r15
+  84 0008 0F93      		push r16
+  85 000a 1F93      		push r17
+  86 000c CF93      		push r28
+  87 000e DF93      		push r29
+  88 0010 CDB7      		in r28,__SP_L__
+  89 0012 DEB7      		in r29,__SP_H__
+  90 0014 2297      		sbiw r28,2
+  91 0016 0FB6      		in __tmp_reg__,__SREG__
+  92 0018 F894      		cli
+  93 001a DEBF      		out __SP_H__,r29
+  94 001c 0FBE      		out __SREG__,__tmp_reg__
+  95 001e CDBF      		out __SP_L__,r28
+  96               	/* prologue end (size=13) */
+  97 0020 F82E      		mov r15,r24
+  98 0022 9A01      		movw r18,r20
+  99 0024 AB01      		movw r20,r22
+  46:E_i2ceeprom.c **** 	uint8_t packet[2];
+  47:E_i2ceeprom.c **** 	// prepare address
+  48:E_i2ceeprom.c **** 	packet[0] = (memAddr>>8);
+ 101               	.LM4:
+ 102 0026 BB27      		clr r27
+ 103 0028 A52F      		mov r26,r21
+ 104 002a 942F      		mov r25,r20
+ 105 002c 832F      		mov r24,r19
+ 106 002e 8983      		std Y+1,r24
+  49:E_i2ceeprom.c **** 	packet[1] = (memAddr&0x00FF);
+ 108               	.LM5:
+ 109 0030 8E01      		movw r16,r28
+ 110 0032 0F5F      		subi r16,lo8(-(1))
+ 111 0034 1F4F      		sbci r17,hi8(-(1))
+ 112 0036 F801      		movw r30,r16
+ 113 0038 2183      		std Z+1,r18
+  50:E_i2ceeprom.c **** 	// send memory address we wish to access to the memory chip
+  51:E_i2ceeprom.c **** 	i2c_master_sendni(i2cAddr, 2, packet);
+ 115               	.LM6:
+ 116 003a A801      		movw r20,r16
+ 117 003c 62E0      		ldi r22,lo8(2)
+ 118 003e 8F2D      		mov r24,r15
+ 119 0040 0E94 0000 		call i2c_master_sendni
+  52:E_i2ceeprom.c **** 	// retrieve the data at this memory address
+  53:E_i2ceeprom.c **** 	i2c_master_receiveni(i2cAddr, 1, packet);
+ 121               	.LM7:
+ 122 0044 A801      		movw r20,r16
+ 123 0046 61E0      		ldi r22,lo8(1)
+ 124 0048 8F2D      		mov r24,r15
+ 125 004a 0E94 0000 		call i2c_master_receiveni
+  54:E_i2ceeprom.c **** 	// return data
+  55:E_i2ceeprom.c **** 	return packet[0];
+ 127               	.LM8:
+ 128 004e 8981      		ldd r24,Y+1
+  56:E_i2ceeprom.c **** }
+ 130               	.LM9:
+ 131 0050 9927      		clr r25
+ 132               	/* epilogue: frame size=2 */
+ 133 0052 2296      		adiw r28,2
+ 134 0054 0FB6      		in __tmp_reg__,__SREG__
+ 135 0056 F894      		cli
+ 136 0058 DEBF      		out __SP_H__,r29
+ 137 005a 0FBE      		out __SREG__,__tmp_reg__
+ 138 005c CDBF      		out __SP_L__,r28
+ 139 005e DF91      		pop r29
+ 140 0060 CF91      		pop r28
+ 141 0062 1F91      		pop r17
+ 142 0064 0F91      		pop r16
+ 143 0066 FF90      		pop r15
+ 144 0068 0895      		ret
+ 145               	/* epilogue end (size=12) */
+ 146               	/* function i2ceeprom_read_byte size 50 (25) */
+ 151               	.Lscope1:
+ 156               	.global	i2ceeprom_write_byte
+ 158               	i2ceeprom_write_byte:
+  57:E_i2ceeprom.c **** 
+  58:E_i2ceeprom.c **** void i2ceeprom_write_byte(uint8_t i2cAddr, uint32_t memAddr, uint8_t data)
+  59:E_i2ceeprom.c **** {
+ 160               	.LM10:
+ 161               	/* prologue: frame size=3 */
+ 162 006a 0F93      		push r16
+ 163 006c 1F93      		push r17
+ 164 006e CF93      		push r28
+ 165 0070 DF93      		push r29
+ 166 0072 CDB7      		in r28,__SP_L__
+ 167 0074 DEB7      		in r29,__SP_H__
+ 168 0076 2397      		sbiw r28,3
+ 169 0078 0FB6      		in __tmp_reg__,__SREG__
+ 170 007a F894      		cli
+ 171 007c DEBF      		out __SP_H__,r29
+ 172 007e 0FBE      		out __SREG__,__tmp_reg__
+ 173 0080 CDBF      		out __SP_L__,r28
+ 174               	/* prologue end (size=12) */
+ 175 0082 922F      		mov r25,r18
+  60:E_i2ceeprom.c **** 	uint8_t packet[3];
+  61:E_i2ceeprom.c **** 	// prepare address + data
+  62:E_i2ceeprom.c **** 	packet[0] = (memAddr>>8);
+ 177               	.LM11:
+ 178 0084 052F      		mov r16,r21
+ 179 0086 162F      		mov r17,r22
+ 180 0088 272F      		mov r18,r23
+ 181 008a 3327      		clr r19
+ 182 008c 0983      		std Y+1,r16
+  63:E_i2ceeprom.c **** 	packet[1] = (memAddr&0x00FF);
+ 184               	.LM12:
+ 185 008e 4A83      		std Y+2,r20
+  64:E_i2ceeprom.c **** 	packet[2] = data;
+ 187               	.LM13:
+ 188 0090 9B83      		std Y+3,r25
+  65:E_i2ceeprom.c **** 	// send memory address we wish to access to the memory chip
+  66:E_i2ceeprom.c **** 	// along with the data we wish to write
+  67:E_i2ceeprom.c **** 	i2c_master_sendni(i2cAddr, 3, packet);
+ 190               	.LM14:
+ 191 0092 AE01      		movw r20,r28
+ 192 0094 4F5F      		subi r20,lo8(-(1))
+ 193 0096 5F4F      		sbci r21,hi8(-(1))
+ 194 0098 63E0      		ldi r22,lo8(3)
+ 195 009a 0E94 0000 		call i2c_master_sendni
+ 196               	/* epilogue: frame size=3 */
+ 197 009e 2396      		adiw r28,3
+ 198 00a0 0FB6      		in __tmp_reg__,__SREG__
+ 199 00a2 F894      		cli
+ 200 00a4 DEBF      		out __SP_H__,r29
+ 201 00a6 0FBE      		out __SREG__,__tmp_reg__
+ 202 00a8 CDBF      		out __SP_L__,r28
+ 203 00aa DF91      		pop r29
+ 204 00ac CF91      		pop r28
+ 205 00ae 1F91      		pop r17
+ 206 00b0 0F91      		pop r16
+ 207 00b2 0895      		ret
+ 208               	/* epilogue end (size=11) */
+ 209               	/* function i2ceeprom_write_byte size 37 (14) */
+ 214               	.Lscope2:
+ 215               		.text
+ 217               	Letext:
+ 218               	/* File "E_i2ceeprom.c": code   90 = 0x005a (  41), prologues  25, epilogues  24 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 E_i2ceeprom.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccGcbaaa.s:60     .text:00000000 i2ceeprom_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccGcbaaa.s:79     .text:00000006 i2ceeprom_read_byte
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccGcbaaa.s:158    .text:0000006a i2ceeprom_write_byte
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccGcbaaa.s:217    .text:000000b4 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+i2c_init
+i2c_master_sendni
+i2c_master_receiveni

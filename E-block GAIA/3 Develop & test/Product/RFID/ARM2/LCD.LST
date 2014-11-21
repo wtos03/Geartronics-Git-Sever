@@ -1,0 +1,1144 @@
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 1   
+
+
+ARM COMPILER V2.32a, COMPILATION OF MODULE LCD
+OBJECT MODULE PLACED IN LCD.OBJ
+COMPILER INVOKED BY: C:\Keil\ARM\BIN\CA.exe LCD.c THUMB TABS(4) 
+
+stmt  level    source
+
+    1          #include "LPC213x.H"
+    2          #include "type.h"
+    3          #include "spi.h"
+    4          #include "LCD.h"
+    5          
+    6          const unsigned char tab_font[ ] = 
+    7          {
+    8           0x00, 0x00, 0x00, 0x00, 0x00,   // sp  
+    9           0x00, 0x00, 0x2f, 0x00, 0x00,   // !  
+   10           0x00, 0x07, 0x00, 0x07, 0x00,   // "  
+   11           0x14, 0x7f, 0x14, 0x7f, 0x14,   // #  
+   12           0x24, 0x2a, 0x7f, 0x2a, 0x12,   // $  
+   13           0x62, 0x64, 0x08, 0x13, 0x23,   // %  
+   14           0x36, 0x49, 0x55, 0x22, 0x50,   // &  
+   15           0x00, 0x05, 0x03, 0x00, 0x00,   // ’  
+   16           0x00, 0x1c, 0x22, 0x41, 0x00,   // (  
+   17           0x00, 0x41, 0x22, 0x1c, 0x00,   // )  
+   18           0x14, 0x08, 0x3E, 0x08, 0x14,   // *  
+   19           0x08, 0x08, 0x3E, 0x08, 0x08,   // +  
+   20           0x00, 0x00, 0xA0, 0x60, 0x00,   // ,  
+   21           0x08, 0x08, 0x08, 0x08, 0x08,   // -  
+   22           0x00, 0x60, 0x60, 0x00, 0x00,   // .  
+   23           0x20, 0x10, 0x08, 0x04, 0x02,   // /  
+   24           0x3E, 0x51, 0x49, 0x45, 0x3E,   // 0  
+   25           0x00, 0x42, 0x7F, 0x40, 0x00,   // 1  
+   26           0x42, 0x61, 0x51, 0x49, 0x46,   // 2  
+   27           0x21, 0x41, 0x45, 0x4B, 0x31,   // 3  
+   28           0x18, 0x14, 0x12, 0x7F, 0x10,   // 4  
+   29           0x27, 0x45, 0x45, 0x45, 0x39,   // 5  
+   30           0x3C, 0x4A, 0x49, 0x49, 0x30,   // 6  
+   31           0x01, 0x71, 0x09, 0x05, 0x03,   // 7  
+   32           0x36, 0x49, 0x49, 0x49, 0x36,   // 8  
+   33           0x06, 0x49, 0x49, 0x29, 0x1E,   // 9  
+   34           0x00, 0x36, 0x36, 0x00, 0x00,   // :  
+   35           0x00, 0x56, 0x36, 0x00, 0x00,   // ;  
+   36           0x08, 0x14, 0x22, 0x41, 0x00,   // <  
+   37           0x14, 0x14, 0x14, 0x14, 0x14,   // =  
+   38           0x00, 0x41, 0x22, 0x14, 0x08,   // >  
+   39           0x02, 0x01, 0x51, 0x09, 0x06,   // ?  
+   40           0x32, 0x49, 0x59, 0x51, 0x3E,   // @  
+   41           0x7C, 0x12, 0x11, 0x12, 0x7C,   // A  
+   42           0x7F, 0x49, 0x49, 0x49, 0x36,   // B  
+   43           0x3E, 0x41, 0x41, 0x41, 0x22,   // C  
+   44           0x7F, 0x41, 0x41, 0x22, 0x1C,   // D  
+   45           0x7F, 0x49, 0x49, 0x49, 0x41,   // E  
+   46           0x7F, 0x09, 0x09, 0x09, 0x01,   // F  
+   47           0x3E, 0x41, 0x49, 0x49, 0x7A,   // G  
+   48           0x7F, 0x08, 0x08, 0x08, 0x7F,   // H  
+   49           0x00, 0x41, 0x7F, 0x41, 0x00,   // I  
+   50           0x20, 0x40, 0x41, 0x3F, 0x01,   // J  
+   51           0x7F, 0x08, 0x14, 0x22, 0x41,   // K  
+   52           0x7F, 0x40, 0x40, 0x40, 0x40,   // L  
+   53           0x7F, 0x02, 0x0C, 0x02, 0x7F,   // M  
+   54           0x7F, 0x04, 0x08, 0x10, 0x7F,   // N  
+   55           0x3E, 0x41, 0x41, 0x41, 0x3E,   // O  
+   56           0x7F, 0x09, 0x09, 0x09, 0x06,   // P  
+   57           0x3E, 0x41, 0x51, 0x21, 0x5E,   // Q  
+   58           0x7F, 0x09, 0x19, 0x29, 0x46,   // R  
+   59           0x46, 0x49, 0x49, 0x49, 0x31,   // S  
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 2   
+
+   60           0x01, 0x01, 0x7F, 0x01, 0x01,   // T  
+   61           0x3F, 0x40, 0x40, 0x40, 0x3F,   // U  
+   62           0x1F, 0x20, 0x40, 0x20, 0x1F,   // V  
+   63           0x3F, 0x40, 0x38, 0x40, 0x3F,   // W  
+   64           0x63, 0x14, 0x08, 0x14, 0x63,   // X  
+   65           0x07, 0x08, 0x70, 0x08, 0x07,   // Y  
+   66           0x61, 0x51, 0x49, 0x45, 0x43,   // Z  
+   67           0x00, 0x7F, 0x41, 0x41, 0x00,   // [  
+   68           0x55, 0x2A, 0x55, 0x2A, 0x55,   // 55  
+   69           0x00, 0x41, 0x41, 0x7F, 0x00,   // ]  
+   70           0x04, 0x02, 0x01, 0x02, 0x04,   // ^  
+   71           0x40, 0x40, 0x40, 0x40, 0x40,   // _  
+   72           0x00, 0x01, 0x02, 0x04, 0x00,   // ’  
+   73           0x20, 0x54, 0x54, 0x54, 0x78,   // a  
+   74           0x7F, 0x48, 0x44, 0x44, 0x38,   // b  
+   75           0x38, 0x44, 0x44, 0x44, 0x20,   // c  
+   76           0x38, 0x44, 0x44, 0x48, 0x7F,   // d  
+   77           0x38, 0x54, 0x54, 0x54, 0x18,   // e  
+   78           0x08, 0x7E, 0x09, 0x01, 0x02,   // f  
+   79           0x18, 0xA4, 0xA4, 0xA4, 0x7C,   // g  
+   80           0x7F, 0x08, 0x04, 0x04, 0x78,   // h  
+   81           0x00, 0x44, 0x7D, 0x40, 0x00,   // i  
+   82           0x40, 0x80, 0x84, 0x7D, 0x00,   // j  
+   83           0x7F, 0x10, 0x28, 0x44, 0x00,   // k  
+   84           0x00, 0x41, 0x7F, 0x40, 0x00,   // l  
+   85           0x7C, 0x04, 0x18, 0x04, 0x78,   // m  
+   86           0x7C, 0x08, 0x04, 0x04, 0x78,   // n  
+   87           0x38, 0x44, 0x44, 0x44, 0x38,   // o  
+   88           0xFC, 0x24, 0x24, 0x24, 0x18,   // p  
+   89           0x18, 0x24, 0x24, 0x18, 0xFC,   // q  
+   90           0x7C, 0x08, 0x04, 0x04, 0x08,   // r  
+   91           0x48, 0x54, 0x54, 0x54, 0x20,   // s  
+   92           0x04, 0x3F, 0x44, 0x40, 0x20,   // t  
+   93           0x3C, 0x40, 0x40, 0x20, 0x7C,   // u  
+   94           0x1C, 0x20, 0x40, 0x20, 0x1C,   // v  
+   95           0x3C, 0x40, 0x30, 0x40, 0x3C,   // w  
+   96           0x44, 0x28, 0x10, 0x28, 0x44,   // x  
+   97           0x1C, 0xA0, 0xA0, 0xA0, 0x7C,   // y  
+   98           0x44, 0x64, 0x54, 0x4C, 0x44,   // z  
+   99           0x00, 0x08, 0x36, 0x41, 0x00,   // {  
+  100           0x00, 0x00, 0x7F, 0x00, 0x00,   // |  
+  101           0x00, 0x41, 0x36, 0x08, 0x00,   // }  
+  102           0x08, 0x10, 0x08, 0x04, 0x08    // ~  
+  103          };
+  104          
+  105           
+  106          /********************************/
+  107          /* Write Data or Command to LCD */
+  108          /* D/C = "0" = Write Command    */
+  109          /* D/C = "1" = Write Display    */
+  110          /********************************/ 
+  111          void lcd_write_data(unsigned char DataByte) 
+  112          {                
+  113   1        LCD5110_DC_HIGH();                                            // Active DC = High("1"=Data)
+  114   1        LCD5110_SCE_LOW();
+  115   1      
+  116   1        SPI_Send(&DataByte,1);
+  117   1                                                      // Clear RxFIFO     
+  118   1        LCD5110_SCE_HIGH();
+  119   1      }    
+  120          
+  121          /********************************/
+  122          /* Write Data or Command to LCD */
+  123          /* D/C = "0" = Write Command    */
+  124          /* D/C = "1" = Write Display    */
+  125          /********************************/ 
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 3   
+
+  126          void lcd_write_command(unsigned char CommandByte) 
+  127          {                
+  128   1      
+  129   1        LCD5110_DC_LOW();                                             // Active DC = Low("0"=Command)
+  130   1        LCD5110_SCE_LOW();
+  131   1                                                      // Clear RxFIFO 
+  132   1        SPI_Send(&CommandByte,1);
+  133   1      
+  134   1        LCD5110_SCE_HIGH();
+  135   1      }    
+  136          
+  137          /**************************/
+  138          /* Initial LCD Nokia-5110 */
+  139          /**************************/          
+  140          void lcd_initial(void)      
+  141          {
+  142   1        PINSEL1 &= 0x3FFF33FF;                                        // Reset GPIO Pin Control Status Bit[15:4] 
+  143   1        
+  144   1        IODIR0  |= LCD5110_DC_PIN;                                    // D/C   = Output Control LCD Nokia-5110
+  145   1        IODIR0  |= LCD5110_RES_PIN;                                   // RES   = Output Control LCD Nokia-5110
+  146   1        IODIR0  |= LCD5110_SCE_PIN;
+  147   1      
+  148   1        LCD5110_RES_LOW();                                            // Active Reset
+  149   1        LCD5110_RES_HIGH();                                           // Normal Operation  
+  150   1        LCD5110_DC_HIGH();   
+  151   1        LCD5110_RES_LOW();                                            // Active Reset
+  152   1        LCD5110_RES_HIGH();                                           // Normal Operation
+  153   1      
+  154   1        lcd_write_command(32+1);                                      // Function Set = Extend Instruction(00100+PD,V,H=00100+0,0,1)
+  155   1        lcd_write_command(128+38);                                    // Set VOP(1+VOP[6..0] = 1+0100110)
+  156   1        lcd_write_command(4+3);                                       // Temp Control(000001+TC1,TC0=000001+1,1)
+  157   1        lcd_write_command(16+3);                                      // Bias System(00010,BS2,BS1,BS0=00010,0,1,1)
+  158   1      
+  159   1        lcd_write_command(32+0);                                      // Function Set = Basic Instruction(00100+PD,V,H = 00100+0,0,0)
+  160   1        lcd_write_command(12);                                        // Display Control = Normal Mode(00001D0E=00001100)
+  161   1      }   
+  162          
+  163          /****************************/
+  164          /* Clear Screen Display LCD */
+  165          /****************************/
+  166          void lcd_clear_screen(void)       
+  167          {  
+  168   1        unsigned int  i=0;                                            // Memory Display(Byte) Counter
+  169   1          
+  170   1        lcd_write_command(128+0);                                     // Set X Position = 0(0..83)
+  171   1        lcd_write_command(64+0);                                      // Set Y Position = 0(0..5)
+  172   1        
+  173   1        for(i=0;i<504;i++)                                            // All Display RAM = 504 Byte  
+  174   1        lcd_write_data(0);                                            // Clear Screen Display
+  175   1      }   
+  176          
+  177          /****************************/
+  178          /* Fill Picture Display LCD */
+  179          /****************************/
+  180          void lcd_fill_picture(unsigned char picture[])       
+  181          {  
+  182   1        unsigned int  i=0;                                                    // Memory Display(Byte) Counter
+  183   1          
+  184   1        lcd_write_command(128+0);                                             // Set X Position = 0(0..83)
+  185   1        lcd_write_command(64+0);                                              // Set Y Position = 0(0..5)
+  186   1                                                                          
+  187   1        for(i=0;i<504;i++)                                                    // All Display RAM = 504 Byte  
+  188   1        lcd_write_data(picture[i]);                                           // Fill Picture Display
+  189   1      }      
+  190          
+  191          /***************************/
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 4   
+
+  192          /* Set Cursor X,Y Position */
+  193          /* X[0-83]: 84 Column Data */
+  194          /* Y[0-5] : 6 Row(48 Dot)  */
+  195          /***************************/
+  196          void lcd_gotoxy(unsigned char x,unsigned char y)  
+  197          {  
+  198   1        lcd_write_command(128+x);                                     // Set X Position(1+x6,x5,x4,x3,x2,x1,x0)
+  199   1        lcd_write_command(64+y);                                      // Set Y Position(01000+y2,y1,y0)
+  200   1      }  
+  201          
+  202          /***************************/
+  203          /* Put Char to LCD Display */
+  204          /***************************/
+  205          void lcd_put_char(unsigned char character) 
+  206          {  
+  207   1        unsigned char font_size_count = 0;                            // Font Size Counter
+  208   1        unsigned int  font_data_index;                                // Font Data Pointer
+  209   1      
+  210   1        font_data_index = character-32;                               // Skip 0x00..0x1F Font Code
+  211   1        font_data_index = font_data_index*5;                          // 5 Byte / Font       
+  212   1        
+  213   1        while(font_size_count<5)                                      // Get 5 Byte Font & Display on LCD
+  214   1        {                                                     
+  215   2          lcd_write_data(tab_font[font_data_index]);                  // Get Data of Font From Table & Write LCD
+  216   2          font_size_count++;                                          // Next Byte Counter
+  217   2          font_data_index++;                                          // Next Byte Pointer
+  218   2        }  
+  219   1        lcd_write_data(0);                                            // 1 Pixel Dot Space
+  220   1      }    
+  221          
+  222          /*******************************/
+  223          /* Print String to LCD Display */
+  224          /*******************************/
+  225          void lcd_print_string(unsigned char *string , unsigned char CharCount) 
+  226          {          
+  227   1        unsigned char i=0;                                            // Dummy Character Count
+  228   1      
+  229   1        while(i<CharCount)  
+  230   1        {    
+  231   2          lcd_put_char(string[i]);                                    // Print 1-Char to LCD
+  232   2          i++;                                                        // Next Character Print
+  233   2        }  
+  234   1      }
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 5   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+
+*** EXTERNALS:
+ EXTERN CODE16 (SPI_Send?T)
+
+
+
+*** PUBLICS:
+ PUBLIC         lcd_write_data?T
+ PUBLIC         lcd_write_command?T
+ PUBLIC         lcd_initial?T
+ PUBLIC         lcd_clear_screen?T
+ PUBLIC         lcd_fill_picture?T
+ PUBLIC         lcd_gotoxy?T
+ PUBLIC         lcd_put_char?T
+ PUBLIC         lcd_print_string?T
+ PUBLIC         tab_font
+
+
+
+*** DATA SEGMENT '?CON?LCD':
+ 00000000          tab_font:
+ 00000000           BEGIN_INIT
+ 00000000  00        DB          0x0
+ 00000001  00        DB          0x0
+ 00000002  00        DB          0x0
+ 00000003  00        DB          0x0
+ 00000004  00        DB          0x0
+ 00000005  00        DB          0x0
+ 00000006  00        DB          0x0
+ 00000007  2F        DB          0x2F
+ 00000008  00        DB          0x0
+ 00000009  00        DB          0x0
+ 0000000A  00        DB          0x0
+ 0000000B  07        DB          0x7
+ 0000000C  00        DB          0x0
+ 0000000D  07        DB          0x7
+ 0000000E  00        DB          0x0
+ 0000000F  14        DB          0x14
+ 00000010  7F        DB          0x7F
+ 00000011  14        DB          0x14
+ 00000012  7F        DB          0x7F
+ 00000013  14        DB          0x14
+ 00000014  24        DB          0x24
+ 00000015  2A        DB          0x2A
+ 00000016  7F        DB          0x7F
+ 00000017  2A        DB          0x2A
+ 00000018  12        DB          0x12
+ 00000019  62        DB          0x62
+ 0000001A  64        DB          0x64
+ 0000001B  08        DB          0x8
+ 0000001C  13        DB          0x13
+ 0000001D  23        DB          0x23
+ 0000001E  36        DB          0x36
+ 0000001F  49        DB          0x49
+ 00000020  55        DB          0x55
+ 00000021  22        DB          0x22
+ 00000022  50        DB          0x50
+ 00000023  00        DB          0x0
+ 00000024  05        DB          0x5
+ 00000025  03        DB          0x3
+ 00000026  00        DB          0x0
+ 00000027  00        DB          0x0
+ 00000028  00        DB          0x0
+ 00000029  1C        DB          0x1C
+ 0000002A  22        DB          0x22
+ 0000002B  41        DB          0x41
+ 0000002C  00        DB          0x0
+ 0000002D  00        DB          0x0
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 6   
+
+ 0000002E  41        DB          0x41
+ 0000002F  22        DB          0x22
+ 00000030  1C        DB          0x1C
+ 00000031  00        DB          0x0
+ 00000032  14        DB          0x14
+ 00000033  08        DB          0x8
+ 00000034  3E        DB          0x3E
+ 00000035  08        DB          0x8
+ 00000036  14        DB          0x14
+ 00000037  08        DB          0x8
+ 00000038  08        DB          0x8
+ 00000039  3E        DB          0x3E
+ 0000003A  08        DB          0x8
+ 0000003B  08        DB          0x8
+ 0000003C  00        DB          0x0
+ 0000003D  00        DB          0x0
+ 0000003E  A0        DB          0xA0
+ 0000003F  60        DB          0x60
+ 00000040  00        DB          0x0
+ 00000041  08        DB          0x8
+ 00000042  08        DB          0x8
+ 00000043  08        DB          0x8
+ 00000044  08        DB          0x8
+ 00000045  08        DB          0x8
+ 00000046  00        DB          0x0
+ 00000047  60        DB          0x60
+ 00000048  60        DB          0x60
+ 00000049  00        DB          0x0
+ 0000004A  00        DB          0x0
+ 0000004B  20        DB          0x20
+ 0000004C  10        DB          0x10
+ 0000004D  08        DB          0x8
+ 0000004E  04        DB          0x4
+ 0000004F  02        DB          0x2
+ 00000050  3E        DB          0x3E
+ 00000051  51        DB          0x51
+ 00000052  49        DB          0x49
+ 00000053  45        DB          0x45
+ 00000054  3E        DB          0x3E
+ 00000055  00        DB          0x0
+ 00000056  42        DB          0x42
+ 00000057  7F        DB          0x7F
+ 00000058  40        DB          0x40
+ 00000059  00        DB          0x0
+ 0000005A  42        DB          0x42
+ 0000005B  61        DB          0x61
+ 0000005C  51        DB          0x51
+ 0000005D  49        DB          0x49
+ 0000005E  46        DB          0x46
+ 0000005F  21        DB          0x21
+ 00000060  41        DB          0x41
+ 00000061  45        DB          0x45
+ 00000062  4B        DB          0x4B
+ 00000063  31        DB          0x31
+ 00000064  18        DB          0x18
+ 00000065  14        DB          0x14
+ 00000066  12        DB          0x12
+ 00000067  7F        DB          0x7F
+ 00000068  10        DB          0x10
+ 00000069  27        DB          0x27
+ 0000006A  45        DB          0x45
+ 0000006B  45        DB          0x45
+ 0000006C  45        DB          0x45
+ 0000006D  39        DB          0x39
+ 0000006E  3C        DB          0x3C
+ 0000006F  4A        DB          0x4A
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 7   
+
+ 00000070  49        DB          0x49
+ 00000071  49        DB          0x49
+ 00000072  30        DB          0x30
+ 00000073  01        DB          0x1
+ 00000074  71        DB          0x71
+ 00000075  09        DB          0x9
+ 00000076  05        DB          0x5
+ 00000077  03        DB          0x3
+ 00000078  36        DB          0x36
+ 00000079  49        DB          0x49
+ 0000007A  49        DB          0x49
+ 0000007B  49        DB          0x49
+ 0000007C  36        DB          0x36
+ 0000007D  06        DB          0x6
+ 0000007E  49        DB          0x49
+ 0000007F  49        DB          0x49
+ 00000080  29        DB          0x29
+ 00000081  1E        DB          0x1E
+ 00000082  00        DB          0x0
+ 00000083  36        DB          0x36
+ 00000084  36        DB          0x36
+ 00000085  00        DB          0x0
+ 00000086  00        DB          0x0
+ 00000087  00        DB          0x0
+ 00000088  56        DB          0x56
+ 00000089  36        DB          0x36
+ 0000008A  00        DB          0x0
+ 0000008B  00        DB          0x0
+ 0000008C  08        DB          0x8
+ 0000008D  14        DB          0x14
+ 0000008E  22        DB          0x22
+ 0000008F  41        DB          0x41
+ 00000090  00        DB          0x0
+ 00000091  14        DB          0x14
+ 00000092  14        DB          0x14
+ 00000093  14        DB          0x14
+ 00000094  14        DB          0x14
+ 00000095  14        DB          0x14
+ 00000096  00        DB          0x0
+ 00000097  41        DB          0x41
+ 00000098  22        DB          0x22
+ 00000099  14        DB          0x14
+ 0000009A  08        DB          0x8
+ 0000009B  02        DB          0x2
+ 0000009C  01        DB          0x1
+ 0000009D  51        DB          0x51
+ 0000009E  09        DB          0x9
+ 0000009F  06        DB          0x6
+ 000000A0  32        DB          0x32
+ 000000A1  49        DB          0x49
+ 000000A2  59        DB          0x59
+ 000000A3  51        DB          0x51
+ 000000A4  3E        DB          0x3E
+ 000000A5  7C        DB          0x7C
+ 000000A6  12        DB          0x12
+ 000000A7  11        DB          0x11
+ 000000A8  12        DB          0x12
+ 000000A9  7C        DB          0x7C
+ 000000AA  7F        DB          0x7F
+ 000000AB  49        DB          0x49
+ 000000AC  49        DB          0x49
+ 000000AD  49        DB          0x49
+ 000000AE  36        DB          0x36
+ 000000AF  3E        DB          0x3E
+ 000000B0  41        DB          0x41
+ 000000B1  41        DB          0x41
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 8   
+
+ 000000B2  41        DB          0x41
+ 000000B3  22        DB          0x22
+ 000000B4  7F        DB          0x7F
+ 000000B5  41        DB          0x41
+ 000000B6  41        DB          0x41
+ 000000B7  22        DB          0x22
+ 000000B8  1C        DB          0x1C
+ 000000B9  7F        DB          0x7F
+ 000000BA  49        DB          0x49
+ 000000BB  49        DB          0x49
+ 000000BC  49        DB          0x49
+ 000000BD  41        DB          0x41
+ 000000BE  7F        DB          0x7F
+ 000000BF  09        DB          0x9
+ 000000C0  09        DB          0x9
+ 000000C1  09        DB          0x9
+ 000000C2  01        DB          0x1
+ 000000C3  3E        DB          0x3E
+ 000000C4  41        DB          0x41
+ 000000C5  49        DB          0x49
+ 000000C6  49        DB          0x49
+ 000000C7  7A        DB          0x7A
+ 000000C8  7F        DB          0x7F
+ 000000C9  08        DB          0x8
+ 000000CA  08        DB          0x8
+ 000000CB  08        DB          0x8
+ 000000CC  7F        DB          0x7F
+ 000000CD  00        DB          0x0
+ 000000CE  41        DB          0x41
+ 000000CF  7F        DB          0x7F
+ 000000D0  41        DB          0x41
+ 000000D1  00        DB          0x0
+ 000000D2  20        DB          0x20
+ 000000D3  40        DB          0x40
+ 000000D4  41        DB          0x41
+ 000000D5  3F        DB          0x3F
+ 000000D6  01        DB          0x1
+ 000000D7  7F        DB          0x7F
+ 000000D8  08        DB          0x8
+ 000000D9  14        DB          0x14
+ 000000DA  22        DB          0x22
+ 000000DB  41        DB          0x41
+ 000000DC  7F        DB          0x7F
+ 000000DD  40        DB          0x40
+ 000000DE  40        DB          0x40
+ 000000DF  40        DB          0x40
+ 000000E0  40        DB          0x40
+ 000000E1  7F        DB          0x7F
+ 000000E2  02        DB          0x2
+ 000000E3  0C        DB          0xC
+ 000000E4  02        DB          0x2
+ 000000E5  7F        DB          0x7F
+ 000000E6  7F        DB          0x7F
+ 000000E7  04        DB          0x4
+ 000000E8  08        DB          0x8
+ 000000E9  10        DB          0x10
+ 000000EA  7F        DB          0x7F
+ 000000EB  3E        DB          0x3E
+ 000000EC  41        DB          0x41
+ 000000ED  41        DB          0x41
+ 000000EE  41        DB          0x41
+ 000000EF  3E        DB          0x3E
+ 000000F0  7F        DB          0x7F
+ 000000F1  09        DB          0x9
+ 000000F2  09        DB          0x9
+ 000000F3  09        DB          0x9
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 9   
+
+ 000000F4  06        DB          0x6
+ 000000F5  3E        DB          0x3E
+ 000000F6  41        DB          0x41
+ 000000F7  51        DB          0x51
+ 000000F8  21        DB          0x21
+ 000000F9  5E        DB          0x5E
+ 000000FA  7F        DB          0x7F
+ 000000FB  09        DB          0x9
+ 000000FC  19        DB          0x19
+ 000000FD  29        DB          0x29
+ 000000FE  46        DB          0x46
+ 000000FF  46        DB          0x46
+ 00000100  49        DB          0x49
+ 00000101  49        DB          0x49
+ 00000102  49        DB          0x49
+ 00000103  31        DB          0x31
+ 00000104  01        DB          0x1
+ 00000105  01        DB          0x1
+ 00000106  7F        DB          0x7F
+ 00000107  01        DB          0x1
+ 00000108  01        DB          0x1
+ 00000109  3F        DB          0x3F
+ 0000010A  40        DB          0x40
+ 0000010B  40        DB          0x40
+ 0000010C  40        DB          0x40
+ 0000010D  3F        DB          0x3F
+ 0000010E  1F        DB          0x1F
+ 0000010F  20        DB          0x20
+ 00000110  40        DB          0x40
+ 00000111  20        DB          0x20
+ 00000112  1F        DB          0x1F
+ 00000113  3F        DB          0x3F
+ 00000114  40        DB          0x40
+ 00000115  38        DB          0x38
+ 00000116  40        DB          0x40
+ 00000117  3F        DB          0x3F
+ 00000118  63        DB          0x63
+ 00000119  14        DB          0x14
+ 0000011A  08        DB          0x8
+ 0000011B  14        DB          0x14
+ 0000011C  63        DB          0x63
+ 0000011D  07        DB          0x7
+ 0000011E  08        DB          0x8
+ 0000011F  70        DB          0x70
+ 00000120  08        DB          0x8
+ 00000121  07        DB          0x7
+ 00000122  61        DB          0x61
+ 00000123  51        DB          0x51
+ 00000124  49        DB          0x49
+ 00000125  45        DB          0x45
+ 00000126  43        DB          0x43
+ 00000127  00        DB          0x0
+ 00000128  7F        DB          0x7F
+ 00000129  41        DB          0x41
+ 0000012A  41        DB          0x41
+ 0000012B  00        DB          0x0
+ 0000012C  55        DB          0x55
+ 0000012D  2A        DB          0x2A
+ 0000012E  55        DB          0x55
+ 0000012F  2A        DB          0x2A
+ 00000130  55        DB          0x55
+ 00000131  00        DB          0x0
+ 00000132  41        DB          0x41
+ 00000133  41        DB          0x41
+ 00000134  7F        DB          0x7F
+ 00000135  00        DB          0x0
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 10  
+
+ 00000136  04        DB          0x4
+ 00000137  02        DB          0x2
+ 00000138  01        DB          0x1
+ 00000139  02        DB          0x2
+ 0000013A  04        DB          0x4
+ 0000013B  40        DB          0x40
+ 0000013C  40        DB          0x40
+ 0000013D  40        DB          0x40
+ 0000013E  40        DB          0x40
+ 0000013F  40        DB          0x40
+ 00000140  00        DB          0x0
+ 00000141  01        DB          0x1
+ 00000142  02        DB          0x2
+ 00000143  04        DB          0x4
+ 00000144  00        DB          0x0
+ 00000145  20        DB          0x20
+ 00000146  54        DB          0x54
+ 00000147  54        DB          0x54
+ 00000148  54        DB          0x54
+ 00000149  78        DB          0x78
+ 0000014A  7F        DB          0x7F
+ 0000014B  48        DB          0x48
+ 0000014C  44        DB          0x44
+ 0000014D  44        DB          0x44
+ 0000014E  38        DB          0x38
+ 0000014F  38        DB          0x38
+ 00000150  44        DB          0x44
+ 00000151  44        DB          0x44
+ 00000152  44        DB          0x44
+ 00000153  20        DB          0x20
+ 00000154  38        DB          0x38
+ 00000155  44        DB          0x44
+ 00000156  44        DB          0x44
+ 00000157  48        DB          0x48
+ 00000158  7F        DB          0x7F
+ 00000159  38        DB          0x38
+ 0000015A  54        DB          0x54
+ 0000015B  54        DB          0x54
+ 0000015C  54        DB          0x54
+ 0000015D  18        DB          0x18
+ 0000015E  08        DB          0x8
+ 0000015F  7E        DB          0x7E
+ 00000160  09        DB          0x9
+ 00000161  01        DB          0x1
+ 00000162  02        DB          0x2
+ 00000163  18        DB          0x18
+ 00000164  A4        DB          0xA4
+ 00000165  A4        DB          0xA4
+ 00000166  A4        DB          0xA4
+ 00000167  7C        DB          0x7C
+ 00000168  7F        DB          0x7F
+ 00000169  08        DB          0x8
+ 0000016A  04        DB          0x4
+ 0000016B  04        DB          0x4
+ 0000016C  78        DB          0x78
+ 0000016D  00        DB          0x0
+ 0000016E  44        DB          0x44
+ 0000016F  7D        DB          0x7D
+ 00000170  40        DB          0x40
+ 00000171  00        DB          0x0
+ 00000172  40        DB          0x40
+ 00000173  80        DB          0x80
+ 00000174  84        DB          0x84
+ 00000175  7D        DB          0x7D
+ 00000176  00        DB          0x0
+ 00000177  7F        DB          0x7F
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 11  
+
+ 00000178  10        DB          0x10
+ 00000179  28        DB          0x28
+ 0000017A  44        DB          0x44
+ 0000017B  00        DB          0x0
+ 0000017C  00        DB          0x0
+ 0000017D  41        DB          0x41
+ 0000017E  7F        DB          0x7F
+ 0000017F  40        DB          0x40
+ 00000180  00        DB          0x0
+ 00000181  7C        DB          0x7C
+ 00000182  04        DB          0x4
+ 00000183  18        DB          0x18
+ 00000184  04        DB          0x4
+ 00000185  78        DB          0x78
+ 00000186  7C        DB          0x7C
+ 00000187  08        DB          0x8
+ 00000188  04        DB          0x4
+ 00000189  04        DB          0x4
+ 0000018A  78        DB          0x78
+ 0000018B  38        DB          0x38
+ 0000018C  44        DB          0x44
+ 0000018D  44        DB          0x44
+ 0000018E  44        DB          0x44
+ 0000018F  38        DB          0x38
+ 00000190  FC        DB          0xFC
+ 00000191  24        DB          0x24
+ 00000192  24        DB          0x24
+ 00000193  24        DB          0x24
+ 00000194  18        DB          0x18
+ 00000195  18        DB          0x18
+ 00000196  24        DB          0x24
+ 00000197  24        DB          0x24
+ 00000198  18        DB          0x18
+ 00000199  FC        DB          0xFC
+ 0000019A  7C        DB          0x7C
+ 0000019B  08        DB          0x8
+ 0000019C  04        DB          0x4
+ 0000019D  04        DB          0x4
+ 0000019E  08        DB          0x8
+ 0000019F  48        DB          0x48
+ 000001A0  54        DB          0x54
+ 000001A1  54        DB          0x54
+ 000001A2  54        DB          0x54
+ 000001A3  20        DB          0x20
+ 000001A4  04        DB          0x4
+ 000001A5  3F        DB          0x3F
+ 000001A6  44        DB          0x44
+ 000001A7  40        DB          0x40
+ 000001A8  20        DB          0x20
+ 000001A9  3C        DB          0x3C
+ 000001AA  40        DB          0x40
+ 000001AB  40        DB          0x40
+ 000001AC  20        DB          0x20
+ 000001AD  7C        DB          0x7C
+ 000001AE  1C        DB          0x1C
+ 000001AF  20        DB          0x20
+ 000001B0  40        DB          0x40
+ 000001B1  20        DB          0x20
+ 000001B2  1C        DB          0x1C
+ 000001B3  3C        DB          0x3C
+ 000001B4  40        DB          0x40
+ 000001B5  30        DB          0x30
+ 000001B6  40        DB          0x40
+ 000001B7  3C        DB          0x3C
+ 000001B8  44        DB          0x44
+ 000001B9  28        DB          0x28
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 12  
+
+ 000001BA  10        DB          0x10
+ 000001BB  28        DB          0x28
+ 000001BC  44        DB          0x44
+ 000001BD  1C        DB          0x1C
+ 000001BE  A0        DB          0xA0
+ 000001BF  A0        DB          0xA0
+ 000001C0  A0        DB          0xA0
+ 000001C1  7C        DB          0x7C
+ 000001C2  44        DB          0x44
+ 000001C3  64        DB          0x64
+ 000001C4  54        DB          0x54
+ 000001C5  4C        DB          0x4C
+ 000001C6  44        DB          0x44
+ 000001C7  00        DB          0x0
+ 000001C8  08        DB          0x8
+ 000001C9  36        DB          0x36
+ 000001CA  41        DB          0x41
+ 000001CB  00        DB          0x0
+ 000001CC  00        DB          0x0
+ 000001CD  00        DB          0x0
+ 000001CE  7F        DB          0x7F
+ 000001CF  00        DB          0x0
+ 000001D0  00        DB          0x0
+ 000001D1  00        DB          0x0
+ 000001D2  41        DB          0x41
+ 000001D3  36        DB          0x36
+ 000001D4  08        DB          0x8
+ 000001D5  00        DB          0x0
+ 000001D6  08        DB          0x8
+ 000001D7  10        DB          0x10
+ 000001D8  08        DB          0x8
+ 000001D9  04        DB          0x4
+ 000001DA  08        DB          0x8
+ 000001DB           END_INIT
+
+
+
+*** CODE SEGMENT '?PR?lcd_write_data?T?LCD':
+  111: void lcd_write_data(unsigned char DataByte) 
+ 00000000  B501      PUSH        {R0,LR}
+  113:   LCD5110_DC_HIGH();                                            // Active DC = High("1"=Data)
+ 00000002  4800      LDR         R2,=0x80000000
+ 00000004  4800      LDR         R0,=0xE0028004
+ 00000006  6801      LDR         R1,[R0,#0x0]
+ 00000008  4311      ORR         R1,R2
+ 0000000A  6001      STR         R1,[R0,#0x0]
+  114:   LCD5110_SCE_LOW();
+ 0000000C  4800      LDR         R2,=0x200000
+ 0000000E  4800      LDR         R0,=0xE002800C
+ 00000010  6801      LDR         R1,[R0,#0x0]
+ 00000012  4311      ORR         R1,R2
+ 00000014  6001      STR         R1,[R0,#0x0]
+  116:   SPI_Send(&DataByte,1);
+ 00000016  A800      ADD         R0,R13,#0x0
+ 00000018  2101      MOV         R1,#0x1
+ 0000001A  F7FF      BL          SPI_Send?T  ; T=0x0001  (1)
+ 0000001C  FFF1      BL          SPI_Send?T  ; T=0x0001  (2)
+  118:   LCD5110_SCE_HIGH();
+ 0000001E  4800      LDR         R2,=0x200000
+ 00000020  4800      LDR         R0,=0xE0028004
+ 00000022  6801      LDR         R1,[R0,#0x0]
+ 00000024  4311      ORR         R1,R2
+ 00000026  6001      STR         R1,[R0,#0x0]
+  119: }    
+ 00000028  B001      ADD         R13,#0x4
+ 0000002A  BC08      POP         {R3}
+ 0000002C  4718      BX          R3
+ 0000002E          ENDP ; 'lcd_write_data?T'
+
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 13  
+
+
+*** CODE SEGMENT '?PR?lcd_write_command?T?LCD':
+  126: void lcd_write_command(unsigned char CommandByte) 
+ 00000000  B501      PUSH        {R0,LR}
+  129:   LCD5110_DC_LOW();                                             // Active DC = Low("0"=Command)
+ 00000002  4800      LDR         R2,=0x80000000
+ 00000004  4800      LDR         R0,=0xE002800C
+ 00000006  6801      LDR         R1,[R0,#0x0]
+ 00000008  4311      ORR         R1,R2
+ 0000000A  6001      STR         R1,[R0,#0x0]
+  130:   LCD5110_SCE_LOW();
+ 0000000C  4800      LDR         R2,=0x200000
+ 0000000E  4800      LDR         R0,=0xE002800C
+ 00000010  6801      LDR         R1,[R0,#0x0]
+ 00000012  4311      ORR         R1,R2
+ 00000014  6001      STR         R1,[R0,#0x0]
+  132:   SPI_Send(&CommandByte,1);
+ 00000016  A800      ADD         R0,R13,#0x0
+ 00000018  2101      MOV         R1,#0x1
+ 0000001A  F7FF      BL          SPI_Send?T  ; T=0x0001  (1)
+ 0000001C  FFF1      BL          SPI_Send?T  ; T=0x0001  (2)
+  134:   LCD5110_SCE_HIGH();
+ 0000001E  4800      LDR         R2,=0x200000
+ 00000020  4800      LDR         R0,=0xE0028004
+ 00000022  6801      LDR         R1,[R0,#0x0]
+ 00000024  4311      ORR         R1,R2
+ 00000026  6001      STR         R1,[R0,#0x0]
+  135: }    
+ 00000028  B001      ADD         R13,#0x4
+ 0000002A  BC08      POP         {R3}
+ 0000002C  4718      BX          R3
+ 0000002E          ENDP ; 'lcd_write_command?T'
+
+
+*** CODE SEGMENT '?PR?lcd_initial?T?LCD':
+  140: void lcd_initial(void)      
+ 00000000  B500      PUSH        {LR}
+  142:   PINSEL1 &= 0x3FFF33FF;                                        // Reset GPIO Pin Control Status Bit[15:4] 
+ 00000002  4800      LDR         R2,=0x3FFF33FF
+ 00000004  4800      LDR         R0,=0xE002C004
+ 00000006  6801      LDR         R1,[R0,#0x0]
+ 00000008  4011      AND         R1,R2
+ 0000000A  6001      STR         R1,[R0,#0x0]
+  144:   IODIR0  |= LCD5110_DC_PIN;                                    // D/C   = Output Control LCD Nokia-5110
+ 0000000C  4800      LDR         R2,=0x80000000
+ 0000000E  4800      LDR         R0,=0xE0028008
+ 00000010  6801      LDR         R1,[R0,#0x0]
+ 00000012  4311      ORR         R1,R2
+ 00000014  6001      STR         R1,[R0,#0x0]
+  145:   IODIR0  |= LCD5110_RES_PIN;                                   // RES   = Output Control LCD Nokia-5110
+ 00000016  4800      LDR         R2,=0x800000
+ 00000018  4800      LDR         R0,=0xE0028008
+ 0000001A  6801      LDR         R1,[R0,#0x0]
+ 0000001C  4311      ORR         R1,R2
+ 0000001E  6001      STR         R1,[R0,#0x0]
+  146:   IODIR0  |= LCD5110_SCE_PIN;
+ 00000020  4800      LDR         R2,=0x200000
+ 00000022  4800      LDR         R0,=0xE0028008
+ 00000024  6801      LDR         R1,[R0,#0x0]
+ 00000026  4311      ORR         R1,R2
+ 00000028  6001      STR         R1,[R0,#0x0]
+  148:   LCD5110_RES_LOW();                                            // Active Reset
+ 0000002A  4800      LDR         R2,=0x800000
+ 0000002C  4800      LDR         R0,=0xE002800C
+ 0000002E  6801      LDR         R1,[R0,#0x0]
+ 00000030  4311      ORR         R1,R2
+ 00000032  6001      STR         R1,[R0,#0x0]
+  149:   LCD5110_RES_HIGH();                                           // Normal Operation  
+ 00000034  4800      LDR         R2,=0x800000
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 14  
+
+ 00000036  4800      LDR         R0,=0xE0028004
+ 00000038  6801      LDR         R1,[R0,#0x0]
+ 0000003A  4311      ORR         R1,R2
+ 0000003C  6001      STR         R1,[R0,#0x0]
+  150:   LCD5110_DC_HIGH();   
+ 0000003E  4800      LDR         R2,=0x80000000
+ 00000040  4800      LDR         R0,=0xE0028004
+ 00000042  6801      LDR         R1,[R0,#0x0]
+ 00000044  4311      ORR         R1,R2
+ 00000046  6001      STR         R1,[R0,#0x0]
+  151:   LCD5110_RES_LOW();                                            // Active Reset
+ 00000048  4800      LDR         R2,=0x800000
+ 0000004A  4800      LDR         R0,=0xE002800C
+ 0000004C  6801      LDR         R1,[R0,#0x0]
+ 0000004E  4311      ORR         R1,R2
+ 00000050  6001      STR         R1,[R0,#0x0]
+  152:   LCD5110_RES_HIGH();                                           // Normal Operation
+ 00000052  4800      LDR         R2,=0x800000
+ 00000054  4800      LDR         R0,=0xE0028004
+ 00000056  6801      LDR         R1,[R0,#0x0]
+ 00000058  4311      ORR         R1,R2
+ 0000005A  6001      STR         R1,[R0,#0x0]
+  154:   lcd_write_command(32+1);                                      // Function Set = Extend Instruction(00100+PD,V,H=00100+0,0,1)
+ 0000005C  2021      MOV         R0,#0x21
+ 0000005E  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000060  FFCF      BL          lcd_write_command?T  ; T=0x0001  (2)
+  155:   lcd_write_command(128+38);                                    // Set VOP(1+VOP[6..0] = 1+0100110)
+ 00000062  20A6      MOV         R0,#0xA6
+ 00000064  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000066  FFCC      BL          lcd_write_command?T  ; T=0x0001  (2)
+  156:   lcd_write_command(4+3);                                       // Temp Control(000001+TC1,TC0=000001+1,1)
+ 00000068  2007      MOV         R0,#0x7
+ 0000006A  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 0000006C  FFC9      BL          lcd_write_command?T  ; T=0x0001  (2)
+  157:   lcd_write_command(16+3);                                      // Bias System(00010,BS2,BS1,BS0=00010,0,1,1)
+ 0000006E  2013      MOV         R0,#0x13
+ 00000070  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000072  FFC6      BL          lcd_write_command?T  ; T=0x0001  (2)
+  159:   lcd_write_command(32+0);                                      // Function Set = Basic Instruction(00100+PD,V,H = 00100+0,0,0)
+ 00000074  2020      MOV         R0,#0x20
+ 00000076  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000078  FFC3      BL          lcd_write_command?T  ; T=0x0001  (2)
+  160:   lcd_write_command(12);                                        // Display Control = Normal Mode(00001D0E=00001100)
+ 0000007A  200C      MOV         R0,#0xC
+ 0000007C  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 0000007E  FFC0      BL          lcd_write_command?T  ; T=0x0001  (2)
+  161: }   
+ 00000080  BC08      POP         {R3}
+ 00000082  4718      BX          R3
+ 00000084          ENDP ; 'lcd_initial?T'
+
+
+*** CODE SEGMENT '?PR?lcd_clear_screen?T?LCD':
+  166: void lcd_clear_screen(void)       
+ 00000000  B510      PUSH        {R4,LR}
+  167: {  
+ 00000002            ; SCOPE-START
+  168:   unsigned int  i=0;                                            // Memory Display(Byte) Counter
+ 00000002  2400      MOV         R4,#0x0
+ 00000004  ---- Variable 'i' assigned to Register 'R4' ----
+  170:   lcd_write_command(128+0);                                     // Set X Position = 0(0..83)
+ 00000004  2080      MOV         R0,#0x80
+ 00000006  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000008  FFFB      BL          lcd_write_command?T  ; T=0x0001  (2)
+  171:   lcd_write_command(64+0);                                      // Set Y Position = 0(0..5)
+ 0000000A  2040      MOV         R0,#0x40
+ 0000000C  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 0000000E  FFF8      BL          lcd_write_command?T  ; T=0x0001  (2)
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 15  
+
+  173:   for(i=0;i<504;i++)                                            // All Display RAM = 504 Byte  
+ 00000010  2400      MOV         R4,#0x0
+ 00000012          L_4:
+  174:   lcd_write_data(0);                                            // Clear Screen Display
+ 00000012  2000      MOV         R0,#0x0
+ 00000014  F7FF      BL          lcd_write_data?T  ; T=0x0001  (1)
+ 00000016  FFF4      BL          lcd_write_data?T  ; T=0x0001  (2)
+ 00000018  3401      ADD         R4,#0x1
+ 0000001A  1C20      MOV         R0,R4 ; i
+ 0000001C  497E      LDR         R1,=0x1F8
+ 0000001E  4288      CMP         R0,R1 ; i
+ 00000020  D3F7      BCC         L_4  ; T=0x00000012
+ 00000022            ; SCOPE-END
+  175: }   
+ 00000022  BC10      POP         {R4}
+ 00000024  BC08      POP         {R3}
+ 00000026  4718      BX          R3
+ 00000028          ENDP ; 'lcd_clear_screen?T'
+
+
+*** CODE SEGMENT '?PR?lcd_fill_picture?T?LCD':
+  180: void lcd_fill_picture(unsigned char picture[])       
+ 00000000  B530      PUSH        {R4-R5,LR}
+ 00000002  1C05      MOV         R5,R0 ; picture
+ 00000004  ---- Variable 'picture' assigned to Register 'R5' ----
+  181: {  
+ 00000004            ; SCOPE-START
+  182:   unsigned int  i=0;                                                    // Memory Display(Byte) Counter
+ 00000004  2400      MOV         R4,#0x0
+ 00000006  ---- Variable 'i' assigned to Register 'R4' ----
+  184:   lcd_write_command(128+0);                                             // Set X Position = 0(0..83)
+ 00000006  2080      MOV         R0,#0x80
+ 00000008  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 0000000A  FFFA      BL          lcd_write_command?T  ; T=0x0001  (2)
+  185:   lcd_write_command(64+0);                                              // Set Y Position = 0(0..5)
+ 0000000C  2040      MOV         R0,#0x40
+ 0000000E  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000010  FFF7      BL          lcd_write_command?T  ; T=0x0001  (2)
+  187:   for(i=0;i<504;i++)                                                    // All Display RAM = 504 Byte  
+ 00000012  2400      MOV         R4,#0x0
+ 00000014          L_9:
+  188:   lcd_write_data(picture[i]);                                           // Fill Picture Display
+ 00000014  1C21      MOV         R1,R4 ; i
+ 00000016  1C28      MOV         R0,R5 ; picture
+ 00000018  5C40      LDRB        R0,[R0,R1]
+ 0000001A  F7FF      BL          lcd_write_data?T  ; T=0x0001  (1)
+ 0000001C  FFF1      BL          lcd_write_data?T  ; T=0x0001  (2)
+ 0000001E  3401      ADD         R4,#0x1
+ 00000020  1C20      MOV         R0,R4 ; i
+ 00000022  497E      LDR         R1,=0x1F8
+ 00000024  4288      CMP         R0,R1 ; i
+ 00000026  D3F5      BCC         L_9  ; T=0x00000014
+ 00000028            ; SCOPE-END
+  189: }      
+ 00000028  BC30      POP         {R4-R5}
+ 0000002A  BC08      POP         {R3}
+ 0000002C  4718      BX          R3
+ 0000002E          ENDP ; 'lcd_fill_picture?T'
+
+
+*** CODE SEGMENT '?PR?lcd_gotoxy?T?LCD':
+  196: void lcd_gotoxy(unsigned char x,unsigned char y)  
+ 00000000  B510      PUSH        {R4,LR}
+ 00000002  1C0C      MOV         R4,R1 ; y
+ 00000004  ---- Variable 'y' assigned to Register 'R4' ----
+ 00000004  1C01      MOV         R1,R0 ; x
+ 00000006  ---- Variable 'x' assigned to Register 'R1' ----
+  198:   lcd_write_command(128+x);                                     // Set X Position(1+x6,x5,x4,x3,x2,x1,x0)
+ 00000006  1C08      MOV         R0,R1 ; x
+ 00000008  0600      LSL         R0,R0,#0x18 ; x
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 16  
+
+ 0000000A  0E00      LSR         R0,R0,#0x18
+ 0000000C  3080      ADD         R0,#0x80
+ 0000000E  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 00000010  FFF7      BL          lcd_write_command?T  ; T=0x0001  (2)
+  199:   lcd_write_command(64+y);                                      // Set Y Position(01000+y2,y1,y0)
+ 00000012  1C20      MOV         R0,R4 ; y
+ 00000014  0600      LSL         R0,R0,#0x18 ; y
+ 00000016  0E00      LSR         R0,R0,#0x18
+ 00000018  3040      ADD         R0,#0x40
+ 0000001A  F7FF      BL          lcd_write_command?T  ; T=0x0001  (1)
+ 0000001C  FFF1      BL          lcd_write_command?T  ; T=0x0001  (2)
+  200: }  
+ 0000001E  BC10      POP         {R4}
+ 00000020  BC08      POP         {R3}
+ 00000022  4718      BX          R3
+ 00000024          ENDP ; 'lcd_gotoxy?T'
+
+
+*** CODE SEGMENT '?PR?lcd_put_char?T?LCD':
+  205: void lcd_put_char(unsigned char character) 
+ 00000000  B530      PUSH        {R4-R5,LR}
+ 00000002  1C01      MOV         R1,R0 ; character
+ 00000004  ---- Variable 'character' assigned to Register 'R1' ----
+  206: {  
+ 00000004            ; SCOPE-START
+  207:   unsigned char font_size_count = 0;                            // Font Size Counter
+ 00000004  2500      MOV         R5,#0x0
+ 00000006  ---- Variable 'font_size_count' assigned to Register 'R5' ----
+  210:   font_data_index = character-32;                               // Skip 0x00..0x1F Font Code
+ 00000006  1C08      MOV         R0,R1 ; character
+ 00000008  0604      LSL         R4,R0,#0x18 ; character
+ 0000000A  0E24      LSR         R4,R4,#0x18
+ 0000000C  3C20      SUB         R4,#0x20
+ 0000000E  ---- Variable 'font_data_index' assigned to Register 'R4' ----
+  211:   font_data_index = font_data_index*5;                          // 5 Byte / Font       
+ 0000000E  2005      MOV         R0,#0x5
+ 00000010  4344      MUL         R4,R0
+  213:   while(font_size_count<5)                                      // Get 5 Byte Font & Display on LCD
+ 00000012  E008      B           L_11  ; T=0x00000026
+ 00000014          L_13:
+  215:     lcd_write_data(tab_font[font_data_index]);                  // Get Data of Font From Table & Write LCD
+ 00000014  1C21      MOV         R1,R4 ; font_data_index
+ 00000016  4800      LDR         R0,=tab_font ; tab_font
+ 00000018  5C40      LDRB        R0,[R0,R1]
+ 0000001A  F7FF      BL          lcd_write_data?T  ; T=0x0001  (1)
+ 0000001C  FFF1      BL          lcd_write_data?T  ; T=0x0001  (2)
+  216:     font_size_count++;                                          // Next Byte Counter
+ 0000001E  3501      ADD         R5,#0x1
+ 00000020  062D      LSL         R5,R5,#0x18
+ 00000022  0E2D      LSR         R5,R5,#0x18
+  217:     font_data_index++;                                          // Next Byte Pointer
+ 00000024  3401      ADD         R4,#0x1
+  218:   }  
+ 00000026          L_11:
+ 00000026  1C28      MOV         R0,R5 ; font_size_count
+ 00000028  0600      LSL         R0,R0,#0x18 ; font_size_count
+ 0000002A  0E00      LSR         R0,R0,#0x18
+ 0000002C  2805      CMP         R0,#0x5
+ 0000002E  DBF1      BLT         L_13  ; T=0x00000014
+  219:   lcd_write_data(0);                                            // 1 Pixel Dot Space
+ 00000030  2000      MOV         R0,#0x0
+ 00000032  F7FF      BL          lcd_write_data?T  ; T=0x0001  (1)
+ 00000034  FFE5      BL          lcd_write_data?T  ; T=0x0001  (2)
+ 00000036            ; SCOPE-END
+  220: }    
+ 00000036  BC30      POP         {R4-R5}
+ 00000038  BC08      POP         {R3}
+ 0000003A  4718      BX          R3
+ARM COMPILER V2.32a,  LCD                                                                  18/05/08  02:36:15  PAGE 17  
+
+ 0000003C          ENDP ; 'lcd_put_char?T'
+
+
+*** CODE SEGMENT '?PR?lcd_print_string?T?LCD':
+  225: void lcd_print_string(unsigned char *string , unsigned char CharCount) 
+ 00000000  B570      PUSH        {R4-R6,LR}
+ 00000002  1C0E      MOV         R6,R1 ; CharCount
+ 00000004  ---- Variable 'CharCount' assigned to Register 'R6' ----
+ 00000004  1C05      MOV         R5,R0 ; string
+ 00000006  ---- Variable 'string' assigned to Register 'R5' ----
+  226: {          
+ 00000006            ; SCOPE-START
+  227:   unsigned char i=0;                                            // Dummy Character Count
+ 00000006  2400      MOV         R4,#0x0
+ 00000008  ---- Variable 'i' assigned to Register 'R4' ----
+  229:   while(i<CharCount)  
+ 00000008  E009      B           L_15  ; T=0x0000001E
+ 0000000A          L_17:
+  231:     lcd_put_char(string[i]);                                    // Print 1-Char to LCD
+ 0000000A  1C20      MOV         R0,R4 ; i
+ 0000000C  0601      LSL         R1,R0,#0x18 ; i
+ 0000000E  0E09      LSR         R1,R1,#0x18
+ 00000010  1C28      MOV         R0,R5 ; string
+ 00000012  5C40      LDRB        R0,[R0,R1]
+ 00000014  F7FF      BL          lcd_put_char?T  ; T=0x0001  (1)
+ 00000016  FFF4      BL          lcd_put_char?T  ; T=0x0001  (2)
+  232:     i++;                                                        // Next Character Print
+ 00000018  3401      ADD         R4,#0x1
+ 0000001A  0624      LSL         R4,R4,#0x18
+ 0000001C  0E24      LSR         R4,R4,#0x18
+  233:   }  
+ 0000001E          L_15:
+ 0000001E  1C30      MOV         R0,R6 ; CharCount
+ 00000020  0601      LSL         R1,R0,#0x18 ; CharCount
+ 00000022  0E09      LSR         R1,R1,#0x18
+ 00000024  1C20      MOV         R0,R4 ; i
+ 00000026  0600      LSL         R0,R0,#0x18 ; i
+ 00000028  0E00      LSR         R0,R0,#0x18
+ 0000002A  4288      CMP         R0,R1
+ 0000002C  D3ED      BCC         L_17  ; T=0x0000000A
+ 0000002E            ; SCOPE-END
+  234: }
+ 0000002E  BC70      POP         {R4-R6}
+ 00000030  BC08      POP         {R3}
+ 00000032  4718      BX          R3
+ 00000034          ENDP ; 'lcd_print_string?T'
+
+
+
+Module Information          Static
+----------------------------------
+  code size            =    ------
+  data size            =    ------
+  const size           =       475
+End of Module Information.
+
+
+ARM COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

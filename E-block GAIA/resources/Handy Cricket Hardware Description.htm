@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0049)http://handyboard.com/cricket/tech/hardware.shtml -->
+<HTML><HEAD><TITLE>Handy Cricket Hardware Description</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=windows-874">
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY>
+<H1><FONT face="Arial, Helvetica, sans serif">Handy Cricket Hardware 
+Description</FONT></H1>
+<P>This document presents an overview of the hardware design of the Handy 
+Cricket.</P>
+<P>The Handy Cricket's primary components are the following:</P>
+<UL>
+  <LI><B>PICmicro&reg; microprocessor.</B> The Handy Cricket is based on the 
+  PIC16C715, which includes 2048 bytes of one-time programmable ROM (burned with 
+  the Handy Cricket operating system), analog inputs, and digital I/O. The PIC 
+  is the “brain” of the Handy Cricket. 
+  <LI><B>Serial EEPROM memory for user programs.</B> Compiled user code is 
+  loaded into a 24LC32 memory chip, which provides 4096 bytes of non-volatile 
+  storage. 
+  <LI><B>IrDA communications chip.</B> Using the Sharp GP2W0001YP chip, the 
+  Handy Cricket implements bi-directional infrared communications for program 
+  download and inter-Cricket communications. This chip is an IrDA component, but 
+  the Handy Cricket uses its own modulation scheme, so the Cricket isn't 
+  compatible with conventional IrDA devices. 
+  <LI><B>Dual motor driver chip.</B> The Texas Instruments SN754410NE dual 
+  H-bridge motor driver allows the Handy Cricket to directly power two DC 
+  motors. 
+  <LI><B>Assorted I/O components.</B> The Handy Cricket includes two analog 
+  sensor ports, two bus expansion boards, a piezo beeper, a run status LED, and 
+  a run/stop pushbutton. </LI></UL>
+<P>Let's look at the Handy Cricket circuit design in detail. Here is the 
+schematic diagram: 
+<P align=center><IMG 
+src="Handy Cricket Hardware Description_files/cx11.gif"></P>
+<H2><FONT face="Arial, Helvetica, sans serif">Circuits in Detail</FONT></H2>
+<P>We will discuss the circuit based from the PICmicro&reg; PIC16C715, progressing 
+clockwise from pin 1 of the microprocessor.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">Serial EEPROM</FONT></H3>
+<P>Pins 1 and 2 of the PIC16C715 are connected to the clock and data pins of the 
+24LC32A, the 4096-byte serial EEPROM memory. The PIC communicates with the 
+24LC32A using the Philips i2c protocol, an industry standard inter-IC 
+communications method.</P>
+<P>The 24LC32A holds the compiled Logo program that is executed by the Handy 
+Cricket. Also, non-volatile data can be written to the memory by the user code. 
+Array data and recorded sensor data is stored in the memory along with the 
+executable Logo code.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">Run/Stop Button and Run Status 
+LED</FONT></H3>
+<P>Pin 3 of the PIC is multiplexed to control the Run Status LED and read the 
+Run/Stop pushbutton.</P>
+<P>The pin is driven low to turn on the Run Status LED (indicating that the 
+Handy Cricket is executing a Logo program). To check if the Run/Stop pushbutton 
+is pressed, the line is allowed to float; if it is read as low, then the button 
+is pressed.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">PIC Reset Pin</FONT></H3>
+<P>Pin 4 of the PIC is the microprocessor reset pin. It is permanently wired 
+high, allowing the processor to run normally at all times.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">PIC Ground Pin</FONT></H3>
+<P>Pin 5, Vss, is the microprocessor ground.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">IrDA Circuit</FONT></H3>
+<P>The Handy Cricket uses a Sharp GP2W00001YP IrDA transceiver for 
+communications. This is an IrDA component rated for communications up to 115 
+kbaud, but the Cricket uses its own byte-oriented modulation scheme which 
+provides an effective data rate of about 50 kbaud.</P>
+<P>There are several resistors and capacitors associated with the IrDA circuit, 
+implemented as per the data sheet recommendations. C1 and R4 provide the IrDA 
+part with a degree of isolation from fluctuations in the main logic power 
+supply.</P>
+<P>Pin 6/Port B0 of the PIC accepts the digital IR receive signal from the Sharp 
+component. This pin is the external interrupt pin, and the Cricket's software 
+uses an interrupt routine to implement the receive data processing.</P>
+<P>Pin 7/Port B1 is the digital transmit signal. R2 and C4 provide the 
+recommended method of interfacing this signal to the IrDA component. R3 limits 
+current through the transmit LED. Finally, R5 and LED5 provide a visual 
+indicator of transmit activity.
+<P>
+<H3><FONT face="Arial, Helvetica, sans serif">Bus Expansion Ports</FONT></H3>
+<P>Pin 8/Port B2 is the bi-directional Cricket bus signal. The Cricket bus is a 
+custom “one-wire” protocol that allows a master Cricket to communicate with a 
+collection of connected slave devices. For more details on the Cricket bus, see 
+<A 
+href="http://handyboard.com/cricket/tech/bus.shtml">http://handyboard.com/cricket/tech/bus.shtml</A>. 
+
+<H3><FONT face="Arial, Helvetica, sans serif">Piezo Beeper</FONT></H3>
+<P>Pin 9/Port B3 is the piezo output signal. The Cricket gives a “boot beep” 
+every time it's powered up; tones of varying pitch and duration may also be 
+generated under user program control.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">Motor Control Circuit</FONT></H3>
+<P>Pins 10 through 13/Port B4–7 are the motor control pins. The motor control 
+circuit is based on the Texas Instruments SN754410NE dual motor driver. </P>
+<P>The SN754410NE provides two “H-bridge” motor control circuits. Each H-bridge 
+has three inputs: left-side input, right-side input, and enable. When the left- 
+and right-side input pins are opposite values (10 or 01), and the enable is 
+high, then current flows through a motor connected to the drive pins.</P>
+<P>PIC pins 11 and 12 control the Cricket's motor A output; pins 10 and 13 
+control the motor B output. The enable signal for motor A is generated by OR'ing 
+the two motor A control signals together, using one of the OR gates provided by 
+U5. This circuit allows the Cricket to provide four operating modes to the 
+motor:</P>
+<UL>
+  <LI>If the two control pins are 0, the enable will be off, and the motor 
+  outputs are idle. 
+  <LI>If one output pin is high and the other is low, the enable will be on, and 
+  the H-bridge will drive the motor one way or the other. 
+  <LI>If both output pins are high, then the enable will be on, but both halves 
+  of the H-bridge outputs will be driven to the same voltage, and the motor will 
+  be actively braked. </LI></UL>
+<P>The SN754410NE chip has two power inputs: a logic supply (pin 16, Vcc1) and 
+the motor power supply (pin 8, Vcc2). The motor power supply is connected 
+directly to the battery, after the Cricket's main power switch. </P>
+<P>But the chip's logic supply is switched by a pair of OR gates! If both motors 
+are turned off, then then is no need to provide logic voltage to the motor chip. 
+The chip uses about 20 mA of current when it's sitting idle (motors off), so 
+removing the logic voltage provides a substantial current savings.</P>
+<P>Two of the four OR gates in the U5 package are used to switch logic power to 
+the motor chip itself. The two enable signals are OR'ed together to produce the 
+logic supply voltage. If either or both of the motors are enabled, the supply 
+voltage is provided. Gates U5a and U5b perform this OR function and are wired in 
+parallel, doubling the current available to the SN754410NE chip from the OR 
+gates.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">PIC Power Pin</FONT></H3>
+<P>Pin 14 is the PIC's power pin. The normal logic supply voltages is applied to 
+this pin.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">PIC Oscillator Pins</FONT></H3>
+<P>Pins 15 and 16 are the PIC oscillator pins. The Cricket uses a 4 MHz 
+oscillator, and the Cricket's firmware is based on the resulting 1 microsecond 
+instruction clock.</P>
+<H3><FONT face="Arial, Helvetica, sans serif">Analog Sensor Inputs</FONT></H3>
+<P>Pins 17 and 18/Port A0 and 1 are used as the Cricket's two analog sensor 
+inputs. The PIC provides an 8-bit digital-to-analog converter, allowing the 
+Cricket to convert sensor voltages to a numeric range of 0 to 255.</P>
+<HR>
+
+<ADDRESS>Last modified: Saturday, 23-Nov-2002 00:37:33 EST by fredm at-sign 
+handyboard dot com </ADDRESS></BODY></HTML>

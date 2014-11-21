@@ -1,0 +1,963 @@
+   1               		.file	"avr_serial.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  84               	.global	g_tx_ptr
+  85               	.global	g_tx_ptr
+  86               		.section .bss
+  89               	g_tx_ptr:
+  90 0000 00        		.skip 1,0
+  91               	.global	g_rx_ptr
+  92               	.global	g_rx_ptr
+  95               	g_rx_ptr:
+  96 0001 00        		.skip 1,0
+  97               		.text
+ 100               	.global	uart_put_RX
+ 102               	uart_put_RX:
+   1:../../Eblock_lib/avr_serial.c ****  /*!  
+   2:../../Eblock_lib/avr_serial.c **** 	\file   	avr_comm.c
+   3:../../Eblock_lib/avr_serial.c **** 	\brief  	Communication module for AVR 
+   4:../../Eblock_lib/avr_serial.c **** 	\ingroup	avr_comm  
+   5:../../Eblock_lib/avr_serial.c **** 	\par  Module description
+   6:../../Eblock_lib/avr_serial.c ****     \n Communication Module use in AVR
+   7:../../Eblock_lib/avr_serial.c **** 	\n		- UART (serial Port)
+   8:../../Eblock_lib/avr_serial.c **** 	\n		- I2C  
+   9:../../Eblock_lib/avr_serial.c **** 	\n		- SPI	
+  10:../../Eblock_lib/avr_serial.c ****  	\n Original written for 	:   \b for bold AVR
+  11:../../Eblock_lib/avr_serial.c ****  	\n CPU port/tested			:   ATMEGA32
+  12:../../Eblock_lib/avr_serial.c ****  	\n Hardware use				:   E_MEGA32
+  13:../../Eblock_lib/avr_serial.c ****  	\n Port use					:   UART Port Rx,TX
+  14:../../Eblock_lib/avr_serial.c **** 	\n							:   SPI  SCK, MOSI, MISO
+  15:../../Eblock_lib/avr_serial.c **** 	\n							:   I2C  SCL, SDA
+  16:../../Eblock_lib/avr_serial.c **** 	\n							:   SET JUMPER J7,J8 connect to RS232 port  (ALL UP)
+  17:../../Eblock_lib/avr_serial.c **** 	\n Interrrupt Vector table  :   SIG_UART_DATA, SIG_UART_RECV
+  18:../../Eblock_lib/avr_serial.c ****  	\n Memory	FLASH			:   XXX
+  19:../../Eblock_lib/avr_serial.c ****  	\n		RAM					:   XXX
+  20:../../Eblock_lib/avr_serial.c ****  	\n		EEPROM				:   XXX
+  21:../../Eblock_lib/avr_serial.c ****  	\n Reference Document		:   Document describe algorithm
+  22:../../Eblock_lib/avr_serial.c **** 
+  23:../../Eblock_lib/avr_serial.c **** 	\version 0.1
+  24:../../Eblock_lib/avr_serial.c ****  	\author  wichai@geartronics.net
+  25:../../Eblock_lib/avr_serial.c **** 	\date 	 04/09/08  
+  26:../../Eblock_lib/avr_serial.c **** 
+  27:../../Eblock_lib/avr_serial.c **** 	\par Update History
+  28:../../Eblock_lib/avr_serial.c ****  	\nDate			By 					Comments
+  29:../../Eblock_lib/avr_serial.c ****  	\n----			--					--------
+  30:../../Eblock_lib/avr_serial.c **** 	\n 
+  31:../../Eblock_lib/avr_serial.c **** 	\note  Future enhancement for Error checking and Handling
+  32:../../Eblock_lib/avr_serial.c ****  
+  33:../../Eblock_lib/avr_serial.c **** */
+  34:../../Eblock_lib/avr_serial.c **** 
+  35:../../Eblock_lib/avr_serial.c **** 
+  36:../../Eblock_lib/avr_serial.c **** 
+  37:../../Eblock_lib/avr_serial.c **** 
+  38:../../Eblock_lib/avr_serial.c **** 
+  39:../../Eblock_lib/avr_serial.c **** 
+  40:../../Eblock_lib/avr_serial.c **** //! Include file
+  41:../../Eblock_lib/avr_serial.c ****  
+  42:../../Eblock_lib/avr_serial.c **** #include <avr/interrupt.h>
+  43:../../Eblock_lib/avr_serial.c **** #include <stdlib.h> 
+  44:../../Eblock_lib/avr_serial.c **** #include "avr_serial.h"
+  45:../../Eblock_lib/avr_serial.c **** 
+  46:../../Eblock_lib/avr_serial.c **** 
+  47:../../Eblock_lib/avr_serial.c **** //  Global Data for Rx/Tx
+  48:../../Eblock_lib/avr_serial.c **** uint8_t g_rx_buff[MAX_BUFF];
+  49:../../Eblock_lib/avr_serial.c **** uint8_t g_tx_buff[MAX_BUFF];
+  50:../../Eblock_lib/avr_serial.c **** uint8_t g_rx_ptr = 0;
+  51:../../Eblock_lib/avr_serial.c **** uint8_t g_tx_ptr = 0;
+  52:../../Eblock_lib/avr_serial.c **** 
+  53:../../Eblock_lib/avr_serial.c **** 
+  54:../../Eblock_lib/avr_serial.c **** 
+  55:../../Eblock_lib/avr_serial.c **** 
+  56:../../Eblock_lib/avr_serial.c **** // Internal Function Do not call from outside module
+  57:../../Eblock_lib/avr_serial.c **** 
+  58:../../Eblock_lib/avr_serial.c **** /*!	\brief  Put character into Rx buffer
+  59:../../Eblock_lib/avr_serial.c **** 	\param      Character to put in buffer 
+  60:../../Eblock_lib/avr_serial.c **** 	\return  	Success 	0
+  61:../../Eblock_lib/avr_serial.c **** 	\n			Fail   		Buffer Full
+  62:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+  63:../../Eblock_lib/avr_serial.c **** 	\n   Tx,Rx
+  64:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation  
+  65:../../Eblock_lib/avr_serial.c **** 	\n    Put characters into RX buffer until buffer full
+  66:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+  67:../../Eblock_lib/avr_serial.c **** 	\n    Put characters into RX buffer until it's full ( Send BUFFER_FULL error)
+  68:../../Eblock_lib/avr_serial.c **** 	\n	  Increase rx ptr
+  69:../../Eblock_lib/avr_serial.c **** 	\note   Internal function  Do not call from outside
+  70:../../Eblock_lib/avr_serial.c **** 	\bug    If send characters too fast become garbage
+  71:../../Eblock_lib/avr_serial.c **** 
+  72:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichai@geartronics.net
+  73:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+  74:../../Eblock_lib/avr_serial.c **** */     
+  75:../../Eblock_lib/avr_serial.c **** uint8_t uart_put_RX ( uint8_t ch)
+  76:../../Eblock_lib/avr_serial.c **** {
+ 104               	.LM1:
+ 105               	/* prologue: frame size=0 */
+ 106               	/* prologue end (size=0) */
+ 107 0000 982F      		mov r25,r24
+  77:../../Eblock_lib/avr_serial.c ****    if ((g_rx_ptr < MAX_BUFF)) 
+ 109               	.LM2:
+ 110 0002 8091 0000 		lds r24,g_rx_ptr
+ 111 0006 8A3F      		cpi r24,lo8(-6)
+ 112 0008 80F4      		brsh .L2
+  78:../../Eblock_lib/avr_serial.c ****    {
+  79:../../Eblock_lib/avr_serial.c **** //  End with Null
+  80:../../Eblock_lib/avr_serial.c **** 		g_rx_buff[g_rx_ptr] = ch;
+ 114               	.LM3:
+ 115 000a E82F      		mov r30,r24
+ 116 000c FF27      		clr r31
+ 117 000e E050      		subi r30,lo8(-(g_rx_buff))
+ 118 0010 F040      		sbci r31,hi8(-(g_rx_buff))
+ 119 0012 9083      		st Z,r25
+  81:../../Eblock_lib/avr_serial.c **** 		g_rx_ptr++;
+ 121               	.LM4:
+ 122 0014 8F5F      		subi r24,lo8(-(1))
+ 123 0016 8093 0000 		sts g_rx_ptr,r24
+  82:../../Eblock_lib/avr_serial.c **** 		g_rx_buff[g_rx_ptr] = 0;   // End with null characters
+ 125               	.LM5:
+ 126 001a E82F      		mov r30,r24
+ 127 001c FF27      		clr r31
+ 128 001e E050      		subi r30,lo8(-(g_rx_buff))
+ 129 0020 F040      		sbci r31,hi8(-(g_rx_buff))
+ 130 0022 1082      		st Z,__zero_reg__
+  83:../../Eblock_lib/avr_serial.c **** 		return 0;
+ 132               	.LM6:
+ 133 0024 80E0      		ldi r24,lo8(0)
+ 134 0026 90E0      		ldi r25,hi8(0)
+ 135 0028 0895      		ret
+ 136               	.L2:
+  84:../../Eblock_lib/avr_serial.c ****     }
+  85:../../Eblock_lib/avr_serial.c ****    else  // Buffer full do nothing  return error
+  86:../../Eblock_lib/avr_serial.c ****    {
+  87:../../Eblock_lib/avr_serial.c ****         return UART_BUFFER_FULL;
+ 138               	.LM7:
+ 139 002a 82E0      		ldi r24,lo8(2)
+ 140 002c 90E0      		ldi r25,hi8(2)
+  88:../../Eblock_lib/avr_serial.c ****    }
+  89:../../Eblock_lib/avr_serial.c **** }
+ 142               	.LM8:
+ 143 002e 0895      		ret
+ 144               	/* epilogue: frame size=0 */
+ 145               	/* epilogue: noreturn */
+ 146               	/* epilogue end (size=0) */
+ 147               	/* function uart_put_RX size 24 (24) */
+ 149               	.Lscope0:
+ 151               	.global	uart_get_RX
+ 153               	uart_get_RX:
+  90:../../Eblock_lib/avr_serial.c **** 
+  91:../../Eblock_lib/avr_serial.c **** 
+  92:../../Eblock_lib/avr_serial.c **** /*!	\brief  Get character from RX buffer
+  93:../../Eblock_lib/avr_serial.c **** 	\param  None  
+  94:../../Eblock_lib/avr_serial.c **** 	\return Character read from RX buffer
+  95:../../Eblock_lib/avr_serial.c **** 			0  =  No characters ?
+  96:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+  97:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+  98:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+  99:../../Eblock_lib/avr_serial.c **** 	\n   Get characters from RX buffer and move all characters to the left
+ 100:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 101:../../Eblock_lib/avr_serial.c **** 	\n    If there are some characters left in buffer
+ 102:../../Eblock_lib/avr_serial.c **** 	\n       get it and move all characters to the left
+ 103:../../Eblock_lib/avr_serial.c **** 	\note   Internal function  Do not call from outside
+ 104:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 105:../../Eblock_lib/avr_serial.c **** 
+ 106:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 107:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 108:../../Eblock_lib/avr_serial.c **** */      
+ 109:../../Eblock_lib/avr_serial.c **** 
+ 110:../../Eblock_lib/avr_serial.c **** uint8_t uart_get_RX (void)
+ 111:../../Eblock_lib/avr_serial.c **** {
+ 155               	.LM9:
+ 156               	/* prologue: frame size=0 */
+ 157               	/* prologue end (size=0) */
+ 112:../../Eblock_lib/avr_serial.c ****    uint8_t  i,j,ch;
+ 113:../../Eblock_lib/avr_serial.c ****    if (g_rx_ptr)
+ 159               	.LM10:
+ 160 0030 8091 0000 		lds r24,g_rx_ptr
+ 161 0034 8823      		tst r24
+ 162 0036 A1F0      		breq .L5
+ 114:../../Eblock_lib/avr_serial.c ****    {
+ 115:../../Eblock_lib/avr_serial.c **** 		ch = g_rx_buff[0];
+ 164               	.LM11:
+ 165 0038 9091 0000 		lds r25,g_rx_buff
+ 116:../../Eblock_lib/avr_serial.c ****         i =  g_rx_ptr;
+ 167               	.LM12:
+ 168 003c 282F      		mov r18,r24
+ 117:../../Eblock_lib/avr_serial.c ****         g_rx_ptr--;
+ 170               	.LM13:
+ 171 003e 2150      		subi r18,lo8(-(-1))
+ 172 0040 2093 0000 		sts g_rx_ptr,r18
+ 173 0044 2F5F      		subi r18,lo8(-(1))
+ 118:../../Eblock_lib/avr_serial.c **** 		j = 0;
+ 175               	.LM14:
+ 176 0046 30E0      		ldi r19,lo8(0)
+ 177               	.L8:
+ 119:../../Eblock_lib/avr_serial.c **** // Move left all characters
+ 120:../../Eblock_lib/avr_serial.c ****         while (i)
+ 121:../../Eblock_lib/avr_serial.c **** 		{
+ 122:../../Eblock_lib/avr_serial.c **** 	      g_rx_buff[j] =  g_rx_buff[j+1];
+ 179               	.LM15:
+ 180 0048 E32F      		mov r30,r19
+ 181 004a FF27      		clr r31
+ 182 004c E050      		subi r30,lo8(-(g_rx_buff))
+ 183 004e F040      		sbci r31,hi8(-(g_rx_buff))
+ 184 0050 8181      		ldd r24,Z+1
+ 185 0052 8083      		st Z,r24
+ 123:../../Eblock_lib/avr_serial.c **** 	      j++;
+ 187               	.LM16:
+ 188 0054 3F5F      		subi r19,lo8(-(1))
+ 124:../../Eblock_lib/avr_serial.c **** 	 	  i--;
+ 190               	.LM17:
+ 191 0056 2150      		subi r18,lo8(-(-1))
+ 192 0058 B9F7      		brne .L8
+ 125:../../Eblock_lib/avr_serial.c **** 		}
+ 126:../../Eblock_lib/avr_serial.c **** 		return ch;
+ 194               	.LM18:
+ 195 005a 892F      		mov r24,r25
+ 196 005c 9927      		clr r25
+ 197 005e 0895      		ret
+ 198               	.L5:
+ 127:../../Eblock_lib/avr_serial.c ****    }
+ 128:../../Eblock_lib/avr_serial.c ****    return 0;
+ 200               	.LM19:
+ 201 0060 80E0      		ldi r24,lo8(0)
+ 202 0062 90E0      		ldi r25,hi8(0)
+ 129:../../Eblock_lib/avr_serial.c **** }
+ 204               	.LM20:
+ 205 0064 0895      		ret
+ 206               	/* epilogue: frame size=0 */
+ 207               	/* epilogue: noreturn */
+ 208               	/* epilogue end (size=0) */
+ 209               	/* function uart_get_RX size 28 (28) */
+ 216               	.Lscope1:
+ 219               	.global	uart_put_TX
+ 221               	uart_put_TX:
+ 130:../../Eblock_lib/avr_serial.c **** 
+ 131:../../Eblock_lib/avr_serial.c **** /* Put character into g_tx_buff
+ 132:../../Eblock_lib/avr_serial.c ****     INPUT  : Character to put in buffer
+ 133:../../Eblock_lib/avr_serial.c **** 	Output : 0  OK
+ 134:../../Eblock_lib/avr_serial.c **** 		   : UART_BUFFER_FULL  Buffer full
+ 135:../../Eblock_lib/avr_serial.c **** */
+ 136:../../Eblock_lib/avr_serial.c **** 
+ 137:../../Eblock_lib/avr_serial.c **** /*!	\brief  Put character in to TX Buffer 
+ 138:../../Eblock_lib/avr_serial.c **** 	\param  None
+ 139:../../Eblock_lib/avr_serial.c **** 	\return None
+ 140:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 141:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 142:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 143:../../Eblock_lib/avr_serial.c **** 	\n    Put characters into TX buffer until buffer full
+ 144:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 145:../../Eblock_lib/avr_serial.c **** 	\n    Put characters into TX buffer until it's full ( Send BUFFER_FULL error)
+ 146:../../Eblock_lib/avr_serial.c **** 	\n	  Increase tx ptr
+ 147:../../Eblock_lib/avr_serial.c **** 	\n	  Put null characters at the end
+ 148:../../Eblock_lib/avr_serial.c **** 	\n
+ 149:../../Eblock_lib/avr_serial.c **** 	\note   Internal function  Do not call from outside 
+ 150:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 151:../../Eblock_lib/avr_serial.c **** 
+ 152:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 153:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 154:../../Eblock_lib/avr_serial.c **** */     
+ 155:../../Eblock_lib/avr_serial.c **** uint8_t uart_put_TX ( uint8_t ch)
+ 156:../../Eblock_lib/avr_serial.c **** {
+ 223               	.LM21:
+ 224               	/* prologue: frame size=0 */
+ 225               	/* prologue end (size=0) */
+ 226 0066 982F      		mov r25,r24
+ 157:../../Eblock_lib/avr_serial.c **** // If exceed buffer do nothing until buffer is flushed
+ 158:../../Eblock_lib/avr_serial.c ****     if ((g_tx_ptr > MAX_BUFF)) 
+ 228               	.LM22:
+ 229 0068 8091 0000 		lds r24,g_tx_ptr
+ 230 006c 8B3F      		cpi r24,lo8(-5)
+ 231 006e 18F0      		brlo .L12
+ 159:../../Eblock_lib/avr_serial.c ****     {
+ 160:../../Eblock_lib/avr_serial.c **** 		return UART_BUFFER_FULL;   // No increase pointer
+ 233               	.LM23:
+ 234 0070 82E0      		ldi r24,lo8(2)
+ 235 0072 90E0      		ldi r25,hi8(2)
+ 236 0074 0895      		ret
+ 237               	.L12:
+ 161:../../Eblock_lib/avr_serial.c ****     }
+ 162:../../Eblock_lib/avr_serial.c **** 	g_tx_buff[g_tx_ptr]= ch;
+ 239               	.LM24:
+ 240 0076 E82F      		mov r30,r24
+ 241 0078 FF27      		clr r31
+ 242 007a E050      		subi r30,lo8(-(g_tx_buff))
+ 243 007c F040      		sbci r31,hi8(-(g_tx_buff))
+ 244 007e 9083      		st Z,r25
+ 163:../../Eblock_lib/avr_serial.c **** 	g_tx_ptr++;
+ 246               	.LM25:
+ 247 0080 8F5F      		subi r24,lo8(-(1))
+ 248 0082 8093 0000 		sts g_tx_ptr,r24
+ 164:../../Eblock_lib/avr_serial.c **** 	g_tx_buff[g_tx_ptr] = 0;    // Put null character at the end
+ 250               	.LM26:
+ 251 0086 E82F      		mov r30,r24
+ 252 0088 FF27      		clr r31
+ 253 008a E050      		subi r30,lo8(-(g_tx_buff))
+ 254 008c F040      		sbci r31,hi8(-(g_tx_buff))
+ 255 008e 1082      		st Z,__zero_reg__
+ 165:../../Eblock_lib/avr_serial.c **** 	return 0;
+ 257               	.LM27:
+ 258 0090 80E0      		ldi r24,lo8(0)
+ 259 0092 90E0      		ldi r25,hi8(0)
+ 166:../../Eblock_lib/avr_serial.c **** }
+ 261               	.LM28:
+ 262 0094 0895      		ret
+ 263               	/* epilogue: frame size=0 */
+ 264               	/* epilogue: noreturn */
+ 265               	/* epilogue end (size=0) */
+ 266               	/* function uart_put_TX size 24 (24) */
+ 268               	.Lscope2:
+ 270               	.global	uart_get_TX
+ 272               	uart_get_TX:
+ 167:../../Eblock_lib/avr_serial.c **** 
+ 168:../../Eblock_lib/avr_serial.c **** 
+ 169:../../Eblock_lib/avr_serial.c **** /*!	\brief  Get character from TX buffer to send and shift left all characters
+ 170:../../Eblock_lib/avr_serial.c **** 	\param  None  
+ 171:../../Eblock_lib/avr_serial.c **** 	\return Character to send 
+ 172:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 173:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 174:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 175:../../Eblock_lib/avr_serial.c **** 	\n   Get characters from buffer(FIFO) and shift all characters to left 
+ 176:../../Eblock_lib/avr_serial.c ****  	\par Pseudo code
+ 177:../../Eblock_lib/avr_serial.c **** 	\n   Check whether there is data in TX buffer
+ 178:../../Eblock_lib/avr_serial.c **** 	\n	 If yes  get characters  from TX buffer
+ 179:../../Eblock_lib/avr_serial.c **** 	\n
+ 180:../../Eblock_lib/avr_serial.c **** 	\note   Internal function  Do not call from outside
+ 181:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 182:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 183:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 184:../../Eblock_lib/avr_serial.c **** */     
+ 185:../../Eblock_lib/avr_serial.c ****  
+ 186:../../Eblock_lib/avr_serial.c **** uint8_t uart_get_TX (void)
+ 187:../../Eblock_lib/avr_serial.c **** {
+ 274               	.LM29:
+ 275               	/* prologue: frame size=0 */
+ 276               	/* prologue end (size=0) */
+ 188:../../Eblock_lib/avr_serial.c ****    uint8_t i,j,ch =0;
+ 189:../../Eblock_lib/avr_serial.c ****    
+ 190:../../Eblock_lib/avr_serial.c ****    if ( g_tx_ptr)   // There are data in TX buffer
+ 278               	.LM30:
+ 279 0096 8091 0000 		lds r24,g_tx_ptr
+ 280 009a 8823      		tst r24
+ 281 009c A1F0      		breq .L14
+ 191:../../Eblock_lib/avr_serial.c ****    {
+ 192:../../Eblock_lib/avr_serial.c **** 		i  =  g_tx_ptr;
+ 283               	.LM31:
+ 284 009e 282F      		mov r18,r24
+ 193:../../Eblock_lib/avr_serial.c **** 		g_tx_ptr--;
+ 286               	.LM32:
+ 287 00a0 2150      		subi r18,lo8(-(-1))
+ 288 00a2 2093 0000 		sts g_tx_ptr,r18
+ 289 00a6 2F5F      		subi r18,lo8(-(1))
+ 194:../../Eblock_lib/avr_serial.c **** 		ch =  g_tx_buff[0];   // Start from 0 FIFO
+ 291               	.LM33:
+ 292 00a8 9091 0000 		lds r25,g_tx_buff
+ 195:../../Eblock_lib/avr_serial.c **** 		j = 0;
+ 294               	.LM34:
+ 295 00ac 30E0      		ldi r19,lo8(0)
+ 296               	.L17:
+ 196:../../Eblock_lib/avr_serial.c **** // Move left all characters Need to rewrite !!!
+ 197:../../Eblock_lib/avr_serial.c ****         while (i)
+ 198:../../Eblock_lib/avr_serial.c **** 		{
+ 199:../../Eblock_lib/avr_serial.c **** 	      g_tx_buff[j] =  g_tx_buff[j+1];
+ 298               	.LM35:
+ 299 00ae E32F      		mov r30,r19
+ 300 00b0 FF27      		clr r31
+ 301 00b2 E050      		subi r30,lo8(-(g_tx_buff))
+ 302 00b4 F040      		sbci r31,hi8(-(g_tx_buff))
+ 303 00b6 8181      		ldd r24,Z+1
+ 304 00b8 8083      		st Z,r24
+ 200:../../Eblock_lib/avr_serial.c **** 	      j++;
+ 306               	.LM36:
+ 307 00ba 3F5F      		subi r19,lo8(-(1))
+ 201:../../Eblock_lib/avr_serial.c **** 	 	  i--;
+ 309               	.LM37:
+ 310 00bc 2150      		subi r18,lo8(-(-1))
+ 311 00be B9F7      		brne .L17
+ 202:../../Eblock_lib/avr_serial.c **** 		}
+ 203:../../Eblock_lib/avr_serial.c **** 		return ch;
+ 313               	.LM38:
+ 314 00c0 892F      		mov r24,r25
+ 315 00c2 9927      		clr r25
+ 316 00c4 0895      		ret
+ 317               	.L14:
+ 204:../../Eblock_lib/avr_serial.c ****    }
+ 205:../../Eblock_lib/avr_serial.c ****    return 0;
+ 319               	.LM39:
+ 320 00c6 80E0      		ldi r24,lo8(0)
+ 321 00c8 90E0      		ldi r25,hi8(0)
+ 206:../../Eblock_lib/avr_serial.c **** }
+ 323               	.LM40:
+ 324 00ca 0895      		ret
+ 325               	/* epilogue: frame size=0 */
+ 326               	/* epilogue: noreturn */
+ 327               	/* epilogue end (size=0) */
+ 328               	/* function uart_get_TX size 28 (28) */
+ 335               	.Lscope3:
+ 340               	.global	uart_init
+ 342               	uart_init:
+ 207:../../Eblock_lib/avr_serial.c **** 
+ 208:../../Eblock_lib/avr_serial.c **** 
+ 209:../../Eblock_lib/avr_serial.c **** 
+ 210:../../Eblock_lib/avr_serial.c ****  
+ 211:../../Eblock_lib/avr_serial.c **** 
+ 212:../../Eblock_lib/avr_serial.c **** /*!	\brief  Show debug value for short integer
+ 213:../../Eblock_lib/avr_serial.c **** 	\param  Value to show (16 bits)
+ 214:../../Eblock_lib/avr_serial.c **** 	\n		radix to show 10, 16,2	
+ 215:../../Eblock_lib/avr_serial.c **** 	\return none
+ 216:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 217:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 218:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 219:../../Eblock_lib/avr_serial.c **** 	\n   Convert value to string and show on UART port
+ 220:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 221:../../Eblock_lib/avr_serial.c **** 	\n   Convert long integer to string with  
+ 222:../../Eblock_lib/avr_serial.c **** 	\note    
+ 223:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 224:../../Eblock_lib/avr_serial.c **** 
+ 225:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 226:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 227:../../Eblock_lib/avr_serial.c **** */     
+ 228:../../Eblock_lib/avr_serial.c **** void  debug_value ( int16_t value, uint8_t radix)
+ 229:../../Eblock_lib/avr_serial.c **** {
+ 230:../../Eblock_lib/avr_serial.c ****    uint8_t  buff[20];
+ 231:../../Eblock_lib/avr_serial.c ****   
+ 232:../../Eblock_lib/avr_serial.c ****    itoa (value,buff, radix);
+ 233:../../Eblock_lib/avr_serial.c ****    uart_write_str ( buff);
+ 234:../../Eblock_lib/avr_serial.c **** }
+ 235:../../Eblock_lib/avr_serial.c **** 
+ 236:../../Eblock_lib/avr_serial.c **** 
+ 237:../../Eblock_lib/avr_serial.c **** /*!	\brief  Show debug value in long format
+ 238:../../Eblock_lib/avr_serial.c **** 	\param  Value to show (32 bits)
+ 239:../../Eblock_lib/avr_serial.c **** 	\n		radix  to show  10, 16,2
+ 240:../../Eblock_lib/avr_serial.c **** 	\return None
+ 241:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 242:../../Eblock_lib/avr_serial.c **** 	\n  TX,RX
+ 243:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 244:../../Eblock_lib/avr_serial.c **** 	\n   Convert value to string and show on UART port
+ 245:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 246:../../Eblock_lib/avr_serial.c **** 	\n   Convert long integer to string with radix specified
+ 247:../../Eblock_lib/avr_serial.c **** 	\n	 Write string to UART port
+ 248:../../Eblock_lib/avr_serial.c **** 	\note   (Pseudo code)
+ 249:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 250:../../Eblock_lib/avr_serial.c **** 
+ 251:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 252:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 253:../../Eblock_lib/avr_serial.c **** */     
+ 254:../../Eblock_lib/avr_serial.c **** 
+ 255:../../Eblock_lib/avr_serial.c **** void  debug_lvalue ( int32_t value, uint8_t radix)
+ 256:../../Eblock_lib/avr_serial.c **** {
+ 257:../../Eblock_lib/avr_serial.c ****    uint8_t  buff[40];
+ 258:../../Eblock_lib/avr_serial.c ****    
+ 259:../../Eblock_lib/avr_serial.c ****    ltoa (value,buff, radix);
+ 260:../../Eblock_lib/avr_serial.c ****    uart_write_str ( buff);
+ 261:../../Eblock_lib/avr_serial.c **** }
+ 262:../../Eblock_lib/avr_serial.c ****  
+ 263:../../Eblock_lib/avr_serial.c **** 
+ 264:../../Eblock_lib/avr_serial.c **** /*!	\brief  Initial serial Port UART
+ 265:../../Eblock_lib/avr_serial.c **** 	\param  mode  =  TX/RX  Mode of operation  (Intrrupt/Polling) Enable RX, TX
+ 266:../../Eblock_lib/avr_serial.c **** 			frame =  Set Data frame  8 bits  parity bits, stop bit
+ 267:../../Eblock_lib/avr_serial.c **** 			baud  =  Baud rate 
+ 268:../../Eblock_lib/avr_serial.c **** 			These parameter are predefined in avr_serial.h for easy set up
+ 269:../../Eblock_lib/avr_serial.c ****  	\return None
+ 270:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 271:../../Eblock_lib/avr_serial.c **** 	\n   TX, RX
+ 272:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 273:../../Eblock_lib/avr_serial.c **** 	\n    Initial control register to set up for baud rate, data frame and mode of operations
+ 274:../../Eblock_lib/avr_serial.c **** 	\n    For receive we are using interrupt for RX and TX 
+ 275:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 276:../../Eblock_lib/avr_serial.c **** 	\n    Set and initial register for UART mode
+ 277:../../Eblock_lib/avr_serial.c **** 	\note Future enhancement for error checking and overrun detect 
+ 278:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 279:../../Eblock_lib/avr_serial.c **** 
+ 280:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 281:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 282:../../Eblock_lib/avr_serial.c **** */     
+ 283:../../Eblock_lib/avr_serial.c **** void uart_init(uint8_t mode,uint8_t frame, uint16_t baud)
+ 284:../../Eblock_lib/avr_serial.c **** {
+ 344               	.LM41:
+ 345               	/* prologue: frame size=0 */
+ 346               	/* prologue end (size=0) */
+ 347 00cc 382F      		mov r19,r24
+ 285:../../Eblock_lib/avr_serial.c ****  
+ 286:../../Eblock_lib/avr_serial.c **** // Initialize UART  
+ 287:../../Eblock_lib/avr_serial.c ****     
+ 288:../../Eblock_lib/avr_serial.c ****     UCSRC  = frame;    // 8 bit non parity  1 stop bit
+ 349               	.LM42:
+ 350 00ce 60BD      		out 64-0x20,r22
+ 289:../../Eblock_lib/avr_serial.c ****     UCSRB  = mode;    // Enable RX Interrupt and Enable TX, RX pin
+ 352               	.LM43:
+ 353 00d0 3AB9      		out 42-0x20,r19
+ 290:../../Eblock_lib/avr_serial.c **** 	UBRRL  = (uint8_t) baud;
+ 355               	.LM44:
+ 356 00d2 49B9      		out 41-0x20,r20
+ 291:../../Eblock_lib/avr_serial.c **** 	UBRRH  = (uint8_t)(baud >>8); 
+ 358               	.LM45:
+ 359 00d4 852F      		mov r24,r21
+ 360 00d6 9927      		clr r25
+ 361 00d8 80BD      		out 64-0x20,r24
+ 292:../../Eblock_lib/avr_serial.c **** 	g_rx_ptr = 0;
+ 363               	.LM46:
+ 364 00da 1092 0000 		sts g_rx_ptr,__zero_reg__
+ 293:../../Eblock_lib/avr_serial.c **** 	g_tx_ptr = 0;
+ 366               	.LM47:
+ 367 00de 1092 0000 		sts g_tx_ptr,__zero_reg__
+ 294:../../Eblock_lib/avr_serial.c ****     sei();
+ 369               	.LM48:
+ 370               	/* #APP */
+ 371 00e2 7894      		sei
+ 372               	/* #NOAPP */
+ 373               	/* epilogue: frame size=0 */
+ 374 00e4 0895      		ret
+ 375               	/* epilogue end (size=1) */
+ 376               	/* function uart_init size 14 (13) */
+ 378               	.Lscope4:
+ 380               	.global	uart_read
+ 382               	uart_read:
+ 295:../../Eblock_lib/avr_serial.c **** }
+ 296:../../Eblock_lib/avr_serial.c **** 
+ 297:../../Eblock_lib/avr_serial.c **** 
+ 298:../../Eblock_lib/avr_serial.c **** /*!	\brief  Get character from RX buffer
+ 299:../../Eblock_lib/avr_serial.c **** 	\param  None  
+ 300:../../Eblock_lib/avr_serial.c **** 	\return Read character from buffer  0 if none characters
+ 301:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 302:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 303:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 304:../../Eblock_lib/avr_serial.c **** 	\n    Read character from RX buffer reside inside this module
+ 305:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 306:../../Eblock_lib/avr_serial.c **** 	\n
+ 307:../../Eblock_lib/avr_serial.c **** 	\note 
+ 308:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 309:../../Eblock_lib/avr_serial.c **** 
+ 310:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 311:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 312:../../Eblock_lib/avr_serial.c **** */     
+ 313:../../Eblock_lib/avr_serial.c **** uint8_t uart_read(void)
+ 314:../../Eblock_lib/avr_serial.c **** {
+ 384               	.LM49:
+ 385               	/* prologue: frame size=0 */
+ 386               	/* prologue end (size=0) */
+ 315:../../Eblock_lib/avr_serial.c ****     uint8_t ch;
+ 316:../../Eblock_lib/avr_serial.c **** 	ch = uart_get_RX();
+ 388               	.LM50:
+ 389 00e6 0E94 0000 		call uart_get_RX
+ 317:../../Eblock_lib/avr_serial.c ****     return ch ;
+ 318:../../Eblock_lib/avr_serial.c **** }
+ 391               	.LM51:
+ 392 00ea 9927      		clr r25
+ 393               	/* epilogue: frame size=0 */
+ 394 00ec 0895      		ret
+ 395               	/* epilogue end (size=1) */
+ 396               	/* function uart_read size 4 (3) */
+ 398               	.Lscope5:
+ 401               	.global	uart_write_char
+ 403               	uart_write_char:
+ 319:../../Eblock_lib/avr_serial.c **** 
+ 320:../../Eblock_lib/avr_serial.c **** 
+ 321:../../Eblock_lib/avr_serial.c **** /*!	\brief  Write character
+ 322:../../Eblock_lib/avr_serial.c **** 	\param  None  
+ 323:../../Eblock_lib/avr_serial.c **** 	\return None
+ 324:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 325:../../Eblock_lib/avr_serial.c **** 	\n   E_PB0,E_PB3
+ 326:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 327:../../Eblock_lib/avr_serial.c **** 	\n
+ 328:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 329:../../Eblock_lib/avr_serial.c **** 	\n
+ 330:../../Eblock_lib/avr_serial.c **** 	\note   (Pseudo code)
+ 331:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 332:../../Eblock_lib/avr_serial.c **** 
+ 333:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 334:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 335:../../Eblock_lib/avr_serial.c **** */     
+ 336:../../Eblock_lib/avr_serial.c **** uint8_t uart_write_char(uint8_t c)
+ 337:../../Eblock_lib/avr_serial.c **** {
+ 405               	.LM52:
+ 406               	/* prologue: frame size=0 */
+ 407 00ee CF93      		push r28
+ 408               	/* prologue end (size=1) */
+ 409 00f0 C82F      		mov r28,r24
+ 410               	.L23:
+ 338:../../Eblock_lib/avr_serial.c ****    while (UART_BUFFER_FULL == uart_put_TX(c));  //If buffer full wait until buffer clear
+ 412               	.LM53:
+ 413 00f2 8C2F      		mov r24,r28
+ 414 00f4 0E94 0000 		call uart_put_TX
+ 415 00f8 8230      		cpi r24,lo8(2)
+ 416 00fa D9F3      		breq .L23
+ 339:../../Eblock_lib/avr_serial.c **** // Enable interrupt UART Data Register empty
+ 340:../../Eblock_lib/avr_serial.c ****   UCSRB  |=  (1<<UDRIE);	
+ 418               	.LM54:
+ 419 00fc 559A      		sbi 42-0x20,5
+ 341:../../Eblock_lib/avr_serial.c ****    return 0;
+ 342:../../Eblock_lib/avr_serial.c **** }
+ 421               	.LM55:
+ 422 00fe 80E0      		ldi r24,lo8(0)
+ 423 0100 90E0      		ldi r25,hi8(0)
+ 424               	/* epilogue: frame size=0 */
+ 425 0102 CF91      		pop r28
+ 426 0104 0895      		ret
+ 427               	/* epilogue end (size=2) */
+ 428               	/* function uart_write_char size 12 (9) */
+ 430               	.Lscope6:
+ 433               	.global	uart_write_str
+ 435               	uart_write_str:
+ 343:../../Eblock_lib/avr_serial.c **** 
+ 344:../../Eblock_lib/avr_serial.c **** 
+ 345:../../Eblock_lib/avr_serial.c **** 
+ 346:../../Eblock_lib/avr_serial.c **** /*!	\brief   Transmit string to UART1
+ 347:../../Eblock_lib/avr_serial.c **** 	\param   Pointer to String  
+ 348:../../Eblock_lib/avr_serial.c **** 	\return None
+ 349:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 350:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 351:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 352:../../Eblock_lib/avr_serial.c **** 	\n   Write each characters pointed by string pointer to UART until end of string
+ 353:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 354:../../Eblock_lib/avr_serial.c **** 	\n    Write each char until NULL string found
+ 355:../../Eblock_lib/avr_serial.c **** 	\n	  Send CR + LF for new line
+ 356:../../Eblock_lib/avr_serial.c **** 	\note    
+ 357:../../Eblock_lib/avr_serial.c **** 	\bug    <bug to fix>
+ 358:../../Eblock_lib/avr_serial.c **** 
+ 359:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 360:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 361:../../Eblock_lib/avr_serial.c **** */     
+ 362:../../Eblock_lib/avr_serial.c **** void uart_write_str(const uint8_t *s)
+ 363:../../Eblock_lib/avr_serial.c **** {
+ 437               	.LM56:
+ 438               	/* prologue: frame size=0 */
+ 439 0106 CF93      		push r28
+ 440 0108 DF93      		push r29
+ 441               	/* prologue end (size=2) */
+ 442 010a EC01      		movw r28,r24
+ 364:../../Eblock_lib/avr_serial.c ****  
+ 365:../../Eblock_lib/avr_serial.c ****     while (*s) 
+ 366:../../Eblock_lib/avr_serial.c ****     {
+ 367:../../Eblock_lib/avr_serial.c **** 		uart_write_char(*s);
+ 368:../../Eblock_lib/avr_serial.c **** 	    if (*s ==  0x0A)
+ 369:../../Eblock_lib/avr_serial.c **** 		{
+ 370:../../Eblock_lib/avr_serial.c **** 			uart_write_char(0x0D); // CR
+ 371:../../Eblock_lib/avr_serial.c **** //			uart_write_char(0x0A); // LF
+ 372:../../Eblock_lib/avr_serial.c **** 		}
+ 373:../../Eblock_lib/avr_serial.c **** 		s++;
+ 444               	.LM57:
+ 445 010c 8881      		ld r24,Y
+ 446 010e 8823      		tst r24
+ 447 0110 69F0      		breq .L32
+ 448               	.L30:
+ 450               	.LM58:
+ 451 0112 8881      		ld r24,Y
+ 452 0114 0E94 0000 		call uart_write_char
+ 454               	.LM59:
+ 455 0118 8881      		ld r24,Y
+ 456 011a 8A30      		cpi r24,lo8(10)
+ 457 011c 19F4      		brne .L29
+ 459               	.LM60:
+ 460 011e 8DE0      		ldi r24,lo8(13)
+ 461 0120 0E94 0000 		call uart_write_char
+ 462               	.L29:
+ 464               	.LM61:
+ 465 0124 2196      		adiw r28,1
+ 466 0126 8881      		ld r24,Y
+ 467 0128 8823      		tst r24
+ 468 012a 99F7      		brne .L30
+ 469               	.L32:
+ 470               	/* epilogue: frame size=0 */
+ 471 012c DF91      		pop r29
+ 472 012e CF91      		pop r28
+ 473 0130 0895      		ret
+ 474               	/* epilogue end (size=3) */
+ 475               	/* function uart_write_str size 22 (17) */
+ 477               	.Lscope7:
+ 481               	.global	debug_lvalue
+ 483               	debug_lvalue:
+ 485               	.LM62:
+ 486               	/* prologue: frame size=40 */
+ 487 0132 EF92      		push r14
+ 488 0134 FF92      		push r15
+ 489 0136 0F93      		push r16
+ 490 0138 1F93      		push r17
+ 491 013a CF93      		push r28
+ 492 013c DF93      		push r29
+ 493 013e CDB7      		in r28,__SP_L__
+ 494 0140 DEB7      		in r29,__SP_H__
+ 495 0142 A897      		sbiw r28,40
+ 496 0144 0FB6      		in __tmp_reg__,__SREG__
+ 497 0146 F894      		cli
+ 498 0148 DEBF      		out __SP_H__,r29
+ 499 014a 0FBE      		out __SREG__,__tmp_reg__
+ 500 014c CDBF      		out __SP_L__,r28
+ 501               	/* prologue end (size=14) */
+ 502 014e 7B01      		movw r14,r22
+ 503 0150 8C01      		movw r16,r24
+ 504 0152 842F      		mov r24,r20
+ 506               	.LM63:
+ 507 0154 9927      		clr r25
+ 508 0156 9C01      		movw r18,r24
+ 509 0158 AE01      		movw r20,r28
+ 510 015a 4F5F      		subi r20,lo8(-(1))
+ 511 015c 5F4F      		sbci r21,hi8(-(1))
+ 512 015e C801      		movw r24,r16
+ 513 0160 B701      		movw r22,r14
+ 514 0162 0E94 0000 		call ltoa
+ 516               	.LM64:
+ 517 0166 CE01      		movw r24,r28
+ 518 0168 0196      		adiw r24,1
+ 519 016a 0E94 0000 		call uart_write_str
+ 520               	/* epilogue: frame size=40 */
+ 521 016e A896      		adiw r28,40
+ 522 0170 0FB6      		in __tmp_reg__,__SREG__
+ 523 0172 F894      		cli
+ 524 0174 DEBF      		out __SP_H__,r29
+ 525 0176 0FBE      		out __SREG__,__tmp_reg__
+ 526 0178 CDBF      		out __SP_L__,r28
+ 527 017a DF91      		pop r29
+ 528 017c CF91      		pop r28
+ 529 017e 1F91      		pop r17
+ 530 0180 0F91      		pop r16
+ 531 0182 FF90      		pop r15
+ 532 0184 EF90      		pop r14
+ 533 0186 0895      		ret
+ 534               	/* epilogue end (size=13) */
+ 535               	/* function debug_lvalue size 43 (16) */
+ 540               	.Lscope8:
+ 544               	.global	debug_value
+ 546               	debug_value:
+ 548               	.LM65:
+ 549               	/* prologue: frame size=20 */
+ 550 0188 CF93      		push r28
+ 551 018a DF93      		push r29
+ 552 018c CDB7      		in r28,__SP_L__
+ 553 018e DEB7      		in r29,__SP_H__
+ 554 0190 6497      		sbiw r28,20
+ 555 0192 0FB6      		in __tmp_reg__,__SREG__
+ 556 0194 F894      		cli
+ 557 0196 DEBF      		out __SP_H__,r29
+ 558 0198 0FBE      		out __SREG__,__tmp_reg__
+ 559 019a CDBF      		out __SP_L__,r28
+ 560               	/* prologue end (size=10) */
+ 561 019c 262F      		mov r18,r22
+ 563               	.LM66:
+ 564 019e 3327      		clr r19
+ 565 01a0 A901      		movw r20,r18
+ 566 01a2 BE01      		movw r22,r28
+ 567 01a4 6F5F      		subi r22,lo8(-(1))
+ 568 01a6 7F4F      		sbci r23,hi8(-(1))
+ 569 01a8 0E94 0000 		call itoa
+ 571               	.LM67:
+ 572 01ac CE01      		movw r24,r28
+ 573 01ae 0196      		adiw r24,1
+ 574 01b0 0E94 0000 		call uart_write_str
+ 575               	/* epilogue: frame size=20 */
+ 576 01b4 6496      		adiw r28,20
+ 577 01b6 0FB6      		in __tmp_reg__,__SREG__
+ 578 01b8 F894      		cli
+ 579 01ba DEBF      		out __SP_H__,r29
+ 580 01bc 0FBE      		out __SREG__,__tmp_reg__
+ 581 01be CDBF      		out __SP_L__,r28
+ 582 01c0 DF91      		pop r29
+ 583 01c2 CF91      		pop r28
+ 584 01c4 0895      		ret
+ 585               	/* epilogue end (size=9) */
+ 586               	/* function debug_value size 31 (12) */
+ 591               	.Lscope9:
+ 593               	.global	__vector_13
+ 595               	__vector_13:
+ 374:../../Eblock_lib/avr_serial.c **** 	}
+ 375:../../Eblock_lib/avr_serial.c **** 	
+ 376:../../Eblock_lib/avr_serial.c **** }
+ 377:../../Eblock_lib/avr_serial.c **** 
+ 378:../../Eblock_lib/avr_serial.c **** 
+ 379:../../Eblock_lib/avr_serial.c **** /*!	\brief  Interrupt handler for RX 
+ 380:../../Eblock_lib/avr_serial.c **** 	\param     
+ 381:../../Eblock_lib/avr_serial.c **** 	\return Rx characters put in buffer
+ 382:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 383:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 384:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 385:../../Eblock_lib/avr_serial.c **** 	\n    
+ 386:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 387:../../Eblock_lib/avr_serial.c **** 	\n   Put each received characters in buffer
+ 388:../../Eblock_lib/avr_serial.c **** 	\note  
+ 389:../../Eblock_lib/avr_serial.c **** 	\bug  <bug to fix>
+ 390:../../Eblock_lib/avr_serial.c **** 
+ 391:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 392:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 393:../../Eblock_lib/avr_serial.c **** */     
+ 394:../../Eblock_lib/avr_serial.c **** /* UART receiver ready
+ 395:../../Eblock_lib/avr_serial.c **** */
+ 396:../../Eblock_lib/avr_serial.c **** 
+ 397:../../Eblock_lib/avr_serial.c **** SIGNAL(SIG_UART_RECV)
+ 398:../../Eblock_lib/avr_serial.c **** {  
+ 597               	.LM68:
+ 598               	/* prologue: frame size=0 */
+ 599 01c6 1F92      		push __zero_reg__
+ 600 01c8 0F92      		push __tmp_reg__
+ 601 01ca 0FB6      		in __tmp_reg__,__SREG__
+ 602 01cc 0F92      		push __tmp_reg__
+ 603 01ce 1124      		clr __zero_reg__
+ 604 01d0 2F93      		push r18
+ 605 01d2 3F93      		push r19
+ 606 01d4 4F93      		push r20
+ 607 01d6 5F93      		push r21
+ 608 01d8 6F93      		push r22
+ 609 01da 7F93      		push r23
+ 610 01dc 8F93      		push r24
+ 611 01de 9F93      		push r25
+ 612 01e0 AF93      		push r26
+ 613 01e2 BF93      		push r27
+ 614 01e4 EF93      		push r30
+ 615 01e6 FF93      		push r31
+ 616               	/* prologue end (size=17) */
+ 399:../../Eblock_lib/avr_serial.c ****    uint8_t ch;
+ 400:../../Eblock_lib/avr_serial.c ****    ch =  UDR;
+ 618               	.LM69:
+ 619 01e8 8CB1      		in r24,44-0x20
+ 401:../../Eblock_lib/avr_serial.c ****    uart_put_RX (ch);    // Should not use UDR here to avoid characters missing
+ 621               	.LM70:
+ 622 01ea 0E94 0000 		call uart_put_RX
+ 623               	/* epilogue: frame size=0 */
+ 624 01ee FF91      		pop r31
+ 625 01f0 EF91      		pop r30
+ 626 01f2 BF91      		pop r27
+ 627 01f4 AF91      		pop r26
+ 628 01f6 9F91      		pop r25
+ 629 01f8 8F91      		pop r24
+ 630 01fa 7F91      		pop r23
+ 631 01fc 6F91      		pop r22
+ 632 01fe 5F91      		pop r21
+ 633 0200 4F91      		pop r20
+ 634 0202 3F91      		pop r19
+ 635 0204 2F91      		pop r18
+ 636 0206 0F90      		pop __tmp_reg__
+ 637 0208 0FBE      		out __SREG__,__tmp_reg__
+ 638 020a 0F90      		pop __tmp_reg__
+ 639 020c 1F90      		pop __zero_reg__
+ 640 020e 1895      		reti
+ 641               	/* epilogue end (size=17) */
+ 642               	/* function __vector_13 size 37 (3) */
+ 647               	.Lscope10:
+ 649               	.global	__vector_14
+ 651               	__vector_14:
+ 402:../../Eblock_lib/avr_serial.c **** }
+ 403:../../Eblock_lib/avr_serial.c ****  
+ 404:../../Eblock_lib/avr_serial.c ****  
+ 405:../../Eblock_lib/avr_serial.c **** 
+ 406:../../Eblock_lib/avr_serial.c **** /*!	\brief   Interrupt service routine for UART TX Data Register Empty interrupt
+ 407:../../Eblock_lib/avr_serial.c **** 	\n		 Called when the UART is ready to transmit the next byte
+ 408:../../Eblock_lib/avr_serial.c **** 	\param   Pointer to String  
+ 409:../../Eblock_lib/avr_serial.c **** 	\return None
+ 410:../../Eblock_lib/avr_serial.c **** 	\par Port/Periheral Usage 
+ 411:../../Eblock_lib/avr_serial.c **** 	\n   TX,RX
+ 412:../../Eblock_lib/avr_serial.c **** 	\par Theory of Operation   
+ 413:../../Eblock_lib/avr_serial.c **** 	\n   When TX data register is empty to send the next characters. This routine will
+ 414:../../Eblock_lib/avr_serial.c **** 	\n   activate and the characters will be read from TX buffer until end of text. 
+ 415:../../Eblock_lib/avr_serial.c **** 	\n   If end of characers, this interrupt will be disable.
+ 416:../../Eblock_lib/avr_serial.c **** 	\par Pseudo code
+ 417:../../Eblock_lib/avr_serial.c **** 	\n   Send characters from TX buffer. If null char had found disable interrupt to avoid 
+ 418:../../Eblock_lib/avr_serial.c **** 	\n   repeat interrupt call
+ 419:../../Eblock_lib/avr_serial.c **** 	\note    
+ 420:../../Eblock_lib/avr_serial.c **** 	\bug    Send too fast get garbage
+ 421:../../Eblock_lib/avr_serial.c **** 
+ 422:../../Eblock_lib/avr_serial.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+ 423:../../Eblock_lib/avr_serial.c **** 	\sa	 <see also two name joined by ::>
+ 424:../../Eblock_lib/avr_serial.c **** */     
+ 425:../../Eblock_lib/avr_serial.c ****  
+ 426:../../Eblock_lib/avr_serial.c **** SIGNAL(SIG_UART_DATA)
+ 427:../../Eblock_lib/avr_serial.c **** { 
+ 653               	.LM71:
+ 654               	/* prologue: frame size=0 */
+ 655 0210 1F92      		push __zero_reg__
+ 656 0212 0F92      		push __tmp_reg__
+ 657 0214 0FB6      		in __tmp_reg__,__SREG__
+ 658 0216 0F92      		push __tmp_reg__
+ 659 0218 1124      		clr __zero_reg__
+ 660 021a 2F93      		push r18
+ 661 021c 3F93      		push r19
+ 662 021e 4F93      		push r20
+ 663 0220 5F93      		push r21
+ 664 0222 6F93      		push r22
+ 665 0224 7F93      		push r23
+ 666 0226 8F93      		push r24
+ 667 0228 9F93      		push r25
+ 668 022a AF93      		push r26
+ 669 022c BF93      		push r27
+ 670 022e EF93      		push r30
+ 671 0230 FF93      		push r31
+ 672               	/* prologue end (size=17) */
+ 428:../../Eblock_lib/avr_serial.c ****     uint8_t  ch;
+ 429:../../Eblock_lib/avr_serial.c **** 	if ((ch = uart_get_TX()))
+ 674               	.LM72:
+ 675 0232 0E94 0000 		call uart_get_TX
+ 676 0236 8823      		tst r24
+ 677 0238 11F0      		breq .L37
+ 430:../../Eblock_lib/avr_serial.c **** 	{
+ 431:../../Eblock_lib/avr_serial.c ****  		UDR = ch;
+ 679               	.LM73:
+ 680 023a 8CB9      		out 44-0x20,r24
+ 681 023c 01C0      		rjmp .L36
+ 682               	.L37:
+ 432:../../Eblock_lib/avr_serial.c **** 	}	
+ 433:../../Eblock_lib/avr_serial.c **** 	else 
+ 434:../../Eblock_lib/avr_serial.c **** // If there are no character,  disable interrupt to avoid repeat call again 
+ 435:../../Eblock_lib/avr_serial.c **** 	{
+ 436:../../Eblock_lib/avr_serial.c **** 	    UCSRB &=  ~(1<<UDRIE);
+ 684               	.LM74:
+ 685 023e 5598      		cbi 42-0x20,5
+ 686               	.L36:
+ 687               	/* epilogue: frame size=0 */
+ 688 0240 FF91      		pop r31
+ 689 0242 EF91      		pop r30
+ 690 0244 BF91      		pop r27
+ 691 0246 AF91      		pop r26
+ 692 0248 9F91      		pop r25
+ 693 024a 8F91      		pop r24
+ 694 024c 7F91      		pop r23
+ 695 024e 6F91      		pop r22
+ 696 0250 5F91      		pop r21
+ 697 0252 4F91      		pop r20
+ 698 0254 3F91      		pop r19
+ 699 0256 2F91      		pop r18
+ 700 0258 0F90      		pop __tmp_reg__
+ 701 025a 0FBE      		out __SREG__,__tmp_reg__
+ 702 025c 0F90      		pop __tmp_reg__
+ 703 025e 1F90      		pop __zero_reg__
+ 704 0260 1895      		reti
+ 705               	/* epilogue end (size=17) */
+ 706               	/* function __vector_14 size 41 (7) */
+ 711               	.Lscope11:
+ 712               		.comm g_rx_buff,250,1
+ 713               		.comm g_tx_buff,250,1
+ 718               		.text
+ 720               	Letext:
+ 721               	/* File "../../Eblock_lib/avr_serial.c": code  308 = 0x0134 ( 184), prologues  61, epilogues  63 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 avr_serial.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:89     .bss:00000000 g_tx_ptr
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:95     .bss:00000001 g_rx_ptr
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:102    .text:00000000 uart_put_RX
+                            *COM*:000000fa g_rx_buff
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:153    .text:00000030 uart_get_RX
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:221    .text:00000066 uart_put_TX
+                            *COM*:000000fa g_tx_buff
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:272    .text:00000096 uart_get_TX
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:342    .text:000000cc uart_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:382    .text:000000e6 uart_read
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:403    .text:000000ee uart_write_char
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:435    .text:00000106 uart_write_str
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:483    .text:00000132 debug_lvalue
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:546    .text:00000188 debug_value
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:595    .text:000001c6 __vector_13
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:651    .text:00000210 __vector_14
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccOwaaaa.s:720    .text:00000262 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+ltoa
+itoa

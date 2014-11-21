@@ -1,0 +1,260 @@
+   1               		.file	"E_io_sw.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  76               	.global	io_sw_init
+  78               	io_sw_init:
+   1:../../Eblock_lib/E_io_sw.c **** /*!  
+   2:../../Eblock_lib/E_io_sw.c **** 	\file   	E_io_sw.c
+   3:../../Eblock_lib/E_io_sw.c **** 	\brief  	Library module for toggle Switch on E_IO Module
+   4:../../Eblock_lib/E_io_sw.c **** 	\ingroup	E_io_sw
+   5:../../Eblock_lib/E_io_sw.c **** 	\par Module description
+   6:../../Eblock_lib/E_io_sw.c ****  	\n Original written for 	:   \b AVR
+   7:../../Eblock_lib/E_io_sw.c ****  	\n CPU port/tested			:   ATMEGA32
+   8:../../Eblock_lib/E_io_sw.c ****  	\n Hardware use				:   E_IO
+   9:../../Eblock_lib/E_io_sw.c ****  	\n Port use					:   E_PB0, E_PB3
+  10:../../Eblock_lib/E_io_sw.c ****  	\n Memory	FLASH			:   XXX
+  11:../../Eblock_lib/E_io_sw.c ****  	\n			RAM				:   XXX
+  12:../../Eblock_lib/E_io_sw.c ****  	\n		EEPROM				:   -
+  13:../../Eblock_lib/E_io_sw.c ****  	\n Reference Document		:   Document describe algorithm
+  14:../../Eblock_lib/E_io_sw.c **** 
+  15:../../Eblock_lib/E_io_sw.c **** 	\version 0.1
+  16:../../Eblock_lib/E_io_sw.c ****  	\author  wichai tossamartvorakul /Wichai@geartronics.net
+  17:../../Eblock_lib/E_io_sw.c **** 	\date 	 13/08/08
+  18:../../Eblock_lib/E_io_sw.c **** 
+  19:../../Eblock_lib/E_io_sw.c **** 	\par Update History
+  20:../../Eblock_lib/E_io_sw.c ****  	\n	Date			By 					Comments
+  21:../../Eblock_lib/E_io_sw.c ****  	\n	----			--					--------
+  22:../../Eblock_lib/E_io_sw.c **** 	\n 
+  23:../../Eblock_lib/E_io_sw.c ****  
+  24:../../Eblock_lib/E_io_sw.c **** */
+  25:../../Eblock_lib/E_io_sw.c **** 
+  26:../../Eblock_lib/E_io_sw.c **** 
+  27:../../Eblock_lib/E_io_sw.c **** 
+  28:../../Eblock_lib/E_io_sw.c **** 
+  29:../../Eblock_lib/E_io_sw.c **** 
+  30:../../Eblock_lib/E_io_sw.c **** 
+  31:../../Eblock_lib/E_io_sw.c **** // Include file
+  32:../../Eblock_lib/E_io_sw.c **** #include "cpu.h"
+  33:../../Eblock_lib/E_io_sw.c **** #include "E_delay.h"
+  34:../../Eblock_lib/E_io_sw.c **** #include "E_io_sw.h"
+  35:../../Eblock_lib/E_io_sw.c **** 
+  36:../../Eblock_lib/E_io_sw.c **** 
+  37:../../Eblock_lib/E_io_sw.c **** 
+  38:../../Eblock_lib/E_io_sw.c **** 
+  39:../../Eblock_lib/E_io_sw.c **** 
+  40:../../Eblock_lib/E_io_sw.c **** 
+  41:../../Eblock_lib/E_io_sw.c **** // Start Subroutine here
+  42:../../Eblock_lib/E_io_sw.c **** 
+  43:../../Eblock_lib/E_io_sw.c **** 
+  44:../../Eblock_lib/E_io_sw.c ****  
+  45:../../Eblock_lib/E_io_sw.c **** 
+  46:../../Eblock_lib/E_io_sw.c **** 
+  47:../../Eblock_lib/E_io_sw.c **** 
+  48:../../Eblock_lib/E_io_sw.c **** /*!	\brief  Initial toggle SW on E_IO block 
+  49:../../Eblock_lib/E_io_sw.c **** 	\param  None  
+  50:../../Eblock_lib/E_io_sw.c **** 	\return None
+  51:../../Eblock_lib/E_io_sw.c ****  	\par Port/Periheral Usage 
+  52:../../Eblock_lib/E_io_sw.c **** 	\n   E_PB0,E_PB3
+  53:../../Eblock_lib/E_io_sw.c **** 	\par Theory of Operation   
+  54:../../Eblock_lib/E_io_sw.c **** 	\n	 Initial Port for Input and enable pull up resistor by setting
+  55:../../Eblock_lib/E_io_sw.c **** 	\n	 Direction register and Output 1 to port to enable pull up
+  56:../../Eblock_lib/E_io_sw.c **** 	\par Pseudo code
+  57:../../Eblock_lib/E_io_sw.c **** 	\n	 Inital port to use for output
+  58:../../Eblock_lib/E_io_sw.c **** 	\n   Enable pull up resistor 
+  59:../../Eblock_lib/E_io_sw.c **** 	\note  
+  60:../../Eblock_lib/E_io_sw.c **** 	\n	 Use Macro   E_IN_XXX to get input
+  61:../../Eblock_lib/E_io_sw.c **** 	\n   Use Macro   E_OUT_XXX (y) to get output
+  62:../../Eblock_lib/E_io_sw.c **** 	\n   Use Macro   E_DIR_XXX  to set direction
+  63:../../Eblock_lib/E_io_sw.c **** 	\n    XXX is  E_BLOCK PORT NAME  Y  = ON, OFF 
+  64:../../Eblock_lib/E_io_sw.c **** 	       
+  65:../../Eblock_lib/E_io_sw.c **** 	\bug    <bug to fix>
+  66:../../Eblock_lib/E_io_sw.c **** 
+  67:../../Eblock_lib/E_io_sw.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  68:../../Eblock_lib/E_io_sw.c **** 	\sa	 <see also two name joined by ::>
+  69:../../Eblock_lib/E_io_sw.c **** */           
+  70:../../Eblock_lib/E_io_sw.c **** void  io_sw_init (void) 
+  71:../../Eblock_lib/E_io_sw.c **** {
+  80               	.LM1:
+  81               	/* prologue: frame size=0 */
+  82               	/* prologue end (size=0) */
+  72:../../Eblock_lib/E_io_sw.c **** // Set direction of two switch to Input	
+  73:../../Eblock_lib/E_io_sw.c **** 	E_DIR_PB0 (INPUT);
+  84               	.LM2:
+  85 0000 A298      		cbi 52-0x20,2
+  74:../../Eblock_lib/E_io_sw.c **** 	E_DIR_PB3(INPUT);
+  87               	.LM3:
+  88 0002 A598      		cbi 52-0x20,5
+  75:../../Eblock_lib/E_io_sw.c **** // Enable pull up resistor 
+  76:../../Eblock_lib/E_io_sw.c **** 	E_OUT_PB0(ON);
+  90               	.LM4:
+  91 0004 AA9A      		sbi 53-0x20,2
+  77:../../Eblock_lib/E_io_sw.c **** 	E_OUT_PB3(ON);
+  93               	.LM5:
+  94 0006 AD9A      		sbi 53-0x20,5
+  95               	/* epilogue: frame size=0 */
+  96 0008 0895      		ret
+  97               	/* epilogue end (size=1) */
+  98               	/* function io_sw_init size 5 (4) */
+ 100               	.Lscope0:
+ 101               		.lcomm press.0,4
+ 104               	.global	io_sw_read
+ 106               	io_sw_read:
+  78:../../Eblock_lib/E_io_sw.c **** }
+  79:../../Eblock_lib/E_io_sw.c **** 
+  80:../../Eblock_lib/E_io_sw.c **** 
+  81:../../Eblock_lib/E_io_sw.c **** 
+  82:../../Eblock_lib/E_io_sw.c **** 
+  83:../../Eblock_lib/E_io_sw.c **** /*!	\brief  Get status of  toggle SW on E_IO block 
+  84:../../Eblock_lib/E_io_sw.c **** 	\param  Toggle Switch to check 1 or 2  
+  85:../../Eblock_lib/E_io_sw.c **** 	\return   = 0 No press
+  86:../../Eblock_lib/E_io_sw.c **** 	\n		  > 1 Time to  press &hold the switch max 65530
+  87:../../Eblock_lib/E_io_sw.c **** 	\par Port/Periheral Usage 
+  88:../../Eblock_lib/E_io_sw.c **** 	\n   E_PB0,E_PB3
+  89:../../Eblock_lib/E_io_sw.c **** 	\par Theory of Operation   
+  90:../../Eblock_lib/E_io_sw.c **** 	\n   Get the SW status by reading PIN register. If hold the key the press value  will be
+  91:../../Eblock_lib/E_io_sw.c **** 	\n   cumulative until MAX VALUE of int16 is reach then stop increment
+  92:../../Eblock_lib/E_io_sw.c **** 	\n   To check sw hold use number of loop to dertermine whether the switch 
+  93:../../Eblock_lib/E_io_sw.c **** 	\n	is pressed or hold
+  94:../../Eblock_lib/E_io_sw.c **** 	\par Pseudo Code
+  95:../../Eblock_lib/E_io_sw.c **** 	\note   To correct debounce by allowing return value more than debouce interval ex 10 - 100
+  96:../../Eblock_lib/E_io_sw.c **** 	\bug    <bug to fix>
+  97:../../Eblock_lib/E_io_sw.c **** 
+  98:../../Eblock_lib/E_io_sw.c **** 	\author wichai tossamartvorakul  wichi@geartronics.net
+  99:../../Eblock_lib/E_io_sw.c **** 	\sa	 <see also two name joined by ::>
+ 100:../../Eblock_lib/E_io_sw.c **** */       
+ 101:../../Eblock_lib/E_io_sw.c **** uint16_t  io_sw_read (uint8_t sw) 
+ 102:../../Eblock_lib/E_io_sw.c **** {
+ 108               	.LM6:
+ 109               	/* prologue: frame size=0 */
+ 110 000a 1F93      		push r17
+ 111 000c CF93      		push r28
+ 112               	/* prologue end (size=2) */
+ 103:../../Eblock_lib/E_io_sw.c ****    static  uint16_t  press[MAX_KEY] = {0,0};  // Keep status for each key
+ 104:../../Eblock_lib/E_io_sw.c ****    uint8_t state = 1;
+ 114               	.LM7:
+ 115 000e C1E0      		ldi r28,lo8(1)
+ 105:../../Eblock_lib/E_io_sw.c ****   
+ 106:../../Eblock_lib/E_io_sw.c ****    
+ 107:../../Eblock_lib/E_io_sw.c ****    sw--; 					// Start from 0  
+ 117               	.LM8:
+ 118 0010 182F      		mov r17,r24
+ 119 0012 1150      		subi r17,lo8(-(-1))
+ 108:../../Eblock_lib/E_io_sw.c ****    delay(100);			   // Debounce key
+ 121               	.LM9:
+ 122 0014 84E6      		ldi r24,lo8(100)
+ 123 0016 90E0      		ldi r25,hi8(100)
+ 124 0018 0E94 0000 		call delay
+ 109:../../Eblock_lib/E_io_sw.c ****    
+ 110:../../Eblock_lib/E_io_sw.c ****    if (sw == 0 )
+ 126               	.LM10:
+ 127 001c 1123      		tst r17
+ 128 001e 19F4      		brne .L3
+ 111:../../Eblock_lib/E_io_sw.c ****    {
+ 112:../../Eblock_lib/E_io_sw.c **** 		state = E_IN_PB0;
+ 130               	.LM11:
+ 131 0020 C3B3      		in r28,51-0x20
+ 132 0022 C470      		andi r28,lo8(4)
+ 133 0024 04C0      		rjmp .L4
+ 134               	.L3:
+ 113:../../Eblock_lib/E_io_sw.c ****    }
+ 114:../../Eblock_lib/E_io_sw.c ****    if (sw == 1 )
+ 136               	.LM12:
+ 137 0026 1130      		cpi r17,lo8(1)
+ 138 0028 11F4      		brne .L4
+ 115:../../Eblock_lib/E_io_sw.c ****    {
+ 116:../../Eblock_lib/E_io_sw.c **** 		state = E_IN_PB3;
+ 140               	.LM13:
+ 141 002a C3B3      		in r28,51-0x20
+ 142 002c C072      		andi r28,lo8(32)
+ 143               	.L4:
+ 144 002e E12F      		mov r30,r17
+ 145 0030 FF27      		clr r31
+ 117:../../Eblock_lib/E_io_sw.c ****    }
+ 118:../../Eblock_lib/E_io_sw.c ****    if (!state) 			// If Press = 0  (Because enable pull up resister)
+ 147               	.LM14:
+ 148 0032 CC23      		tst r28
+ 149 0034 89F4      		brne .L5
+ 119:../../Eblock_lib/E_io_sw.c **** 	{
+ 120:../../Eblock_lib/E_io_sw.c **** 		press[sw]++;
+ 151               	.LM15:
+ 152 0036 EE0F      		add r30,r30
+ 153 0038 FF1F      		adc r31,r31
+ 154 003a E050      		subi r30,lo8(-(press.0))
+ 155 003c F040      		sbci r31,hi8(-(press.0))
+ 156 003e 8081      		ld r24,Z
+ 157 0040 9181      		ldd r25,Z+1
+ 158 0042 0196      		adiw r24,1
+ 159 0044 9183      		std Z+1,r25
+ 160 0046 8083      		st Z,r24
+ 121:../../Eblock_lib/E_io_sw.c **** 		if (press[sw] > 65530)
+ 162               	.LM16:
+ 163 0048 8B5F      		subi r24,lo8(-5)
+ 164 004a 9F4F      		sbci r25,hi8(-5)
+ 165 004c 58F0      		brlo .L7
+ 122:../../Eblock_lib/E_io_sw.c **** 			press[sw] = 65530;   // MAX VALUE
+ 167               	.LM17:
+ 168 004e 8AEF      		ldi r24,lo8(-6)
+ 169 0050 9FEF      		ldi r25,hi8(-6)
+ 170 0052 9183      		std Z+1,r25
+ 171 0054 8083      		st Z,r24
+ 172 0056 06C0      		rjmp .L7
+ 173               	.L5:
+ 123:../../Eblock_lib/E_io_sw.c **** 	}
+ 124:../../Eblock_lib/E_io_sw.c **** 	else   //  Release or never press 
+ 125:../../Eblock_lib/E_io_sw.c **** 	{
+ 126:../../Eblock_lib/E_io_sw.c **** 		press[sw] = 0;
+ 175               	.LM18:
+ 176 0058 EE0F      		add r30,r30
+ 177 005a FF1F      		adc r31,r31
+ 178 005c E050      		subi r30,lo8(-(press.0))
+ 179 005e F040      		sbci r31,hi8(-(press.0))
+ 180 0060 1182      		std Z+1,__zero_reg__
+ 181 0062 1082      		st Z,__zero_reg__
+ 182               	.L7:
+ 127:../../Eblock_lib/E_io_sw.c **** 	}
+ 128:../../Eblock_lib/E_io_sw.c ****  	return press[sw];
+ 184               	.LM19:
+ 185 0064 E12F      		mov r30,r17
+ 186 0066 FF27      		clr r31
+ 187 0068 EE0F      		add r30,r30
+ 188 006a FF1F      		adc r31,r31
+ 189 006c E050      		subi r30,lo8(-(press.0))
+ 190 006e F040      		sbci r31,hi8(-(press.0))
+ 129:../../Eblock_lib/E_io_sw.c **** }
+ 192               	.LM20:
+ 193 0070 8081      		ld r24,Z
+ 194 0072 9181      		ldd r25,Z+1
+ 195               	/* epilogue: frame size=0 */
+ 196 0074 CF91      		pop r28
+ 197 0076 1F91      		pop r17
+ 198 0078 0895      		ret
+ 199               	/* epilogue end (size=3) */
+ 200               	/* function io_sw_read size 57 (52) */
+ 206               	.Lscope1:
+ 207               		.text
+ 209               	Letext:
+ 210               	/* File "../../Eblock_lib/E_io_sw.c": code   62 = 0x003e (  56), prologues   2, epilogues   4 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 E_io_sw.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:78     .text:00000000 io_sw_init
+                             .bss:00000000 press.0
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:106    .text:0000000a io_sw_read
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccO2aaaa.s:209    .text:0000007a Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+delay

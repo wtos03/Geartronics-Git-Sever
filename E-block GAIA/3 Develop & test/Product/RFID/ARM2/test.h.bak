@@ -1,0 +1,8 @@
+#ifndef TEST
+#define TEST
+
+int a;
+
+extern void testkub(void);
+
+#endif

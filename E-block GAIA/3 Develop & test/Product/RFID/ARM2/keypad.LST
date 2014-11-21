@@ -1,0 +1,731 @@
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 1   
+
+
+ARM COMPILER V2.32a, COMPILATION OF MODULE keypad
+OBJECT MODULE PLACED IN keypad.OBJ
+COMPILER INVOKED BY: C:\Keil\ARM\BIN\CA.exe keypad.c THUMB TABS(4) 
+
+stmt  level    source
+
+    1          #include "LPC213x.h>
+    2          
+    3          void init_keypad(void)
+    4          {
+    5   1          PINSEL0 &= 0x3FFFFFFF;  // use pin 0.15 
+    6   1          PINSEL2 &= 0xFFFFF000;  // use pin 1.16 - pin 1.21
+    7   1          IODIR1 |= 0x00380000;   // use pin 1.19 - pin 1.21 as output 
+    8   1          IODIR1 &= 0xFFF8FFFF;   // use pin 1.16 - pin 1.18 as input 
+    9   1          IODIR0 &= 0xFFFF7FFF;   // use pin 0.15 as input
+   10   1          IOSET1 |= 0x00070000;
+   11   1          IOSET0 |= 0x00004000;
+   12   1      }
+   13          
+   14          void delay_ms(long int ms)
+   15          {
+   16   1          long int i,j;
+   17   1          for(i=0;i<ms;i++)
+   18   1          for(j=0;j<6666;j++);
+   19   1      }
+   20          
+   21          char keypad(void)
+   22          {
+   23   1          char key = '$';
+   24   1      
+   25   1          IOCLR1 |= 0x00380000;
+   26   1      
+   27   1          if( (IOPIN1 & 0x00010000) == 0)
+   28   1          {   
+   29   2              IOSET1 |= 0x00380000;
+   30   2              IOCLR1 |= 0x00080000;   
+   31   2              if((IOPIN1 & 0x00010000) == 0) // key is 4
+   32   2              {
+   33   3                  key = '4';
+   34   3                  while((IOPIN1 & 0x00010000) == 0);
+   35   3                  delay_ms(10);
+   36   3              }
+   37   2          
+   38   2              IOSET1 |= 0x00380000;
+   39   2              IOCLR1 |= 0x00100000;   
+   40   2              if((IOPIN1 & 0x00010000) == 0) // key is 5
+   41   2              {
+   42   3                  key = '5';
+   43   3                  while((IOPIN1 & 0x00010000) == 0);
+   44   3                  delay_ms(10);
+   45   3              } 
+   46   2      
+   47   2              IOSET1 |= 0x00380000;
+   48   2              IOCLR1 |= 0x00200000;   
+   49   2              if((IOPIN1 & 0x00010000) == 0) // key is 6
+   50   2              {
+   51   3                  key = '6';
+   52   3                  while((IOPIN1 & 0x00010000) == 0);
+   53   3                  delay_ms(10);
+   54   3              }
+   55   2          }
+   56   1      
+   57   1          if( (IOPIN1 & 0x00020000) == 0 )
+   58   1          {   
+   59   2              IOSET1 |= 0x00380000;
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 2   
+
+   60   2              IOCLR1 |= 0x00080000;   
+   61   2              if((IOPIN1 & 0x00020000) == 0) // key is 7
+   62   2              {
+   63   3                  key = '7';
+   64   3                  while((IOPIN1 & 0x00020000) == 0);
+   65   3                  delay_ms(10);
+   66   3              }
+   67   2      
+   68   2              IOSET1 |= 0x00380000;
+   69   2              IOCLR1 |= 0x00100000;   
+   70   2              if((IOPIN1 & 0x00020000) == 0) // key is 8
+   71   2              {
+   72   3                  key = '8';
+   73   3                  while((IOPIN1 & 0x00020000) == 0);
+   74   3                  delay_ms(10);
+   75   3              } 
+   76   2      
+   77   2              IOSET1 |= 0x00380000;
+   78   2              IOCLR1 |= 0x00200000;   
+   79   2              if((IOPIN1 & 0x00020000) == 0) // key is 9
+   80   2              {
+   81   3                  key = '9';
+   82   3                  while((IOPIN1 & 0x00020000) == 0);
+   83   3                  delay_ms(10);
+   84   3              }
+   85   2          }
+   86   1              
+   87   1          if( (IOPIN1 & 0x00040000) == 0 )
+   88   1          {   
+   89   2              IOSET1 |= 0x00380000;
+   90   2              IOCLR1 |= 0x00080000;   
+   91   2              if((IOPIN1 & 0x00040000) == 0) // key is *
+   92   2              {
+   93   3                  key = '*';
+   94   3                  while((IOPIN1 & 0x00040000) == 0);
+   95   3                  delay_ms(10);
+   96   3              }
+   97   2      
+   98   2              IOSET1 |= 0x00380000;
+   99   2              IOCLR1 |= 0x00100000;   
+  100   2              if((IOPIN1 & 0x00040000) == 0) // key is 0
+  101   2              {
+  102   3                  key = '0';
+  103   3                  while((IOPIN1 & 0x00040000) == 0);
+  104   3                  delay_ms(10);
+  105   3              } 
+  106   2      
+  107   2              IOSET1 |= 0x00380000;
+  108   2              IOCLR1 |= 0x00200000;   
+  109   2              if((IOPIN1 & 0x00040000) == 0) // key is #
+  110   2              {
+  111   3                  key = '#';
+  112   3                  while((IOPIN1 & 0x00040000) == 0);
+  113   3                  delay_ms(10);
+  114   3              }
+  115   2          }
+  116   1                  
+  117   1          if( (IOPIN0 & 0x00008000) == 0 )
+  118   1          {
+  119   2              IOSET1 |= 0x00380000;
+  120   2              IOCLR1 |= 0x00080000;   
+  121   2              if((IOPIN0 & 0x00008000) == 0) // key is 1
+  122   2              {
+  123   3                  key = '1';
+  124   3                  while((IOPIN0 & 0x00008000) == 0);
+  125   3                  delay_ms(10);
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 3   
+
+  126   3              }
+  127   2      
+  128   2              IOSET1 |= 0x00380000;
+  129   2              IOCLR1 |= 0x00100000;   
+  130   2              if((IOPIN0 & 0x00008000) == 0) // key is 2
+  131   2              {
+  132   3                  key = '2';
+  133   3                  while((IOPIN0 & 0x00008000) == 0);
+  134   3                  delay_ms(10);
+  135   3              } 
+  136   2      
+  137   2              IOSET1 |= 0x00380000;
+  138   2              IOCLR1 |= 0x00200000;   
+  139   2              if((IOPIN0 & 0x00008000) == 0) // key is 3
+  140   2              {
+  141   3                  key = '3';
+  142   3                  while((IOPIN0 & 0x00008000) == 0);
+  143   3                  delay_ms(10);
+  144   3              }
+  145   2          }
+  146   1          
+  147   1          return key;
+  148   1          
+  149   1      }
+  150          
+  151          
+  152          
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 4   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+
+*** PUBLICS:
+ PUBLIC         init_keypad?T
+ PUBLIC         delay_ms?T
+ PUBLIC         keypad?T
+
+
+
+*** CODE SEGMENT '?PR?init_keypad?T?keypad':
+    5:     PINSEL0 &= 0x3FFFFFFF;  // use pin 0.15 
+ 00000000  4800      LDR         R2,=0xC0000000
+ 00000002  4800      LDR         R0,=0xE002C000
+ 00000004  6801      LDR         R1,[R0,#0x0]
+ 00000006  4391      BIC         R1,R2
+ 00000008  6001      STR         R1,[R0,#0x0]
+    6:     PINSEL2 &= 0xFFFFF000;  // use pin 1.16 - pin 1.21
+ 0000000A  4800      LDR         R2,=0xFFFFF000
+ 0000000C  4800      LDR         R0,=0xE002C014
+ 0000000E  6801      LDR         R1,[R0,#0x0]
+ 00000010  4011      AND         R1,R2
+ 00000012  6001      STR         R1,[R0,#0x0]
+    7:     IODIR1 |= 0x00380000;   // use pin 1.19 - pin 1.21 as output 
+ 00000014  4800      LDR         R2,=0x380000
+ 00000016  4800      LDR         R0,=0xE0028018
+ 00000018  6801      LDR         R1,[R0,#0x0]
+ 0000001A  4311      ORR         R1,R2
+ 0000001C  6001      STR         R1,[R0,#0x0]
+    8:     IODIR1 &= 0xFFF8FFFF;   // use pin 1.16 - pin 1.18 as input 
+ 0000001E  4800      LDR         R2,=0x70000
+ 00000020  4800      LDR         R0,=0xE0028018
+ 00000022  6801      LDR         R1,[R0,#0x0]
+ 00000024  4391      BIC         R1,R2
+ 00000026  6001      STR         R1,[R0,#0x0]
+    9:     IODIR0 &= 0xFFFF7FFF;   // use pin 0.15 as input
+ 00000028  4800      LDR         R2,=0x8000
+ 0000002A  4800      LDR         R0,=0xE0028008
+ 0000002C  6801      LDR         R1,[R0,#0x0]
+ 0000002E  4391      BIC         R1,R2
+ 00000030  6001      STR         R1,[R0,#0x0]
+   10:     IOSET1 |= 0x00070000;
+ 00000032  4800      LDR         R2,=0x70000
+ 00000034  4800      LDR         R0,=0xE0028014
+ 00000036  6801      LDR         R1,[R0,#0x0]
+ 00000038  4311      ORR         R1,R2
+ 0000003A  6001      STR         R1,[R0,#0x0]
+   11:     IOSET0 |= 0x00004000;
+ 0000003C  4800      LDR         R2,=0x4000
+ 0000003E  4800      LDR         R0,=0xE0028004
+ 00000040  6801      LDR         R1,[R0,#0x0]
+ 00000042  4311      ORR         R1,R2
+ 00000044  6001      STR         R1,[R0,#0x0]
+   12: }
+ 00000046  4770      BX          R14
+ 00000048          ENDP ; 'init_keypad?T'
+
+
+*** CODE SEGMENT '?PR?delay_ms?T?keypad':
+   14: void delay_ms(long int ms)
+ 00000000  B410      PUSH        {R4}
+ 00000002  ---- Variable 'ms' assigned to Register 'R0' ----
+   15: {
+ 00000002            ; SCOPE-START
+   17:     for(i=0;i<ms;i++)
+ 00000002  2100      MOV         R1,#0x0
+ 00000004  ---- Variable 'i' assigned to Register 'R1' ----
+ 00000004  E006      B           L_3  ; T=0x00000014
+   18:     for(j=0;j<6666;j++);
+ 00000006          L_10:
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 5   
+
+ 00000006  2200      MOV         R2,#0x0
+ 00000008  ---- Variable 'j' assigned to Register 'R2' ----
+ 00000008          L_6:
+ 00000008  3201      ADD         R2,#0x1
+ 0000000A  1C13      MOV         R3,R2 ; j
+ 0000000C  4800      LDR         R4,=0x1A0A
+ 0000000E  42A3      CMP         R3,R4 ; j
+ 00000010  DBFA      BLT         L_6  ; T=0x00000008
+ 00000012  3101      ADD         R1,#0x1
+ 00000014          L_3:
+ 00000014  1C03      MOV         R3,R0 ; ms
+ 00000016  1C0A      MOV         R2,R1 ; i
+ 00000018  429A      CMP         R2,R3 ; i
+ 0000001A  DBF4      BLT         L_10  ; T=0x00000006
+ 0000001C            ; SCOPE-END
+   19: }
+ 0000001C  BC10      POP         {R4}
+ 0000001E  4770      BX          R14
+ 00000020          ENDP ; 'delay_ms?T'
+
+
+*** CODE SEGMENT '?PR?keypad?T?keypad':
+   21: char keypad(void)
+ 00000000  B510      PUSH        {R4,LR}
+   22: {
+ 00000002            ; SCOPE-START
+   23:     char key = '$';
+ 00000002  2424      MOV         R4,#0x24
+ 00000004  ---- Variable 'key' assigned to Register 'R4' ----
+   25:     IOCLR1 |= 0x00380000;
+ 00000004  4800      LDR         R2,=0x380000
+ 00000006  4800      LDR         R0,=0xE002801C
+ 00000008  6801      LDR         R1,[R0,#0x0]
+ 0000000A  4311      ORR         R1,R2
+ 0000000C  6001      STR         R1,[R0,#0x0]
+   27:     if( (IOPIN1 & 0x00010000) == 0)
+ 0000000E  4800      LDR         R0,=0xE0028010
+ 00000010  6800      LDR         R0,[R0,#0x0]
+ 00000012  4800      LDR         R1,=0x10000
+ 00000014  4208      TST         R0,R1
+ 00000016  D147      BNE         L_11  ; T=0x000000A8
+   29:         IOSET1 |= 0x00380000;
+ 00000018  4800      LDR         R2,=0x380000
+ 0000001A  4800      LDR         R0,=0xE0028014
+ 0000001C  6801      LDR         R1,[R0,#0x0]
+ 0000001E  4311      ORR         R1,R2
+ 00000020  6001      STR         R1,[R0,#0x0]
+   30:         IOCLR1 |= 0x00080000;   
+ 00000022  4800      LDR         R2,=0x80000
+ 00000024  4800      LDR         R0,=0xE002801C
+ 00000026  6801      LDR         R1,[R0,#0x0]
+ 00000028  4311      ORR         R1,R2
+ 0000002A  6001      STR         R1,[R0,#0x0]
+   31:         if((IOPIN1 & 0x00010000) == 0) // key is 4
+ 0000002C  4800      LDR         R0,=0xE0028010
+ 0000002E  6800      LDR         R0,[R0,#0x0]
+ 00000030  4800      LDR         R1,=0x10000
+ 00000032  4208      TST         R0,R1
+ 00000034  D108      BNE         L_12  ; T=0x00000048
+   33:             key = '4';
+ 00000036  2434      MOV         R4,#0x34
+   34:             while((IOPIN1 & 0x00010000) == 0);
+ 00000038          L_13:
+ 00000038  4800      LDR         R0,=0xE0028010
+ 0000003A  6800      LDR         R0,[R0,#0x0]
+ 0000003C  4800      LDR         R1,=0x10000
+ 0000003E  4208      TST         R0,R1
+ 00000040  D0FA      BEQ         L_13  ; T=0x00000038
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 6   
+
+   35:             delay_ms(10);
+ 00000042  200A      MOV         R0,#0xA
+ 00000044  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000046  FFDC      BL          delay_ms?T  ; T=0x0001  (2)
+   36:         }
+ 00000048          L_12:
+   38:         IOSET1 |= 0x00380000;
+ 00000048  4800      LDR         R2,=0x380000
+ 0000004A  4800      LDR         R0,=0xE0028014
+ 0000004C  6801      LDR         R1,[R0,#0x0]
+ 0000004E  4311      ORR         R1,R2
+ 00000050  6001      STR         R1,[R0,#0x0]
+   39:         IOCLR1 |= 0x00100000;   
+ 00000052  4800      LDR         R2,=0x100000
+ 00000054  4800      LDR         R0,=0xE002801C
+ 00000056  6801      LDR         R1,[R0,#0x0]
+ 00000058  4311      ORR         R1,R2
+ 0000005A  6001      STR         R1,[R0,#0x0]
+   40:         if((IOPIN1 & 0x00010000) == 0) // key is 5
+ 0000005C  4800      LDR         R0,=0xE0028010
+ 0000005E  6800      LDR         R0,[R0,#0x0]
+ 00000060  4800      LDR         R1,=0x10000
+ 00000062  4208      TST         R0,R1
+ 00000064  D108      BNE         L_17  ; T=0x00000078
+   42:             key = '5';
+ 00000066  2435      MOV         R4,#0x35
+   43:             while((IOPIN1 & 0x00010000) == 0);
+ 00000068          L_18:
+ 00000068  4800      LDR         R0,=0xE0028010
+ 0000006A  6800      LDR         R0,[R0,#0x0]
+ 0000006C  4800      LDR         R1,=0x10000
+ 0000006E  4208      TST         R0,R1
+ 00000070  D0FA      BEQ         L_18  ; T=0x00000068
+   44:             delay_ms(10);
+ 00000072  200A      MOV         R0,#0xA
+ 00000074  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000076  FFC4      BL          delay_ms?T  ; T=0x0001  (2)
+   45:         } 
+ 00000078          L_17:
+   47:         IOSET1 |= 0x00380000;
+ 00000078  4800      LDR         R2,=0x380000
+ 0000007A  4800      LDR         R0,=0xE0028014
+ 0000007C  6801      LDR         R1,[R0,#0x0]
+ 0000007E  4311      ORR         R1,R2
+ 00000080  6001      STR         R1,[R0,#0x0]
+   48:         IOCLR1 |= 0x00200000;   
+ 00000082  4800      LDR         R2,=0x200000
+ 00000084  4800      LDR         R0,=0xE002801C
+ 00000086  6801      LDR         R1,[R0,#0x0]
+ 00000088  4311      ORR         R1,R2
+ 0000008A  6001      STR         R1,[R0,#0x0]
+   49:         if((IOPIN1 & 0x00010000) == 0) // key is 6
+ 0000008C  4800      LDR         R0,=0xE0028010
+ 0000008E  6800      LDR         R0,[R0,#0x0]
+ 00000090  4800      LDR         R1,=0x10000
+ 00000092  4208      TST         R0,R1
+ 00000094  D108      BNE         L_11  ; T=0x000000A8
+   51:             key = '6';
+ 00000096  2436      MOV         R4,#0x36
+   52:             while((IOPIN1 & 0x00010000) == 0);
+ 00000098          L_23:
+ 00000098  4800      LDR         R0,=0xE0028010
+ 0000009A  6800      LDR         R0,[R0,#0x0]
+ 0000009C  4800      LDR         R1,=0x10000
+ 0000009E  4208      TST         R0,R1
+ 000000A0  D0FA      BEQ         L_23  ; T=0x00000098
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 7   
+
+   53:             delay_ms(10);
+ 000000A2  200A      MOV         R0,#0xA
+ 000000A4  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 000000A6  FFAC      BL          delay_ms?T  ; T=0x0001  (2)
+   55:     }
+ 000000A8          L_11:
+   57:     if( (IOPIN1 & 0x00020000) == 0 )
+ 000000A8  4800      LDR         R0,=0xE0028010
+ 000000AA  6800      LDR         R0,[R0,#0x0]
+ 000000AC  4800      LDR         R1,=0x20000
+ 000000AE  4208      TST         R0,R1
+ 000000B0  D147      BNE         L_27  ; T=0x00000142
+   59:         IOSET1 |= 0x00380000;
+ 000000B2  4800      LDR         R2,=0x380000
+ 000000B4  4800      LDR         R0,=0xE0028014
+ 000000B6  6801      LDR         R1,[R0,#0x0]
+ 000000B8  4311      ORR         R1,R2
+ 000000BA  6001      STR         R1,[R0,#0x0]
+   60:         IOCLR1 |= 0x00080000;   
+ 000000BC  4800      LDR         R2,=0x80000
+ 000000BE  4800      LDR         R0,=0xE002801C
+ 000000C0  6801      LDR         R1,[R0,#0x0]
+ 000000C2  4311      ORR         R1,R2
+ 000000C4  6001      STR         R1,[R0,#0x0]
+   61:         if((IOPIN1 & 0x00020000) == 0) // key is 7
+ 000000C6  4800      LDR         R0,=0xE0028010
+ 000000C8  6800      LDR         R0,[R0,#0x0]
+ 000000CA  4800      LDR         R1,=0x20000
+ 000000CC  4208      TST         R0,R1
+ 000000CE  D108      BNE         L_28  ; T=0x000000E2
+   63:             key = '7';
+ 000000D0  2437      MOV         R4,#0x37
+   64:             while((IOPIN1 & 0x00020000) == 0);
+ 000000D2          L_29:
+ 000000D2  4800      LDR         R0,=0xE0028010
+ 000000D4  6800      LDR         R0,[R0,#0x0]
+ 000000D6  4800      LDR         R1,=0x20000
+ 000000D8  4208      TST         R0,R1
+ 000000DA  D0FA      BEQ         L_29  ; T=0x000000D2
+   65:             delay_ms(10);
+ 000000DC  200A      MOV         R0,#0xA
+ 000000DE  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 000000E0  FF8F      BL          delay_ms?T  ; T=0x0001  (2)
+   66:         }
+ 000000E2          L_28:
+   68:         IOSET1 |= 0x00380000;
+ 000000E2  4800      LDR         R2,=0x380000
+ 000000E4  4800      LDR         R0,=0xE0028014
+ 000000E6  6801      LDR         R1,[R0,#0x0]
+ 000000E8  4311      ORR         R1,R2
+ 000000EA  6001      STR         R1,[R0,#0x0]
+   69:         IOCLR1 |= 0x00100000;   
+ 000000EC  4800      LDR         R2,=0x100000
+ 000000EE  4800      LDR         R0,=0xE002801C
+ 000000F0  6801      LDR         R1,[R0,#0x0]
+ 000000F2  4311      ORR         R1,R2
+ 000000F4  6001      STR         R1,[R0,#0x0]
+   70:         if((IOPIN1 & 0x00020000) == 0) // key is 8
+ 000000F6  4800      LDR         R0,=0xE0028010
+ 000000F8  6800      LDR         R0,[R0,#0x0]
+ 000000FA  4800      LDR         R1,=0x20000
+ 000000FC  4208      TST         R0,R1
+ 000000FE  D108      BNE         L_33  ; T=0x00000112
+   72:             key = '8';
+ 00000100  2438      MOV         R4,#0x38
+   73:             while((IOPIN1 & 0x00020000) == 0);
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 8   
+
+ 00000102          L_34:
+ 00000102  4800      LDR         R0,=0xE0028010
+ 00000104  6800      LDR         R0,[R0,#0x0]
+ 00000106  4800      LDR         R1,=0x20000
+ 00000108  4208      TST         R0,R1
+ 0000010A  D0FA      BEQ         L_34  ; T=0x00000102
+   74:             delay_ms(10);
+ 0000010C  200A      MOV         R0,#0xA
+ 0000010E  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000110  FF77      BL          delay_ms?T  ; T=0x0001  (2)
+   75:         } 
+ 00000112          L_33:
+   77:         IOSET1 |= 0x00380000;
+ 00000112  4800      LDR         R2,=0x380000
+ 00000114  4800      LDR         R0,=0xE0028014
+ 00000116  6801      LDR         R1,[R0,#0x0]
+ 00000118  4311      ORR         R1,R2
+ 0000011A  6001      STR         R1,[R0,#0x0]
+   78:         IOCLR1 |= 0x00200000;   
+ 0000011C  4800      LDR         R2,=0x200000
+ 0000011E  4800      LDR         R0,=0xE002801C
+ 00000120  6801      LDR         R1,[R0,#0x0]
+ 00000122  4311      ORR         R1,R2
+ 00000124  6001      STR         R1,[R0,#0x0]
+   79:         if((IOPIN1 & 0x00020000) == 0) // key is 9
+ 00000126  4800      LDR         R0,=0xE0028010
+ 00000128  6800      LDR         R0,[R0,#0x0]
+ 0000012A  4800      LDR         R1,=0x20000
+ 0000012C  4208      TST         R0,R1
+ 0000012E  D108      BNE         L_27  ; T=0x00000142
+   81:             key = '9';
+ 00000130  2439      MOV         R4,#0x39
+   82:             while((IOPIN1 & 0x00020000) == 0);
+ 00000132          L_39:
+ 00000132  4800      LDR         R0,=0xE0028010
+ 00000134  6800      LDR         R0,[R0,#0x0]
+ 00000136  4800      LDR         R1,=0x20000
+ 00000138  4208      TST         R0,R1
+ 0000013A  D0FA      BEQ         L_39  ; T=0x00000132
+   83:             delay_ms(10);
+ 0000013C  200A      MOV         R0,#0xA
+ 0000013E  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000140  FF5F      BL          delay_ms?T  ; T=0x0001  (2)
+   85:     }
+ 00000142          L_27:
+   87:     if( (IOPIN1 & 0x00040000) == 0 )
+ 00000142  4800      LDR         R0,=0xE0028010
+ 00000144  6800      LDR         R0,[R0,#0x0]
+ 00000146  4800      LDR         R1,=0x40000
+ 00000148  4208      TST         R0,R1
+ 0000014A  D147      BNE         L_43  ; T=0x000001DC
+   89:         IOSET1 |= 0x00380000;
+ 0000014C  4800      LDR         R2,=0x380000
+ 0000014E  4800      LDR         R0,=0xE0028014
+ 00000150  6801      LDR         R1,[R0,#0x0]
+ 00000152  4311      ORR         R1,R2
+ 00000154  6001      STR         R1,[R0,#0x0]
+   90:         IOCLR1 |= 0x00080000;   
+ 00000156  4800      LDR         R2,=0x80000
+ 00000158  4800      LDR         R0,=0xE002801C
+ 0000015A  6801      LDR         R1,[R0,#0x0]
+ 0000015C  4311      ORR         R1,R2
+ 0000015E  6001      STR         R1,[R0,#0x0]
+   91:         if((IOPIN1 & 0x00040000) == 0) // key is *
+ 00000160  4800      LDR         R0,=0xE0028010
+ 00000162  6800      LDR         R0,[R0,#0x0]
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 9   
+
+ 00000164  4800      LDR         R1,=0x40000
+ 00000166  4208      TST         R0,R1
+ 00000168  D108      BNE         L_44  ; T=0x0000017C
+   93:             key = '*';
+ 0000016A  242A      MOV         R4,#0x2A
+   94:             while((IOPIN1 & 0x00040000) == 0);
+ 0000016C          L_45:
+ 0000016C  4800      LDR         R0,=0xE0028010
+ 0000016E  6800      LDR         R0,[R0,#0x0]
+ 00000170  4800      LDR         R1,=0x40000
+ 00000172  4208      TST         R0,R1
+ 00000174  D0FA      BEQ         L_45  ; T=0x0000016C
+   95:             delay_ms(10);
+ 00000176  200A      MOV         R0,#0xA
+ 00000178  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 0000017A  FF42      BL          delay_ms?T  ; T=0x0001  (2)
+   96:         }
+ 0000017C          L_44:
+   98:         IOSET1 |= 0x00380000;
+ 0000017C  4800      LDR         R2,=0x380000
+ 0000017E  4800      LDR         R0,=0xE0028014
+ 00000180  6801      LDR         R1,[R0,#0x0]
+ 00000182  4311      ORR         R1,R2
+ 00000184  6001      STR         R1,[R0,#0x0]
+   99:         IOCLR1 |= 0x00100000;   
+ 00000186  4800      LDR         R2,=0x100000
+ 00000188  4800      LDR         R0,=0xE002801C
+ 0000018A  6801      LDR         R1,[R0,#0x0]
+ 0000018C  4311      ORR         R1,R2
+ 0000018E  6001      STR         R1,[R0,#0x0]
+  100:         if((IOPIN1 & 0x00040000) == 0) // key is 0
+ 00000190  4800      LDR         R0,=0xE0028010
+ 00000192  6800      LDR         R0,[R0,#0x0]
+ 00000194  4800      LDR         R1,=0x40000
+ 00000196  4208      TST         R0,R1
+ 00000198  D108      BNE         L_49  ; T=0x000001AC
+  102:             key = '0';
+ 0000019A  2430      MOV         R4,#0x30
+  103:             while((IOPIN1 & 0x00040000) == 0);
+ 0000019C          L_50:
+ 0000019C  4800      LDR         R0,=0xE0028010
+ 0000019E  6800      LDR         R0,[R0,#0x0]
+ 000001A0  4800      LDR         R1,=0x40000
+ 000001A2  4208      TST         R0,R1
+ 000001A4  D0FA      BEQ         L_50  ; T=0x0000019C
+  104:             delay_ms(10);
+ 000001A6  200A      MOV         R0,#0xA
+ 000001A8  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 000001AA  FF2A      BL          delay_ms?T  ; T=0x0001  (2)
+  105:         } 
+ 000001AC          L_49:
+  107:         IOSET1 |= 0x00380000;
+ 000001AC  4800      LDR         R2,=0x380000
+ 000001AE  4800      LDR         R0,=0xE0028014
+ 000001B0  6801      LDR         R1,[R0,#0x0]
+ 000001B2  4311      ORR         R1,R2
+ 000001B4  6001      STR         R1,[R0,#0x0]
+  108:         IOCLR1 |= 0x00200000;   
+ 000001B6  4800      LDR         R2,=0x200000
+ 000001B8  4800      LDR         R0,=0xE002801C
+ 000001BA  6801      LDR         R1,[R0,#0x0]
+ 000001BC  4311      ORR         R1,R2
+ 000001BE  6001      STR         R1,[R0,#0x0]
+  109:         if((IOPIN1 & 0x00040000) == 0) // key is #
+ 000001C0  4800      LDR         R0,=0xE0028010
+ 000001C2  6800      LDR         R0,[R0,#0x0]
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 10  
+
+ 000001C4  4800      LDR         R1,=0x40000
+ 000001C6  4208      TST         R0,R1
+ 000001C8  D108      BNE         L_43  ; T=0x000001DC
+  111:             key = '#';
+ 000001CA  2423      MOV         R4,#0x23
+  112:             while((IOPIN1 & 0x00040000) == 0);
+ 000001CC          L_55:
+ 000001CC  4800      LDR         R0,=0xE0028010
+ 000001CE  6800      LDR         R0,[R0,#0x0]
+ 000001D0  4800      LDR         R1,=0x40000
+ 000001D2  4208      TST         R0,R1
+ 000001D4  D0FA      BEQ         L_55  ; T=0x000001CC
+  113:             delay_ms(10);
+ 000001D6  200A      MOV         R0,#0xA
+ 000001D8  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 000001DA  FF12      BL          delay_ms?T  ; T=0x0001  (2)
+  115:     }
+ 000001DC          L_43:
+  117:     if( (IOPIN0 & 0x00008000) == 0 )
+ 000001DC  4800      LDR         R0,=0xE0028000
+ 000001DE  6800      LDR         R0,[R0,#0x0]
+ 000001E0  4800      LDR         R1,=0x8000
+ 000001E2  4208      TST         R0,R1
+ 000001E4  D147      BNE         L_59  ; T=0x00000276
+  119:         IOSET1 |= 0x00380000;
+ 000001E6  4800      LDR         R2,=0x380000
+ 000001E8  4800      LDR         R0,=0xE0028014
+ 000001EA  6801      LDR         R1,[R0,#0x0]
+ 000001EC  4311      ORR         R1,R2
+ 000001EE  6001      STR         R1,[R0,#0x0]
+  120:         IOCLR1 |= 0x00080000;   
+ 000001F0  4800      LDR         R2,=0x80000
+ 000001F2  4800      LDR         R0,=0xE002801C
+ 000001F4  6801      LDR         R1,[R0,#0x0]
+ 000001F6  4311      ORR         R1,R2
+ 000001F8  6001      STR         R1,[R0,#0x0]
+  121:         if((IOPIN0 & 0x00008000) == 0) // key is 1
+ 000001FA  4800      LDR         R0,=0xE0028000
+ 000001FC  6800      LDR         R0,[R0,#0x0]
+ 000001FE  4800      LDR         R1,=0x8000
+ 00000200  4208      TST         R0,R1
+ 00000202  D108      BNE         L_60  ; T=0x00000216
+  123:             key = '1';
+ 00000204  2431      MOV         R4,#0x31
+  124:             while((IOPIN0 & 0x00008000) == 0);
+ 00000206          L_61:
+ 00000206  4800      LDR         R0,=0xE0028000
+ 00000208  6800      LDR         R0,[R0,#0x0]
+ 0000020A  4800      LDR         R1,=0x8000
+ 0000020C  4208      TST         R0,R1
+ 0000020E  D0FA      BEQ         L_61  ; T=0x00000206
+  125:             delay_ms(10);
+ 00000210  200A      MOV         R0,#0xA
+ 00000212  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000214  FEF5      BL          delay_ms?T  ; T=0x0001  (2)
+  126:         }
+ 00000216          L_60:
+  128:         IOSET1 |= 0x00380000;
+ 00000216  4800      LDR         R2,=0x380000
+ 00000218  4800      LDR         R0,=0xE0028014
+ 0000021A  6801      LDR         R1,[R0,#0x0]
+ 0000021C  4311      ORR         R1,R2
+ 0000021E  6001      STR         R1,[R0,#0x0]
+  129:         IOCLR1 |= 0x00100000;   
+ 00000220  4800      LDR         R2,=0x100000
+ 00000222  4800      LDR         R0,=0xE002801C
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 11  
+
+ 00000224  6801      LDR         R1,[R0,#0x0]
+ 00000226  4311      ORR         R1,R2
+ 00000228  6001      STR         R1,[R0,#0x0]
+  130:         if((IOPIN0 & 0x00008000) == 0) // key is 2
+ 0000022A  4800      LDR         R0,=0xE0028000
+ 0000022C  6800      LDR         R0,[R0,#0x0]
+ 0000022E  4800      LDR         R1,=0x8000
+ 00000230  4208      TST         R0,R1
+ 00000232  D108      BNE         L_65  ; T=0x00000246
+  132:             key = '2';
+ 00000234  2432      MOV         R4,#0x32
+  133:             while((IOPIN0 & 0x00008000) == 0);
+ 00000236          L_66:
+ 00000236  4800      LDR         R0,=0xE0028000
+ 00000238  6800      LDR         R0,[R0,#0x0]
+ 0000023A  4800      LDR         R1,=0x8000
+ 0000023C  4208      TST         R0,R1
+ 0000023E  D0FA      BEQ         L_66  ; T=0x00000236
+  134:             delay_ms(10);
+ 00000240  200A      MOV         R0,#0xA
+ 00000242  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000244  FEDD      BL          delay_ms?T  ; T=0x0001  (2)
+  135:         } 
+ 00000246          L_65:
+  137:         IOSET1 |= 0x00380000;
+ 00000246  4800      LDR         R2,=0x380000
+ 00000248  4800      LDR         R0,=0xE0028014
+ 0000024A  6801      LDR         R1,[R0,#0x0]
+ 0000024C  4311      ORR         R1,R2
+ 0000024E  6001      STR         R1,[R0,#0x0]
+  138:         IOCLR1 |= 0x00200000;   
+ 00000250  4800      LDR         R2,=0x200000
+ 00000252  4800      LDR         R0,=0xE002801C
+ 00000254  6801      LDR         R1,[R0,#0x0]
+ 00000256  4311      ORR         R1,R2
+ 00000258  6001      STR         R1,[R0,#0x0]
+  139:         if((IOPIN0 & 0x00008000) == 0) // key is 3
+ 0000025A  4800      LDR         R0,=0xE0028000
+ 0000025C  6800      LDR         R0,[R0,#0x0]
+ 0000025E  4800      LDR         R1,=0x8000
+ 00000260  4208      TST         R0,R1
+ 00000262  D108      BNE         L_59  ; T=0x00000276
+  141:             key = '3';
+ 00000264  2433      MOV         R4,#0x33
+  142:             while((IOPIN0 & 0x00008000) == 0);
+ 00000266          L_71:
+ 00000266  4800      LDR         R0,=0xE0028000
+ 00000268  6800      LDR         R0,[R0,#0x0]
+ 0000026A  4800      LDR         R1,=0x8000
+ 0000026C  4208      TST         R0,R1
+ 0000026E  D0FA      BEQ         L_71  ; T=0x00000266
+  143:             delay_ms(10);
+ 00000270  200A      MOV         R0,#0xA
+ 00000272  F7FF      BL          delay_ms?T  ; T=0x0001  (1)
+ 00000274  FEC5      BL          delay_ms?T  ; T=0x0001  (2)
+  145:     }
+ 00000276          L_59:
+  147:     return key;
+ 00000276  1C20      MOV         R0,R4 ; key
+ 00000278  0600      LSL         R0,R0,#0x18 ; key
+ 0000027A  0E00      LSR         R0,R0,#0x18
+ 0000027C            ; SCOPE-END
+  149: }
+ 0000027C  BC10      POP         {R4}
+ 0000027E  BC08      POP         {R3}
+ 00000280  4718      BX          R3
+ARM COMPILER V2.32a,  keypad                                                               18/05/08  02:36:15  PAGE 12  
+
+ 00000282          ENDP ; 'keypad?T'
+
+
+
+Module Information          Static
+----------------------------------
+  code size            =    ------
+  data size            =    ------
+  const size           =    ------
+End of Module Information.
+
+
+ARM COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

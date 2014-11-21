@@ -1,0 +1,108 @@
+[Design Root]
+Version=1.0.0
+[Directory]
+CPU.PCB=PCB
+Mega8.Sch=Sch
+Mega32.Sch=Sch
+E_IO_Template.Sch=Sch
+E_CPU_Template.Sch=Sch
+E_7Segment.Sch=Sch
+E-block.Lib=SchLib
+DC_Motor_control.Sch=Sch
+Mega32.PCB=PCB
+E_IO.pcb=PCB
+Preview CPU.PPC=PCBPrint
+Mega32.SYN=Text
+E-blockPCB.LIB=PCBLib
+powerjack.rpt=Text
+Mega32.ERC=Text
+Preview Mega32.PPC=PCBPrint
+Mega32.NET=Text
+CPU.SYN=Text
+CAM Outputs for Mega32.cam=CAMManager
+E_7Segment.PCB=PCB
+Preview E_7Segment.PPC=PCBPrint
+E_7Segment-1layer.PCB=PCB
+Serial.Sch=Sch
+Serial.PCB=PCB
+Preview Serial.PPC=PCBPrint
+Mega32.XLS=SPREAD
+Mega32.cfg=Text
+E_7Segment.XLS=SPREAD
+E_7Segment.cfg=Text
+Serial.XLS=SPREAD
+Serial.cfg=Text
+E_PROTOBOARD.PCB=PCB
+Preview E_PROTOBOARD.PPC=PCBPrint
+E_7Segment.ERC=Text
+E_7Segment.NET=Text
+[CPU.PCB]
+Editor Kind=PCB
+[Mega8.Sch]
+Editor Kind=Sch
+[Mega32.Sch]
+Editor Kind=Sch
+[E_IO_Template.Sch]
+Editor Kind=Sch
+[E_CPU_Template.Sch]
+Editor Kind=Sch
+[E_7Segment.Sch]
+Editor Kind=Sch
+[E-block.Lib]
+Editor Kind=SchLib
+[DC_Motor_control.Sch]
+Editor Kind=Sch
+[Mega32.PCB]
+Editor Kind=PCB
+[E_IO.pcb]
+Editor Kind=PCB
+[Preview CPU.PPC]
+Editor Kind=PCBPrint
+[Mega32.SYN]
+Editor Kind=Text
+[E-blockPCB.LIB]
+Editor Kind=PCBLib
+[powerjack.rpt]
+Editor Kind=Text
+[Mega32.ERC]
+Editor Kind=Text
+[Preview Mega32.PPC]
+Editor Kind=PCBPrint
+[Mega32.NET]
+Editor Kind=Text
+[CPU.SYN]
+Editor Kind=Text
+[CAM Outputs for Mega32.cam]
+Editor Kind=CAMManager
+[E_7Segment.PCB]
+Editor Kind=PCB
+[Preview E_7Segment.PPC]
+Editor Kind=PCBPrint
+[E_7Segment-1layer.PCB]
+Editor Kind=PCB
+[Serial.Sch]
+Editor Kind=Sch
+[Serial.PCB]
+Editor Kind=PCB
+[Preview Serial.PPC]
+Editor Kind=PCBPrint
+[Mega32.XLS]
+Editor Kind=SPREAD
+[Mega32.cfg]
+Editor Kind=Text
+[E_7Segment.XLS]
+Editor Kind=SPREAD
+[E_7Segment.cfg]
+Editor Kind=Text
+[Serial.XLS]
+Editor Kind=SPREAD
+[Serial.cfg]
+Editor Kind=Text
+[E_PROTOBOARD.PCB]
+Editor Kind=PCB
+[Preview E_PROTOBOARD.PPC]
+Editor Kind=PCBPrint
+[E_7Segment.ERC]
+Editor Kind=Text
+[E_7Segment.NET]
+Editor Kind=Text

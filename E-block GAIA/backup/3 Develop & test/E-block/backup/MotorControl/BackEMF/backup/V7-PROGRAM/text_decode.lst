@@ -1,0 +1,599 @@
+   1               		.file	"text_decode.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  73               	.global	delimiter
+  74               		.section	.progmem.data,"a",@progbits
+  77               	delimiter:
+  78 0000 3D        		.byte	61
+  79 0001 22        		.byte	34
+  80 0002 20        		.byte	32
+  81 0003 09        		.byte	9
+  82 0004 2C        		.byte	44
+  83 0005 0D        		.byte	13
+  84 0006 0A        		.byte	10
+  85 0007 00        		.byte	0
+  86               	.global	text_cmd
+  89               	text_cmd:
+  90 0008 6D6F 746F 		.string	"motor"
+  90      7200 
+  91 000e 0000 0000 		.skip 4,0
+  92 0012 7370 6565 		.string	"speed"
+  92      6400 
+  93 0018 0000 0000 		.skip 4,0
+  94 001c 616E 676C 		.string	"angle"
+  94      6500 
+  95 0022 0000 0000 		.skip 4,0
+  96 0026 7072 6F67 		.string	"program"
+  96      7261 6D00 
+  97 002e 0000      		.skip 2,0
+  98 0030 7361 7665 		.string	"save"
+  98      00
+  99 0035 0000 0000 		.skip 5,0
+  99      00
+ 100 003a 00        		.string	""
+ 101 003b 0000 0000 		.skip 9,0
+ 101      0000 0000 
+ 101      00
+ 102               		.lcomm i.0,2
+ 103               		.text
+ 107               	.global	text_decode
+ 109               	text_decode:
+   1:text_decode.c **** /* Text command decode 
+   2:text_decode.c ****     
+   3:text_decode.c **** 	
+   4:text_decode.c **** */
+   5:text_decode.c **** #include <stdlib.h>
+   6:text_decode.c **** #include <string.h>
+   7:text_decode.c **** #include "text_decode.h"
+   8:text_decode.c **** 
+   9:text_decode.c **** 
+  10:text_decode.c **** 
+  11:text_decode.c **** /* Command decode from g_rcv_buffer will decode and action according to command in buffer
+  12:text_decode.c **** Delimeter  {=, SPACE,  ", Comma, Carriage return, Tab, Line Feed}
+  13:text_decode.c **** 
+  14:text_decode.c **** FORMAT  =  {Cmd =  Argument} Seperate command with Delimiter
+  15:text_decode.c **** 		   End line with CR, LF
+  16:text_decode.c **** 		   Text " " will be ignores for white space etc. until pair of " found 
+  17:text_decode.c **** 		   
+  18:text_decode.c **** 
+  19:text_decode.c **** 
+  20:text_decode.c **** */
+  21:text_decode.c **** 
+  22:text_decode.c **** 
+  23:text_decode.c **** // ENd with NULL to end of checking
+  24:text_decode.c **** const uint8_t text_cmd[CMD_NUM][CMD_LENGTH] PROGMEM  = {"motor","speed","angle","program","save", "
+  25:text_decode.c **** 
+  26:text_decode.c **** const uint8_t delimiter[] PROGMEM = {0x3D,0x22,0x20,0x09,0x2C,0x0D,0x0A,0x00};  
+  27:text_decode.c **** //const uint8_t white_space[] PROGMEM = {0x20,0x09,0x00}; // TAke this out got problems ??????
+  28:text_decode.c **** 
+  29:text_decode.c **** /*  
+  30:text_decode.c **** Decode text to command number and command arguments. Can called repeatly until end of buffer found 
+  31:text_decode.c **** (Return 0xFF)
+  32:text_decode.c ****   INPUT : Pointer start buffer to decode
+  33:text_decode.c ****         : Pointer of command argument
+  34:text_decode.c ****   OUTPUT: cmd number  0 = not found 
+  35:text_decode.c **** 	    : Pointer to command argument in buffer
+  36:text_decode.c **** 		: Pointer for next char to decode in buffer
+  37:text_decode.c **** Will read data in buffer and put the argumnet in start of buffer
+  38:text_decode.c **** 
+  39:text_decode.c **** */ 
+  40:text_decode.c **** 
+  41:text_decode.c **** uint8_t text_decode (uint8_t *buffer, uint8_t *cmd_argument)
+  42:text_decode.c **** {
+ 111               	.LM1:
+ 112               	/* prologue: frame size=0 */
+ 113 0000 CF92      		push r12
+ 114 0002 DF92      		push r13
+ 115 0004 EF92      		push r14
+ 116 0006 FF92      		push r15
+ 117 0008 0F93      		push r16
+ 118 000a 1F93      		push r17
+ 119 000c CF93      		push r28
+ 120               	/* prologue end (size=7) */
+ 121 000e 7C01      		movw r14,r24
+  43:text_decode.c **** 
+  44:text_decode.c ****  uint8_t  found,ch,ch2,cmd_no,j,k,index,cmd_complete;
+  45:text_decode.c ****  uint8_t  state = WAIT_CMD_STATE, quote  = 0;
+ 123               	.LM2:
+ 124 0010 51E0      		ldi r21,lo8(1)
+  46:text_decode.c ****  static uint16_t i=0; // Keep pointer for next command decode
+  47:text_decode.c ****  cmd_complete = 0;
+ 126               	.LM3:
+ 127 0012 CC24      		clr r12
+  48:text_decode.c ****  cmd_no 	= 0;
+ 129               	.LM4:
+ 130 0014 DC2C      		mov r13,r12
+  49:text_decode.c ****  index 		= 0;
+ 132               	.LM5:
+ 133 0016 4C2D      		mov r20,r12
+  50:text_decode.c ****  
+  51:text_decode.c ****  cmd_argument  = buffer;
+  52:text_decode.c ****  
+  53:text_decode.c ****  while (*(buffer+i))	  		//End with NULL
+  54:text_decode.c ****  {
+  55:text_decode.c **** // Check with delimiter
+  56:text_decode.c **** 
+  57:text_decode.c ****  	 j = 0;
+  58:text_decode.c **** 	 found = 0;
+  59:text_decode.c **** 	
+  60:text_decode.c **** 	switch (state)
+  61:text_decode.c **** 	{
+  62:text_decode.c **** 	  case WAIT_CMD_STATE:   // If found first character in command table  then go to get_cmd state
+  63:text_decode.c ****  		j = 0;
+  64:text_decode.c **** 		while ((ch = pgm_read_byte(&text_cmd[j][0])))     //Check first charaters in cmd table
+  65:text_decode.c **** 		{ 
+  66:text_decode.c **** 		  if (*(buffer+i) == ch)
+  67:text_decode.c **** 		  {
+  68:text_decode.c **** 			state = GET_CMD_STATE;   // Found delimiter
+  69:text_decode.c **** 			*(cmd_argument) = ch;
+  70:text_decode.c **** 			index = 1;
+  71:text_decode.c **** 			break; 
+  72:text_decode.c **** 		  }
+  73:text_decode.c **** 		 j++;
+  74:text_decode.c **** 		}  
+  75:text_decode.c **** 	    break;
+  76:text_decode.c **** 	  case GET_CMD_STATE:
+  77:text_decode.c **** 	    ch = *(buffer+i);
+  78:text_decode.c ****         j = 0; 
+  79:text_decode.c **** 		found = 0;
+  80:text_decode.c **** 	  	while ((ch2 = pgm_read_byte(&delimiter[j])))   //Check delimiter End with NULL
+  81:text_decode.c **** 		{  
+  82:text_decode.c **** 		   if ( ch == ch2)
+  83:text_decode.c **** 		   {
+  84:text_decode.c ****               found = 1;
+  85:text_decode.c ****               break;
+  86:text_decode.c **** 		   } 	 
+  87:text_decode.c ****            j++;	
+  88:text_decode.c **** 		}
+  89:text_decode.c **** 		if (found)
+  90:text_decode.c **** 		{
+  91:text_decode.c ****         	*(cmd_argument+index) = 0x00;
+  92:text_decode.c **** 		     if (ch == '=')
+  93:text_decode.c **** 			 {
+  94:text_decode.c **** // Check command number 
+  95:text_decode.c ****   				for (k = 0; k < CMD_NUM ; k++)
+  96:text_decode.c **** 				{
+  97:text_decode.c **** 					if (!(strcasecmp_P(cmd_argument,&text_cmd[k][0])))  // Found then keep command
+  98:text_decode.c **** 					{
+  99:text_decode.c **** 						cmd_no  = k+1;   // Start from 0 
+ 100:text_decode.c **** 						break;
+ 101:text_decode.c **** 					}
+ 102:text_decode.c **** 				}
+ 103:text_decode.c **** // clear index
+ 104:text_decode.c ****   				index = 0;
+ 105:text_decode.c **** 			    state = WAIT_ARG_STATE;	
+ 106:text_decode.c **** 			 }	
+ 107:text_decode.c **** 		}
+ 108:text_decode.c **** 		else
+ 109:text_decode.c **** 		{
+ 110:text_decode.c **** 			*(cmd_argument+index) = ch;
+ 111:text_decode.c **** 			index++;		
+ 112:text_decode.c **** 		}
+ 113:text_decode.c **** 		break;
+ 114:text_decode.c **** 		
+ 115:text_decode.c **** 	  case WAIT_ARG_STATE:
+ 116:text_decode.c **** 		ch = *(buffer+i);
+ 117:text_decode.c ****         j = 0; 
+ 118:text_decode.c **** 		found = 0;
+ 119:text_decode.c **** 	  	while ((ch2 = pgm_read_byte(&delimiter[j])))   //Check delimiter End with NULL
+ 120:text_decode.c **** 		{  
+ 121:text_decode.c **** 		   if ( ch == ch2)
+ 122:text_decode.c **** 		   {
+ 123:text_decode.c ****               found = 1;
+ 124:text_decode.c ****               break;
+ 125:text_decode.c **** 		   } 	 
+ 126:text_decode.c ****            j++;	
+ 127:text_decode.c **** 		}
+ 128:text_decode.c **** 				
+ 129:text_decode.c **** 		if ( ch == '"')   // Start quote
+ 130:text_decode.c **** 		{
+ 131:text_decode.c **** 			quote ^= 1;   // Toggle quote	
+ 132:text_decode.c **** 			state = GET_ARG_STATE;   
+ 133:text_decode.c ****  			index = 0;
+ 134:text_decode.c **** 		}
+ 135:text_decode.c **** 		
+ 136:text_decode.c **** 		if (!found)    // Not delimiter start get Argument
+ 137:text_decode.c **** 		{
+ 138:text_decode.c **** 			state = GET_ARG_STATE;   
+ 139:text_decode.c **** 			*(cmd_argument) = ch;
+ 140:text_decode.c **** 			index = 1;
+ 141:text_decode.c **** 		}
+ 142:text_decode.c **** 		break;	
+ 143:text_decode.c **** 	  case	GET_ARG_STATE:
+ 144:text_decode.c **** 	  	ch = *(buffer+i);
+ 145:text_decode.c ****         j = 0; 
+ 146:text_decode.c **** 		found = 0;
+ 147:text_decode.c **** 	  	while ((ch2 = pgm_read_byte(&delimiter[j])))   //Check delimiter End with NULL
+ 148:text_decode.c **** 		{  
+ 149:text_decode.c **** 		   if ( ch == ch2)
+ 150:text_decode.c **** 		   {
+ 151:text_decode.c ****               found = 1;
+ 152:text_decode.c ****               break;
+ 153:text_decode.c **** 		   } 	 
+ 154:text_decode.c ****            j++;	
+ 155:text_decode.c **** 		}
+ 156:text_decode.c ****  		if ( ch == '"')     // End quote
+ 157:text_decode.c **** 		{
+ 158:text_decode.c **** 			quote ^= 1;   // Toggle quote	
+ 159:text_decode.c ****    		}
+ 160:text_decode.c **** 		if ( quote)
+ 161:text_decode.c **** 		{
+ 162:text_decode.c ****          	found = 0; //  ignore all characters after the quote until found quote again
+ 163:text_decode.c **** // Cancel quote
+ 164:text_decode.c ****             
+ 165:text_decode.c **** 		}	
+ 166:text_decode.c **** 		if (found)
+ 167:text_decode.c **** 		{	
+ 168:text_decode.c ****             cmd_complete = 1;
+ 169:text_decode.c **** 			*(cmd_argument+index) = 0;
+ 170:text_decode.c **** 		    state = WAIT_CMD_STATE;
+ 171:text_decode.c **** 		}
+ 172:text_decode.c **** 		else
+ 173:text_decode.c **** 		{
+ 174:text_decode.c **** 			*(cmd_argument+index) = ch;
+ 175:text_decode.c **** 			index++;		
+ 176:text_decode.c **** 		}  
+ 177:text_decode.c **** 		break;
+ 178:text_decode.c **** 	}
+ 179:text_decode.c **** 	
+ 180:text_decode.c **** 	if(cmd_complete)   // COmmand both cmd number and argument
+ 181:text_decode.c **** 	{
+ 182:text_decode.c **** 		return cmd_no;	 	 
+ 183:text_decode.c **** 	}
+ 184:text_decode.c **** 	i++;
+ 135               	.LM6:
+ 136 0018 E091 0000 		lds r30,i.0
+ 137 001c F091 0000 		lds r31,(i.0)+1
+ 138               	.L55:
+ 140               	.LM7:
+ 141 0020 EE0D      		add r30,r14
+ 142 0022 FF1D      		adc r31,r15
+ 143 0024 8081      		ld r24,Z
+ 144 0026 8823      		tst r24
+ 145 0028 09F4      		brne .+2
+ 146 002a C1C0      		rjmp .L43
+ 148               	.LM8:
+ 149 002c 30E0      		ldi r19,lo8(0)
+ 151               	.LM9:
+ 152 002e 852F      		mov r24,r21
+ 153 0030 9927      		clr r25
+ 154 0032 8230      		cpi r24,2
+ 155 0034 9105      		cpc r25,__zero_reg__
+ 156 0036 79F1      		breq .L10
+ 157 0038 8330      		cpi r24,3
+ 158 003a 9105      		cpc r25,__zero_reg__
+ 159 003c 1CF4      		brge .L39
+ 160 003e 0197      		sbiw r24,1
+ 161 0040 59F0      		breq .L5
+ 162 0042 ABC0      		rjmp .L40
+ 163               	.L39:
+ 164 0044 8330      		cpi r24,3
+ 165 0046 9105      		cpc r25,__zero_reg__
+ 166 0048 09F4      		brne .+2
+ 167 004a 5AC0      		rjmp .L23
+ 168 004c 0497      		sbiw r24,4
+ 169 004e 09F4      		brne .+2
+ 170 0050 7BC0      		rjmp .L30
+ 171 0052 A3C0      		rjmp .L40
+ 172               	.L49:
+ 174               	.LM10:
+ 175 0054 52E0      		ldi r21,lo8(2)
+ 176 0056 72C0      		rjmp .L59
+ 177               	.L5:
+ 179               	.LM11:
+ 180 0058 232F      		mov r18,r19
+ 181               	.LBB2:
+ 183               	.LM12:
+ 184 005a E0E0      		ldi r30,lo8(text_cmd)
+ 185 005c F0E0      		ldi r31,hi8(text_cmd)
+ 186               	/* #APP */
+ 187 005e 9491      		lpm r25, Z
+ 188               		
+ 189               	/* #NOAPP */
+ 190               	.LBE2:
+ 191 0060 9923      		tst r25
+ 192 0062 09F4      		brne .+2
+ 193 0064 9AC0      		rjmp .L40
+ 194 0066 E091 0000 		lds r30,i.0
+ 195 006a F091 0000 		lds r31,(i.0)+1
+ 196 006e EE0D      		add r30,r14
+ 197 0070 FF1D      		adc r31,r15
+ 198 0072 8081      		ld r24,Z
+ 199 0074 3AE0      		ldi r19,lo8(10)
+ 200               	.L9:
+ 202               	.LM13:
+ 203 0076 8917      		cp r24,r25
+ 204 0078 69F3      		breq .L49
+ 206               	.LM14:
+ 207 007a 2F5F      		subi r18,lo8(-(1))
+ 208               	.LBB3:
+ 209 007c 239F      		mul r18,r19
+ 210 007e F001      		movw r30,r0
+ 211 0080 1124      		clr r1
+ 212 0082 E050      		subi r30,lo8(-(text_cmd))
+ 213 0084 F040      		sbci r31,hi8(-(text_cmd))
+ 214               	/* #APP */
+ 215 0086 9491      		lpm r25, Z
+ 216               		
+ 217               	/* #NOAPP */
+ 218               	.LBE3:
+ 219 0088 9923      		tst r25
+ 220 008a A9F7      		brne .L9
+ 222               	.LM15:
+ 223 008c 86C0      		rjmp .L40
+ 224               	.L50:
+ 226               	.LM16:
+ 227 008e 31E0      		ldi r19,lo8(1)
+ 229               	.LM17:
+ 230 0090 17C0      		rjmp .L12
+ 231               	.L51:
+ 233               	.LM18:
+ 234 0092 C22E      		mov r12,r18
+ 236               	.LM19:
+ 237 0094 30C0      		rjmp .L18
+ 238               	.L10:
+ 240               	.LM20:
+ 241 0096 E091 0000 		lds r30,i.0
+ 242 009a F091 0000 		lds r31,(i.0)+1
+ 243 009e EE0D      		add r30,r14
+ 244 00a0 FF1D      		adc r31,r15
+ 245 00a2 9081      		ld r25,Z
+ 247               	.LM21:
+ 248 00a4 232F      		mov r18,r19
+ 249               	.LBB4:
+ 251               	.LM22:
+ 252 00a6 E0E0      		ldi r30,lo8(delimiter)
+ 253 00a8 F0E0      		ldi r31,hi8(delimiter)
+ 254               	.L56:
+ 255               	/* #APP */
+ 256 00aa 8491      		lpm r24, Z
+ 257               		
+ 258               	/* #NOAPP */
+ 259               	.LBE4:
+ 260 00ac 8823      		tst r24
+ 261 00ae 41F0      		breq .L12
+ 263               	.LM23:
+ 264 00b0 9817      		cp r25,r24
+ 265 00b2 69F3      		breq .L50
+ 267               	.LM24:
+ 268 00b4 2F5F      		subi r18,lo8(-(1))
+ 269               	.LBB5:
+ 270 00b6 E22F      		mov r30,r18
+ 271 00b8 FF27      		clr r31
+ 272 00ba E050      		subi r30,lo8(-(delimiter))
+ 273 00bc F040      		sbci r31,hi8(-(delimiter))
+ 274 00be F5CF      		rjmp .L56
+ 275               	.L12:
+ 276 00c0 E42F      		mov r30,r20
+ 277 00c2 FF27      		clr r31
+ 278               	.LBE5:
+ 280               	.LM25:
+ 281 00c4 3323      		tst r19
+ 282 00c6 09F4      		brne .+2
+ 283 00c8 64C0      		rjmp .L37
+ 285               	.LM26:
+ 286 00ca EE0D      		add r30,r14
+ 287 00cc FF1D      		adc r31,r15
+ 288 00ce 1082      		st Z,__zero_reg__
+ 290               	.LM27:
+ 291 00d0 9D33      		cpi r25,lo8(61)
+ 292 00d2 09F0      		breq .+2
+ 293 00d4 62C0      		rjmp .L40
+ 295               	.LM28:
+ 296 00d6 C081      		ld r28,Z
+ 297 00d8 00E0      		ldi r16,lo8(text_cmd)
+ 298 00da 10E0      		ldi r17,hi8(text_cmd)
+ 299               	.L21:
+ 301               	.LM29:
+ 302 00dc B801      		movw r22,r16
+ 303 00de C701      		movw r24,r14
+ 304 00e0 0E94 0000 		call strcasecmp_P
+ 305 00e4 2C2F      		mov r18,r28
+ 306 00e6 2F5F      		subi r18,lo8(-(1))
+ 307 00e8 892B      		or r24,r25
+ 308 00ea 99F2      		breq .L51
+ 310               	.LM30:
+ 311 00ec C22F      		mov r28,r18
+ 312 00ee 065F      		subi r16,lo8(-(10))
+ 313 00f0 1F4F      		sbci r17,hi8(-(10))
+ 314 00f2 2630      		cpi r18,lo8(6)
+ 315 00f4 98F3      		brlo .L21
+ 316               	.L18:
+ 318               	.LM31:
+ 319 00f6 40E0      		ldi r20,lo8(0)
+ 321               	.LM32:
+ 322 00f8 53E0      		ldi r21,lo8(3)
+ 323 00fa 4FC0      		rjmp .L40
+ 324               	.L52:
+ 326               	.LM33:
+ 327 00fc 31E0      		ldi r19,lo8(1)
+ 329               	.LM34:
+ 330 00fe 15C0      		rjmp .L25
+ 331               	.L23:
+ 333               	.LM35:
+ 334 0100 E091 0000 		lds r30,i.0
+ 335 0104 F091 0000 		lds r31,(i.0)+1
+ 336 0108 EE0D      		add r30,r14
+ 337 010a FF1D      		adc r31,r15
+ 338 010c 9081      		ld r25,Z
+ 340               	.LM36:
+ 341 010e 232F      		mov r18,r19
+ 342               	.LBB6:
+ 344               	.LM37:
+ 345 0110 E0E0      		ldi r30,lo8(delimiter)
+ 346 0112 F0E0      		ldi r31,hi8(delimiter)
+ 347               	.L57:
+ 348               	/* #APP */
+ 349 0114 8491      		lpm r24, Z
+ 350               		
+ 351               	/* #NOAPP */
+ 352               	.LBE6:
+ 353 0116 8823      		tst r24
+ 354 0118 41F0      		breq .L25
+ 356               	.LM38:
+ 357 011a 9817      		cp r25,r24
+ 358 011c 79F3      		breq .L52
+ 360               	.LM39:
+ 361 011e 2F5F      		subi r18,lo8(-(1))
+ 362               	.LBB7:
+ 363 0120 E22F      		mov r30,r18
+ 364 0122 FF27      		clr r31
+ 365 0124 E050      		subi r30,lo8(-(delimiter))
+ 366 0126 F040      		sbci r31,hi8(-(delimiter))
+ 367 0128 F5CF      		rjmp .L57
+ 368               	.L25:
+ 369               	.LBE7:
+ 371               	.LM40:
+ 372 012a 9232      		cpi r25,lo8(34)
+ 373 012c 21F4      		brne .L28
+ 375               	.LM41:
+ 376 012e 81E0      		ldi r24,lo8(1)
+ 377 0130 D826      		eor r13,r24
+ 379               	.LM42:
+ 380 0132 54E0      		ldi r21,lo8(4)
+ 382               	.LM43:
+ 383 0134 40E0      		ldi r20,lo8(0)
+ 384               	.L28:
+ 386               	.LM44:
+ 387 0136 3323      		tst r19
+ 388 0138 81F5      		brne .L40
+ 390               	.LM45:
+ 391 013a 54E0      		ldi r21,lo8(4)
+ 392               	.L59:
+ 394               	.LM46:
+ 395 013c F701      		movw r30,r14
+ 396 013e 9083      		st Z,r25
+ 398               	.LM47:
+ 399 0140 41E0      		ldi r20,lo8(1)
+ 401               	.LM48:
+ 402 0142 2BC0      		rjmp .L40
+ 403               	.L53:
+ 405               	.LM49:
+ 406 0144 31E0      		ldi r19,lo8(1)
+ 408               	.LM50:
+ 409 0146 15C0      		rjmp .L32
+ 410               	.L30:
+ 412               	.LM51:
+ 413 0148 E091 0000 		lds r30,i.0
+ 414 014c F091 0000 		lds r31,(i.0)+1
+ 415 0150 EE0D      		add r30,r14
+ 416 0152 FF1D      		adc r31,r15
+ 417 0154 9081      		ld r25,Z
+ 419               	.LM52:
+ 420 0156 232F      		mov r18,r19
+ 421               	.LBB8:
+ 423               	.LM53:
+ 424 0158 E0E0      		ldi r30,lo8(delimiter)
+ 425 015a F0E0      		ldi r31,hi8(delimiter)
+ 426               	.L58:
+ 427               	/* #APP */
+ 428 015c 8491      		lpm r24, Z
+ 429               		
+ 430               	/* #NOAPP */
+ 431               	.LBE8:
+ 432 015e 8823      		tst r24
+ 433 0160 41F0      		breq .L32
+ 435               	.LM54:
+ 436 0162 9817      		cp r25,r24
+ 437 0164 79F3      		breq .L53
+ 439               	.LM55:
+ 440 0166 2F5F      		subi r18,lo8(-(1))
+ 441               	.LBB9:
+ 442 0168 E22F      		mov r30,r18
+ 443 016a FF27      		clr r31
+ 444 016c E050      		subi r30,lo8(-(delimiter))
+ 445 016e F040      		sbci r31,hi8(-(delimiter))
+ 446 0170 F5CF      		rjmp .L58
+ 447               	.L32:
+ 448               	.LBE9:
+ 450               	.LM56:
+ 451 0172 9232      		cpi r25,lo8(34)
+ 452 0174 11F4      		brne .L35
+ 454               	.LM57:
+ 455 0176 81E0      		ldi r24,lo8(1)
+ 456 0178 D826      		eor r13,r24
+ 457               	.L35:
+ 459               	.LM58:
+ 460 017a D110      		cpse r13,__zero_reg__
+ 462               	.LM59:
+ 463 017c 30E0      		ldi r19,lo8(0)
+ 464               	.L36:
+ 465 017e E42F      		mov r30,r20
+ 466 0180 FF27      		clr r31
+ 468               	.LM60:
+ 469 0182 3323      		tst r19
+ 470 0184 31F0      		breq .L37
+ 472               	.LM61:
+ 473 0186 EE0D      		add r30,r14
+ 474 0188 FF1D      		adc r31,r15
+ 475 018a 1082      		st Z,__zero_reg__
+ 477               	.LM62:
+ 478 018c 8C2D      		mov r24,r12
+ 479 018e 9927      		clr r25
+ 480 0190 14C0      		rjmp .L1
+ 481               	.L37:
+ 483               	.LM63:
+ 484 0192 EE0D      		add r30,r14
+ 485 0194 FF1D      		adc r31,r15
+ 486 0196 9083      		st Z,r25
+ 488               	.LM64:
+ 489 0198 4F5F      		subi r20,lo8(-(1))
+ 490               	.L40:
+ 492               	.LM65:
+ 493 019a E091 0000 		lds r30,i.0
+ 494 019e F091 0000 		lds r31,(i.0)+1
+ 495 01a2 3196      		adiw r30,1
+ 496 01a4 F093 0000 		sts (i.0)+1,r31
+ 497 01a8 E093 0000 		sts i.0,r30
+ 498 01ac 39CF      		rjmp .L55
+ 499               	.L43:
+ 185:text_decode.c ****  }
+ 186:text_decode.c ****   i = 0;
+ 501               	.LM66:
+ 502 01ae 1092 0000 		sts (i.0)+1,__zero_reg__
+ 503 01b2 1092 0000 		sts i.0,__zero_reg__
+ 187:text_decode.c ****   return 0xFF;  // End of Buffer
+ 505               	.LM67:
+ 506 01b6 8FEF      		ldi r24,lo8(255)
+ 507 01b8 90E0      		ldi r25,hi8(255)
+ 508               	.L1:
+ 509               	/* epilogue: frame size=0 */
+ 510 01ba CF91      		pop r28
+ 511 01bc 1F91      		pop r17
+ 512 01be 0F91      		pop r16
+ 513 01c0 FF90      		pop r15
+ 514 01c2 EF90      		pop r14
+ 515 01c4 DF90      		pop r13
+ 516 01c6 CF90      		pop r12
+ 517 01c8 0895      		ret
+ 518               	/* epilogue end (size=8) */
+ 519               	/* function text_decode size 247 (232) */
+ 539               	.Lscope0:
+ 542               		.text
+ 544               	Letext:
+ 545               	/* File "text_decode.c": code  247 = 0x00f7 ( 232), prologues   7, epilogues   8 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 text_decode.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccaoaaaa.s:77     .progmem.data:00000000 delimiter
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccaoaaaa.s:89     .progmem.data:00000008 text_cmd
+                             .bss:00000000 i.0
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccaoaaaa.s:109    .text:00000000 text_decode
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccaoaaaa.s:544    .text:000001ca Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+strcasecmp_P

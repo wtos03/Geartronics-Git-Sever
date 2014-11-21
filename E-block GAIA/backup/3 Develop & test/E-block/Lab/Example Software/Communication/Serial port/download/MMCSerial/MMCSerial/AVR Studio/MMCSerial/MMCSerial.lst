@@ -1,0 +1,1380 @@
+
+AVRASM ver. 1.53  C:\Documents and Settings\sean\My Documents\Projects\MMCSerial\MMCSerial.asm Sun Sep 02 15:50:59 2001
+
+
+         ;-----------------------------------------------------------------
+         ;
+         ; Name:		MMCSerial.asm
+         ; Title:	Adapter to communicate via RS232 with Multimedia Card.
+         ; Version:	1.0
+         ; Last updated:	2001.08.26
+         ; Target:	AT90S2313
+         ;
+         ;-----------------------------------------------------------------
+         ;
+         ; DESCRIPTION
+         ;
+         ; Application to interface a Multimedia Card with RS232.
+         ;
+         ; The card is operated in SPI mode, with the signals being attached
+         ; to pins on Port B as follows:
+         ;
+         ; Pin B0 is used as the chip select for the card.
+         ; Pin B1 is the data output to the card (=MOSI)
+         ; Pin B2 is the data input from the card (=MISO)
+         ; Pin B3 is the clock to the card (=SCK)
+         ;
+         ; Three status LEDs are wired to pins PB4, PB5, PB6.
+         ; 
+         ; Communication with the host is via RS232 at 115,200 baud (8N1).
+         ; The RTS and CTS lines are attached to pins D2 and D3 respectively,
+         ; and the transmitter enable pin to pin D4.
+         ;
+         ; Clock speed is 3.6864 MHz, as required to get an accurate baud
+         ; rate of 115200 baud.
+         ;
+         ;-----------------------------------------------------------------
+         
+          .nolist
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; General purpose registers
+         
+          .def	rRETURN		=r0	; return value from functions
+         
+          .def	rZERO		=r1
+         
+          .def	rLENGTH0	=r2	; 32 bit counter
+          .def	rLENGTH1	=r3
+          .def	rLENGTH2	=r4
+          .def	rLENGTH3	=r5
+         
+          .def	rSCRATCH	=r7
+          .def	rSCRATCH2	=r8
+          .def	rSCRATCH3	=r9
+          .def	rSCRATCH4	=r10
+         
+          .def	rISCRATCH	=r11	; for use in interrupt routines
+          .def	rISCRATCH2	=r12	; ditto
+          .def	rISCRATCH3	=r13	; ditto
+          .def	rISCRATCH4	=r14	; ditto
+         
+          .def	rISREGSAVE	=r15	; sreg saved here in interrupts
+         
+          .def	rTEMP		=r16
+          .def	rTEMP2		=r17
+         
+          .def	rITEMP		=r18	; for use in interrupt routines
+          .def	rITEMP2		=r19	; ditto
+         
+          .def	rPARAM1		=r20
+          .def	rPARAM2		=r21
+         
+          .def	rLOOPI		=r22	; loop counters
+          .def	rLOOPJ		=r23
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Equates
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; IO Port Bits
+         ;
+         ; Port B
+         
+          .equ	bCS		=0
+          .equ	bMOSI		=1
+          .equ	bMISO		=2
+          .equ	bSCK		=3
+          .equ	bLEDWRITE	=4		; Writing/erasing
+          .equ	bLEDREAD	=5		; Reading
+          .equ	bLEDACTIVE	=6		; Active and awake
+          .equ	bLEDAUX		=7		; Aux (debug)
+         
+          .equ	mCS		=(1<<bCS)
+          .equ	mMOSI		=(1<<bMOSI)
+          .equ	mMISO		=(1<<bMISO)
+          .equ	mSCK		=(1<<bSCK)
+          .equ	mLEDWRITE	=(1<<bLEDWRITE)
+          .equ	mLEDREAD	=(1<<bLEDREAD)
+          .equ	mLEDACTIVE	=(1<<bLEDACTIVE)
+          .equ	mLEDAUX		=(1<<bLEDAUX)
+         
+         ;
+         ; Port D
+         ;
+         
+          .equ	bRTS		=2
+          .equ	bCTS		=3
+          .equ	bSERIALENABLE	=4
+          .equ	mRTS		=(1<<bRTS)
+          .equ	mCTS		=(1<<bCTS)
+          .equ	mSERIALENABLE	=(1<<bSERIALENABLE)
+         
+         ;
+         ; Common response values
+         ;
+         
+          .equ	Response_OK	=0x10
+          .equ	Response_Fail	=0x11
+          .equ	Response_Unk	=0x12
+          .equ	Response_Awake	=0x13
+          .equ	Response_Wait	=0x14
+          .equ	Response_Data	=0x15
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Timings
+         
+          .equ	CLOCK		=3686400	;3.6864 MHz
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Macros
+         
+         ; This is a slow version of SCKDELAY for debugging purposes
+         ; Each clock cycle lasts around 130ms
+         ;
+         ;.macro	SCKDELAY
+         ;	in	rITEMP2,PORTB
+         ;	andi	rITEMP2,0xF0
+         ;
+         ;	clr	XL
+         ;	clr	XH
+         ;
+         ;	in	rITEMP,PINB
+         ;	com	rITEMP
+         ;	andi	rITEMP,0xF0
+         ;	swap	rITEMP
+         ;	or	rITEMP,rITEMP2
+         ;
+         ;	out	PORTB,rITEMP
+         ;
+         ;	rcall	WaitMicro
+         ;.endmacro
+         
+          .macro	SCKDELAY
+         	; No delay required - the card can run faster than us!
+          .endmacro
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Variables
+         
+          .dseg
+         
+000060      Debug:	.byte	1		; Bit 0:0 = raw, 1 = human-readable debug mode (hex)
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Interrupt service vectors
+         
+          .cseg
+          .org 0
+000000 c05b      	rjmp 	Reset		; Reset vector
+         	
+          .org INT0addr
+000001 9518      	reti			; Used to wake up the MCU
+         
+          .org INT1addr
+000002 9518      	reti			; Not used, but better to be safe than sorry!
+         
+          .org URXCaddr
+000007 c012      	rjmp	uart_receive
+         	
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Start of actual code.
+         ;
+         
+          .org STDORG
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Include modules
+         
+          .include "uart.asm"
+         ;-----------------------------------------------------------------
+         ;
+         ; Name:		uart.asm
+         ; Title:	AVR Uart services
+         ; Version:	1.0
+         ; Last updated:	2001.02.03
+         ; Target:	AT90Sxxxx (All devices)
+         ;
+         ;-----------------------------------------------------------------
+         ;
+         ; DESCRIPTION
+         ;
+         ; UART service which uses interrupts to read characters
+         ; from the serial port and buffer them, but which handles trans-
+         ; mission synchronously, without interrupts.
+         ; 
+         ;-----------------------------------------------------------------
+         
+          .dseg
+         
+000061      uart_rhead:	.byte	1
+000062      uart_rtail:	.byte	1
+000063      uart_rsize:	.byte	1
+000064      uart_rerror:	.byte	1
+         
+          .equ	UART_BUFSIZE	=$40	; must be power of 2
+          .equ	UART_BUFFER	=$80	; must be on a UART_BUFSIZE boundary
+         
+          .equ	UART_BAUDRATE	=115200
+          .equ	UART_BAUDK	=(CLOCK/(16*UART_BAUDRATE))-1
+         
+         ;-----------------------------------------------------------------
+         
+          .cseg
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Reset vector - setup
+         
+          uart_reset:
+00000b e800      	ldi	rTEMP,UART_BUFFER
+00000c 9300 0061 	sts	uart_rhead,rTEMP
+00000e 9300 0062 	sts	uart_rtail,rTEMP
+         	
+000010 2700      	clr	rTEMP
+000011 9300 0063 	sts	uart_rsize,rTEMP
+000013 9300 0064 	sts	uart_rerror,rTEMP
+         
+000015 e001      	ldi	rTEMP,UART_BAUDK
+000016 b909      	out	UBRR,rTEMP	; load baudrate
+         	
+000017 e908      	ldi	rTEMP,(1<<TXEN)|(1<<RXEN)|(1<<RXCIE)	; enable transmit/receive, enable rx int.
+000018 b90a      	out	UCR,rTEMP
+         
+000019 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Receive vector - buffer input
+         
+          uart_receive:
+00001a b6ff      	in	rISREGSAVE,SREG
+00001b 2eea      	mov	rISCRATCH4,XL
+         
+00001c 995c      	sbic	USR,FE		; check for
+00001d c014      	rjmp	uart_rxerr_fe	; framing error
+         
+00001e 9120 0063 	lds	rITEMP,uart_rsize
+000020 3420      	cpi	rITEMP,UART_BUFSIZE
+000021 f081      	breq	uart_rxerr_bf	; buffer full
+         
+000022 9523      	inc	rITEMP
+000023 9320 0063 	sts	uart_rsize,rITEMP
+         
+000025 91a0 0061 	lds	XL,uart_rhead
+000027 b12c      	in	rITEMP,UDR
+000028 932d      	st	X+,rITEMP
+         
+000029 73af      	andi	XL,(UART_BUFSIZE-1)
+00002a 68a0      	ori	XL,UART_BUFFER
+00002b 93a0 0061 	sts	uart_rhead,XL
+         
+00002d 995b      	sbic	USR,OR		; check for
+00002e c004      	rjmp	uart_rxerr_or	; overrun
+         
+          uart_rxend:
+00002f 2dae      	mov	XL,rISCRATCH4
+000030 beff      	out	SREG,rISREGSAVE
+000031 9518      	reti
+         
+          uart_rxerr_fe:
+          uart_rxerr_bf:
+000032 b12c      	in	rITEMP,UDR		; dummy read to clear RxC
+          uart_rxerr_or:
+000033 e021      	ldi	rITEMP,1		; overflow, framing error
+000034 9320 0064 	sts	uart_rerror,rITEMP
+         
+000036 cff8      	rjmp	uart_rxend
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Read from receiver buffer char=rRETURN, wait until character ready
+         
+          uart_readcharwait:
+000037 d012      	rcall	uart_charready
+000038 f3f1      	breq	uart_readcharwait
+         
+          uart_readchar:
+000039 93af      	push	XL
+         	
+00003a 91a0 0062 	lds	XL,uart_rtail
+00003c 900d      	ld	rRETURN,x+
+00003d 73af      	andi	XL,(UART_BUFSIZE-1)
+00003e 68a0      	ori	XL,UART_BUFFER
+00003f 93a0 0062 	sts	uart_rtail,XL
+         
+000041 94f8      	cli
+000042 9070 0063 	lds	rSCRATCH,uart_rsize
+000044 947a      	dec	rSCRATCH
+000045 9270 0063 	sts	uart_rsize,rSCRATCH
+000047 9478      	sei
+         
+000048 91af      	pop	XL
+         
+000049 9508      	ret
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; Ask if a character is ready from the UART (eq=no, ne=yes)
+         
+          uart_charready:
+00004a 9070 0063 	lds	rSCRATCH,uart_rsize
+00004c 2077      	and	rSCRATCH,rSCRATCH
+00004d 9508      	ret	
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Write to transmitter a string followed by a cr/lf
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         ;
+         ;uart_writestringlf:
+         ;	rcall	uart_writestring
+         ;
+         ;	; falls through to uart_writecrlf...
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Write to transmitter a cr/lf pair
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         ;
+         ;uart_writecrlf:
+         ;	ldi	rPARAM1,$0D
+         ;	rcall	uart_writechar
+         ;	ldi	rPARAM1,$0A
+         ;
+         ;	; falls through to uart_writechar again...
+         ;
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Write to transmitter char=rPARAM1
+         
+          uart_writechar:
+00004e 9b5d      	sbis	USR,UDRE
+00004f cffe      	rjmp	uart_writechar
+000050 b94c      	out	UDR,rPARAM1
+000051 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Write to transmitter hex value=rPARAM1
+         
+          uart_writehex:
+000052 934f      	push	rPARAM1
+000053 9542      	swap	rPARAM1
+000054 d001      	rcall	uart_writehexit
+000055 914f      	pop	rPARAM1
+         	
+          uart_writehexit:
+000056 704f      	andi	rPARAM1,$0F
+000057 5d40      	subi	rPARAM1,-48
+000058 334a      	cpi	rPARAM1,$3A
+000059 f3a0      	brcs	uart_writechar
+00005a 5f49      	subi	rPARAM1,-7
+00005b cff2      	rjmp	uart_writechar
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Write 0-terminated string in Flash at Z to transmitter
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         ;
+         ;uart_writestring:
+         ;	lpm				; r0,Z
+         ;	adiw	ZL,1
+         ;	mov	rPARAM1,r0
+         ;	and	rPARAM1,rPARAM1
+         ;	breq	uart_writestringend
+         ;
+         ;	rcall	uart_writechar
+         ;
+         ;	rjmp	uart_writestring
+         ;
+         ;uart_writestringend:
+         ;	ret				; NB: Shared with uart_writestring
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; Write 0-terminated string in RAM at Z to transmitter, with crlf
+         ; if reqd.
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         ;
+         ;uart_writestringram:
+         ;	clr	zh
+         ;uart_writestringramloop:
+         ;	ld	rPARAM1,z+
+         ;	and	rPARAM1,rPARAM1
+         ;	breq	uart_writestringend
+         ;
+         ;	rcall	uart_writechar
+         ;
+         ;	rjmp	uart_writestringramloop
+         ;
+         ;uart_writestringramlf:
+         ;	rcall	uart_writestringram
+         ;	rjmp	uart_writecrlf
+         ;
+         ; - - - UNUSED - - - - - - - - - - - - - - - - - - - - - - - - - -
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Constant Data
+         
+         ;-----------------------------------------------------------------
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Reset vector - generic system.
+         
+          Reset:
+00005c ed0e      	ldi	rTEMP,RAMEND-1		; Stack setup
+00005d bf0d      	out	SPL,rTEMP
+         
+00005e e200      	ldi	rTEMP,(1<<SE)		; Sleep enable, idle mode on sleep, low levels to wake
+00005f bf05      	out	MCUCR,rTEMP
+         
+000060 2411      	clr	rZERO			; A handy 0
+000061 9210 0060 	sts	Debug,rZERO		; Set debug mode to 0
+         
+         	;
+         	; Set up data directions etc. on ports. Unused pins are
+         	; set to input with pullup resistors enabled to prevent
+         	; floating.
+         	;
+         	
+000063 ef0f      	ldi	rTEMP,0xFF
+000064 bb02      	out	PORTD,rTEMP
+         
+000065 ef07      	ldi	rTEMP,0xFF-(mSCK)	; SCK low to start
+000066 bb08      	out	PORTB,rTEMP
+         	
+000067 ef0b      	ldi	rTEMP,0xFF-(mMISO)	; MISO is an input
+000068 bb07      	out	DDRB,rTEMP
+         	
+000069 e108      	ldi	rTEMP,(mCTS|mSERIALENABLE)	; Serial enabled to start with
+00006a bb01      	out	DDRD,rTEMP
+         	
+         	;
+         	; Reset uart
+         	;
+         	
+00006b df9f      	rcall	uart_reset
+         
+         	;
+         	; Enable interrupts and off we go...
+         	;
+         	
+00006c 9478      	sei
+         		
+         	;
+         	; Initialize the card
+         	;
+         	
+00006d d179      	rcall	SPIInitialize
+         
+00006e 2000      	tst	rRETURN
+00006f f029      	breq	Main_Success	; OK!
+         
+          Main_FatalError:
+000070 98c6      	cbi	PORTB,bLEDACTIVE
+000071 d16f      	rcall	WaitMicro
+000072 9ac6      	sbi	PORTB,bLEDACTIVE
+000073 d16d      	rcall	WaitMicro
+000074 cffb      	rjmp	Main_FatalError
+         	
+         	;
+         	; OK - Jump into main loop via power off mode, unless
+         	; RTS is asserted already in which case, off we go.
+         	;
+         
+          Main_Success:
+000075 9982      	sbic	PIND,bRTS		; RTS asserted?
+000076 c04c      	rjmp	Main_PowerOff		; No... go straight to power off
+         	
+000077 9893      	cbi	PORTD,bCTS		; OK to send commands
+000078 98c6      	cbi	PORTB,bLEDACTIVE	; Active LED on
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; Main loop.
+         
+          Main_Loop:
+000079 9000 0060 	lds	rRETURN,Debug
+00007b fe00      	sbrs	rRETURN,0
+00007c c006      	rjmp	Main_WaitCommand
+         
+00007d e04d      	ldi	rPARAM1,0x0D		; In debug mode, output a command prompt
+00007e dfcf      	rcall	uart_writechar
+00007f e04a      	ldi	rPARAM1,0x0A
+000080 dfcd      	rcall	uart_writechar
+000081 e24d      	ldi	rPARAM1,'-'
+000082 dfcb      	rcall	uart_writechar
+         
+          Main_WaitCommand:
+000083 9588      	sleep				; wait for interrupt (from UART?)
+         	
+000084 dfc5      	rcall	uart_charready		; a character?
+000085 f3e9      	breq	Main_WaitCommand 	; no... go back to sleep
+         	
+000086 d12d      	rcall	ReceiveData		; read it and identify command
+         	
+000087 2d40      	mov	rPARAM1,rRETURN
+         
+         	;
+         	; Switch on different valid values of command byte
+         	;
+         	
+000088 3241      	cpi	rPARAM1,'!'
+000089 f409      	brne	PC+2
+00008a c021      	rjmp	CommandDebug
+         	
+00008b 334f      	cpi	rPARAM1,'?'
+00008c f409      	brne	PC+2
+00008d c118      	rjmp	CommandStatus
+         	
+00008e 3040      	cpi	rPARAM1,0
+00008f f409      	brne	PC+2
+000090 c021      	rjmp	CommandNop
+         	
+000091 3543      	cpi	rPARAM1,'S'
+000092 f409      	brne	PC+2
+000093 c01f      	rjmp	CommandSleep
+         
+000094 3449      	cpi	rPARAM1,'I'
+000095 f409      	brne	PC+2
+000096 c03d      	rjmp	CommandIdentify
+         	
+000097 3443      	cpi	rPARAM1,'C'
+000098 f409      	brne	PC+2
+000099 c047      	rjmp	CommandIdentifyCard
+         
+00009a 3542      	cpi	rPARAM1,'R'
+00009b f409      	brne	PC+2
+00009c c062      	rjmp	CommandRead
+         	
+00009d 3547      	cpi	rPARAM1,'W'
+00009e f409      	brne	PC+2
+00009f c095      	rjmp	CommandWrite
+         	
+0000a0 3445      	cpi	rPARAM1,'E'
+0000a1 f409      	brne	PC+2
+0000a2 c0cc      	rjmp	CommandErase
+         	
+         	;
+         	; Drop through to...
+         	;
+         
+          Main_ErrorUnk:
+0000a3 e142      	ldi	rPARAM1,Response_Unk
+0000a4 c003      	rjmp	Main_Response
+         
+          Main_ErrorFail:
+0000a5 e141      	ldi	rPARAM1,Response_Fail
+0000a6 c001      	rjmp	Main_Response
+         
+          Main_ResponseOK:
+0000a7 e140      	ldi	rPARAM1,Response_OK
+         
+          Main_Response:
+0000a8 d131      	rcall	SendData
+         	
+         	; Turn off any transientLEDs
+         	
+0000a9 9ac5      	sbi	PORTB,bLEDREAD
+0000aa 9ac4      	sbi	PORTB,bLEDWRITE
+         	
+0000ab cfcd      	rjmp	Main_Loop
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandDebug
+         ; 21 mm 20
+         ; Sets debug mode mm. Debug mode 01 = hex, debug mode 00 = raw.
+         
+          CommandDebug:
+0000ac d107      	rcall	ReceiveData
+0000ad d11d      	rcall	ReceiveSpace
+0000ae f7a1      	brne	Main_ErrorUnk
+         
+0000af 9200 0060 	sts	Debug,rRETURN
+         	
+0000b1 cff5      	rjmp	Main_ResponseOK
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandNop
+         ; 00
+         ; Does nothing, returns OK
+         
+          CommandNop:
+0000b2 cff4      	rjmp	Main_ResponseOK
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandSleep
+         ; 53 20
+         ; Sends card to sleep, awaiting a new command.
+         ; Returns [Wait], waits until RTS is de-asserted, sends [OK], waits
+         ; a further 65ms and then powers down. 
+         ; If RTS is not deasserted within 65ms or so, powerdown is cancelled
+         ; and it sends [Fail].
+         
+          CommandSleep:
+0000b3 d117      	rcall	ReceiveSpace
+0000b4 f771      	brne	Main_ErrorUnk
+         
+0000b5 e144      	ldi	rPARAM1,Response_Wait
+0000b6 d123      	rcall	SendData
+         
+0000b7 27aa      	clr	XL
+0000b8 27bb      	clr	XH
+         	
+          CommandSleep_Wait:
+0000b9 9982      	sbic	PIND,bRTS
+0000ba c003      	rjmp	CommandSleep_PowerOff
+         
+0000bb 9711      	sbiw	XL,1
+0000bc f7e1      	brne	CommandSleep_Wait
+         	
+0000bd cfe7      	rjmp	Main_ErrorFail	
+         
+          CommandSleep_PowerOff:
+0000be e140      	ldi	rPARAM1,Response_OK
+0000bf d11a      	rcall	SendData		; Send OK when RTS deasserted
+         	
+0000c0 27aa      	clr	XL
+0000c1 27bb      	clr	XH
+0000c2 d11e      	rcall	WaitMicro		; Wait for 65ms
+         
+          Main_PowerOff:
+0000c3 9a93      	sbi	PORTD,bCTS		; Deassert CTS
+         
+0000c4 9ac6      	sbi	PORTB,bLEDACTIVE	; Light off...
+0000c5 9894      	cbi	PORTD,bSERIALENABLE	; Disable serial transmission
+0000c6 9ac0      	sbi	PORTB,bCS		; Deassert CS
+         
+0000c7 e300      	ldi	rTEMP,(1<<SE)|(1<<SM)	; Sleep enable, power down mode on sleep, low levels to wake
+0000c8 bf05      	out	MCUCR,rTEMP
+         
+0000c9 e400      	ldi	rTEMP,(1<<INT0)		; Enable int0
+0000ca bf0b      	out	GIMSK,rTEMP
+         
+0000cb 9588      	sleep
+         	
+0000cc be1b      	out	GIMSK,rZERO		; Disable it again
+         
+0000cd e200      	ldi	rTEMP,(1<<SE)		; Sleep enable, idle mode on sleep, low levels to wake
+0000ce bf05      	out	MCUCR,rTEMP
+         	
+0000cf 98c0      	cbi	PORTB,bCS		; Assert CS
+0000d0 9a94      	sbi	PORTD,bSERIALENABLE	; Re-enable serial transmission
+0000d1 98c6      	cbi	PORTB,bLEDACTIVE	; Light on again
+         
+0000d2 9893      	cbi	PORTD,bCTS		; Assert CTS
+         
+0000d3 cfa5      	rjmp	Main_Loop
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandIdentify
+         ; 49 20
+         ; Identifies hardware and software versions
+         ; Returns [Data] 'P' 'F' HH SS [OK]
+         ; HH is the hardware version, SS is the software version.
+         
+          CommandIdentify:
+0000d4 d0f6      	rcall	ReceiveSpace
+0000d5 f669      	brne	Main_ErrorUnk
+         
+0000d6 e145      	ldi	rPARAM1,Response_Data
+0000d7 d102      	rcall	SendData
+         	
+0000d8 e540      	ldi	rPARAM1,'P'
+0000d9 d100      	rcall	SendData
+         
+0000da e446      	ldi	rPARAM1,'F'
+0000db d0fe      	rcall	SendData
+         
+0000dc e340      	ldi	rPARAM1,'0'
+0000dd d0fc      	rcall	SendData
+         
+0000de e340      	ldi	rPARAM1,'0'
+0000df d0fa      	rcall	SendData
+         	
+0000e0 cfc6      	rjmp	Main_ResponseOK
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandIdentifyCard
+         ; 43 cc 20
+         ; Reads identification information for card. If cc bit 0=0, returns
+         ; CSD, else CID.
+         ; Returns [Wait][Data] ...16 bytes... [OK]
+         ; or      [Wait][Fail]
+         
+          CommandIdentifyCard:
+0000e1 d0d2      	rcall	ReceiveData
+0000e2 d0e8      	rcall	ReceiveSpace
+0000e3 f009      	breq	PC+2
+0000e4 cfbe      	rjmp	Main_ErrorUnk
+         	
+0000e5 920f      	push 	rRETURN
+         
+0000e6 e144      	ldi	rPARAM1,Response_Wait
+0000e7 d0f2      	rcall	SendData
+         
+0000e8 900f      	pop	rRETURN
+         	
+0000e9 e04a      	ldi	rPARAM1,0x0A		; CMD10 = Send CID (Card ID)
+0000ea fe00      	sbrs	rRETURN,0
+0000eb 954a      	dec	rPARAM1			; CMD09 = Send CSD (Card Hardware Description)
+         	
+0000ec d128      	rcall	SPISendCommand	
+         	
+0000ed d11f      	rcall	SPIReadResponse
+0000ee 2000      	tst	rRETURN
+         	
+0000ef f009      	breq	PC+2
+0000f0 cfb4      	rjmp	Main_ErrorFail
+         	
+0000f1 d11b      	rcall	SPIReadResponse
+0000f2 2d00      	mov	rTEMP,rRETURN
+0000f3 3f0e      	cpi	rTEMP,0xFE	; Data token?
+0000f4 f009      	breq	PC+2
+0000f5 cfaf      	rjmp	Main_ErrorFail
+         
+0000f6 e145      	ldi	rPARAM1,Response_Data
+0000f7 d0e2      	rcall	SendData
+         
+0000f8 e160      	ldi	rLOOPI,16
+         
+          CommandIdentifyCard_Loop:
+0000f9 d140      	rcall	SPIReadByte
+         
+0000fa 2d40      	mov	rPARAM1,rRETURN
+0000fb d0de      	rcall	SendData
+         
+0000fc 956a      	dec	rLOOPI
+0000fd f7d9      	brne	CommandIdentifyCard_Loop
+         
+0000fe cfa8      	rjmp	Main_ResponseOK
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandRead
+         ; 52 n3 n2 n1 n0 a3 a2 a1 a0 20
+         ; Reads nn bytes from address aa.
+         ; Returns [Wait][Data]...nn bytes of data.... crcH crcL [OK]
+         ; or      [Wait][Fail]
+         	
+          CommandRead:
+0000ff 98c5      	cbi	PORTB,bLEDREAD		; Light "read" LED
+         
+000100 d0d0      	rcall	ReceiveData32		; Read length (32 bits)
+         	
+000101 2e2a      	mov 	rLENGTH0,XL		; and save
+000102 2e3b      	mov 	rLENGTH1,XH
+000103 2e4c      	mov 	rLENGTH2,YL
+000104 2e5d      	mov 	rLENGTH3,YH
+         	
+000105 e140      	ldi	rPARAM1,0x10		; CMD16 = Set block length
+000106 d10e      	rcall	SPISendCommand	
+         	
+000107 d105      	rcall	SPIReadResponse
+         
+000108 920f      	push 	rRETURN
+         
+000109 d0c7      	rcall	ReceiveData32		; Read address
+         	
+00010a d0c0      	rcall	ReceiveSpace
+00010b 910f      	pop	rTEMP
+00010c f009      	breq	PC+2
+00010d cf95      	rjmp	Main_ErrorUnk		; no space - unknown command
+         	
+00010e 3000      	cpi	rTEMP,0			; OK?
+00010f f009      	breq	PC+2
+000110 cf94      	rjmp	Main_ErrorFail		; block length failed - error
+         	
+000111 e144      	ldi	rPARAM1,Response_Wait
+000112 d0c7      	rcall	SendData
+         
+000113 e141      	ldi	rPARAM1,0x11		; CMD17 = read block
+000114 d100      	rcall	SPISendCommand	
+         
+000115 d0f7      	rcall	SPIReadResponse
+000116 2000      	tst	rRETURN
+000117 f009      	breq	PC+2
+000118 cf8c      	rjmp	Main_ErrorFail
+         	
+000119 d0f3      	rcall	SPIReadResponse
+00011a 2d00      	mov	rTEMP,rRETURN
+00011b 3f0e      	cpi	rTEMP,0xFE		; Data token?
+00011c f009      	breq	PC+2
+00011d cf87      	rjmp	Main_ErrorFail
+         
+00011e e145      	ldi	rPARAM1,Response_Data
+00011f d0ba      	rcall	SendData
+         
+000120 c008      	rjmp	CommandRead_LoopEnd
+         
+          CommandRead_Loop:
+000121 d118      	rcall	SPIReadByte
+         
+000122 2d40      	mov	rPARAM1,rRETURN
+000123 d0b6      	rcall	SendData
+         
+000124 e001      	ldi	rTEMP,1
+000125 1a20      	sub	rLENGTH0,rTEMP
+000126 0831      	sbc	rLENGTH1,rZERO
+000127 0841      	sbc	rLENGTH2,rZERO
+000128 0851      	sbc	rLENGTH3,rZERO
+         		
+          CommandRead_LoopEnd:
+         
+000129 2c72      	mov	rSCRATCH,rLENGTH0
+00012a 2873      	or	rSCRATCH,rLENGTH1
+00012b 2874      	or	rSCRATCH,rLENGTH2
+00012c 2875      	or	rSCRATCH,rLENGTH3
+00012d f799      	brne	CommandRead_Loop
+         
+         	;
+         	; Now send CRC and OK.
+         	;
+         
+00012e d10b      	rcall	SPIReadByte
+00012f 2d40      	mov	rPARAM1,rRETURN
+000130 d0a9      	rcall	SendData
+         
+000131 d108      	rcall	SPIReadByte
+000132 2d40      	mov	rPARAM1,rRETURN
+000133 d0a6      	rcall	SendData
+         	
+000134 cf72      	rjmp	Main_ResponseOK
+         		
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandWrite
+         ; 57 n3 n2 n1 n0 a3 a2 a1 a0 d0 d1 d2 ... dn c1 c2 20
+         ; Write data to card
+         ; Writes nn bytes to address aa. Valid values of nn are determined
+         ; by the card capabilities, as are valid values of aa.
+         ;
+         ; Returns [Fail] After receipt of nn and aa if invalid.
+         ; or	  [Wait] [OK]
+         ; or      [Wait] [Fail]
+         
+          CommandWrite:
+000135 98c4      	cbi	PORTB,bLEDWRITE		; Light "write" LED
+         
+000136 d09a      	rcall	ReceiveData32		; Read length (32 bits)
+         	
+000137 2e2a      	mov 	rLENGTH0,XL		; and save
+000138 2e3b      	mov 	rLENGTH1,XH
+000139 2e4c      	mov 	rLENGTH2,YL
+00013a 2e5d      	mov 	rLENGTH3,YH
+         	
+00013b e140      	ldi	rPARAM1,0x10		; CMD16 = Set block length
+00013c d0d8      	rcall	SPISendCommand	
+         	
+00013d d0cf      	rcall	SPIReadResponse
+         
+00013e 920f      	push 	rRETURN
+         
+00013f d091      	rcall	ReceiveData32		; Read address
+         	
+000140 910f      	pop	rTEMP
+         	
+000141 3000      	cpi	rTEMP,0			; OK?
+000142 f009      	breq	PC+2
+000143 cf61      	rjmp	Main_ErrorFail		; block length failed - error
+         	
+000144 e148      	ldi	rPARAM1,0x18		; CMD24 = write block
+000145 d0cf      	rcall	SPISendCommand	
+         
+000146 d0c6      	rcall	SPIReadResponse
+000147 2000      	tst	rRETURN
+000148 f009      	breq	PC+2
+000149 cf5b      	rjmp	Main_ErrorFail		; Failed if invalid
+         	
+00014a ef4e      	ldi	rPARAM1,0xFE		; Data token first
+00014b d0da      	rcall	SPISendByte
+         
+00014c c008      	rjmp	CommandWrite_LoopEnd
+         
+          CommandWrite_Loop:
+00014d d066      	rcall	ReceiveData
+00014e 2d40      	mov	rPARAM1,rRETURN
+00014f d0d6      	rcall	SPISendByte
+         
+000150 e001      	ldi	rTEMP,1
+000151 1a20      	sub	rLENGTH0,rTEMP
+000152 0831      	sbc	rLENGTH1,rZERO
+000153 0841      	sbc	rLENGTH2,rZERO
+000154 0851      	sbc	rLENGTH3,rZERO
+         		
+          CommandWrite_LoopEnd:
+         
+000155 2c72      	mov	rSCRATCH,rLENGTH0
+000156 2873      	or	rSCRATCH,rLENGTH1
+000157 2874      	or	rSCRATCH,rLENGTH2
+000158 2875      	or	rSCRATCH,rLENGTH3
+000159 f799      	brne	CommandWrite_Loop
+         
+         	;
+         	; Now send CRC and OK.
+         	;
+         
+00015a d059      	rcall	ReceiveData
+00015b 2d40      	mov	rPARAM1,rRETURN
+00015c d0c9      	rcall	SPISendByte
+         
+00015d d056      	rcall	ReceiveData
+00015e 2d40      	mov	rPARAM1,rRETURN
+00015f d0c6      	rcall	SPISendByte
+         
+000160 e144      	ldi	rPARAM1,Response_Wait
+000161 d078      	rcall	SendData
+         	
+         	; Now read data token as response
+         	
+000162 d0aa      	rcall	SPIReadResponse
+000163 2d00      	mov	rTEMP,rRETURN
+000164 710f      	andi	rTEMP,0x1F		; Mask out don't care bits
+000165 3005      	cpi	rTEMP,0x05		; 0x05 = OK!
+000166 f009      	breq	PC+2
+000167 cf3d      	rjmp	Main_ErrorFail		; else fail (CRC)
+         
+          CommandWrite_Wait:
+000168 d0d1      	rcall	SPIReadByte		; Read busy signal
+000169 2000      	tst	rRETURN			; stays 0 until done
+00016a f3e9      	breq	CommandWrite_Wait
+         	
+00016b d05f      	rcall	ReceiveSpace		; Now we expect a space to finish off
+00016c f009      	breq	PC+2
+00016d cf35      	rjmp	Main_ErrorUnk
+         
+00016e cf38      	rjmp	Main_ResponseOK
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandErase
+         ; 45 sg a3 a2 a1 a0 b3 b2 b1 b0 20
+         ; Erase range of sectors or groups. Bit 0 of sg is 0 if sectors are
+         ; to be erased, 1 if groups. The sectors are addressed using addresses
+         ; aa and bb rather than sector numbers. All sectors within this
+         ; address range will be erased. The address aa must be less than or
+         ; equal to bb. If addressing individual sectors, addresses aa and bb
+         ; must fall within the same erase group of 32 sectors.
+         ; Returns [Wait] [OK]
+         ; or	  [Wait] [Fail]
+         
+          CommandErase:
+00016f 98c4      	cbi	PORTB,bLEDWRITE		; Light "write" LED
+         
+000170 d043      	rcall	ReceiveData		; Read sg flag
+000171 27ee      	clr	ZL			; ZL is offset for commands
+000172 fc00      	sbrc	rRETURN,0		; if rReturn:0=0, skip
+000173 e0e3      	ldi	ZL,3			; Offset between group and sector cmds = 3
+         
+000174 d05c      	rcall	ReceiveData32		; Read address AA
+         	
+000175 2e2a      	mov 	rLENGTH0,XL		; and save
+000176 2e3b      	mov 	rLENGTH1,XH
+000177 2e4c      	mov 	rLENGTH2,YL
+000178 2e5d      	mov 	rLENGTH3,YH
+         	
+000179 d057      	rcall	ReceiveData32		; Read address BB
+         	
+00017a d050      	rcall	ReceiveSpace
+00017b f009      	breq	PC+2
+00017c cf26      	rjmp	Main_ErrorUnk
+         
+00017d e144      	ldi	rPARAM1,Response_Wait	; Send wait
+00017e d05b      	rcall	SendData
+         	
+00017f 15a2      	cp	XL,rLENGTH0
+000180 05b3      	cpc	XH,rLENGTH1
+000181 05c4      	cpc	YL,rLENGTH2
+000182 05d5      	cpc	YH,rLENGTH3		; check if greater
+         	
+000183 f408      	brcc	PC+2
+000184 cf20      	rjmp	Main_ErrorFail
+         
+000185 93af      	push	XL
+000186 93bf      	push	XH
+000187 93cf      	push	YL
+000188 93df      	push	YH
+         	
+000189 2da2      	mov 	XL,rLENGTH0		; Get start sector
+00018a 2db3      	mov 	XH,rLENGTH1
+00018b 2dc4      	mov 	YL,rLENGTH2
+00018c 2dd5      	mov 	YH,rLENGTH3
+         
+00018d e240      	ldi	rPARAM1,0x20		; CMD32 = Set Start Sector
+00018e 0f4e      	add	rPARAM1,ZL		; CMD35 = Set Start Group
+00018f d085      	rcall	SPISendCommand
+         	
+000190 91df      	pop	YH
+000191 91cf      	pop	YL
+000192 91bf      	pop	XH
+000193 91af      	pop	XL
+         
+000194 d078      	rcall	SPIReadResponse
+000195 2000      	tst	rRETURN
+000196 f009      	breq	PC+2
+000197 cf0d      	rjmp	Main_ErrorFail		; Failed if invalid
+         
+000198 e241      	ldi	rPARAM1,0x21		; CMD33 = Set End Sector
+000199 0f4e      	add	rPARAM1,ZL		; CMD36 = Set End Group
+00019a d07a      	rcall	SPISendCommand
+         
+00019b d071      	rcall	SPIReadResponse
+00019c 2000      	tst	rRETURN
+00019d f009      	breq	PC+2
+00019e cf06      	rjmp	Main_ErrorFail		; Failed if invalid
+         
+00019f e246      	ldi	rPARAM1,0x26		; CMD38 = Erase tagged sectors or groups
+0001a0 d074      	rcall	SPISendCommand
+         
+0001a1 d06b      	rcall	SPIReadResponse
+0001a2 2000      	tst	rRETURN
+0001a3 f009      	breq	PC+2
+0001a4 cf00      	rjmp	Main_ErrorFail		; Failed if invalid
+         
+0001a5 cf01      	rjmp	Main_ResponseOK
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; CommandStatus
+         ; 3F 20
+         ; Gets extended status information in case of error.
+         ; Returns [Data] s1 s2 [OK]
+         
+          CommandStatus:
+0001a6 d024      	rcall	ReceiveSpace
+0001a7 f009      	breq	PC+2
+0001a8 cefa      	rjmp	Main_ErrorUnk
+         
+0001a9 e145      	ldi	rPARAM1,Response_Data
+0001aa d02f      	rcall	SendData
+         
+0001ab e04d      	ldi	rPARAM1,0x0D		; CMD13 = Get status
+0001ac d068      	rcall	SPISendCommand	
+         	
+0001ad d05f      	rcall	SPIReadResponse
+0001ae 2d40      	mov	rPARAM1,rRETURN
+0001af d02a      	rcall	SendData
+         	
+0001b0 d089      	rcall	SPIReadByte
+0001b1 2d40      	mov	rPARAM1,rRETURN
+0001b2 d027      	rcall	SendData
+         	
+0001b3 cef3      	rjmp	Main_ResponseOK
+         	
+         ;-----------------------------------------------------------------
+         ;
+         ; ReceiveData
+         ; Receives data from UART in either raw or hex form
+         
+          ReceiveData:
+0001b4 9000 0060 	lds	rRETURN,Debug
+         
+0001b6 fe00      	sbrs	rRETURN,0
+0001b7 ce7f      	rjmp	uart_readcharwait
+         
+0001b8 de7e      	rcall	uart_readcharwait
+0001b9 2d00      	mov	rTEMP,rRETURN
+0001ba 5300      	subi	rTEMP,'0'
+0001bb 300a      	cpi	rTEMP,0x0A
+0001bc f008      	brcs	ReceiveData_Hex1
+0001bd 5007      	subi	rTEMP,7
+          ReceiveData_Hex1:
+0001be 700f      	andi	rTEMP,0x0F
+0001bf 9502      	swap	rTEMP
+         	
+0001c0 de76      	rcall	uart_readcharwait
+0001c1 2d10      	mov	rTEMP2,rRETURN
+0001c2 5310      	subi	rTEMP2,'0'
+0001c3 301a      	cpi	rTEMP2,0x0A
+0001c4 f008      	brcs	ReceiveData_Hex2
+0001c5 5017      	subi	rTEMP2,7
+          ReceiveData_Hex2:
+0001c6 701f      	andi	rTEMP2,0x0F
+0001c7 2b01      	or	rTEMP,rTEMP2
+0001c8 2e00      	mov	rRETURN,rTEMP
+         
+0001c9 e34e      	ldi	rPARAM1,'>'
+0001ca ce83      	rjmp	uart_writechar
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; ReceiveSpace
+         ; Receives a character anc checks it's a space. Returns eq if it is,
+         ; ne if it isn't.
+         
+          ReceiveSpace:
+0001cb 920f      	push	rRETURN
+0001cc dfe7      	rcall	ReceiveData
+0001cd 2d00      	mov	rTEMP,rRETURN
+0001ce 900f      	pop	rRETURN
+0001cf 3200      	cpi	rTEMP,' '
+0001d0 9508      	ret
+         ;-----------------------------------------------------------------
+         ;
+         ; ReceiveData32
+         ; Receives a 32 bit data value into YH:YL:XH:XL
+         
+          ReceiveData32:	
+0001d1 dfe2      	rcall	ReceiveData
+0001d2 2dd0      	mov	YH,rRETURN
+0001d3 dfe0      	rcall	ReceiveData
+0001d4 2dc0      	mov	YL,rRETURN
+0001d5 dfde      	rcall	ReceiveData
+0001d6 2db0      	mov	XH,rRETURN
+0001d7 dfdc      	rcall	ReceiveData
+0001d8 2da0      	mov	XL,rRETURN	; Y:X is address
+0001d9 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SendData
+         ; Sends data to the UART in either raw or hex form
+         
+          SendData:
+0001da 9000 0060 	lds	rRETURN,Debug
+         
+0001dc fe00      	sbrs	rRETURN,0
+0001dd ce70      	rjmp	uart_writechar
+         
+0001de de73      	rcall	uart_writehex
+0001df e240      	ldi	rPARAM1,' '
+0001e0 ce6d      	rjmp	uart_writechar
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; WaitMicro
+         ; Wait approximately X microseconds, in a tight loop.
+         
+          WaitMicro:			; 4 cycles
+0001e1 0000      	nop			; per loop
+0001e2 95aa      	dec	XL		; at 3.686 MHz
+0001e3 f7e9      	brne	WaitMicro	; = about 1 uS per loop
+         
+0001e4 95ba      	dec	XH
+0001e5 f7d9      	brne	WaitMicro
+         
+0001e6 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SPI/Flash routines
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SPIInitialize
+         ; Initialise card and place into SPI mode.
+         ; rRETURN is 0 if successful, otherwise it is an error code.
+         
+          SPIInitialize:
+0001e7 9ac0      	sbi	PORTB,bCS	; Ensure chip select high to start with
+         	
+         	; Send 80 "high" bits to get things started
+         	
+0001e8 ef4f      	ldi	rPARAM1,0xFF
+0001e9 d03c      	rcall	SPISendByte
+0001ea d03b      	rcall	SPISendByte
+0001eb d03a      	rcall	SPISendByte
+0001ec d039      	rcall	SPISendByte
+0001ed d038      	rcall	SPISendByte
+0001ee d037      	rcall	SPISendByte
+0001ef d036      	rcall	SPISendByte
+0001f0 d035      	rcall	SPISendByte
+0001f1 d034      	rcall	SPISendByte
+0001f2 d033      	rcall	SPISendByte
+         
+         	; Now send CMD0 - go to idle state
+         
+0001f3 e040      	ldi	rPARAM1,0
+0001f4 e0a0      	ldi	XL,0
+0001f5 e0b0      	ldi	XH,0
+0001f6 e0c0      	ldi	YL,0
+0001f7 e0d0      	ldi	YH,0
+0001f8 d01c      	rcall	SPISendCommand
+         	
+0001f9 d013      	rcall	SPIReadResponse
+0001fa e011      	ldi	rTEMP2,1
+0001fb e001      	ldi	rTEMP,1
+0001fc 1600      	cp	rRETURN,rTEMP
+0001fd f469      	brne	SPIInitialize_Error	; 1 expected.
+         
+         	; Now send CMD1 - initialise, and retry!
+         	
+0001fe 2777      	clr	rLOOPJ			; up to 256 times
+          SPIInitialize_Loop:		
+0001ff e041      	ldi	rPARAM1,1
+000200 e0a0      	ldi	XL,0
+000201 e0b0      	ldi	XH,0
+000202 e0c0      	ldi	YL,0
+000203 e0d0      	ldi	YH,0
+000204 d010      	rcall	SPISendCommand
+         	
+000205 d007      	rcall	SPIReadResponse
+000206 2000      	tst	rRETURN
+000207 f021      	breq	SPIInitialize_OK
+         	
+000208 957a      	dec	rLOOPJ
+000209 f7a9      	brne	SPIInitialize_Loop
+         
+00020a f009      	breq	SPIInitialize_OK	; Error code in rRETURN already
+         
+          SPIInitialize_Error:
+00020b 2e01      	mov	rRETURN,rTEMP2
+          SPIInitialize_OK:
+00020c 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SPIReadResponse
+         ; Read a response byte from the card
+         
+          SPIReadResponse:
+00020d 2477      	clr	rSCRATCH		;timeout (256 tries)
+         
+          SPIReadResponse_Wait:
+00020e d02b      	rcall	SPIReadByte		; and read into rRETURN
+         
+00020f 2d00      	mov	rTEMP,rRETURN		; 0xFF indicates unready...
+000210 3f0f      	cpi	rTEMP,0xFF
+000211 f411      	brne	SPIReadResponse_End	; ...so wait for anything else
+         
+         ;	tst	rRETURN			; 0... (OK)
+         ;	breq	SPIReadResponse_End
+         ;
+         ;	mov	rTEMP,rRETURN
+         ;	cpi	rTEMP,1			; or 1... (Idle)
+         ;	breq	SPIReadResponse_End
+         ;	
+         ;	cpi	rTEMP,0xFE		; or 0xFE... (Data token)
+         ;	breq	SPIReadResponse_End
+         
+000212 947a      	dec	rSCRATCH		; else go round again
+000213 f7d1      	brne	SPIReadResponse_Wait	; until time out
+         
+         	;
+         	; Error code goes in here
+         	;
+         	
+          SPIReadResponse_End:
+000214 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SPISendCommand
+         ; Send command. Command is in rPARAM1, Parameter is in X (low) and Y (high).
+         ; CRC is a constant 0x95 - this is the CRC for the initial CMD0 which gets us
+         ; into SPI mode, from then on the CRC is ignored.
+         
+          SPISendCommand:
+000215 9ac0      	sbi	PORTB,bCS	; CS high during flushing
+         
+000216 934f      	push	rPARAM1
+000217 ef4f      	ldi	rPARAM1,0xff
+000218 d00d      	rcall	SPISendByte
+         
+000219 98c0      	cbi	PORTB,bCS	; CS must be low to enable SPI mode
+         	
+00021a 914f      	pop	rPARAM1
+00021b 6440      	ori	rPARAM1,0x40
+00021c d009      	rcall	SPISendByte
+         	
+00021d 2f4d      	mov	rPARAM1,YH
+00021e d007      	rcall	SPISendByte
+00021f 2f4c      	mov	rPARAM1,YL
+000220 d005      	rcall	SPISendByte
+000221 2f4b      	mov	rPARAM1,XH
+000222 d003      	rcall	SPISendByte
+000223 2f4a      	mov	rPARAM1,XL
+000224 d001      	rcall	SPISendByte
+         	
+000225 e945      	ldi	rPARAM1,0x95	; CRC for init command, ignored otherwise
+         	
+         	;
+         	; ... and drop through to SPISendByte
+         	;
+         
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SPISendByte
+         ; Sends a byte from rPARAM1 in SPI mode to MOSI pin. At the same
+         ; time, a byte is read from the MISO pin and returned in rRETURN.
+         
+          SPISendByte:
+000226 936f      	push	rLOOPI
+000227 934f      	push	rPARAM1
+         
+000228 2400      	clr	rRETURN
+         	
+000229 e068      	ldi	rLOOPI,8
+          SPISendByte_Loop:
+00022a 0c00      	add	rRETURN,rRETURN
+00022b 0f44      	add	rPARAM1,rPARAM1
+00022c f010      	brcs	SPISendByte_1
+         
+00022d 98c1      	cbi	PORTB,bMOSI
+00022e c001      	rjmp	SPISendByte_Clock
+         
+          SPISendByte_1:
+00022f 9ac1      	sbi	PORTB,bMOSI
+         
+          SPISendByte_Clock:	
+000230 b276      	in	rSCRATCH,PINB
+         
+000231 9ac3      	sbi	PORTB,bSCK
+000232   +  	SCKDELAY
+         
+000232 98c3      	cbi	PORTB,bSCK
+000233   +  	SCKDELAY
+         	
+000233 fc72      	sbrc	rSCRATCH,bMISO
+000234 9403      	inc	rRETURN
+         
+000235 956a      	dec	rLOOPI
+000236 f799      	brne	SPISendByte_Loop
+         	
+000237 914f      	pop	rPARAM1
+000238 916f      	pop	rLOOPI
+         	
+000239 9508      	ret
+         
+         ;-----------------------------------------------------------------
+         ;
+         ; SPIReadByte
+         ; Just sends an 0xFF, returns with the data as usual.
+         
+          SPIReadByte:
+00023a ef4f      	ldi	rPARAM1,0xFF
+00023b cfea      	rjmp	SPISendByte
+         
+         ;-----------------------------------------------------------------
+         	
+Assembly complete with no errors.

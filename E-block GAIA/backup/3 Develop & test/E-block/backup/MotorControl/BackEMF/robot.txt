@@ -1,0 +1,12 @@
+program=1
+motor=1  angle=10 :
+motor=2  angle=10 :
+motor=1  angle=-30 :
+motor=2  angle=-30 :
+motor=1  angle=100 :
+motor=2  angle=100:
+motor=1  angle=-300:
+motor=2  angle=-300 motor=1 angle=1000 :
+motor=2 angle =100 :
+program=0  
+save=1

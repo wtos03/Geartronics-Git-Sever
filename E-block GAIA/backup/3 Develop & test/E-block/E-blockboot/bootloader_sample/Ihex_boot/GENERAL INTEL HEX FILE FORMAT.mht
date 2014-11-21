@@ -1,0 +1,959 @@
+From: <Saved by Microsoft Internet Explorer 5>
+Subject: GENERAL: INTEL HEX FILE FORMAT
+Date: Tue, 21 Mar 2006 16:12:46 +0700
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0009_01C64D02.4ADD5390"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0009_01C64D02.4ADD5390
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.keil.com/support/docs/1584.asp?bhcp=1
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>GENERAL: INTEL HEX FILE FORMAT</TITLE>
+<META http-equiv=3Ddescription=20
+content=3D"QUESTION: What is the Intel HEX file format? ANSWER: The =
+Intel HEX file is an ASCII text file with lines of text that follow the =
+Intel HEX file format. Each line in an Intel HEX file contains one HEX =
+record. These records are made up of hexadecimal numbers that represent =
+machine language code and/or...">
+<META=20
+content=3D"QUESTION: What is the Intel HEX file format? ANSWER: The =
+Intel HEX file is an ASCII text file with lines of text that follow the =
+Intel HEX file format. Each line in an Intel HEX file contains one HEX =
+record. These records are made up of hexadecimal numbers that represent =
+machine language code and/or..."=20
+name=3DDescription>
+<META content=3DGeneric name=3DKeilToolSet>
+<META content=3Dintel,hex,file,format,hex386,hex286,eof name=3DKeywords>
+<META http-equiv=3Dcontent-type content=3D"text/html; =
+charset=3Dwindows-1252">
+<META http-equiv=3Dcontent-language content=3Den-us>
+<META content=3D"Keil=99 - An ARM=AE Company" name=3DAuthor>
+<META=20
+content=3D"Copyright (c) 2006 Keil=99 - An ARM=AE Company.  All rights =
+reserved."=20
+name=3DCopyright><LINK title=3D"ICRA labels" =
+href=3D"http://www.keil.com/labels.rdf"=20
+type=3Dapplication/rdf+xml rel=3Dmeta><LINK=20
+href=3D"http://www.keil.com/_css/t5_ie_screen.css" type=3Dtext/css=20
+rel=3Dstylesheet><LINK href=3D"http://www.keil.com/_css/t5_common.css" =
+type=3Dtext/css=20
+rel=3Dstylesheet><LINK href=3D"http://www.keil.com/_css/t5_kb.css" =
+type=3Dtext/css=20
+rel=3Dstylesheet>
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY>
+<TABLE class=3DMain cellSpacing=3D0 cellPadding=3D0 border=3D0>
+  <TBODY>
+  <TR>
+    <TD class=3DTop colSpan=3D2>
+      <TABLE class=3DTop>
+        <TBODY>
+        <TR>
+          <TD class=3DTitle>Technical Support</TD>
+          <TD class=3DLogo><A href=3D"http://www.keil.com/" =
+target=3D_top><IMG=20
+            height=3D47 alt=3D"Keil=99 - An ARM=AE Company"=20
+            src=3D"http://www.keil.com/images/keilarm.gif" width=3D151 =
+align=3Dright=20
+            border=3D0></A> </TD></TR>
+        <TR class=3DMenu>
+          <TD class=3DLMenu><A=20
+            onmouseover=3D"window.status=3D'Visit the Keil Home =
+Page';return true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/" =
+target=3D_top>&nbsp;Home&nbsp;</A> | <A=20
+            onmouseover=3D"window.status=3D'Get Information About Keil =
+Products';return true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/product/"=20
+            target=3D_top>&nbsp;Products&nbsp;</A> | <A=20
+            onmouseover=3D"window.status=3D'Upcoming Trade Shows, =
+Workshops, and Seminars';return true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/events/default.asp"=20
+            target=3D_top>&nbsp;Events&nbsp;</A> | <A=20
+            onmouseover=3D"window.status=3D'Get Technical Support for =
+Keil Products';return true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/support/"=20
+            target=3D_top>&nbsp;Support&nbsp;</A></TD>
+          <TD class=3DRMenu>
+            <FORM=20
+            onmouseover=3D"window.status=3D'Search the Entire Keil Web =
+Site';return true;"=20
+            style=3D"PADDING-RIGHT: 0px; PADDING-LEFT: 0px; =
+PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px"=20
+            onmouseout=3D"window.status=3D'';return true;" =
+name=3Dsearchform=20
+            action=3Dhttp://www.keil.com/search.asp method=3Dget><INPUT =
+type=3Dhidden=20
+            value=3D1 name=3DPG> <INPUT type=3Dhidden value=3D1 =
+name=3DPX> <SPAN=20
+            style=3D"FONT-SIZE: 7pt">Search Keil.com for:</SPAN> <INPUT=20
+            style=3D"FONT-SIZE: 7pt; FONT-FAMILY: verdana" name=3DQ> =
+<INPUT class=3Dbutton type=3Dsubmit value=3DGo =
+name=3D""></FORM></TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD class=3DBar>
+      <DIV class=3DBar>
+      <P>Technical Support</P>
+      <UL>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/support/">Overview</A></DIV>
+        <LI>
+        <DIV><A =
+href=3D"http://www.keil.com/support/search.asp">Search</A></DIV>
+        <LI>
+        <DIV><A =
+href=3D"http://www.keil.com/support/contact.asp">Contact</A></DIV>
+        <LI>
+        <DIV><A =
+href=3D"https://www.keil.com/support/gethelp.asp">Assistance=20
+        Request</A></DIV>
+        <LI>
+        <DIV><A=20
+        =
+href=3D"https://www.keil.com/support/feedback.asp">Feedback</A></DIV></LI=
+></UL>
+      <P>Support Resources</P>
+      <UL>
+        <LI>
+        <DIV><A =
+href=3D"http://www.keil.com/support/knowledgebase.asp">Support=20
+        Knowledgebase</A></DIV>
+        <UL>
+          <LI>
+          <DIV><A =
+href=3D"http://www.keil.com/support/topics.asp">Article=20
+          Index</A></DIV>
+          <LI>
+          <DIV><A href=3D"http://www.keil.com/support/topten.asp">Top 10 =
+
+          Articles</A></DIV></LI></UL>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/support/man/">Product=20
+Manuals</A></DIV>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/appnotes/">Application =
+Notes</A></DIV>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/download/">File Download=20
+Area</A></DIV>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/update/">Product =
+Updates</A></DIV>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/discuss/">Discussion=20
+        Forum</A></DIV></LI></UL>
+      <P>Product Information</P>
+      <UL>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/product/">Overview</A></DIV>
+        <LI>
+        <DIV><A href=3D"http://www.keil.com/product/whybuy.asp">Why Buy =
+Tools From=20
+        Keil?</A></DIV>
+        <LI>
+        <DIV><A =
+href=3D"http://www.keil.com/product/contact.asp">Contact</A></DIV>
+        <UL>
+          <LI>
+          <DIV><A =
+href=3D"http://www.keil.com/product/ordering.asp">Ordering=20
+          Instructions</A></DIV>
+          <LI>
+          <DIV><A href=3D"https://www.keil.com/product/info.asp">Product =
+
+          Information Request</A></DIV>
+          <LI>
+          <DIV><A =
+href=3D"https://www.keil.com/product/prices.asp">Pricing=20
+          Information Request</A></DIV></LI></UL>
+        <LI>
+        <DIV><A =
+href=3D"http://www.keil.com/product/brochures.asp">Product=20
+        Brochures</A></DIV>
+        <LI>
+        <DIV><A=20
+        =
+href=3D"http://www.keil.com/product/newsletters.asp">Newsletters</A></DIV=
+></LI></UL>
+      <P></P></DIV></TD>
+    <TD class=3DBdy>
+      <DIV class=3DBdy>
+      <H1>GENERAL: INTEL HEX FILE FORMAT</H1>
+      <HR>
+
+      <P>Information in this support solution applies to:</P>
+      <UL>
+        <LI>C166 All Versions
+        <LI>C251 All Versions
+        <LI>C51 All Versions</LI></UL>
+      <HR>
+
+      <H3>QUESTION</H3>
+      <P>What is the Intel HEX file format?</P>
+      <H3>ANSWER</H3>
+      <P>The Intel HEX file is an ASCII text file with lines of text =
+that follow=20
+      the Intel HEX file format. Each line in an Intel HEX file contains =
+one HEX=20
+      record. These records are made up of hexadecimal numbers that =
+represent=20
+      machine language code and/or constant data. Intel HEX files are =
+often used=20
+      to transfer the program and data that would be stored in a ROM or =
+EPROM.=20
+      Most EPROM programmers or emulators can use Intel HEX files.</P>
+      <H4>Record Format</H4>
+      <P>An Intel HEX file is composed of any number of HEX records. =
+Each record=20
+      is made up of five fields that are arranged in the following =
+format:</P><PRE>:llaaaatt[dd...]cc
+</PRE>
+      <P>Each group of letters corresponds to a different field, and =
+each letter=20
+      represents a single hexadecimal digit. Each field is composed of =
+at least=20
+      two hexadecimal digits-which make up a byte-as described =
+below:</P>
+      <UL>
+        <LI><B>:</B> is the colon that starts every Intel HEX record.
+        <LI><B><I>ll</I></B> is the record-length field that represents =
+the=20
+        number of data bytes (<B>dd</B>) in the record.
+        <LI><B><I>aaaa</I></B> is the address field that represents the =
+starting=20
+        address for subsequent data in the record.
+        <LI><B><I>tt</I></B> is the field that represents the HEX record =
+type,=20
+        which may be one of the following:<BR><B>00</B> - data=20
+        record<BR><B>01</B> - end-of-file record<BR><B>02</B> - extended =
+segment=20
+        address record<BR><B>04</B> - extended linear address record
+        <LI><B><I>dd</I></B> is a data field that represents one byte of =
+data. A=20
+        record may have multiple data bytes. The number of data bytes in =
+the=20
+        record must match the number specified by the <B>ll</B> field.
+        <LI><B><I>cc</I></B> is the checksum field that represents the =
+checksum=20
+        of the record. The checksum is calculated by summing the values =
+of all=20
+        hexadecimal digit pairs in the record modulo 256 and taking the =
+two's=20
+        complement.</LI></UL>
+      <H4>Data Records</H4>
+      <P>The Intel HEX file is made up of any number of data records =
+that are=20
+      terminated with a carriage return and a linefeed. Data records =
+appear as=20
+      follows:</P><PRE>:10246200464C5549442050524F46494C4500464C33
+</PRE>
+      <P>This record is decoded as =
+follows:</P><PRE>:10246200464C5549442050524F46494C4500464C33
+|||||||||||                              CC-&gt;Checksum
+|||||||||DD-&gt;Data
+|||||||TT-&gt;Record Type
+|||AAAA-&gt;Address
+|LL-&gt;Record Length
+:-&gt;Colon
+</PRE>
+      <P>where:</P>
+      <UL>
+        <LI><B>10</B> is the number of data bytes in the record.
+        <LI><B>2462</B> is the address where the data are to be located =
+in=20
+        memory.
+        <LI><B>00</B> is the record type 00 (a data record).
+        <LI><B>464C...464C</B> is the data.
+        <LI><B>33</B> is the checksum of the record.</LI></UL>
+      <H4>Extended Linear Address Records (HEX386)</H4>
+      <P>Extended linear address records are also known as 32-bit =
+address=20
+      records and HEX386 records. These records contain the upper 16 =
+bits (bits=20
+      16-31) of the data address. The extended linear address record =
+always has=20
+      two data bytes and appears as follows:</P><PRE>:02000004FFFFFC
+</PRE>
+      <P>where:</P>
+      <UL>
+        <LI><B>02</B> is the number of data bytes in the record.
+        <LI><B>0000</B> is the address field. For the extended linear =
+address=20
+        record, this field is always 0000.
+        <LI><B>04</B> is the record type 04 (an extended linear address =
+record).
+        <LI><B>FFFF</B> is the upper 16 bits of the address.
+        <LI><B>FC</B> is the checksum of the record and is calculated =
+as<BR>01h=20
+        + NOT(02h + 00h + 00h + 04h + FFh + FFh).</LI></UL>
+      <P>When an extended linear address record is read, the extended =
+linear=20
+      address stored in the data field is saved and is applied to =
+subsequent=20
+      records read from the Intel HEX file. The linear address remains =
+effective=20
+      until changed by another extended address record.</P>
+      <P>The absolute-memory address of a data record is obtained by =
+adding the=20
+      address field in the record to the shifted address data from the =
+extended=20
+      linear address record. The following example illustrates this=20
+process..</P><PRE>Address from the data record's address field      2462
+Extended linear address record data field     FFFF
+                                              --------
+Absolute-memory address                       FFFF2462
+</PRE>
+      <H4>Extended Segment Address Records (HEX86)</H4>
+      <P>Extended segment address records-also known as HEX86 =
+records-contain=20
+      bits 4-19 of the data address segment. The extended segment =
+address record=20
+      always has two data bytes and appears as =
+follows:</P><PRE>:020000021200EA
+</PRE>
+      <P>where:</P>
+      <UL>
+        <LI><B>02</B> is the number of data bytes in the record.
+        <LI><B>0000</B> is the address field. For the extended segment =
+address=20
+        record, this field is always 0000.
+        <LI><B>02</B> is the record type 02 (an extended segment address =
+
+record).
+        <LI><B>1200</B> is the segment of the address.
+        <LI><B>EA</B> is the checksum of the record and is calculated =
+as<BR>01h=20
+        + NOT(02h + 00h + 00h + 02h + 12h + 00h).</LI></UL>
+      <P>When an extended segment address record is read, the extended =
+segment=20
+      address stored in the data field is saved and is applied to =
+subsequent=20
+      records read from the Intel HEX file. The segment address remains=20
+      effective until changed by another extended address record.</P>
+      <P>The absolute-memory address of a data record is obtained by =
+adding the=20
+      address field in the record to the shifted-address data from the =
+extended=20
+      segment address record. The following example illustrates this=20
+process.</P><PRE>Address from the data record's address field     2462
+Extended segment address record data field      1200
+                                             --------
+Absolute memory address                      00014462
+</PRE>
+      <H4>End-of-File (EOF) Records</H4>
+      <P>An Intel HEX file must end with an end-of-file (EOF) record. =
+This=20
+      record must have the value 01 in the record type field. An EOF =
+record=20
+      always appears as follows:</P><PRE>:00000001FF
+</PRE>
+      <P>where:</P>
+      <UL>
+        <LI><B>00</B> is the number of data bytes in the record.
+        <LI><B>0000</B> is the address where the data are to be located =
+in=20
+        memory. The address in end-of-file records is meaningless and is =
+
+        ignored. An address of 0000h is typical.
+        <LI><B>01</B> is the record type 01 (an end-of-file record).
+        <LI><B>FF</B> is the checksum of the record and is calculated =
+as<BR>01h=20
+        + NOT(00h + 00h + 00h + 01h).</LI></UL>
+      <H4>Example Intel HEX File</H4>
+      <P>Following is an example of a complete Intel HEX =
+file:</P><PRE>:10001300AC12AD13AE10AF1112002F8E0E8F0F2244
+:10000300E50B250DF509E50A350CF5081200132259
+:03000000020023D8
+:0C002300787FE4F6D8FD7581130200031D
+:10002F00EFF88DF0A4FFEDC5F0CEA42EFEEC88F016
+:04003F00A42EFE22CB
+:00000001FF
+</PRE>
+      <P><BR></P>
+      <HR>
+
+      <FORM class=3Dkb action=3D/support/fb_support.asp method=3Dpost>
+      <TABLE cellSpacing=3D0 cellPadding=3D5 align=3Dcenter border=3D0>
+        <TBODY>
+        <TR>
+          <TD align=3Dmiddle colSpan=3D3><B>Did this article provide the =
+answer=20
+            you needed?</B></TD></TR>
+        <TR>
+          <TD width=3D"50%">&nbsp;</TD>
+          <TD noWrap><SPAN=20
+            style=3D"FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: =
+#800000"><INPUT=20
+            type=3Dradio CHECKED value=3DYES name=3DHelped>Yes<BR><INPUT =
+type=3Dradio=20
+            value=3DNO name=3DHelped>No<BR><INPUT type=3Dradio =
+value=3DUNSURE=20
+            name=3DHelped>Not Sure</SPAN></TD>
+          <TD width=3D"50%">&nbsp;</TD></TR>
+        <TR>
+          <TD align=3Dmiddle colSpan=3D3><INPUT type=3Dhidden=20
+            value=3D"GENERAL: INTEL HEX FILE FORMAT" name=3DTitle> =
+<INPUT=20
+            type=3Dhidden value=3D1584 name=3DNumber>=20
+          <INPUT type=3Dsubmit =
+value=3DSubmit></TD></TR></TBODY></TABLE></FORM>
+      <HR>
+
+      <P class=3DTabNotes>Last Reviewed: Monday, June 21, =
+2004</P></DIV></TD></TR>
+  <TR>
+    <TD class=3DBot colSpan=3D2>
+      <TABLE class=3DBot>
+        <TBODY>
+        <TR class=3DMenu>
+          <TD class=3DLMenu><A=20
+            onmouseover=3D"window.status=3D'Contact Details';return =
+true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            =
+href=3D"http://www.keil.com/company/contact.asp">&nbsp;Contact&nbsp;</A> =
+
+            | <A onmouseover=3D"window.status=3D'Web Site Map';return =
+true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/siteindx.asp">&nbsp;Site =
+Map&nbsp;</A> |=20
+            <A onmouseover=3D"window.status=3D'Press Releases';return =
+true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/pr/">&nbsp;Press&nbsp;</A> | <A=20
+            onmouseover=3D"window.status=3D'Privacy Information';return =
+true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            =
+href=3D"http://www.keil.com/company/privacy.asp">&nbsp;Privacy&nbsp;</A><=
+/TD>
+          <TD class=3DRMenu><A=20
+            onmouseover=3D"window.status=3D'Copyright =
+Information';return true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            =
+href=3D"http://www.keil.com/company/copyright.asp">&nbsp;Copyright&nbsp;<=
+/A>=20
+            =A9 2006 <A=20
+            onmouseover=3D"window.status=3D'Corporate Details';return =
+true;"=20
+            onmouseout=3D"window.status=3D'';return true;"=20
+            href=3D"http://www.keil.com/company/">&nbsp;Keil - An ARM=20
+            Company.&nbsp;</A> All rights=20
+  =
+reserved.</TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></BODY></HTM=
+L>
+
+------=_NextPart_000_0009_01C64D02.4ADD5390
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.keil.com/images/keilarm.gif
+
+R0lGODlhlwAvAN0AAP///wBmmAAAAP+/dL///3S/////v//fnJzf/wAAdABInHQAAEgAdEic35xI
+AN+cSHQASL90AEgAAAB0v0gASAAASL90SN/fnHR0v0h0v790dAB0nJxIdHR0AEicnL+cSHQAdL//
+3wBISN+/dJy/nJycSN//vwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAACXAC8AAAb/wABg
+CAgYj8ikcslMEonNpxTKfDavx2lUuh1mhV6jFUsuZ7nV6XiJNiu16fXbGi4i5e78vT1X29l8emB4
+e4RnUF5Ff2JUjH6PkGGDjX1wgIF6lpWSm2BCn06UkaNqh5ShmqiYeamFp66KsYumsKSRppyqr7iG
+bq28XZCXi7a2wHG7jqXIxcG5tcugytDFbb/Ks9TJk83M2bzRnHLVwtjf097X3Mbezn6HrtrVx5fu
+0Zvsw8/gluOi5P1WMbJ3T1c+fASt+RMHcI26c+seCQLnLqFDPgsb0vPVbWLBWhYb3ctIbmOZkhMj
+VkwXUBPJjupCCjz5cCYpfsT+oVzn8WCm/5q9IrYcqROmzSs+WQHddtMcxqJNeaZBOkrmR5PyRN6i
+hTOczX1dwQrdqg9i1KiTsl4MGnSsWI3tWCqsytWpV7Zty5VFa9Bq2Ixq/ywVO9bqYLN03T5lSPYw
+RKGGv7blmDjtX0mOH1+lzHSmUrKW7d7tvNlcStNxT4suGlgr3nfOVB9WHTbe5bWkYSOTLXnbZ6KM
+jb6W2IX3cMKcF+fcmdkzciyzaUOuq5h49YbYs2tv7BLqvNXbw4vfvvHl9+vj06vnzvq29fXw4wtf
+Th+7e/kADCwQICABAfwAwUOdePfFdwAFCAxxYIIAGmUbePM16IcFCETAXwMHZCBhPvS1dv+WHxE0
+UEyIRBwgAX8TKChBAUQMIEABGABAoQExaiCFifz5t+E+5mXHj4k6jgLkfwAcwAAB+rFoYgUJ6vdi
+jBa+CICNRDzA5BAGgECkhJV4yKEaEWzggIgADJBABwKkKEWYYyp4JAAkGllCAiE44MECBVBI4QAY
+aoglBAzeeOKVAyjwwYsuKlAmfwKI+MCFZZ6ZJgAOsFioKl5+KYUBgBY6hIsFLPgEpwh4WuSRSZ5K
+gIUKmICnqABYGaipNyIYKQEuYijBBKSaiSSebuL64oKeRlDAg+gxN8UDKabqK6lPMJsfsDg2GiwA
+HPzKopMCKPoErdGqSWkBnkJbqa+xpuipon/PAsopCUdSJx10UzjAaLe3pkqEvYwqaiQBD+j4LxH6
+PgJruPuSq6i55OrI7AMKXHDks8A+miI689L0rbfTNqxtixwnOXAE/r6JJbCRyEpEtqIOwGS5gI5L
+cQEh/jtzfjGHljEZ9ZI5BMQj+Fdwm1VGbLIDRm9ZMCTVXlnkoAnCnOC5jIroogi73gzujlx3DQm6
+tlTq9dhkSwG2kCaXrXbXZ0dC4hBBAAA7
+
+------=_NextPart_000_0009_01C64D02.4ADD5390
+Content-Type: text/css;
+	charset="windows-874"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.keil.com/_css/t5_ie_screen.css
+
+BODY {
+	BACKGROUND: #fff; MARGIN: 1px; FONT: 10pt verdana; COLOR: #000
+}
+TABLE.Main {
+	BORDER-RIGHT: #000 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #000 1px =
+solid; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: =
+#000 1px solid; WIDTH: 770px; PADDING-TOP: 0px; BORDER-BOTTOM: #000 1px =
+solid; BORDER-COLLAPSE: collapse; HEIGHT: 100%; border-spacing: 0
+}
+TABLE.Main TD.Top {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; VERTICAL-ALIGN: top; PADDING-TOP: 0px
+}
+TABLE.Main TD.Bar {
+	BORDER-RIGHT: #000 1px solid; PADDING-RIGHT: 6px; PADDING-LEFT: 6px; =
+BACKGROUND: #f0f0f0; PADDING-BOTTOM: 0px; VERTICAL-ALIGN: top; WIDTH: =
+224px; COLOR: #000; PADDING-TOP: 0px; WHITE-SPACE: nowrap; HEIGHT: 100%
+}
+TABLE.Main TD.Bdy {
+	PADDING-RIGHT: 6px; PADDING-LEFT: 6px; PADDING-BOTTOM: 0px; =
+VERTICAL-ALIGN: top; WIDTH: 71%; PADDING-TOP: 0px
+}
+TABLE.Main TD.Bot {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; VERTICAL-ALIGN: bottom; PADDING-TOP: 0px
+}
+TABLE.Main TD.Top TABLE.Top {
+	BORDER-RIGHT: 0px; PADDING-RIGHT: 0px; BORDER-TOP: 0px; PADDING-LEFT: =
+0px; BACKGROUND: #fff; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: =
+0px; WIDTH: 100%; COLOR: #036; PADDING-TOP: 0px; BORDER-BOTTOM: 0px; =
+BORDER-COLLAPSE: collapse; HEIGHT: 84px; border-spacing: 0
+}
+TABLE.Main TD.Top TABLE.Top TR TD.Title {
+	PADDING-LEFT: 10px; MARGIN: 0px; FONT: bold 20pt/75% verdana; OVERFLOW: =
+hidden; WIDTH: 590px; TEXT-INDENT: 0px; WHITE-SPACE: nowrap; HEIGHT: =
+60px; TEXT-ALIGN: left
+}
+TABLE.Main TD.Top TABLE.Top TR TD.Logo {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; =
+VERTICAL-ALIGN: middle; PADDING-TOP: 5px; WHITE-SPACE: nowrap
+}
+TABLE.Main TD.Top TABLE.Top TR.Menu TD.LMenu {
+	BORDER-TOP: #000 1px solid; PADDING-LEFT: 10px; BACKGROUND: #036; FONT: =
+8pt verdana; VERTICAL-ALIGN: middle; OVERFLOW: hidden; COLOR: #fff; =
+BORDER-BOTTOM: #000 1px solid; WHITE-SPACE: nowrap; HEIGHT: 24px; =
+TEXT-ALIGN: left
+}
+TABLE.Main TD.Top TABLE.Top TR.Menu TD.RMenu {
+	PADDING-RIGHT: 10px; BORDER-TOP: #000 1px solid; BACKGROUND: #036; =
+FONT: 8pt verdana; VERTICAL-ALIGN: middle; OVERFLOW: hidden; COLOR: =
+#fff; BORDER-BOTTOM: #000 1px solid; WHITE-SPACE: nowrap; HEIGHT: 24px; =
+TEXT-ALIGN: right
+}
+TABLE.Main TD.Top TABLE.Top TR.Menu TD.RMenu FORM INPUT.button {
+	BORDER-TOP-WIDTH: 1px; FONT-WEIGHT: normal; BORDER-LEFT-WIDTH: 1px; =
+FONT-SIZE: 7pt; BORDER-BOTTOM-WIDTH: 1px; WIDTH: 25px; LINE-HEIGHT: =
+normal; FONT-STYLE: normal; HEIGHT: 18px; BORDER-RIGHT-WIDTH: 1px; =
+FONT-VARIANT: normal
+}
+TABLE.Main TD.Bot TABLE.Bot {
+	BORDER-RIGHT: 0px; PADDING-RIGHT: 0px; BORDER-TOP: #000 1px solid; =
+PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: 0px; =
+WIDTH: 100%; PADDING-TOP: 0px; BORDER-BOTTOM: 0px; BORDER-COLLAPSE: =
+collapse; HEIGHT: 24px; border-spacing: 0
+}
+TABLE.Main TD.Bot TABLE.Bot TR.Menu {
+	BACKGROUND: #036; COLOR: #fff
+}
+TABLE.Main TD.Bot TABLE.Bot TR.Menu TD.LMenu {
+	PADDING-LEFT: 10px; FONT: 8pt verdana; VERTICAL-ALIGN: middle; =
+OVERFLOW: hidden; WHITE-SPACE: nowrap; HEIGHT: 24px; TEXT-ALIGN: left
+}
+TABLE.Main TD.Bot TABLE.Bot TR.Menu TD.RMenu {
+	PADDING-RIGHT: 10px; FONT: 8pt verdana; VERTICAL-ALIGN: middle; =
+OVERFLOW: hidden; WHITE-SPACE: nowrap; HEIGHT: 24px; TEXT-ALIGN: right
+}
+TABLE.Forum {
+	BORDER-RIGHT: 0px; PADDING-RIGHT: 0px; BORDER-TOP: #000 1px solid; =
+PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: 0px; =
+WIDTH: 100%; PADDING-TOP: 0px; BORDER-BOTTOM: 0px; BORDER-COLLAPSE: =
+collapse; HEIGHT: 24px; border-spacing: 0
+}
+TABLE.Forum TR.Menu {
+	BACKGROUND: #036; COLOR: #fff
+}
+TABLE.Forum TR.Menu TD.LMenu {
+	PADDING-LEFT: 10px; FONT: 8pt verdana; VERTICAL-ALIGN: middle; =
+OVERFLOW: hidden; WHITE-SPACE: nowrap; HEIGHT: 24px; TEXT-ALIGN: left
+}
+TABLE.Forum TR.Menu TD.RMenu {
+	PADDING-RIGHT: 10px; FONT: 8pt verdana; VERTICAL-ALIGN: middle; =
+OVERFLOW: hidden; WHITE-SPACE: nowrap; HEIGHT: 24px; TEXT-ALIGN: right
+}
+TR.Menu A {
+	FONT-WEIGHT: bold; BACKGROUND: #036; COLOR: #fff; TEXT-DECORATION: none
+}
+TR.Menu A:hover {
+	BACKGROUND: #036; COLOR: #f90
+}
+TABLE.Main TD.Bar DIV.Bar {
+	MARGIN: 10px 0px 16px; WIDTH: 224px
+}
+TABLE.Main TD.Bdy DIV.Bdy {
+	MARGIN: 6px 0px 16px; WIDTH: 100%
+}
+TABLE.Main TD.Bar DIV.Bar P {
+	BORDER-TOP: #808080 1px solid; MARGIN-TOP: 6px; MARGIN-BOTTOM: 3px; =
+FONT: bold 10pt verdana; COLOR: #036
+}
+DIV.Bar UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px; LIST-STYLE-TYPE: none
+}
+DIV.Bar UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; FONT: 8pt verdana; PADDING-TOP: 0px
+}
+DIV.Bar UL LI DIV {
+	BACKGROUND: #f0f0f0; MARGIN: 0px; WIDTH: 224px; COLOR: #000
+}
+DIV.Bar UL LI DIV.nolink {
+	BORDER-RIGHT: #f0f0f0 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: =
+#f0f0f0 1px solid; PADDING-LEFT: 10px; FONT-WEIGHT: bold; =
+PADDING-BOTTOM: 2px; BORDER-LEFT: #f0f0f0 1px solid; PADDING-TOP: 1px; =
+BORDER-BOTTOM: #f0f0f0 1px solid
+}
+DIV.Bar UL LI DIV A {
+	BORDER-RIGHT: #f0f0f0 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: =
+#f0f0f0 1px solid; PADDING-LEFT: 10px; BACKGROUND: #f0f0f0; =
+PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #f0f0f0 1px solid; WIDTH: =
+224px; COLOR: #000; PADDING-TOP: 1px; BORDER-BOTTOM: #f0f0f0 1px solid; =
+TEXT-DECORATION: none
+}
+DIV.Bar UL LI DIV A:hover {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; =
+BACKGROUND: #ccc; BORDER-LEFT: #808080 1px solid; COLOR: #000; =
+BORDER-BOTTOM: #808080 1px solid
+}
+DIV.Bar UL LI UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; FONT: 7pt verdana; PADDING-TOP: 0px
+}
+DIV.Bar UL LI UL LI DIV {
+	BACKGROUND: #f0f0f0; MARGIN: 0px; WIDTH: 224px; COLOR: #000
+}
+DIV.Bar UL LI UL LI DIV.nolink {
+	BORDER-RIGHT: #f0f0f0 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: =
+#f0f0f0 1px solid; PADDING-LEFT: 25px; FONT-WEIGHT: bold; =
+PADDING-BOTTOM: 2px; BORDER-LEFT: #f0f0f0 1px solid; WIDTH: 224px; =
+PADDING-TOP: 1px; BORDER-BOTTOM: #f0f0f0 1px solid
+}
+DIV.Bar UL LI UL LI DIV A {
+	BORDER-RIGHT: #f0f0f0 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: =
+#f0f0f0 1px solid; PADDING-LEFT: 25px; BACKGROUND: #f0f0f0; =
+PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #f0f0f0 1px solid; WIDTH: =
+224px; COLOR: #000; PADDING-TOP: 1px; BORDER-BOTTOM: #f0f0f0 1px solid; =
+TEXT-DECORATION: none
+}
+DIV.Bar UL LI UL LI DIV A:hover {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; =
+BACKGROUND: #ccc; BORDER-LEFT: #808080 1px solid; COLOR: #000; =
+BORDER-BOTTOM: #808080 1px solid
+}
+TABLE.Unauth {
+	MARGIN-TOP: 18pt; MARGIN-BOTTOM: 12pt; WIDTH: 100%
+}
+TABLE.Unauth TD {
+	BORDER-RIGHT: #000 1pt solid; BORDER-TOP: #000 1pt solid; FONT-WEIGHT: =
+bold; FONT-SIZE: 10pt; BACKGROUND: #bc2b2b; BORDER-LEFT: #000 1pt solid; =
+WIDTH: 100%; COLOR: #fff; BORDER-BOTTOM: #000 1pt solid; HEIGHT: 60px; =
+TEXT-ALIGN: center
+}
+P.IDHeader {
+	DISPLAY: none; TEXT-ALIGN: center
+}
+P.URLFooter {
+	DISPLAY: none; TEXT-ALIGN: center
+}
+
+------=_NextPart_000_0009_01C64D02.4ADD5390
+Content-Type: text/css;
+	charset="windows-874"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.keil.com/_css/t5_common.css
+
+DIV.Bdy H1 {
+	MARGIN-TOP: 0px; FONT: bold 16pt verdana; PADDING-TOP: 6px
+}
+DIV.Bdy H2 {
+	FONT: bold 14pt verdana; PADDING-TOP: 15px
+}
+DIV.Bdy H3 {
+	FONT: bold 13pt verdana; PADDING-TOP: 15px
+}
+DIV.Bdy H4 {
+	FONT: bold 12pt verdana; PADDING-TOP: 15px
+}
+DIV.Bdy H5 {
+	FONT: bold 10pt verdana; PADDING-TOP: 15px
+}
+DIV.Bdy H6 {
+	FONT: bold 10pt verdana; PADDING-TOP: 15px
+}
+DIV.Bdy PRE {
+	FONT: 10pt/120% courier
+}
+DIV.Bdy PRE.code {
+	BACKGROUND: #f0e0a0; COLOR: #000
+}
+DIV.Bdy PRE STRONG {
+	FONT-WEIGHT: normal; COLOR: #f00
+}
+DIV.Bdy PRE B {
+	FONT-WEIGHT: normal; COLOR: #f00
+}
+DIV.Bdy UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 10pt; PADDING-BOTTOM: =
+0px; MARGIN: 6px 0px 16px 28px; PADDING-TOP: 0px; LIST-STYLE-TYPE: =
+square
+}
+DIV.Bdy UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 2px; MARGIN: =
+0px; PADDING-TOP: 2px
+}
+DIV.Bdy UL LI UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 8pt; PADDING-BOTTOM: =
+3px; MARGIN: 3px 0px 0px 16px; PADDING-TOP: 3px
+}
+DIV.Bdy UL LI UL LI {
+=09
+}
+DIV.Bdy OL {
+	MARGIN-TOP: 6px; FONT-SIZE: 10pt; MARGIN-BOTTOM: 6px
+}
+DIV.Bdy OL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 4px; =
+PADDING-TOP: 4px
+}
+DIV.Bdy OL LI UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 8pt; PADDING-BOTTOM: =
+0px; MARGIN: 0px 0px 0px 16px; PADDING-TOP: 0px
+}
+DIV.Bdy OL LI UL LI {
+=09
+}
+DIV.Bdy P {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 10pt; PADDING-BOTTOM: =
+0px; MARGIN: 0px 0px 16px; PADDING-TOP: 0px
+}
+DIV.Bdy B {
+=09
+}
+DIV.Bdy I {
+=09
+}
+DIV.Bdy BLOCKQUOTE {
+=09
+}
+DIV.Bdy TABLE TR TH {
+	FONT: 10pt verdana
+}
+DIV.Bdy TABLE TR TD {
+	FONT: 10pt verdana
+}
+DIV.Bdy SPAN.pt7 {
+	FONT-SIZE: 7pt
+}
+DIV.Bdy SPAN.pt7 UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 7pt; PADDING-BOTTOM: =
+0px; MARGIN: 6pt 0px 6pt 12pt; PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt7 UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 1pt; =
+PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt7 OL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 7pt; PADDING-BOTTOM: =
+0px; MARGIN: 6pt 0px 6pt 12pt; PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt7 OL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 1pt; =
+PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt8 {
+	FONT-SIZE: 8pt
+}
+DIV.Bdy SPAN.pt8 UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 8pt; PADDING-BOTTOM: =
+0px; MARGIN: 6pt 0px 6pt 12pt; PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt8 UL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 1pt; =
+PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt8 OL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 8pt; PADDING-BOTTOM: =
+0px; MARGIN: 6pt 0px 6pt 12pt; PADDING-TOP: 0px
+}
+DIV.Bdy SPAN.pt8 OL LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 1pt; =
+PADDING-TOP: 0px
+}
+DIV.Bdy A {
+	COLOR: #069
+}
+DIV.Bdy A:hover {
+	COLOR: #f00
+}
+DIV.Bdy A:visited {
+	COLOR: #606
+}
+DIV.Bdy DIV.rbar {
+	CLEAR: right; BORDER-TOP: #994700 2px solid; BACKGROUND: #f0e0a0; =
+FLOAT: right; MARGIN: 0px 0px 5px 20px; WIDTH: 180px; COLOR: #000; =
+BORDER-BOTTOM: #994700 2px solid; POSITION: relative
+}
+DIV.Bdy DIV.rbar P {
+	PADDING-LEFT: 4px; PADDING-BOTTOM: 6px; MARGIN: 4px; FONT: bold 10pt =
+verdana; COLOR: #000
+}
+DIV.Bdy DIV.rbar P A {
+	FONT: bold 10pt verdana; TEXT-DECORATION: none
+}
+DIV.Bdy DIV.rbar UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 20px; PADDING-BOTTOM: 0px; MARGIN: =
+4px; COLOR: #999; PADDING-TOP: 0px; LIST-STYLE-TYPE: square
+}
+DIV.Bdy DIV.rbar UL LI {
+	PADDING-BOTTOM: 9px; FONT: 8pt/120% verdana; PADDING-TOP: 0px
+}
+DIV.Bdy DIV.rbar UL LI SPAN.note {
+	FONT: 7pt verdana; COLOR: #000
+}
+DIV.Bdy DIV.rbar UL LI A {
+	FONT: 8pt verdana
+}
+DIV.Bdy IMG.left {
+	MARGIN-RIGHT: 10px
+}
+DIV.Bdy IMG.right {
+	MARGIN-LEFT: 10px
+}
+DIV.Bdy DIV.bp {
+	BORDER-RIGHT: #666 1px solid; PADDING-RIGHT: 10px; BORDER-TOP: #666 1px =
+solid; PADDING-LEFT: 10px; FONT-SIZE: 10pt; BACKGROUND: #e8e8e8; =
+PADDING-BOTTOM: 10px; MARGIN: 0px 0px 18px; BORDER-LEFT: #666 1px solid; =
+COLOR: #000; PADDING-TOP: 10px; BORDER-BOTTOM: #666 1px solid
+}
+DIV.Bdy .c {
+	TEXT-ALIGN: center
+}
+DIV.Bdy TABLE.Tab {
+	BORDER-RIGHT: #000 1pt solid; BORDER-LEFT: #000 1pt solid; =
+BORDER-COLLAPSE: collapse
+}
+DIV.Bdy TABLE.Tab TR TH {
+	BORDER-TOP: #000 1pt solid; BACKGROUND: #994700; MARGIN: 20pt 0px 2pt =
+2pt; FONT: bold 8pt verdana; COLOR: #fff; BORDER-BOTTOM: #000 1pt solid; =
+TEXT-ALIGN: left
+}
+DIV.Bdy TABLE.Tab TR TH.c {
+	TEXT-ALIGN: center
+}
+DIV.Bdy TABLE.Tab TR TH A {
+	COLOR: #fff
+}
+DIV.Bdy TABLE.Tab TR TH A:hover {
+	COLOR: #f0e0a0
+}
+DIV.Bdy TABLE.Tab TR TH A:visited {
+	COLOR: #f0e0a0
+}
+DIV.Bdy TABLE.Tab TR TD {
+	MARGIN: 0px 0px 0px 10pt; FONT: 8pt verdana; BORDER-BOTTOM: #000 1pt =
+solid
+}
+DIV.Bdy TABLE.Tab TR TD.c {
+	TEXT-ALIGN: center
+}
+DIV.Bdy TABLE.Tab TR TD.odd {
+	BACKGROUND: #fff; COLOR: #000
+}
+DIV.Bdy TABLE.Tab TR TD.oddc {
+	BACKGROUND: #fff; COLOR: #000; TEXT-ALIGN: center
+}
+DIV.Bdy TABLE.Tab TR TD.even {
+	BACKGROUND: #f0e0a0; COLOR: #000
+}
+DIV.Bdy TABLE.Tab TR TD.evenc {
+	BACKGROUND: #f0e0a0; COLOR: #000; TEXT-ALIGN: center
+}
+DIV.Bdy P.TabNotes {
+	MARGIN-TOP: 6px; FONT-SIZE: 7pt; TEXT-ALIGN: center
+}
+DIV.Bdy FORM TABLE {
+	BORDER-RIGHT: #000 1pt solid; PADDING-RIGHT: 2px; BORDER-TOP: #000 1pt =
+solid; PADDING-LEFT: 2px; BACKGROUND: #f0e0a0; PADDING-BOTTOM: 0px; =
+BORDER-LEFT: #000 1pt solid; COLOR: #000; PADDING-TOP: 0px; =
+BORDER-BOTTOM: #000 1pt solid; BORDER-COLLAPSE: collapse
+}
+DIV.Bdy FORM TABLE TR TH {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; BACKGROUND: #994700; =
+PADDING-BOTTOM: 5px; FONT: bold 10pt verdana; COLOR: #fff; PADDING-TOP: =
+5px; BORDER-BOTTOM: #000 1pt solid
+}
+DIV.Bdy FORM TABLE TR TD {
+	VERTICAL-ALIGN: top
+}
+DIV.Bdy FORM TABLE TR TD.but {
+	PADDING-RIGHT: 2px; BORDER-TOP: #000 1pt solid; PADDING-LEFT: 2px; =
+BACKGROUND: #994700; PADDING-BOTTOM: 5px; COLOR: #000; PADDING-TOP: 5px; =
+TEXT-ALIGN: center
+}
+DIV.Bdy FORM TABLE TR TD.FormC {
+	WHITE-SPACE: nowrap; TEXT-ALIGN: center
+}
+DIV.Bdy FORM TABLE TR TD.FormL {
+	WHITE-SPACE: nowrap
+}
+DIV.Bdy FORM TABLE TR TD.FormLw {
+=09
+}
+DIV.Bdy FORM TABLE TR TD.FormR {
+	PADDING-RIGHT: 6px; WHITE-SPACE: nowrap; TEXT-ALIGN: right
+}
+DIV.Bdy FORM TABLE TABLE {
+	BORDER-RIGHT: medium none; BORDER-TOP: medium none; BORDER-LEFT: medium =
+none; BORDER-BOTTOM: medium none
+}
+DIV.Bdy .error {
+	COLOR: #f00
+}
+DIV.Bdy SPAN.new1 {
+	PADDING-RIGHT: 6px; FONT-WEIGHT: bold; COLOR: #f00
+}
+DIV.Bdy SPAN.new2 {
+	PADDING-RIGHT: 6px; FONT-WEIGHT: bold; COLOR: #800000
+}
+DIV.Bdy DIV.dlfile {
+	BORDER-RIGHT: #000 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #000 1px =
+solid; PADDING-LEFT: 0px; BACKGROUND: #f0e0a0; PADDING-BOTTOM: 10px; =
+MARGIN: 10px 0px 20px; BORDER-LEFT: #000 1px solid; WIDTH: 80%; COLOR: =
+#000; PADDING-TOP: 10px; BORDER-BOTTOM: #000 1px solid
+}
+DIV.Bdy DIV.kblist {
+	PADDING-LEFT: 24px
+}
+
+------=_NextPart_000_0009_01C64D02.4ADD5390
+Content-Type: text/css;
+	charset="windows-874"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.keil.com/_css/t5_kb.css
+
+DIV.Bdy PRE {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; FONT-SIZE: 10pt; PADDING-BOTTOM: =
+5px; COLOR: #000; LINE-HEIGHT: 120%; PADDING-TOP: 5px; FONT-FAMILY: =
+courier; BACKGROUND-COLOR: #f0e0a0
+}
+DIV.Bdy LI PRE {
+	MARGIN: 3px 0px
+}
+DIV.Bdy FORM.kb TABLE {
+	WIDTH: 250px
+}
+
+------=_NextPart_000_0009_01C64D02.4ADD5390--

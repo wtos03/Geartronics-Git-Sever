@@ -1,0 +1,618 @@
+   1               		.file	"E_uart.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  66               	.global	g_tx_ptr
+  67               	.global	g_tx_ptr
+  68               		.section .bss
+  71               	g_tx_ptr:
+  72 0000 00        		.skip 1,0
+  73               	.global	g_rx_ptr
+  74               	.global	g_rx_ptr
+  77               	g_rx_ptr:
+  78 0001 00        		.skip 1,0
+  79               		.text
+  81               	.global	uart_init
+  83               	uart_init:
+   1:E_uart.c      **** /*
+   2:E_uart.c      ****  Module 				:   UART
+   3:E_uart.c      ****  Description 			:   Universal Async Transmitter
+   4:E_uart.c      ****  Original written for 	:   ATMEGA32
+   5:E_uart.c      ****  CPU port/tested		:   ATMEGA32
+   6:E_uart.c      ****  Hardware use			:   RS-232
+   7:E_uart.c      ****  Port use				:   UART Port Tx/Rx PD0, PD1
+   8:E_uart.c      ****  Memory	FLASH			:   XXX
+   9:E_uart.c      **** 		RAM				:   XXX
+  10:E_uart.c      **** 		EEPROM			:   XXX
+  11:E_uart.c      ****  Document				:   Document describe algorithm
+  12:E_uart.c      ****  Written by 			:   Wichai / wichai@geartronics.net
+  13:E_uart.c      ****  Date					:   1/06/2006
+  14:E_uart.c      ****   
+  15:E_uart.c      ****  Update History
+  16:E_uart.c      ****  
+  17:E_uart.c      ****  Date			By 					Comments
+  18:E_uart.c      ****  ----			--					---------
+  19:E_uart.c      ****  
+  20:E_uart.c      ****  
+  21:E_uart.c      **** */
+  22:E_uart.c      ****  
+  23:E_uart.c      **** #include <stdlib.h> 
+  24:E_uart.c      **** #include "E_uart.h"
+  25:E_uart.c      **** 
+  26:E_uart.c      **** //  Global Data for Rx/Tx
+  27:E_uart.c      **** uint8_t g_rx_buff[MAX_BUFF];
+  28:E_uart.c      **** uint8_t g_tx_buff[MAX_BUFF];
+  29:E_uart.c      **** uint8_t g_rx_ptr = 0;
+  30:E_uart.c      **** uint8_t g_tx_ptr = 0;
+  31:E_uart.c      **** 
+  32:E_uart.c      **** 
+  33:E_uart.c      ****  
+  34:E_uart.c      **** /* USART, Rx Complete */
+  35:E_uart.c      **** 
+  36:E_uart.c      ****  
+  37:E_uart.c      **** // UART Receive interrupt
+  38:E_uart.c      **** 
+  39:E_uart.c      **** 
+  40:E_uart.c      **** /*
+  41:E_uart.c      ****  * these functions are only for ATmegas with two USART
+  42:E_uart.c      ****  */
+  43:E_uart.c      **** /*************************************************************************
+  44:E_uart.c      **** Function: uart_init()
+  45:E_uart.c      **** Purpose:  initialize UART1 and set baudrate
+  46:E_uart.c      **** Input:    baudrate using macro UART_BAUD_SELECT()
+  47:E_uart.c      **** Returns:  none
+  48:E_uart.c      **** **************************************************************************/
+  49:E_uart.c      **** void uart_init()
+  50:E_uart.c      **** {
+  85               	.LM1:
+  86               	/* prologue: frame size=0 */
+  87               	/* prologue end (size=0) */
+  51:E_uart.c      ****  
+  52:E_uart.c      **** // Initialize UART  
+  53:E_uart.c      ****     
+  54:E_uart.c      ****     UCSRC  = 0x86;    // 8 bit non parity  1 stop bit
+  89               	.LM2:
+  90 0000 86E8      		ldi r24,lo8(-122)
+  91 0002 80BD      		out 64-0x20,r24
+  55:E_uart.c      ****      UCSRB  = 0x98;    // Enable RX Interrupt and Enable TX, RX pin
+  93               	.LM3:
+  94 0004 88E9      		ldi r24,lo8(-104)
+  95 0006 8AB9      		out 42-0x20,r24
+  56:E_uart.c      **** //    UCSRB  = 0B8;    // Enable RX Interrupt, Data registerempty interrupt enable and Enable TX, R
+  57:E_uart.c      **** 	UBRRL  = 0x67;    // Speed 9600 UBRR = 103 at 16 MHZ
+  97               	.LM4:
+  98 0008 87E6      		ldi r24,lo8(103)
+  99 000a 89B9      		out 41-0x20,r24
+  58:E_uart.c      **** //	UBRRL  = 51;      // Speed = 19.2 K at 16 Mhz
+  59:E_uart.c      **** 	UBRRH  = 0;
+ 101               	.LM5:
+ 102 000c 10BC      		out 64-0x20,__zero_reg__
+  60:E_uart.c      **** //    DDRD = 0x00;	 
+  61:E_uart.c      ****  
+  62:E_uart.c      **** 	g_rx_ptr = 0;
+ 104               	.LM6:
+ 105 000e 1092 0000 		sts g_rx_ptr,__zero_reg__
+  63:E_uart.c      **** 	g_tx_ptr = 0;
+ 107               	.LM7:
+ 108 0012 1092 0000 		sts g_tx_ptr,__zero_reg__
+ 109               	/* epilogue: frame size=0 */
+ 110 0016 0895      		ret
+ 111               	/* epilogue end (size=1) */
+ 112               	/* function uart_init size 12 (11) */
+ 114               	.Lscope0:
+ 117               	.global	uart_put_RX
+ 119               	uart_put_RX:
+  64:E_uart.c      ****  /* Set baud rate */
+  65:E_uart.c      ****  
+  66:E_uart.c      **** }
+  67:E_uart.c      **** 
+  68:E_uart.c      **** /*
+  69:E_uart.c      **** Put character into Rx buffer
+  70:E_uart.c      **** 
+  71:E_uart.c      **** Return  = Success 0
+  72:E_uart.c      ****         = Fail   Buffer Full
+  73:E_uart.c      **** 		
+  74:E_uart.c      **** */
+  75:E_uart.c      **** uint8_t uart_put_RX ( uint8_t ch)
+  76:E_uart.c      **** {
+ 121               	.LM8:
+ 122               	/* prologue: frame size=0 */
+ 123               	/* prologue end (size=0) */
+ 124 0018 982F      		mov r25,r24
+  77:E_uart.c      ****    if ((g_rx_ptr < MAX_BUFF)) 
+ 126               	.LM9:
+ 127 001a 8091 0000 		lds r24,g_rx_ptr
+ 128 001e 8A3F      		cpi r24,lo8(-6)
+ 129 0020 80F4      		brsh .L3
+  78:E_uart.c      ****    {
+  79:E_uart.c      **** //  End with Null
+  80:E_uart.c      **** 		g_rx_buff[g_rx_ptr] = ch;
+ 131               	.LM10:
+ 132 0022 E82F      		mov r30,r24
+ 133 0024 FF27      		clr r31
+ 134 0026 E050      		subi r30,lo8(-(g_rx_buff))
+ 135 0028 F040      		sbci r31,hi8(-(g_rx_buff))
+ 136 002a 9083      		st Z,r25
+  81:E_uart.c      **** 		g_rx_ptr++;
+ 138               	.LM11:
+ 139 002c 8F5F      		subi r24,lo8(-(1))
+ 140 002e 8093 0000 		sts g_rx_ptr,r24
+  82:E_uart.c      **** 		g_rx_buff[g_rx_ptr] = 0;   // End with null characters
+ 142               	.LM12:
+ 143 0032 E82F      		mov r30,r24
+ 144 0034 FF27      		clr r31
+ 145 0036 E050      		subi r30,lo8(-(g_rx_buff))
+ 146 0038 F040      		sbci r31,hi8(-(g_rx_buff))
+ 147 003a 1082      		st Z,__zero_reg__
+  83:E_uart.c      **** 		return 0;
+ 149               	.LM13:
+ 150 003c 80E0      		ldi r24,lo8(0)
+ 151 003e 90E0      		ldi r25,hi8(0)
+ 152 0040 0895      		ret
+ 153               	.L3:
+  84:E_uart.c      ****     }
+  85:E_uart.c      ****    else  // Buffer full do nothing  return error
+  86:E_uart.c      ****    {
+  87:E_uart.c      ****         return UART_BUFFER_FULL;
+ 155               	.LM14:
+ 156 0042 82E0      		ldi r24,lo8(2)
+ 157 0044 90E0      		ldi r25,hi8(2)
+  88:E_uart.c      ****    }
+  89:E_uart.c      **** }
+ 159               	.LM15:
+ 160 0046 0895      		ret
+ 161               	/* epilogue: frame size=0 */
+ 162 0048 0895      		ret
+ 163               	/* epilogue end (size=1) */
+ 164               	/* function uart_put_RX size 25 (24) */
+ 166               	.Lscope1:
+ 168               	.global	uart_get_RX
+ 170               	uart_get_RX:
+  90:E_uart.c      **** 
+  91:E_uart.c      **** // Get character from RX buffer
+  92:E_uart.c      **** 
+  93:E_uart.c      **** uint8_t uart_get_RX (void)
+  94:E_uart.c      **** {
+ 172               	.LM16:
+ 173               	/* prologue: frame size=0 */
+ 174               	/* prologue end (size=0) */
+  95:E_uart.c      ****    uint8_t  i,j,ch;
+  96:E_uart.c      ****    if (g_rx_ptr)
+ 176               	.LM17:
+ 177 004a 8091 0000 		lds r24,g_rx_ptr
+ 178 004e 8823      		tst r24
+ 179 0050 A1F0      		breq .L6
+  97:E_uart.c      ****    {
+  98:E_uart.c      **** 		ch = g_rx_buff[0];
+ 181               	.LM18:
+ 182 0052 9091 0000 		lds r25,g_rx_buff
+  99:E_uart.c      ****         i =  g_rx_ptr;
+ 184               	.LM19:
+ 185 0056 282F      		mov r18,r24
+ 100:E_uart.c      ****         g_rx_ptr--;
+ 187               	.LM20:
+ 188 0058 2150      		subi r18,lo8(-(-1))
+ 189 005a 2093 0000 		sts g_rx_ptr,r18
+ 190 005e 2F5F      		subi r18,lo8(-(1))
+ 101:E_uart.c      **** 		j = 0;
+ 192               	.LM21:
+ 193 0060 30E0      		ldi r19,lo8(0)
+ 194               	.L9:
+ 102:E_uart.c      **** // Move left all characters
+ 103:E_uart.c      ****         while (i)
+ 104:E_uart.c      **** 		{
+ 105:E_uart.c      **** 	      g_rx_buff[j] =  g_rx_buff[j+1];
+ 196               	.LM22:
+ 197 0062 E32F      		mov r30,r19
+ 198 0064 FF27      		clr r31
+ 199 0066 E050      		subi r30,lo8(-(g_rx_buff))
+ 200 0068 F040      		sbci r31,hi8(-(g_rx_buff))
+ 201 006a 8181      		ldd r24,Z+1
+ 202 006c 8083      		st Z,r24
+ 106:E_uart.c      **** 	      j++;
+ 204               	.LM23:
+ 205 006e 3F5F      		subi r19,lo8(-(1))
+ 107:E_uart.c      **** 	 	  i--;
+ 207               	.LM24:
+ 208 0070 2150      		subi r18,lo8(-(-1))
+ 209 0072 B9F7      		brne .L9
+ 108:E_uart.c      **** 		}
+ 109:E_uart.c      **** 		return ch;
+ 211               	.LM25:
+ 212 0074 892F      		mov r24,r25
+ 213 0076 9927      		clr r25
+ 214 0078 0895      		ret
+ 215               	.L6:
+ 110:E_uart.c      ****    }
+ 111:E_uart.c      ****    return 0;
+ 217               	.LM26:
+ 218 007a 80E0      		ldi r24,lo8(0)
+ 219 007c 90E0      		ldi r25,hi8(0)
+ 112:E_uart.c      **** }
+ 221               	.LM27:
+ 222 007e 0895      		ret
+ 223               	/* epilogue: frame size=0 */
+ 224 0080 0895      		ret
+ 225               	/* epilogue end (size=1) */
+ 226               	/* function uart_get_RX size 29 (28) */
+ 233               	.Lscope2:
+ 236               	.global	uart_put_TX
+ 238               	uart_put_TX:
+ 113:E_uart.c      **** 
+ 114:E_uart.c      **** /* Put character into g_tx_buff
+ 115:E_uart.c      ****     INPUT  : Character to put in buffer
+ 116:E_uart.c      **** 	Output : 0  OK
+ 117:E_uart.c      **** 		   : UART_BUFFER_FULL  Buffer full
+ 118:E_uart.c      **** */
+ 119:E_uart.c      **** 
+ 120:E_uart.c      **** uint8_t uart_put_TX ( uint8_t ch)
+ 121:E_uart.c      **** {
+ 240               	.LM28:
+ 241               	/* prologue: frame size=0 */
+ 242               	/* prologue end (size=0) */
+ 243 0082 982F      		mov r25,r24
+ 122:E_uart.c      **** // If exceed buffer do nothing until buffer is flushed
+ 123:E_uart.c      ****     if ((g_tx_ptr > MAX_BUFF)) 
+ 245               	.LM29:
+ 246 0084 8091 0000 		lds r24,g_tx_ptr
+ 247 0088 8B3F      		cpi r24,lo8(-5)
+ 248 008a 18F0      		brlo .L13
+ 124:E_uart.c      ****     {
+ 125:E_uart.c      **** 		return UART_BUFFER_FULL;   // No increase pointer
+ 250               	.LM30:
+ 251 008c 82E0      		ldi r24,lo8(2)
+ 252 008e 90E0      		ldi r25,hi8(2)
+ 253 0090 0895      		ret
+ 254               	.L13:
+ 126:E_uart.c      ****     }
+ 127:E_uart.c      **** 	g_tx_buff[g_tx_ptr]= ch;
+ 256               	.LM31:
+ 257 0092 E82F      		mov r30,r24
+ 258 0094 FF27      		clr r31
+ 259 0096 E050      		subi r30,lo8(-(g_tx_buff))
+ 260 0098 F040      		sbci r31,hi8(-(g_tx_buff))
+ 261 009a 9083      		st Z,r25
+ 128:E_uart.c      **** 	g_tx_ptr++;
+ 263               	.LM32:
+ 264 009c 8F5F      		subi r24,lo8(-(1))
+ 265 009e 8093 0000 		sts g_tx_ptr,r24
+ 129:E_uart.c      **** 	g_tx_buff[g_tx_ptr] = 0;    // Put null character at the end
+ 267               	.LM33:
+ 268 00a2 E82F      		mov r30,r24
+ 269 00a4 FF27      		clr r31
+ 270 00a6 E050      		subi r30,lo8(-(g_tx_buff))
+ 271 00a8 F040      		sbci r31,hi8(-(g_tx_buff))
+ 272 00aa 1082      		st Z,__zero_reg__
+ 130:E_uart.c      **** 	return 0;
+ 274               	.LM34:
+ 275 00ac 80E0      		ldi r24,lo8(0)
+ 276 00ae 90E0      		ldi r25,hi8(0)
+ 131:E_uart.c      **** }
+ 278               	.LM35:
+ 279 00b0 0895      		ret
+ 280               	/* epilogue: frame size=0 */
+ 281 00b2 0895      		ret
+ 282               	/* epilogue end (size=1) */
+ 283               	/* function uart_put_TX size 25 (24) */
+ 285               	.Lscope3:
+ 287               	.global	uart_get_TX
+ 289               	uart_get_TX:
+ 132:E_uart.c      **** 
+ 133:E_uart.c      **** 
+ 134:E_uart.c      **** // Get character from TX buffer
+ 135:E_uart.c      **** uint8_t uart_get_TX (void)
+ 136:E_uart.c      **** {
+ 291               	.LM36:
+ 292               	/* prologue: frame size=0 */
+ 293               	/* prologue end (size=0) */
+ 137:E_uart.c      ****    uint8_t i,j,ch =0;
+ 138:E_uart.c      ****    
+ 139:E_uart.c      ****    if ( g_tx_ptr)
+ 295               	.LM37:
+ 296 00b4 8091 0000 		lds r24,g_tx_ptr
+ 297 00b8 8823      		tst r24
+ 298 00ba A1F0      		breq .L15
+ 140:E_uart.c      ****    {
+ 141:E_uart.c      **** 		i  =  g_tx_ptr;
+ 300               	.LM38:
+ 301 00bc 282F      		mov r18,r24
+ 142:E_uart.c      **** 		g_tx_ptr--;
+ 303               	.LM39:
+ 304 00be 2150      		subi r18,lo8(-(-1))
+ 305 00c0 2093 0000 		sts g_tx_ptr,r18
+ 306 00c4 2F5F      		subi r18,lo8(-(1))
+ 143:E_uart.c      **** 		ch =  g_tx_buff[0];   // Start from 0 FIFO
+ 308               	.LM40:
+ 309 00c6 9091 0000 		lds r25,g_tx_buff
+ 144:E_uart.c      **** 		j = 0;
+ 311               	.LM41:
+ 312 00ca 30E0      		ldi r19,lo8(0)
+ 313               	.L18:
+ 145:E_uart.c      **** // Move left all characters
+ 146:E_uart.c      ****         while (i)
+ 147:E_uart.c      **** 		{
+ 148:E_uart.c      **** 	      g_tx_buff[j] =  g_tx_buff[j+1];
+ 315               	.LM42:
+ 316 00cc E32F      		mov r30,r19
+ 317 00ce FF27      		clr r31
+ 318 00d0 E050      		subi r30,lo8(-(g_tx_buff))
+ 319 00d2 F040      		sbci r31,hi8(-(g_tx_buff))
+ 320 00d4 8181      		ldd r24,Z+1
+ 321 00d6 8083      		st Z,r24
+ 149:E_uart.c      **** 	      j++;
+ 323               	.LM43:
+ 324 00d8 3F5F      		subi r19,lo8(-(1))
+ 150:E_uart.c      **** 	 	  i--;
+ 326               	.LM44:
+ 327 00da 2150      		subi r18,lo8(-(-1))
+ 328 00dc B9F7      		brne .L18
+ 151:E_uart.c      **** 		}
+ 152:E_uart.c      **** 		return ch;
+ 330               	.LM45:
+ 331 00de 892F      		mov r24,r25
+ 332 00e0 9927      		clr r25
+ 333 00e2 0895      		ret
+ 334               	.L15:
+ 153:E_uart.c      ****    }
+ 154:E_uart.c      ****    return 0;
+ 336               	.LM46:
+ 337 00e4 80E0      		ldi r24,lo8(0)
+ 338 00e6 90E0      		ldi r25,hi8(0)
+ 155:E_uart.c      **** }
+ 340               	.LM47:
+ 341 00e8 0895      		ret
+ 342               	/* epilogue: frame size=0 */
+ 343 00ea 0895      		ret
+ 344               	/* epilogue end (size=1) */
+ 345               	/* function uart_get_TX size 29 (28) */
+ 352               	.Lscope4:
+ 354               	.global	uart_getc
+ 356               	uart_getc:
+ 156:E_uart.c      **** 
+ 157:E_uart.c      **** 
+ 158:E_uart.c      **** uint8_t uart_getc(void)
+ 159:E_uart.c      **** {
+ 358               	.LM48:
+ 359               	/* prologue: frame size=0 */
+ 360               	/* prologue end (size=0) */
+ 160:E_uart.c      ****     uint8_t ch;
+ 161:E_uart.c      **** 	ch = uart_get_RX();
+ 362               	.LM49:
+ 363 00ec 0E94 0000 		call uart_get_RX
+ 162:E_uart.c      ****     return ch ;
+ 163:E_uart.c      **** }
+ 365               	.LM50:
+ 366 00f0 9927      		clr r25
+ 367               	/* epilogue: frame size=0 */
+ 368 00f2 0895      		ret
+ 369               	/* epilogue end (size=1) */
+ 370               	/* function uart_getc size 4 (3) */
+ 372               	.Lscope5:
+ 375               	.global	uart_putc
+ 377               	uart_putc:
+ 164:E_uart.c      **** 
+ 165:E_uart.c      **** uint8_t uart_putc(uint8_t c)
+ 166:E_uart.c      **** {
+ 379               	.LM51:
+ 380               	/* prologue: frame size=0 */
+ 381               	/* prologue end (size=0) */
+ 167:E_uart.c      ****   
+ 168:E_uart.c      ****   uart_put_TX(c);
+ 383               	.LM52:
+ 384 00f4 0E94 0000 		call uart_put_TX
+ 169:E_uart.c      **** // Enable interrupt UART Data Register empty
+ 170:E_uart.c      ****   UCSRB  |=  (1<<UDRIE);	
+ 386               	.LM53:
+ 387 00f8 559A      		sbi 42-0x20,5
+ 171:E_uart.c      **** //    while ( !(UCSRA & (1<< UDRE)));
+ 172:E_uart.c      **** //	UDR = c;
+ 173:E_uart.c      ****     return 0;
+ 174:E_uart.c      **** 
+ 175:E_uart.c      **** }
+ 389               	.LM54:
+ 390 00fa 80E0      		ldi r24,lo8(0)
+ 391 00fc 90E0      		ldi r25,hi8(0)
+ 392               	/* epilogue: frame size=0 */
+ 393 00fe 0895      		ret
+ 394               	/* epilogue end (size=1) */
+ 395               	/* function uart_putc size 6 (5) */
+ 397               	.Lscope6:
+ 400               	.global	uart_puts
+ 402               	uart_puts:
+ 176:E_uart.c      **** 
+ 177:E_uart.c      **** 
+ 178:E_uart.c      **** /*************************************************************************
+ 179:E_uart.c      **** Function: uart_puts()
+ 180:E_uart.c      **** Purpose:  transmit string to UART1
+ 181:E_uart.c      **** Input:    string to be transmitted
+ 182:E_uart.c      **** Returns:  none          
+ 183:E_uart.c      **** **************************************************************************/
+ 184:E_uart.c      **** void uart_puts(const uint8_t *s )
+ 185:E_uart.c      **** {
+ 404               	.LM55:
+ 405               	/* prologue: frame size=0 */
+ 406 0100 CF93      		push r28
+ 407 0102 DF93      		push r29
+ 408               	/* prologue end (size=2) */
+ 409 0104 EC01      		movw r28,r24
+ 410               	.L29:
+ 186:E_uart.c      ****     while (*s) 
+ 187:E_uart.c      ****       uart_putc(*s++);
+ 412               	.LM56:
+ 413 0106 8881      		ld r24,Y
+ 414 0108 8823      		tst r24
+ 415 010a 21F0      		breq .L28
+ 416 010c 8991      		ld r24,Y+
+ 417 010e 0E94 0000 		call uart_putc
+ 418 0112 F9CF      		rjmp .L29
+ 419               	.L28:
+ 188:E_uart.c      ****    uart_putc(0x0D); // CR
+ 421               	.LM57:
+ 422 0114 8DE0      		ldi r24,lo8(13)
+ 423 0116 0E94 0000 		call uart_putc
+ 189:E_uart.c      **** 	uart_putc(0x0A); // LF
+ 425               	.LM58:
+ 426 011a 8AE0      		ldi r24,lo8(10)
+ 427 011c 0E94 0000 		call uart_putc
+ 428               	/* epilogue: frame size=0 */
+ 429 0120 DF91      		pop r29
+ 430 0122 CF91      		pop r28
+ 431 0124 0895      		ret
+ 432               	/* epilogue end (size=3) */
+ 433               	/* function uart_puts size 19 (14) */
+ 435               	.Lscope7:
+ 439               	.global	debug_value
+ 441               	debug_value:
+ 190:E_uart.c      **** }
+ 191:E_uart.c      **** 
+ 192:E_uart.c      **** /*
+ 193:E_uart.c      **** Show debug value
+ 194:E_uart.c      **** */
+ 195:E_uart.c      **** 
+ 196:E_uart.c      **** void  debug_value ( int16_t value, uint8_t radix)
+ 197:E_uart.c      **** {
+ 443               	.LM59:
+ 444               	/* prologue: frame size=20 */
+ 445 0126 CF93      		push r28
+ 446 0128 DF93      		push r29
+ 447 012a CDB7      		in r28,__SP_L__
+ 448 012c DEB7      		in r29,__SP_H__
+ 449 012e 6497      		sbiw r28,20
+ 450 0130 0FB6      		in __tmp_reg__,__SREG__
+ 451 0132 F894      		cli
+ 452 0134 DEBF      		out __SP_H__,r29
+ 453 0136 0FBE      		out __SREG__,__tmp_reg__
+ 454 0138 CDBF      		out __SP_L__,r28
+ 455               	/* prologue end (size=10) */
+ 456 013a 262F      		mov r18,r22
+ 198:E_uart.c      ****    uint8_t  buff[20];
+ 199:E_uart.c      ****    
+ 200:E_uart.c      ****    itoa (value,buff, radix);
+ 458               	.LM60:
+ 459 013c 3327      		clr r19
+ 460 013e A901      		movw r20,r18
+ 461 0140 BE01      		movw r22,r28
+ 462 0142 6F5F      		subi r22,lo8(-(1))
+ 463 0144 7F4F      		sbci r23,hi8(-(1))
+ 464 0146 0E94 0000 		call itoa
+ 201:E_uart.c      ****     uart_puts ( buff);
+ 466               	.LM61:
+ 467 014a CE01      		movw r24,r28
+ 468 014c 0196      		adiw r24,1
+ 469 014e 0E94 0000 		call uart_puts
+ 470               	/* epilogue: frame size=20 */
+ 471 0152 6496      		adiw r28,20
+ 472 0154 0FB6      		in __tmp_reg__,__SREG__
+ 473 0156 F894      		cli
+ 474 0158 DEBF      		out __SP_H__,r29
+ 475 015a 0FBE      		out __SREG__,__tmp_reg__
+ 476 015c CDBF      		out __SP_L__,r28
+ 477 015e DF91      		pop r29
+ 478 0160 CF91      		pop r28
+ 479 0162 0895      		ret
+ 480               	/* epilogue end (size=9) */
+ 481               	/* function debug_value size 31 (12) */
+ 486               	.Lscope8:
+ 490               	.global	debug_lvalue
+ 492               	debug_lvalue:
+ 202:E_uart.c      **** 
+ 203:E_uart.c      **** }
+ 204:E_uart.c      **** 
+ 205:E_uart.c      **** 
+ 206:E_uart.c      **** 
+ 207:E_uart.c      **** void  debug_lvalue ( int32_t value, uint8_t radix)
+ 208:E_uart.c      **** {
+ 494               	.LM62:
+ 495               	/* prologue: frame size=40 */
+ 496 0164 EF92      		push r14
+ 497 0166 FF92      		push r15
+ 498 0168 0F93      		push r16
+ 499 016a 1F93      		push r17
+ 500 016c CF93      		push r28
+ 501 016e DF93      		push r29
+ 502 0170 CDB7      		in r28,__SP_L__
+ 503 0172 DEB7      		in r29,__SP_H__
+ 504 0174 A897      		sbiw r28,40
+ 505 0176 0FB6      		in __tmp_reg__,__SREG__
+ 506 0178 F894      		cli
+ 507 017a DEBF      		out __SP_H__,r29
+ 508 017c 0FBE      		out __SREG__,__tmp_reg__
+ 509 017e CDBF      		out __SP_L__,r28
+ 510               	/* prologue end (size=14) */
+ 511 0180 7B01      		movw r14,r22
+ 512 0182 8C01      		movw r16,r24
+ 513 0184 842F      		mov r24,r20
+ 209:E_uart.c      ****    uint8_t  buff[40];
+ 210:E_uart.c      ****    
+ 211:E_uart.c      ****    ltoa (value,buff, radix);
+ 515               	.LM63:
+ 516 0186 9927      		clr r25
+ 517 0188 9C01      		movw r18,r24
+ 518 018a AE01      		movw r20,r28
+ 519 018c 4F5F      		subi r20,lo8(-(1))
+ 520 018e 5F4F      		sbci r21,hi8(-(1))
+ 521 0190 C801      		movw r24,r16
+ 522 0192 B701      		movw r22,r14
+ 523 0194 0E94 0000 		call ltoa
+ 212:E_uart.c      ****     uart_puts ( buff);
+ 525               	.LM64:
+ 526 0198 CE01      		movw r24,r28
+ 527 019a 0196      		adiw r24,1
+ 528 019c 0E94 0000 		call uart_puts
+ 529               	/* epilogue: frame size=40 */
+ 530 01a0 A896      		adiw r28,40
+ 531 01a2 0FB6      		in __tmp_reg__,__SREG__
+ 532 01a4 F894      		cli
+ 533 01a6 DEBF      		out __SP_H__,r29
+ 534 01a8 0FBE      		out __SREG__,__tmp_reg__
+ 535 01aa CDBF      		out __SP_L__,r28
+ 536 01ac DF91      		pop r29
+ 537 01ae CF91      		pop r28
+ 538 01b0 1F91      		pop r17
+ 539 01b2 0F91      		pop r16
+ 540 01b4 FF90      		pop r15
+ 541 01b6 EF90      		pop r14
+ 542 01b8 0895      		ret
+ 543               	/* epilogue end (size=13) */
+ 544               	/* function debug_lvalue size 43 (16) */
+ 549               	.Lscope9:
+ 550               		.comm g_rx_buff,250,1
+ 551               		.comm g_tx_buff,250,1
+ 556               		.text
+ 558               	Letext:
+ 559               	/* File "E_uart.c": code  223 = 0x00df ( 165), prologues  26, epilogues  32 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 E_uart.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:71     .bss:00000000 g_tx_ptr
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:77     .bss:00000001 g_rx_ptr
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:83     .text:00000000 uart_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:119    .text:00000018 uart_put_RX
+                            *COM*:000000fa g_rx_buff
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:170    .text:0000004a uart_get_RX
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:238    .text:00000082 uart_put_TX
+                            *COM*:000000fa g_tx_buff
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:289    .text:000000b4 uart_get_TX
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:356    .text:000000ec uart_getc
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:377    .text:000000f4 uart_putc
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:402    .text:00000100 uart_puts
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:441    .text:00000126 debug_value
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:492    .text:00000164 debug_lvalue
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAXaaaa.s:558    .text:000001ba Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+itoa
+ltoa

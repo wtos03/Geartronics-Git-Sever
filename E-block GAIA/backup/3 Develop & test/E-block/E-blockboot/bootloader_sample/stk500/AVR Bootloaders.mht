@@ -1,0 +1,977 @@
+From: <Saved by Microsoft Internet Explorer 5>
+Subject: AVR Bootloaders
+Date: Mon, 23 Jul 2007 14:14:14 +0700
+MIME-Version: 1.0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://hubbard.engr.scu.edu/embedded/avr/bootloader/index.html
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>AVR Bootloaders</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR></HEAD>
+<BODY vLink=3Dblue link=3Dblue>
+<H1 align=3Dcenter><FONT color=3D#0066cc>Bootloaders for the Atmel AVR=20
+series</FONT></H1>
+<CENTER>Written by Pascal Stang | Updated: Thursday June 21, =
+2007</CENTER>
+<HR>
+
+<P align=3Dleft><B><FONT face=3DArial color=3D#990000 size=3D4>A brief =
+word about=20
+bootloaders:</FONT></B></P>
+<BLOCKQUOTE>
+  <P align=3Dleft>Generally, a bootloader is a small program which runs =
+at boot=20
+  time and is capable of loading a complete application program into a=20
+  processor's memory so that it can be exectuted. Note that the =
+bootloader runs=20
+  on the same processor into which it is loading a new program.</P>
+  <P align=3Dleft>In the case of AVR processors, the bootloader program =
+is usually=20
+  256-4096 assembly instuctions long and resides in a special portion of =
+the=20
+  FLASH memory called the bootblock. At boot time (when the processor =
+has just=20
+  been reset) the bootloader starts and is capable of communicating with =
+the=20
+  outside world to retrieve a new program and program it into the =
+processor's=20
+  FLASH memory. Depending on the bootloader and the available hardware, =
+new=20
+  application code can be loaded from any source including the serial =
+port, SPI=20
+  or I2C interfaces, external memory, hard disks, flash cards, etc. Once =
+the=20
+  programming is done, the bootloader program exits or the processor is =
+reset=20
+  and begins running the newly loaded code. Only AVR processors with the =
+
+  self-programming memory feature (those that have an SPM assembly =
+instruction)=20
+  can run a bootloader.</P></BLOCKQUOTE>
+<P align=3Dleft><B><FONT face=3DArial color=3D#990000 =
+size=3D4>Installing an AVR=20
+bootloader:</FONT></B></P>
+<BLOCKQUOTE>
+  <P align=3Dleft>Just like regular application code, a bootloader must =
+be loaded=20
+  into the processor's FLASH memory once when you first begin using it.=20
+  Instructions on how to do this are beyond the scope of this document =
+because=20
+  it depends on which processor and hardware you are using. To continue =
+you will=20
+  need to know how to transfer a *.hex file to the AVR's FLASH memory, =
+and how=20
+  to set the processor's fuse bits. Common ways to load code and change =
+fuse bit=20
+  settings include using Atmel AVR Studio with an STK500 board, the =
+PonyProg=20
+  Programmer, UISP, or AVRdude. <STRONG>Use caution when modifying fuse =
+bits.=20
+  It's possible to render your microcontroller =
+unresponsive.</STRONG></P>
+  <P align=3Dleft>The procedure for installing a bootloader is =
+indepenent of how=20
+  the bootloader works:</P>
+  <OL>
+    <LI>Program the bootloader *.hex file into your processor using =
+traditional=20
+    methods (ie. AVR Studio, PonyProg, UISP, AVRdude, etc). Your AVR =
+processor=20
+    must match the one for which the bootloader is designed.=20
+    <LI>Set the size of your processor's bootblock to match the size of =
+the=20
+    bootloader program.=20
+    <LI>Set your processor's reset vector to point to the bootblock, not =
+the=20
+    default 0x0000 address.<BR>NOTE: AVR Studio's notation for this is =
+somewhat=20
+    confusing. When the <STRONG>Boot Reset Vector Enabled</STRONG> box =
+is=20
+    <EM>checked</EM>, your processor will run the bootloader after =
+reset. When=20
+    this box is <EM>unchecked</EM>, the processor starts at the default =
+0x0000=20
+    address - ie. runs your application after reset. </LI></OL>
+  <P>Notes:</P>
+  <OL>
+    <LI>The bootblock size and reset vector can be changed by modifying =
+your=20
+    processor's fuse bits. The AVR Studio manual and/or the processor's=20
+    datasheet has more information about the meaning of fuse bits and =
+how to set=20
+    them.=20
+    <LI>AVR Studio's notation for the <STRONG>Boot Reset Vector</STRONG> =
+is=20
+    somewhat confusing. When the <STRONG>Boot Reset Vector =
+Enabled</STRONG> box=20
+    is <EM>checked</EM>, your processor will run the bootloader after =
+reset.=20
+    When this box is <EM>unchecked</EM>, the processor starts at the =
+default=20
+    0x0000 address - ie. runs your application after reset. To enable =
+automatic=20
+    bootloader operation, this box should be checked.=20
+    <LI>The size of the bootloader may be listed in kwords or kbytes. =
+Convert=20
+    using kwords =3D kbytes/2. </LI></OL></BLOCKQUOTE>
+<P align=3Dleft><B><FONT face=3DArial color=3D#990000 size=3D4>STKLOAD: =
+A=20
+STK500-Emulating Bootloader</FONT></B></P>
+<BLOCKQUOTE>
+  <P>This bootloader is written to emulate Atmel's well-known STK500 AVR =
+
+  development board. The STK500 uses a block transfer protocol to =
+quickly=20
+  program AVR processors using a standard serial port connection and =
+ordinary=20
+  RS-232 signaling. With this bootloader installed, you will be able to =
+program=20
+  your processor from Atmel AVR Studio, just like you would if you were =
+using an=20
+  STK500 board. For most processors, a complete programming cycle takes =
+5-10=20
+  seconds.</P>
+  <P>With the bootloader installed, your processor will act like an =
+STK500 board=20
+  for the first 3 seconds after RESET. If within these three seconds you =
+open an=20
+  STK500 programming session in AVR Studio, your processor will be =
+automatically=20
+  detected and you will be able to load new application code. See the =
+manual or=20
+  on-line help for AVR Studio on how to do this...it's quite trivial. =
+After=20
+  loading new application code, you can exit the bootloader by pressing=20
+  RESET.</P>
+  <P>If no programming instructions are received over the serial port =
+within 3=20
+  seconds after RESET, the bootloader will timeout and the currently =
+loaded=20
+  application will run automatically. NOTE: If there is no currently =
+loaded=20
+  application (ie. the FLASH memory is blank), then the bootloader will =
+run=20
+  repeatedly until programming commands are received.</P></BLOCKQUOTE>
+<P align=3Dleft><B><FONT face=3DArial color=3D#990000 size=3D4>Download=20
+STKLOAD:</FONT></B></P>
+<BLOCKQUOTE>
+  <P>Download an appropriate bootloader for your processor from the list =
+below.=20
+  The bootloader is already compiled into a *.hex file and is ready to =
+be=20
+  programmed into your processor. Don't forget to set the fuse bits as=20
+  appropriate.</P>
+  <UL>
+    <LI><STRONG>Original Protocol v1 </STRONG>- original well-proven=20
+    implementation of STKLOAD bootloader using STK500 protocol v1=20
+    <LI><STRONG>Protocol v1</STRONG> - new optimized implementation =
+using STK500=20
+    protocol v1 (reasonably proven)=20
+    <LI><STRONG>Protocol v2</STRONG> - new optimized implementation =
+using STK500=20
+    protocol v2 (unfinished, known to be buggy) </LI></UL>
+  <TABLE cellSpacing=3D1 cellPadding=3D0 width=3D"80%" border=3D1>
+    <TBODY>
+    <TR>
+      <TD width=3D"15%">
+        <DIV align=3Dcenter><STRONG>Processor</STRONG></DIV></TD>
+      <TD width=3D"15%">
+        <DIV =
+align=3Dcenter><STRONG>Protocol/Interface</STRONG></DIV></TD>
+      <TD width=3D"10%">
+        <DIV align=3Dcenter><STRONG>Size</STRONG></DIV></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>CPU frequency</STRONG></P></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>Download<BR>Old v1</STRONG></P></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>Download<BR>Protocol =
+v1</STRONG></P></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>Download<BR>Protocol v2 =
+</STRONG></P></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>ATmega8</TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <P align=3Dcenter>1Kword</P></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m8_1k=
+w_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m8=
+_2k8k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m8_2k8k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>ATmega8</TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>14.746MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m8_1k=
+w_1475mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m8=
+_2k8k_14745600.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m8_2k8k_14745600.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>ATmega8</TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>16.000MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m8_1k=
+w_1600mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m8=
+_2k8k_16000000.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m8_2k8k_16000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>
+        <P>ATmega168</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>18.432MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m168_=
+1kw_1843mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+68_2k16k_18432000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkload_m1=
+68_2k16k_18432000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>
+        <P>ATmega168</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>20.000MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m168_=
+1kw_2000mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+68_2k16k_20000000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m168_2k16k_20000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>
+        <P>ATmega168</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>22.118MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m168_=
+1kw_2211mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+68_2k16k_22118400.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m168_2k16k_22118400.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>
+        <P>ATmega16</P></TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m16_1=
+kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+6_2k16k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m16_2k16k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>ATmega16</TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>14.746MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m16_1=
+kw_1475mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+6_2k16k_14745600.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m16_2k16k_14745600.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>ATmega16</TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>16.000MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m16_1=
+kw_1600mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+6_2k16k_16000000.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m16_2k16k_16000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>ATmega16</TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>18.432MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m16_1=
+kw_1600mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+6_2k16k_18432000.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m16_2k16k_18432000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>
+        <P>ATmega32</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m32_1=
+kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m3=
+2_2k32k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m32_2k32k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega32</TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>14.746MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m32_1=
+kw_1475mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m3=
+2_2k32k_14745600.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m32_2k32k_14745600.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega32</TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>16.000MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m32_1=
+kw_1600mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m3=
+2_2k32k_16000000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m32_2k32k_16000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega32</TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>18.432MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m32_1=
+kw_1600mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m3=
+2_2k32k_18432000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m32_2k32k_18432000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>
+        <P>ATmega644</P></TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m6=
+44_2k64k_14745600.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m644_2k64k_14745600.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>
+        <P>ATmega644</P></TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m6=
+44_2k64k_18432000.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m644_2k64k_18432000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD bgColor=3D#cccccc>
+        <P>ATmega644</P></TD>
+      <TD bgColor=3D#cccccc>STK500/UART</TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m6=
+44_2k64k_22118400.hex">click=20
+        here</A></DIV></TD>
+      <TD bgColor=3D#cccccc>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m644_2k64k_22118400.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>
+        <P>ATmega128</P></TD>
+      <TD>STK500/UART 0</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m128u=
+0_1kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u0_2k128k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u0_2k128k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 0</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>14.746MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m128u=
+0_1kw_1475mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u0_2k128k_14745600.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u0_2k128k_14745600.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 0</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>16.000MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u0_2k128k_16000000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u0_2k128k_16000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m128u=
+1_1kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u1_2k128k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u1_2k128k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>14.746MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m128u=
+1_1kw_1475mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u1_2k128k_14745600.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u1_2k128k_14745600.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>16.000MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m128u=
+1_1kw_1600mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u1_2k128k_16000000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u1_2k128k_16000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>18.432MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m128u=
+1_1kw_1843mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+28u1_2k128k_18432000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m128u1_2k128k_18432000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR bgColor=3D#cccccc>
+      <TD>
+        <P>ATmega163</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m163_=
+1kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+63_2k16k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m163_2k16k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR bgColor=3D#cccccc>
+      <TD>
+        <P>ATmega163</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>8.000MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m163_=
+1kw_800mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m1=
+63_2k16k_8000000.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m163_2k16k_8000000.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR>
+      <TD>
+        <P>ATmega323</P></TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.372MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m323_=
+1kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m3=
+23_2k32k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m323_2k32k_7372800.hex">click=20
+        here</A></DIV></TD></TR>
+    <TR bgColor=3D#cccccc>
+      <TD>ATmega8515</TD>
+      <TD>STK500/UART</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.372MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/stkload_m8515=
+_1kw_737mhz.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v1/stkload_m8=
+515_2k16k_7372800.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/v2/stkloadv2_=
+m8515_2k16k_7372800.hex">click=20
+        here</A></DIV></TD></TR></TBODY></TABLE>
+  <P>&nbsp;</P></BLOCKQUOTE>
+<P align=3Dleft><B><FONT face=3DArial color=3D#990000 size=3D4>Download =
+STKLOAD for=20
+AVR-Core boards:</FONT></B></P>
+<BLOCKQUOTE>
+  <P>These bootloaders contain initialization specific to the Procyon=20
+  <STRONG>AVR-Core</STRONG> board, but are otherwise the same as the =
+above=20
+  bootloaders.</P>
+  <TABLE cellSpacing=3D1 cellPadding=3D0 width=3D"80%" border=3D1>
+    <TBODY>
+    <TR>
+      <TD width=3D"15%">
+        <DIV align=3Dcenter><STRONG>Processor</STRONG></DIV></TD>
+      <TD width=3D"15%">
+        <DIV =
+align=3Dcenter><STRONG>Protocol/Interface</STRONG></DIV></TD>
+      <TD width=3D"10%">
+        <DIV align=3Dcenter><STRONG>Size</STRONG></DIV></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>CPU frequency</STRONG></P></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>Download<BR>Old v1</STRONG></P></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>Download<BR>Protocol =
+v1</STRONG></P></TD>
+      <TD width=3D"15%">
+        <P align=3Dcenter><STRONG>Download<BR>Protocol v2 =
+</STRONG></P></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>7.373MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/avrcore/stklo=
+ad_avrcore_m128u1_7372800_led.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>14.746MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/avrcore/stklo=
+ad_avrcore_m128u1_14745600_led.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter></DIV></TD></TR>
+    <TR>
+      <TD>ATmega128</TD>
+      <TD>STK500/UART 1</TD>
+      <TD>
+        <DIV align=3Dcenter>1Kword</DIV></TD>
+      <TD>
+        <DIV align=3Dright>18.432MHz</DIV></TD>
+      <TD>
+        <DIV align=3Dcenter></DIV></TD>
+      <TD>
+        <DIV align=3Dcenter><A=20
+        =
+href=3D"http://hubbard.engr.scu.edu/embedded/avr/bootloader/avrcore/stklo=
+ad_avrcore_m128u1_18432000_led.hex">click=20
+        here</A></DIV></TD>
+      <TD>
+        <DIV =
+align=3Dcenter></DIV></TD></TR></TBODY></TABLE></BLOCKQUOTE>
+<HR align=3Dcenter width=3D"100%" SIZE=3D2>
+
+<CENTER>Written by Pascal Stang | Updated: Thursday June 21,=20
+2007</CENTER></BODY></HTML>

@@ -1,0 +1,15 @@
+[Design Root]
+Version=1.0.0
+[Directory]
+2layers-v4.PCB=PCB
+Preview 2layers-v4.PPC=PCBPrint
+Preview 1layer-v4.PPC=PCBPrint
+1layer-v4.pcb=PCB
+[2layers-v4.PCB]
+Editor Kind=PCB
+[Preview 2layers-v4.PPC]
+Editor Kind=PCBPrint
+[Preview 1layer-v4.PPC]
+Editor Kind=PCBPrint
+[1layer-v4.pcb]
+Editor Kind=PCB

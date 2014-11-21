@@ -1,0 +1,112 @@
+   1               		.file	"gcctest1.c"
+   2               		.arch atmega8
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  55               	.global	main
+  57               	main:
+   1:gcctest1.c    **** /*
+   2:gcctest1.c    ****     Title:    AVR-GCC test program #1 for the STK200 eva board
+   3:gcctest1.c    ****     Author:   Volker Oth
+   4:gcctest1.c    ****     Date:     4/1999
+   5:gcctest1.c    ****     Purpose:  Flashes the LEDs on Port B with a hard coded delay loop
+   6:gcctest1.c    ****     needed
+   7:gcctest1.c    ****     Software: AVR-GCC
+   8:gcctest1.c    ****     needed
+   9:gcctest1.c    ****     Hardware: ATS90S8515/8535/2313/mega on STK200/STK300 board
+  10:gcctest1.c    ****     Note:     To contact me, mail to
+  11:gcctest1.c    ****                   volkeroth@gmx.de
+  12:gcctest1.c    ****               You might find more AVR related stuff at my homepage:
+  13:gcctest1.c    ****                   http://members.xoom.com/volkeroth
+  14:gcctest1.c    **** */
+  15:gcctest1.c    **** 
+  16:gcctest1.c    **** #include <AVR/io.h>
+  17:gcctest1.c    **** 
+  18:gcctest1.c    **** typedef unsigned char  u08;
+  19:gcctest1.c    **** 
+  20:gcctest1.c    **** int main( void )
+  21:gcctest1.c    **** {
+  59               	.LM1:
+  60               	/* prologue: frame size=0 */
+  61 0000 C0E0      		ldi r28,lo8(__stack - 0)
+  62 0002 D0E0      		ldi r29,hi8(__stack - 0)
+  63 0004 DEBF      		out __SP_H__,r29
+  64 0006 CDBF      		out __SP_L__,r28
+  65               	/* prologue end (size=4) */
+  22:gcctest1.c    ****    u08 led, i, j, k;
+  23:gcctest1.c    ****    DDRC	= 0x0E;
+  67               	.LM2:
+  68 0008 8EE0      		ldi r24,lo8(14)
+  69 000a 84BB      		out 52-0x20,r24
+  24:gcctest1.c    **** 
+  25:gcctest1.c    **** //   outp(0xff,DDRC);            /* use all pins on PortB for output */
+  26:gcctest1.c    **** 
+  27:gcctest1.c    ****    led = 1;                    /* init variable representing the LED state */
+  71               	.LM3:
+  72 000c 21E0      		ldi r18,lo8(1)
+  73               	.L2:
+  28:gcctest1.c    **** 
+  29:gcctest1.c    ****    for (;;) 
+  30:gcctest1.c    ****    {
+  31:gcctest1.c    **** 
+  32:gcctest1.c    **** 		PORTD = ~led;
+  75               	.LM4:
+  76 000e 822F      		mov r24,r18
+  77 0010 8095      		com r24
+  78 0012 82BB      		out 50-0x20,r24
+  33:gcctest1.c    **** //       outp(~led, PORTC);      /* invert the output since a zero means: LED on */
+  34:gcctest1.c    ****        led <<= 1;              /* move to next LED */
+  80               	.LM5:
+  81 0014 220F      		lsl r18
+  35:gcctest1.c    ****        if (!led)               /* overflow: start with Port B0 again */
+  83               	.LM6:
+  84 0016 09F4      		brne .L4
+  36:gcctest1.c    ****            led = 1;
+  86               	.LM7:
+  87 0018 21E0      		ldi r18,lo8(1)
+  88               	.L4:
+  37:gcctest1.c    ****        for (i=0; i<255; i++)   /* outer delay loop */
+  90               	.LM8:
+  91 001a 90E0      		ldi r25,lo8(0)
+  92               	.L12:
+  38:gcctest1.c    ****            for(j=0; j<255;j++) /* inner delay loop */
+  94               	.LM9:
+  95 001c 80E0      		ldi r24,lo8(0)
+  96               	.L11:
+  97 001e 8F5F      		subi r24,lo8(-(1))
+  98 0020 8F3F      		cpi r24,lo8(-1)
+  99 0022 E9F7      		brne .L11
+ 101               	.LM10:
+ 102 0024 9F5F      		subi r25,lo8(-(1))
+ 103 0026 9F3F      		cpi r25,lo8(-1)
+ 104 0028 C9F7      		brne .L12
+ 106               	.LM11:
+ 107 002a F1CF      		rjmp .L2
+ 108               	/* epilogue: frame size=0 */
+ 109               	/* epilogue: noreturn */
+ 110               	/* epilogue end (size=0) */
+ 111               	/* function main size 23 (19) */
+ 118               	.Lscope0:
+ 119               		.text
+ 121               	Letext:
+ 122               	/* File "gcctest1.c": code   23 = 0x0017 (  19), prologues   4, epilogues   0 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 gcctest1.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccuAaaaa.s:57     .text:00000000 main
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccuAaaaa.s:121    .text:0000002c Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+__stack

@@ -1,0 +1,236 @@
+   1               		.file	"DC_motor.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  78               	.global	init_motor
+  80               	init_motor:
+   1:../../Eblock_lib/DC_motor.c **** /*
+   2:../../Eblock_lib/DC_motor.c ****  Template for program header 
+   3:../../Eblock_lib/DC_motor.c ****  
+   4:../../Eblock_lib/DC_motor.c **** 
+   5:../../Eblock_lib/DC_motor.c ****  Module 				:   Module name
+   6:../../Eblock_lib/DC_motor.c ****  Description 			:   Module Description
+   7:../../Eblock_lib/DC_motor.c ****  Original written for 	:   CPU/Microcontroller
+   8:../../Eblock_lib/DC_motor.c ****  CPU port/tested		:   CPU/Microcontroller
+   9:../../Eblock_lib/DC_motor.c ****  Hardware use			:   IC Chip
+  10:../../Eblock_lib/DC_motor.c ****  Port use				:   Port name / Function
+  11:../../Eblock_lib/DC_motor.c ****  Memory	FLASH			:   XXX
+  12:../../Eblock_lib/DC_motor.c **** 		RAM				:   XXX
+  13:../../Eblock_lib/DC_motor.c **** 		EEPROM			:   XXX
+  14:../../Eblock_lib/DC_motor.c ****  Document				:   Document describe algorithm
+  15:../../Eblock_lib/DC_motor.c ****  Written by 			:   Name / Email
+  16:../../Eblock_lib/DC_motor.c ****  Date					:  DD/MM/20XX
+  17:../../Eblock_lib/DC_motor.c ****   
+  18:../../Eblock_lib/DC_motor.c ****  Update History
+  19:../../Eblock_lib/DC_motor.c ****  
+  20:../../Eblock_lib/DC_motor.c ****  Date			By 					Comments
+  21:../../Eblock_lib/DC_motor.c ****  ----			--					---------
+  22:../../Eblock_lib/DC_motor.c ****  
+  23:../../Eblock_lib/DC_motor.c ****  */
+  24:../../Eblock_lib/DC_motor.c ****  
+  25:../../Eblock_lib/DC_motor.c **** #include "DC_motor.h" 
+  26:../../Eblock_lib/DC_motor.c **** #include <avr/io.h>
+  27:../../Eblock_lib/DC_motor.c **** 
+  28:../../Eblock_lib/DC_motor.c **** /*
+  29:../../Eblock_lib/DC_motor.c ****  Freq = Clk/1024 = 15.625 K If too high Motor cannot start
+  30:../../Eblock_lib/DC_motor.c ****  PWM Mode 8 bits
+  31:../../Eblock_lib/DC_motor.c **** */ 
+  32:../../Eblock_lib/DC_motor.c **** void init_motor ()
+  33:../../Eblock_lib/DC_motor.c **** {
+  82               	.LM1:
+  83               	/* prologue: frame size=0 */
+  84               	/* prologue end (size=0) */
+  34:../../Eblock_lib/DC_motor.c ****  // Initial for PWM Motor control for 16 timer for OC1A and OC1B
+  35:../../Eblock_lib/DC_motor.c **** // 8 bit fast PWM set OC1A OC1B on comapare match
+  36:../../Eblock_lib/DC_motor.c **** 
+  37:../../Eblock_lib/DC_motor.c ****     TCCR1A |= _BV(WGM10) |_BV(WGM11) | _BV(COM1B1)|_BV(COM1A1);
+  86               	.LM2:
+  87 0000 8FB5      		in r24,79-0x20
+  88 0002 836A      		ori r24,lo8(-93)
+  89 0004 8FBD      		out 79-0x20,r24
+  38:../../Eblock_lib/DC_motor.c ****     TCCR1B |= _BV(WGM12) | _BV(CS12) | _BV(CS10);   // Clk /1024
+  91               	.LM3:
+  92 0006 8EB5      		in r24,78-0x20
+  93 0008 8D60      		ori r24,lo8(13)
+  94 000a 8EBD      		out 78-0x20,r24
+  39:../../Eblock_lib/DC_motor.c **** 	OCR1A = 0x00FF;
+  96               	.LM4:
+  97 000c 8FEF      		ldi r24,lo8(255)
+  98 000e 90E0      		ldi r25,hi8(255)
+  99 0010 9BBD      		out (74)+1-0x20,r25
+ 100 0012 8ABD      		out 74-0x20,r24
+  40:../../Eblock_lib/DC_motor.c **** 	OCR1B = 0x00FF;
+ 102               	.LM5:
+ 103 0014 99BD      		out (72)+1-0x20,r25
+ 104 0016 88BD      		out 72-0x20,r24
+  41:../../Eblock_lib/DC_motor.c **** 
+  42:../../Eblock_lib/DC_motor.c **** //    OCR1A = 0;
+  43:../../Eblock_lib/DC_motor.c **** //	OCR1B = 0;
+  44:../../Eblock_lib/DC_motor.c ****     MOTOR_DIRECTION_DIR  |= 	MOTORA_1 | MOTORA_2 | MOTORB_1 | MOTORB_2;
+ 106               	.LM6:
+ 107 0018 8AB3      		in r24,58-0x20
+ 108 001a 806F      		ori r24,lo8(-16)
+ 109 001c 8ABB      		out 58-0x20,r24
+  45:../../Eblock_lib/DC_motor.c **** 	MOTOR_ENABLE12_DIR	 |= 	MOTOR_ENABLE12;
+ 111               	.LM7:
+ 112 001e 8D9A      		sbi 49-0x20,5
+  46:../../Eblock_lib/DC_motor.c **** 	MOTOR_ENABLE34_DIR	 |=  	MOTOR_ENABLE34;		
+ 114               	.LM8:
+ 115 0020 8C9A      		sbi 49-0x20,4
+ 116               	/* epilogue: frame size=0 */
+ 117 0022 0895      		ret
+ 118               	/* epilogue end (size=1) */
+ 119               	/* function init_motor size 18 (17) */
+ 121               	.Lscope0:
+ 125               	.global	motor_control
+ 127               	motor_control:
+  47:../../Eblock_lib/DC_motor.c ****   
+  48:../../Eblock_lib/DC_motor.c **** }
+  49:../../Eblock_lib/DC_motor.c **** 
+  50:../../Eblock_lib/DC_motor.c **** 
+  51:../../Eblock_lib/DC_motor.c **** // speed from 1 - 10
+  52:../../Eblock_lib/DC_motor.c **** 
+  53:../../Eblock_lib/DC_motor.c **** void  motor_control (uint8_t port, uint8_t direction) 
+  54:../../Eblock_lib/DC_motor.c **** {
+ 129               	.LM9:
+ 130               	/* prologue: frame size=0 */
+ 131               	/* prologue end (size=0) */
+ 132 0024 382F      		mov r19,r24
+ 133 0026 862F      		mov r24,r22
+  55:../../Eblock_lib/DC_motor.c ****   
+  56:../../Eblock_lib/DC_motor.c ****    uint8_t  controlA,controlB;
+  57:../../Eblock_lib/DC_motor.c ****    
+  58:../../Eblock_lib/DC_motor.c ****    switch (direction)
+ 135               	.LM10:
+ 136 0028 9927      		clr r25
+ 137 002a 8130      		cpi r24,1
+ 138 002c 9105      		cpc r25,__zero_reg__
+ 139 002e 49F0      		breq .L4
+ 141               	.LM11:
+ 142 0030 8230      		cpi r24,2
+ 143 0032 9105      		cpc r25,__zero_reg__
+ 144 0034 74F0      		brlt .L8
+ 145 0036 8230      		cpi r24,2
+ 146 0038 9105      		cpc r25,__zero_reg__
+ 147 003a 31F0      		breq .L5
+ 148 003c 0397      		sbiw r24,3
+ 149 003e 39F0      		breq .L7
+ 150 0040 08C0      		rjmp .L8
+ 151               	.L4:
+  59:../../Eblock_lib/DC_motor.c ****    {
+  60:../../Eblock_lib/DC_motor.c ****      case MOTOR_FORWARD:
+  61:../../Eblock_lib/DC_motor.c **** 	    controlA = 0;
+ 153               	.LM12:
+ 154 0042 20E0      		ldi r18,lo8(0)
+  62:../../Eblock_lib/DC_motor.c **** 		controlB = 0xFF;
+ 156               	.LM13:
+ 157 0044 9FEF      		ldi r25,lo8(-1)
+  63:../../Eblock_lib/DC_motor.c **** 		break;
+ 159               	.LM14:
+ 160 0046 07C0      		rjmp .L3
+ 161               	.L5:
+  64:../../Eblock_lib/DC_motor.c **** 	 case MOTOR_BACKWARD:
+  65:../../Eblock_lib/DC_motor.c ****         controlA = 0xFF;
+ 163               	.LM15:
+ 164 0048 2FEF      		ldi r18,lo8(-1)
+  66:../../Eblock_lib/DC_motor.c **** 		controlB = 0;
+ 166               	.LM16:
+ 167 004a 90E0      		ldi r25,lo8(0)
+  67:../../Eblock_lib/DC_motor.c **** 		break;
+ 169               	.LM17:
+ 170 004c 04C0      		rjmp .L3
+ 171               	.L7:
+  68:../../Eblock_lib/DC_motor.c **** 	 case MOTOR_STOP:
+  69:../../Eblock_lib/DC_motor.c **** 	    controlA = 0;
+  70:../../Eblock_lib/DC_motor.c **** 		controlB = 0;
+  71:../../Eblock_lib/DC_motor.c **** 		break;
+  72:../../Eblock_lib/DC_motor.c **** 	case MOTOR_BRAKE:
+  73:../../Eblock_lib/DC_motor.c **** 	    controlA = 0xFF;
+ 173               	.LM18:
+ 174 004e 9FEF      		ldi r25,lo8(-1)
+ 175 0050 01C0      		rjmp .L12
+ 176               	.L8:
+  74:../../Eblock_lib/DC_motor.c **** 		controlB = 0xFF;
+  75:../../Eblock_lib/DC_motor.c **** 		break;
+  76:../../Eblock_lib/DC_motor.c **** 	default:
+  77:../../Eblock_lib/DC_motor.c **** 	    controlA = 0;
+ 178               	.LM19:
+ 179 0052 90E0      		ldi r25,lo8(0)
+ 180               	.L12:
+  78:../../Eblock_lib/DC_motor.c **** 		controlB = 0;
+ 182               	.LM20:
+ 183 0054 292F      		mov r18,r25
+ 184               	.L3:
+  79:../../Eblock_lib/DC_motor.c ****    }
+  80:../../Eblock_lib/DC_motor.c ****  if (port == 1)
+ 186               	.LM21:
+ 187 0056 3130      		cpi r19,lo8(1)
+ 188 0058 51F4      		brne .L10
+  81:../../Eblock_lib/DC_motor.c ****    {
+  82:../../Eblock_lib/DC_motor.c **** //      MOTOR_ENABLE12_CONTROL  |= MOTOR_ENABLE12;
+  83:../../Eblock_lib/DC_motor.c **** 	  MOTOR_DIRECTION_CONTROL &= ~(MOTORA_1 | MOTORA_2); 
+ 190               	.LM22:
+ 191 005a 8BB3      		in r24,59-0x20
+ 192 005c 8F7C      		andi r24,lo8(-49)
+ 193 005e 8BBB      		out 59-0x20,r24
+  84:../../Eblock_lib/DC_motor.c **** 	  MOTOR_DIRECTION_CONTROL |= ((MOTORA_1 & controlA ) | (MOTORA_2 & controlB));
+ 195               	.LM23:
+ 196 0060 2071      		andi r18,lo8(16)
+ 197 0062 9072      		andi r25,lo8(32)
+ 198 0064 292B      		or r18,r25
+ 199 0066 8BB3      		in r24,59-0x20
+ 200 0068 822B      		or r24,r18
+ 201 006a 8BBB      		out 59-0x20,r24
+ 202 006c 0895      		ret
+ 203               	.L10:
+  85:../../Eblock_lib/DC_motor.c ****   }
+  86:../../Eblock_lib/DC_motor.c ****   if (port == 2)
+ 205               	.LM24:
+ 206 006e 3230      		cpi r19,lo8(2)
+ 207 0070 49F4      		brne .L2
+  87:../../Eblock_lib/DC_motor.c ****    {
+  88:../../Eblock_lib/DC_motor.c **** // 	  MOTOR_ENABLE34_CONTROL  |= MOTOR_ENABLE34;
+  89:../../Eblock_lib/DC_motor.c **** 	  MOTOR_DIRECTION_CONTROL &= ~(MOTORB_1 | MOTORB_2); 
+ 209               	.LM25:
+ 210 0072 8BB3      		in r24,59-0x20
+ 211 0074 8F73      		andi r24,lo8(63)
+ 212 0076 8BBB      		out 59-0x20,r24
+  90:../../Eblock_lib/DC_motor.c ****   	  MOTOR_DIRECTION_CONTROL |= ((MOTORB_1 & controlA ) | (MOTORB_2 & controlB));
+ 214               	.LM26:
+ 215 0078 2074      		andi r18,lo8(64)
+ 216 007a 9078      		andi r25,lo8(-128)
+ 217 007c 292B      		or r18,r25
+ 218 007e 8BB3      		in r24,59-0x20
+ 219 0080 822B      		or r24,r18
+ 220 0082 8BBB      		out 59-0x20,r24
+ 221               	.L2:
+ 222 0084 0895      		ret
+ 223               	/* epilogue: frame size=0 */
+ 224               	/* epilogue: noreturn */
+ 225               	/* epilogue end (size=0) */
+ 226               	/* function motor_control size 50 (50) */
+ 232               	.Lscope1:
+ 233               		.text
+ 235               	Letext:
+ 236               	/* File "../../Eblock_lib/DC_motor.c": code   68 = 0x0044 (  67), prologues   0, epilogues   1 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 DC_motor.c
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:7      *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:80     .text:00000000 init_motor
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:127    .text:00000024 motor_control
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Raaaa.s:235    .text:00000086 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

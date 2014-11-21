@@ -1,0 +1,1 @@
+Copy test plan from Design stage to this folder. Start testing and record the results in this file

@@ -1,0 +1,497 @@
+   1               		.file	"test_adc.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  62               	.global	voltage_sum
+  63               	.global	voltage_sum
+  64               		.section .bss
+  67               	voltage_sum:
+  68 0000 0000      		.skip 2,0
+  69               		.text
+  71               	.global	__vector_13
+  73               	__vector_13:
+   1:test_adc.c    **** /*
+   2:test_adc.c    ****  Module 				:   Test ADC
+   3:test_adc.c    ****  Description 			:   Universal Async Transmitter
+   4:test_adc.c    ****  Original written for 	:   ATMEGA32
+   5:test_adc.c    ****  CPU port/tested		:   ATMEGA32
+   6:test_adc.c    ****  Hardware use			:   
+   7:test_adc.c    ****  Port use				:   ADC
+   8:test_adc.c    ****  Memory	FLASH			:   XXX
+   9:test_adc.c    **** 		RAM				:   XXX
+  10:test_adc.c    **** 		EEPROM			:   XXX
+  11:test_adc.c    ****  Document				:   Document describe algorithm
+  12:test_adc.c    ****  Written by 			:   Wichai / wichai@geartronics.net
+  13:test_adc.c    ****  Date					:   17/07/2006
+  14:test_adc.c    ****   
+  15:test_adc.c    ****  Update History
+  16:test_adc.c    ****  
+  17:test_adc.c    ****  Date			By 					Comments
+  18:test_adc.c    ****  ----			--					---------
+  19:test_adc.c    ****  
+  20:test_adc.c    ****  
+  21:test_adc.c    **** */
+  22:test_adc.c    **** 
+  23:test_adc.c    **** 
+  24:test_adc.c    **** #include <stdlib.h>
+  25:test_adc.c    **** #include <avr/io.h>
+  26:test_adc.c    **** #include <avr/signal.h>
+  27:test_adc.c    **** #include <avr/interrupt.h>
+  28:test_adc.c    **** #include "E_uart.h"
+  29:test_adc.c    **** #include "adc.h"
+  30:test_adc.c    **** 
+  31:test_adc.c    **** 
+  32:test_adc.c    **** int16_t  voltage_sum  = 0;
+  33:test_adc.c    **** /*
+  34:test_adc.c    ****  UART receiver ready
+  35:test_adc.c    **** */
+  36:test_adc.c    **** 
+  37:test_adc.c    **** SIGNAL(SIG_UART_RECV)
+  38:test_adc.c    **** {
+  75               	.LM1:
+  76               	/* prologue: frame size=0 */
+  77 0000 1F92      		push __zero_reg__
+  78 0002 0F92      		push __tmp_reg__
+  79 0004 0FB6      		in __tmp_reg__,__SREG__
+  80 0006 0F92      		push __tmp_reg__
+  81 0008 1124      		clr __zero_reg__
+  82 000a 2F93      		push r18
+  83 000c 3F93      		push r19
+  84 000e 4F93      		push r20
+  85 0010 5F93      		push r21
+  86 0012 6F93      		push r22
+  87 0014 7F93      		push r23
+  88 0016 8F93      		push r24
+  89 0018 9F93      		push r25
+  90 001a AF93      		push r26
+  91 001c BF93      		push r27
+  92 001e EF93      		push r30
+  93 0020 FF93      		push r31
+  94               	/* prologue end (size=17) */
+  39:test_adc.c    ****    uint8_t  ch;
+  40:test_adc.c    ****    ch = UDR;
+  96               	.LM2:
+  97 0022 8CB1      		in r24,44-0x20
+  41:test_adc.c    ****    uart_put_RX (ch);
+  99               	.LM3:
+ 100 0024 0E94 0000 		call uart_put_RX
+ 101               	/* epilogue: frame size=0 */
+ 102 0028 FF91      		pop r31
+ 103 002a EF91      		pop r30
+ 104 002c BF91      		pop r27
+ 105 002e AF91      		pop r26
+ 106 0030 9F91      		pop r25
+ 107 0032 8F91      		pop r24
+ 108 0034 7F91      		pop r23
+ 109 0036 6F91      		pop r22
+ 110 0038 5F91      		pop r21
+ 111 003a 4F91      		pop r20
+ 112 003c 3F91      		pop r19
+ 113 003e 2F91      		pop r18
+ 114 0040 0F90      		pop __tmp_reg__
+ 115 0042 0FBE      		out __SREG__,__tmp_reg__
+ 116 0044 0F90      		pop __tmp_reg__
+ 117 0046 1F90      		pop __zero_reg__
+ 118 0048 1895      		reti
+ 119               	/* epilogue end (size=17) */
+ 120               	/* function __vector_13 size 37 (3) */
+ 125               	.Lscope0:
+ 127               	.global	__vector_14
+ 129               	__vector_14:
+  42:test_adc.c    **** }
+  43:test_adc.c    ****   
+  44:test_adc.c    **** 
+  45:test_adc.c    **** /*************************************************************************
+  46:test_adc.c    **** Function: UART Data Register Empty interrupt
+  47:test_adc.c    **** Purpose:  called when the UART is ready to transmit the next byte
+  48:test_adc.c    **** **************************************************************************/
+  49:test_adc.c    **** 
+  50:test_adc.c    **** SIGNAL(SIG_UART_DATA)
+  51:test_adc.c    **** { 
+ 131               	.LM4:
+ 132               	/* prologue: frame size=0 */
+ 133 004a 1F92      		push __zero_reg__
+ 134 004c 0F92      		push __tmp_reg__
+ 135 004e 0FB6      		in __tmp_reg__,__SREG__
+ 136 0050 0F92      		push __tmp_reg__
+ 137 0052 1124      		clr __zero_reg__
+ 138 0054 2F93      		push r18
+ 139 0056 3F93      		push r19
+ 140 0058 4F93      		push r20
+ 141 005a 5F93      		push r21
+ 142 005c 6F93      		push r22
+ 143 005e 7F93      		push r23
+ 144 0060 8F93      		push r24
+ 145 0062 9F93      		push r25
+ 146 0064 AF93      		push r26
+ 147 0066 BF93      		push r27
+ 148 0068 EF93      		push r30
+ 149 006a FF93      		push r31
+ 150               	/* prologue end (size=17) */
+  52:test_adc.c    ****     uint8_t  ch;
+  53:test_adc.c    **** 	if ((ch = uart_get_TX()))
+ 152               	.LM5:
+ 153 006c 0E94 0000 		call uart_get_TX
+ 154 0070 8823      		tst r24
+ 155 0072 11F0      		breq .L3
+  54:test_adc.c    **** 	{
+  55:test_adc.c    ****  		UDR = ch;
+ 157               	.LM6:
+ 158 0074 8CB9      		out 44-0x20,r24
+ 159 0076 01C0      		rjmp .L2
+ 160               	.L3:
+  56:test_adc.c    **** 	}	
+  57:test_adc.c    **** 	else 
+  58:test_adc.c    **** // No character disable  interrupt to avoid repetable call Enable again when
+  59:test_adc.c    **** //	send character in putc procedure
+  60:test_adc.c    **** 	{
+  61:test_adc.c    **** 	    UCSRB &=  ~(1<<UDRIE);
+ 162               	.LM7:
+ 163 0078 5598      		cbi 42-0x20,5
+ 164               	.L2:
+ 165               	/* epilogue: frame size=0 */
+ 166 007a FF91      		pop r31
+ 167 007c EF91      		pop r30
+ 168 007e BF91      		pop r27
+ 169 0080 AF91      		pop r26
+ 170 0082 9F91      		pop r25
+ 171 0084 8F91      		pop r24
+ 172 0086 7F91      		pop r23
+ 173 0088 6F91      		pop r22
+ 174 008a 5F91      		pop r21
+ 175 008c 4F91      		pop r20
+ 176 008e 3F91      		pop r19
+ 177 0090 2F91      		pop r18
+ 178 0092 0F90      		pop __tmp_reg__
+ 179 0094 0FBE      		out __SREG__,__tmp_reg__
+ 180 0096 0F90      		pop __tmp_reg__
+ 181 0098 1F90      		pop __zero_reg__
+ 182 009a 1895      		reti
+ 183               	/* epilogue end (size=17) */
+ 184               	/* function __vector_14 size 41 (7) */
+ 189               	.Lscope1:
+ 190               		.data
+ 191               	.LC0:
+ 192 0000 2020 2020 		.string	"               From interrupt "
+ 192      2020 2020 
+ 192      2020 2020 
+ 192      2020 2046 
+ 192      726F 6D20 
+ 193               		.text
+ 195               	.global	__vector_16
+ 197               	__vector_16:
+  62:test_adc.c    **** 	}
+  63:test_adc.c    **** 	
+  64:test_adc.c    **** }
+  65:test_adc.c    **** 
+  66:test_adc.c    **** SIGNAL(SIG_ADC)
+  67:test_adc.c    **** {
+ 199               	.LM8:
+ 200               	/* prologue: frame size=20 */
+ 201 009c 1F92      		push __zero_reg__
+ 202 009e 0F92      		push __tmp_reg__
+ 203 00a0 0FB6      		in __tmp_reg__,__SREG__
+ 204 00a2 0F92      		push __tmp_reg__
+ 205 00a4 1124      		clr __zero_reg__
+ 206 00a6 2F93      		push r18
+ 207 00a8 3F93      		push r19
+ 208 00aa 4F93      		push r20
+ 209 00ac 5F93      		push r21
+ 210 00ae 6F93      		push r22
+ 211 00b0 7F93      		push r23
+ 212 00b2 8F93      		push r24
+ 213 00b4 9F93      		push r25
+ 214 00b6 AF93      		push r26
+ 215 00b8 BF93      		push r27
+ 216 00ba EF93      		push r30
+ 217 00bc FF93      		push r31
+ 218 00be CF93      		push r28
+ 219 00c0 DF93      		push r29
+ 220 00c2 CDB7      		in r28,__SP_L__
+ 221 00c4 DEB7      		in r29,__SP_H__
+ 222 00c6 6497      		sbiw r28,20
+ 223 00c8 DEBF      		out __SP_H__,r29
+ 224 00ca CDBF      		out __SP_L__,r28
+ 225               	/* prologue end (size=24) */
+  68:test_adc.c    ****  int16_t value;
+  69:test_adc.c    ****  uint8_t buffer[20];
+  70:test_adc.c    ****  
+  71:test_adc.c    ****  value = ADCW;
+ 227               	.LM9:
+ 228 00cc 84B1      		in r24,36-0x20
+ 229 00ce 95B1      		in r25,(36)+1-0x20
+  72:test_adc.c    ****  itoa( value, buffer, 10);   // convert interger into string (decimal format)         
+ 231               	.LM10:
+ 232 00d0 4AE0      		ldi r20,lo8(10)
+ 233 00d2 50E0      		ldi r21,hi8(10)
+ 234 00d4 BE01      		movw r22,r28
+ 235 00d6 6F5F      		subi r22,lo8(-(1))
+ 236 00d8 7F4F      		sbci r23,hi8(-(1))
+ 237 00da 0E94 0000 		call itoa
+  73:test_adc.c    ****  uart_puts("               From interrupt ");
+ 239               	.LM11:
+ 240 00de 80E0      		ldi r24,lo8(.LC0)
+ 241 00e0 90E0      		ldi r25,hi8(.LC0)
+ 242 00e2 0E94 0000 		call uart_puts
+  74:test_adc.c    ****  uart_puts(buffer);
+ 244               	.LM12:
+ 245 00e6 CE01      		movw r24,r28
+ 246 00e8 0196      		adiw r24,1
+ 247 00ea 0E94 0000 		call uart_puts
+  75:test_adc.c    ****  
+  76:test_adc.c    **** // Start the next conversion
+  77:test_adc.c    ****   ADCSRA |= ADSC;
+ 249               	.LM13:
+ 250 00ee 86B1      		in r24,38-0x20
+ 251 00f0 8660      		ori r24,lo8(6)
+ 252 00f2 86B9      		out 38-0x20,r24
+ 253               	/* epilogue: frame size=20 */
+ 254 00f4 6496      		adiw r28,20
+ 255 00f6 F894      		cli
+ 256 00f8 DEBF      		out __SP_H__,r29
+ 257 00fa CDBF      		out __SP_L__,r28
+ 258 00fc DF91      		pop r29
+ 259 00fe CF91      		pop r28
+ 260 0100 FF91      		pop r31
+ 261 0102 EF91      		pop r30
+ 262 0104 BF91      		pop r27
+ 263 0106 AF91      		pop r26
+ 264 0108 9F91      		pop r25
+ 265 010a 8F91      		pop r24
+ 266 010c 7F91      		pop r23
+ 267 010e 6F91      		pop r22
+ 268 0110 5F91      		pop r21
+ 269 0112 4F91      		pop r20
+ 270 0114 3F91      		pop r19
+ 271 0116 2F91      		pop r18
+ 272 0118 0F90      		pop __tmp_reg__
+ 273 011a 0FBE      		out __SREG__,__tmp_reg__
+ 274 011c 0F90      		pop __tmp_reg__
+ 275 011e 1F90      		pop __zero_reg__
+ 276 0120 1895      		reti
+ 277               	/* epilogue end (size=23) */
+ 278               	/* function __vector_16 size 67 (20) */
+ 284               	.Lscope2:
+ 285               		.data
+ 286               	.LC1:
+ 287 001f 5374 6172 		.string	"Start ADC\n"
+ 287      7420 4144 
+ 287      430A 00
+ 288               	.LC2:
+ 289 002a 2020 2020 		.string	"                    From polling "
+ 289      2020 2020 
+ 289      2020 2020 
+ 289      2020 2020 
+ 289      2020 2020 
+ 290               		.text
+ 292               	.global	main
+ 294               	main:
+  78:test_adc.c    **** //  adc_enable_int (0);
+  79:test_adc.c    **** }
+  80:test_adc.c    **** 
+  81:test_adc.c    **** int main(void)
+  82:test_adc.c    **** {
+ 296               	.LM14:
+ 297               	/* prologue: frame size=20 */
+ 298 0122 C0E0      		ldi r28,lo8(__stack - 20)
+ 299 0124 D0E0      		ldi r29,hi8(__stack - 20)
+ 300 0126 DEBF      		out __SP_H__,r29
+ 301 0128 CDBF      		out __SP_L__,r28
+ 302               	/* prologue end (size=4) */
+  83:test_adc.c    **** 
+  84:test_adc.c    ****     uint8_t buffer[20];
+  85:test_adc.c    ****     int16_t  num=1034;
+  86:test_adc.c    ****     int16_t value,i, j;
+  87:test_adc.c    **** // Initial DDR  for input ADC
+  88:test_adc.c    ****      DDRA = 0x00;
+ 304               	.LM15:
+ 305 012a 1ABA      		out 58-0x20,__zero_reg__
+  89:test_adc.c    ****     
+  90:test_adc.c    ****     /*
+  91:test_adc.c    ****      *  Initialize UART library, pass baudrate and AVR cpu clock
+  92:test_adc.c    ****      *  with the macro 
+  93:test_adc.c    ****      *  UART_BAUD_SELECT() (normal speed mode )
+  94:test_adc.c    ****      *  or 
+  95:test_adc.c    ****      *  UART_BAUD_SELECT_DOUBLE_SPEED() ( double speed mode)
+  96:test_adc.c    ****      */
+  97:test_adc.c    ****     uart_init(); 
+ 307               	.LM16:
+ 308 012c 0E94 0000 		call uart_init
+  98:test_adc.c    **** 
+  99:test_adc.c    ****     
+ 100:test_adc.c    ****     /*
+ 101:test_adc.c    ****      *  Transmit string to UART
+ 102:test_adc.c    ****      *  The string is buffered by the uart library in a circular buffer
+ 103:test_adc.c    ****      *  and one character at a time is transmitted to the UART using interrupts.
+ 104:test_adc.c    ****      *  uart_puts() blocks if it can not write the whole string to the circular 
+ 105:test_adc.c    ****      *  buffer
+ 106:test_adc.c    ****      */
+ 107:test_adc.c    ****     uart_puts("Start ADC\n");
+ 310               	.LM17:
+ 311 0130 80E0      		ldi r24,lo8(.LC1)
+ 312 0132 90E0      		ldi r25,hi8(.LC1)
+ 313 0134 0E94 0000 		call uart_puts
+ 108:test_adc.c    ****          itoa( num, buffer, 10);   // convert interger into string (decimal format)         
+ 315               	.LM18:
+ 316 0138 4AE0      		ldi r20,lo8(10)
+ 317 013a 50E0      		ldi r21,hi8(10)
+ 318 013c BE01      		movw r22,r28
+ 319 013e 6F5F      		subi r22,lo8(-(1))
+ 320 0140 7F4F      		sbci r23,hi8(-(1))
+ 321 0142 8AE0      		ldi r24,lo8(1034)
+ 322 0144 94E0      		ldi r25,hi8(1034)
+ 323 0146 0E94 0000 		call itoa
+ 109:test_adc.c    ****     
+ 110:test_adc.c    **** 	adc_init(1);
+ 325               	.LM19:
+ 326 014a 81E0      		ldi r24,lo8(1)
+ 327 014c 0E94 0000 		call adc_init
+ 111:test_adc.c    **** 
+ 112:test_adc.c    **** 	  /*
+ 113:test_adc.c    ****      * now enable interrupt, since UART library is interrupt controlled
+ 114:test_adc.c    ****      */
+ 115:test_adc.c    ****     sei();
+ 329               	.LM20:
+ 330               	/* #APP */
+ 331 0150 7894      		sei
+ 116:test_adc.c    ****     voltage_sum = 0;
+ 333               	.LM21:
+ 334               	/* #NOAPP */
+ 335 0152 1092 0000 		sts (voltage_sum)+1,__zero_reg__
+ 336 0156 1092 0000 		sts voltage_sum,__zero_reg__
+ 337               	.L7:
+ 117:test_adc.c    **** 	while(1)
+ 118:test_adc.c    **** 	{
+ 119:test_adc.c    **** // Start conversion by using polling
+ 120:test_adc.c    **** 
+ 121:test_adc.c    ****   			value = read_adc(0x10);
+ 339               	.LM22:
+ 340 015a 80E1      		ldi r24,lo8(16)
+ 341 015c 0E94 0000 		call read_adc
+ 342 0160 8C01      		movw r16,r24
+ 122:test_adc.c    **** 			if (value > 1000)
+ 344               	.LM23:
+ 345 0162 83E0      		ldi r24,hi8(1001)
+ 346 0164 093E      		cpi r16,lo8(1001)
+ 347 0166 1807      		cpc r17,r24
+ 348 0168 14F0      		brlt .L9
+ 123:test_adc.c    **** 			     value = 0;
+ 350               	.LM24:
+ 351 016a 00E0      		ldi r16,lo8(0)
+ 352 016c 10E0      		ldi r17,hi8(0)
+ 353               	.L9:
+ 124:test_adc.c    **** 			itoa( value, buffer, 10);   // convert interger into string (decimal format)         
+ 355               	.LM25:
+ 356 016e 4AE0      		ldi r20,lo8(10)
+ 357 0170 50E0      		ldi r21,hi8(10)
+ 358 0172 BE01      		movw r22,r28
+ 359 0174 6F5F      		subi r22,lo8(-(1))
+ 360 0176 7F4F      		sbci r23,hi8(-(1))
+ 361 0178 C801      		movw r24,r16
+ 362 017a 0E94 0000 		call itoa
+ 125:test_adc.c    **** 			uart_puts("                    From polling ");
+ 364               	.LM26:
+ 365 017e 80E0      		ldi r24,lo8(.LC2)
+ 366 0180 90E0      		ldi r25,hi8(.LC2)
+ 367 0182 0E94 0000 		call uart_puts
+ 126:test_adc.c    ****  
+ 127:test_adc.c    **** //			uart_putc('-');
+ 128:test_adc.c    **** 			uart_puts(buffer);
+ 369               	.LM27:
+ 370 0186 CE01      		movw r24,r28
+ 371 0188 0196      		adiw r24,1
+ 372 018a 0E94 0000 		call uart_puts
+ 129:test_adc.c    **** 			voltage_sum  += value;
+ 374               	.LM28:
+ 375 018e 8091 0000 		lds r24,voltage_sum
+ 376 0192 9091 0000 		lds r25,(voltage_sum)+1
+ 377 0196 800F      		add r24,r16
+ 378 0198 911F      		adc r25,r17
+ 379 019a 9093 0000 		sts (voltage_sum)+1,r25
+ 380 019e 8093 0000 		sts voltage_sum,r24
+ 130:test_adc.c    **** 			 
+ 131:test_adc.c    **** // Start conversion by using interrupt   
+ 132:test_adc.c    **** //		adc_enable_int (1);
+ 133:test_adc.c    **** // Loop to wait conversion complete
+ 134:test_adc.c    **** 		for ( i = 0 ; i < 500 ;i++)	
+ 382               	.LM29:
+ 383 01a2 20E0      		ldi r18,lo8(0)
+ 384 01a4 30E0      		ldi r19,hi8(0)
+ 385               	.L17:
+ 386 01a6 8FE1      		ldi r24,lo8(19999)
+ 387 01a8 9EE4      		ldi r25,hi8(19999)
+ 388               	.L16:
+ 135:test_adc.c    **** 		for ( j = 0 ; j < 20000 ;j++);
+ 390               	.LM30:
+ 391 01aa C297      		sbiw r24,50
+ 392 01ac 97FF      		sbrs r25,7
+ 393 01ae FDCF      		rjmp .L16
+ 395               	.LM31:
+ 396 01b0 2F5F      		subi r18,lo8(-(1))
+ 397 01b2 3F4F      		sbci r19,hi8(-(1))
+ 398 01b4 81E0      		ldi r24,hi8(500)
+ 399 01b6 243F      		cpi r18,lo8(500)
+ 400 01b8 3807      		cpc r19,r24
+ 401 01ba ACF3      		brlt .L17
+ 136:test_adc.c    **** // 		adc_enable_int (0);
+ 137:test_adc.c    **** 		itoa( voltage_sum, buffer, 10);   // convert interger into string (decimal format)          
+ 403               	.LM32:
+ 404 01bc 4AE0      		ldi r20,lo8(10)
+ 405 01be 50E0      		ldi r21,hi8(10)
+ 406 01c0 BE01      		movw r22,r28
+ 407 01c2 6F5F      		subi r22,lo8(-(1))
+ 408 01c4 7F4F      		sbci r23,hi8(-(1))
+ 409 01c6 8091 0000 		lds r24,voltage_sum
+ 410 01ca 9091 0000 		lds r25,(voltage_sum)+1
+ 411 01ce 0E94 0000 		call itoa
+ 138:test_adc.c    **** 		uart_putc('=');
+ 413               	.LM33:
+ 414 01d2 8DE3      		ldi r24,lo8(61)
+ 415 01d4 0E94 0000 		call uart_putc
+ 139:test_adc.c    **** 		uart_puts(buffer);
+ 417               	.LM34:
+ 418 01d8 CE01      		movw r24,r28
+ 419 01da 0196      		adiw r24,1
+ 420 01dc 0E94 0000 		call uart_puts
+ 421 01e0 BCCF      		rjmp .L7
+ 422               	/* epilogue: frame size=20 */
+ 423               	/* epilogue: noreturn */
+ 424               	/* epilogue end (size=0) */
+ 425               	/* function main size 97 (93) */
+ 433               	.Lscope3:
+ 435               		.text
+ 437               	Letext:
+ 438               	/* File "test_adc.c": code  242 = 0x00f2 ( 123), prologues  62, epilogues  57 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 test_adc.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccMdbaaa.s:67     .bss:00000000 voltage_sum
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccMdbaaa.s:73     .text:00000000 __vector_13
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccMdbaaa.s:129    .text:0000004a __vector_14
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccMdbaaa.s:197    .text:0000009c __vector_16
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccMdbaaa.s:294    .text:00000122 main
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccMdbaaa.s:437    .text:000001e2 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+uart_put_RX
+uart_get_TX
+itoa
+uart_puts
+__stack
+uart_init
+adc_init
+read_adc
+uart_putc

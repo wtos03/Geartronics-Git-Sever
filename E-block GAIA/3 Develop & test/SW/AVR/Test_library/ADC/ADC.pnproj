@@ -1,0 +1,1 @@
+<Project name="ADC"><File path="adc.c"></File><File path="adc.h"></File><File path="test_adc.c"></File><File path="E_uart.c"></File><File path="E_uart.h"></File><File path="cpu.h"></File></Project>

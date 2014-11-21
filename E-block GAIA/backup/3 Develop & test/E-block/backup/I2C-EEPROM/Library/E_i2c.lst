@@ -1,0 +1,723 @@
+   1               		.file	"E_i2c.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  59               	.global	i2c_set_bitrate
+  61               	i2c_set_bitrate:
+   1:E_i2c.c       **** /*! \file i2c.c \brief I2C interface using AVR Two-Wire Interface (TWI) hardware. */
+   2:E_i2c.c       **** //*****************************************************************************
+   3:E_i2c.c       **** //
+   4:E_i2c.c       **** // File Name	: 'i2c.c'
+   5:E_i2c.c       **** // Title		: I2C interface using AVR Two-Wire Interface (TWI) hardware
+   6:E_i2c.c       **** // Author		: Pascal Stang - Copyright (C) 2002-2003
+   7:E_i2c.c       **** // Created		: 2002.06.25
+   8:E_i2c.c       **** // Revised		: 2003.03.02
+   9:E_i2c.c       **** // Version		: 0.9
+  10:E_i2c.c       **** // Target MCU	: Atmel AVR series
+  11:E_i2c.c       **** // Editor Tabs	: 4
+  12:E_i2c.c       **** //
+  13:E_i2c.c       **** // This code is distributed under the GNU Public License
+  14:E_i2c.c       **** //		which can be found at http://www.gnu.org/licenses/gpl.txt
+  15:E_i2c.c       **** //
+  16:E_i2c.c       **** //*****************************************************************************
+  17:E_i2c.c       **** 
+  18:E_i2c.c       **** /* 
+  19:E_i2c.c       ****  Module 				:   I2C Interface
+  20:E_i2c.c       ****  Description 			:   Read /Write data via I2C Not using interrupt
+  21:E_i2c.c       ****  Original written for 	:   ATMEGA32
+  22:E_i2c.c       ****  CPU port/tested		:   ATMEGA32
+  23:E_i2c.c       ****  Port use				:	PC0 (SCL)  Serial Clock line)   
+  24:E_i2c.c       **** 							PC1 (SDA)  Serial Data Access 
+  25:E_i2c.c       ****  Document				:
+  26:E_i2c.c       ****  Written by 			: 	Wichai Tossamartvorakul (wichai@geartronics.net)
+  27:E_i2c.c       ****  Date					:   3/4/2007
+  28:E_i2c.c       ****  
+  29:E_i2c.c       ****  
+  30:E_i2c.c       ****  Update History
+  31:E_i2c.c       ****  
+  32:E_i2c.c       ****  Date			By 					Comments
+  33:E_i2c.c       ****  ----			--					---------
+  34:E_i2c.c       **** 2003.03.02   	Pascal Stang      This code is distributed under the GNU Public License
+  35:E_i2c.c       **** 				Copyright (C) 2003				 
+  36:E_i2c.c       ****  
+  37:E_i2c.c       **** 2007.04.03		Wichai			  Modified to use with E-block project 
+  38:E_i2c.c       ****  
+  39:E_i2c.c       **** */
+  40:E_i2c.c       **** 
+  41:E_i2c.c       ****   
+  42:E_i2c.c       **** 
+  43:E_i2c.c       **** #include <avr/io.h>
+  44:E_i2c.c       **** //#include <avr/signal.h>
+  45:E_i2c.c       **** //#include <avr/interrupt.h>
+  46:E_i2c.c       **** 
+  47:E_i2c.c       **** #include "E_i2c.h"
+  48:E_i2c.c       **** 
+  49:E_i2c.c       **** 
+  50:E_i2c.c       **** 
+  51:E_i2c.c       **** // Standard I2C bit rates are:
+  52:E_i2c.c       **** // 100KHz for slow speed
+  53:E_i2c.c       **** // 400KHz for high speed
+  54:E_i2c.c       **** 
+  55:E_i2c.c       **** 
+  56:E_i2c.c       **** 
+  57:E_i2c.c       **** // I2C state and address variables
+  58:E_i2c.c       **** static volatile eI2cStateType I2cState;
+  59:E_i2c.c       ****   
+  60:E_i2c.c       ****  
+  61:E_i2c.c       **** // functions
+  62:E_i2c.c       **** void i2c_init(void)
+  63:E_i2c.c       **** {
+  64:E_i2c.c       **** 	// set pull-up resistors on I2C bus pins
+  65:E_i2c.c       **** 	// TODO: should #ifdef these
+  66:E_i2c.c       **** //	sbi(I2C_PORT, 0);	// i2c SCL on ATmega163,323,16,32,etc
+  67:E_i2c.c       **** //	sbi(I2C_PORT, 1);	// i2c SDA on ATmega163,323,16,32,etc
+  68:E_i2c.c       **** //	sbi(PORTD, 0);	// i2c SCL on ATmega128,64
+  69:E_i2c.c       **** //	sbi(PORTD, 1);	// i2c SDA on ATmega128,64
+  70:E_i2c.c       **** 
+  71:E_i2c.c       ****      E_I2C_PORT   |=  _BV(0);	// i2c SCL 
+  72:E_i2c.c       **** 	 E_I2C_PORT   |=  _BV(1);	// i2c SDL
+  73:E_i2c.c       **** 	 
+  74:E_i2c.c       ****  	// set i2c bit rate to 100KHz
+  75:E_i2c.c       **** 	i2c_set_bitrate(100);
+  76:E_i2c.c       **** 	// enable TWI (two-wire interface)
+  77:E_i2c.c       **** //	sbi(TWCR, TWEN);
+  78:E_i2c.c       ****     TWCR  |=  _BV(TWEN);
+  79:E_i2c.c       **** 	// set state
+  80:E_i2c.c       **** 	I2cState = I2C_IDLE;
+  81:E_i2c.c       **** 	// enable TWI interrupt and slave address ACK
+  82:E_i2c.c       **** //	sbi(TWCR, TWIE);
+  83:E_i2c.c       **** //	sbi(TWCR, TWEA);
+  84:E_i2c.c       **** //    TWCR  |=  _BV(TWIE);
+  85:E_i2c.c       **** // Enavle Acknowledge bit
+  86:E_i2c.c       ****     TWCR  |=  _BV(TWEA);
+  87:E_i2c.c       **** // enable interrupts
+  88:E_i2c.c       **** //	sei();
+  89:E_i2c.c       **** }
+  90:E_i2c.c       **** 
+  91:E_i2c.c       **** void i2c_set_bitrate(uint16_t bitrateKHz)
+  92:E_i2c.c       **** {
+  63               	.LM1:
+  64               	/* prologue: frame size=0 */
+  65               	/* prologue end (size=0) */
+  66 0000 9C01      		movw r18,r24
+  93:E_i2c.c       **** 	uint8_t bitrate_div;
+  94:E_i2c.c       **** 	// set i2c bitrate
+  95:E_i2c.c       **** 	// SCL freq = F_CPU/(16+2*TWBR))
+  96:E_i2c.c       **** //	
+  97:E_i2c.c       **** //	#ifdef TWPS0
+  98:E_i2c.c       **** 		// for processors with additional bitrate division (mega128)
+  99:E_i2c.c       **** 		// SCL freq = F_CPU/(16+2*TWBR*4^TWPS)
+ 100:E_i2c.c       **** 		// set TWPS to zero
+ 101:E_i2c.c       **** //		cbi(TWSR, TWPS0);
+ 102:E_i2c.c       **** //		cbi(TWSR, TWPS1);
+ 103:E_i2c.c       **** //	#endif
+ 104:E_i2c.c       **** 	// calculate bitrate division	
+ 105:E_i2c.c       **** 	bitrate_div = ((F_CPU/1000l)/bitrateKHz);
+  68               	.LM2:
+  69 0002 80E8      		ldi r24,lo8(16000)
+  70 0004 9EE3      		ldi r25,hi8(16000)
+  71 0006 B901      		movw r22,r18
+  72 0008 0E94 0000 		call __udivmodhi4
+  73 000c CB01      		movw r24,r22
+ 106:E_i2c.c       **** 	if(bitrate_div >= 16)
+  75               	.LM3:
+  76 000e 6031      		cpi r22,lo8(16)
+  77 0010 50F0      		brlo .L2
+ 107:E_i2c.c       **** 		bitrate_div = (bitrate_div-16)/2;
+  79               	.LM4:
+  80 0012 262F      		mov r18,r22
+  81 0014 3327      		clr r19
+  82 0016 C901      		movw r24,r18
+  83 0018 4097      		sbiw r24,16
+  84 001a 97FF      		sbrs r25,7
+  85 001c 02C0      		rjmp .L3
+  86 001e C901      		movw r24,r18
+  87 0020 0F97      		sbiw r24,15
+  88               	.L3:
+  89 0022 9595      		asr r25
+  90 0024 8795      		ror r24
+  91               	.L2:
+ 108:E_i2c.c       **** //	outb(TWBR, bitrate_div);
+ 109:E_i2c.c       **** 	TWBR = bitrate_div;
+  93               	.LM5:
+  94 0026 80B9      		out 32-0x20,r24
+  95               	/* epilogue: frame size=0 */
+  96 0028 0895      		ret
+  97               	/* epilogue end (size=1) */
+  98               	/* function i2c_set_bitrate size 21 (20) */
+ 103               	.Lscope0:
+ 105               	.global	i2c_init
+ 107               	i2c_init:
+ 109               	.LM6:
+ 110               	/* prologue: frame size=0 */
+ 111               	/* prologue end (size=0) */
+ 113               	.LM7:
+ 114 002a A89A      		sbi 53-0x20,0
+ 116               	.LM8:
+ 117 002c A99A      		sbi 53-0x20,1
+ 119               	.LM9:
+ 120 002e 84E6      		ldi r24,lo8(100)
+ 121 0030 90E0      		ldi r25,hi8(100)
+ 122 0032 0E94 0000 		call i2c_set_bitrate
+ 124               	.LM10:
+ 125 0036 86B7      		in r24,86-0x20
+ 126 0038 8460      		ori r24,lo8(4)
+ 127 003a 86BF      		out 86-0x20,r24
+ 129               	.LM11:
+ 130 003c 1092 0000 		sts I2cState,__zero_reg__
+ 132               	.LM12:
+ 133 0040 86B7      		in r24,86-0x20
+ 134 0042 8064      		ori r24,lo8(64)
+ 135 0044 86BF      		out 86-0x20,r24
+ 136               	/* epilogue: frame size=0 */
+ 137 0046 0895      		ret
+ 138               	/* epilogue end (size=1) */
+ 139               	/* function i2c_init size 15 (14) */
+ 141               	.Lscope1:
+ 145               	.global	i2c_set_localdeviceaddr
+ 147               	i2c_set_localdeviceaddr:
+ 110:E_i2c.c       **** }
+ 111:E_i2c.c       **** 
+ 112:E_i2c.c       **** void i2c_set_localdeviceaddr(uint8_t deviceAddr, uint8_t genCallEn)
+ 113:E_i2c.c       **** {
+ 149               	.LM13:
+ 150               	/* prologue: frame size=0 */
+ 151               	/* prologue end (size=0) */
+ 114:E_i2c.c       **** 	// set local device address (used in slave mode only)
+ 115:E_i2c.c       **** //	outb(TWAR, ((deviceAddr&0xFE) | (genCallEn?1:0)) );
+ 116:E_i2c.c       **** 	TWAR  =  (((deviceAddr&0xFE) | (genCallEn?1:0)) );
+ 153               	.LM14:
+ 154 0048 282F      		mov r18,r24
+ 155 004a 3327      		clr r19
+ 156 004c 2E7F      		andi r18,lo8(254)
+ 157 004e 3070      		andi r19,hi8(254)
+ 158 0050 6111      		cpse r22,__zero_reg__
+ 160               	.LM15:
+ 161 0052 2160      		ori r18,lo8(1)
+ 162               	.L6:
+ 163 0054 22B9      		out 34-0x20,r18
+ 164               	/* epilogue: frame size=0 */
+ 165 0056 0895      		ret
+ 166               	/* epilogue end (size=1) */
+ 167               	/* function i2c_set_localdeviceaddr size 9 (8) */
+ 169               	.Lscope2:
+ 171               	.global	i2c_send_start
+ 173               	i2c_send_start:
+ 117:E_i2c.c       **** 
+ 118:E_i2c.c       **** }
+ 119:E_i2c.c       ****  
+ 120:E_i2c.c       ****  
+ 121:E_i2c.c       **** 
+ 122:E_i2c.c       **** inline void i2c_send_start(void)
+ 123:E_i2c.c       **** {
+ 175               	.LM16:
+ 176               	/* prologue: frame size=0 */
+ 177               	/* prologue end (size=0) */
+ 124:E_i2c.c       **** 	// send start condition	
+ 125:E_i2c.c       **** //	outb(TWCR, (inb(TWCR)&TWCR_CMD_MASK)| _BV(TWINT)|BV(TWSTA));
+ 126:E_i2c.c       ****     TWCR  =  ((TWCR&TWCR_CMD_MASK)| _BV(TWINT)|_BV(TWSTA));
+ 179               	.LM17:
+ 180 0058 86B7      		in r24,86-0x20
+ 181 005a 8F70      		andi r24,lo8(15)
+ 182 005c 806A      		ori r24,lo8(-96)
+ 183 005e 86BF      		out 86-0x20,r24
+ 184               	/* epilogue: frame size=0 */
+ 185 0060 0895      		ret
+ 186               	/* epilogue end (size=1) */
+ 187               	/* function i2c_send_start size 5 (4) */
+ 189               	.Lscope3:
+ 191               	.global	i2c_send_stop
+ 193               	i2c_send_stop:
+ 127:E_i2c.c       **** }
+ 128:E_i2c.c       **** 
+ 129:E_i2c.c       **** inline void i2c_send_stop(void)
+ 130:E_i2c.c       **** {
+ 195               	.LM18:
+ 196               	/* prologue: frame size=0 */
+ 197               	/* prologue end (size=0) */
+ 131:E_i2c.c       **** 	// transmit stop condition
+ 132:E_i2c.c       **** 	// leave with TWEA on for slave receiving
+ 133:E_i2c.c       **** //	outb(TWCR, (inb(TWCR)&TWCR_CMD_MASK)| _BV(TWINT)|BV(TWEA)|BV(TWSTO));
+ 134:E_i2c.c       **** 	TWCR =  ((TWCR & TWCR_CMD_MASK)| _BV(TWINT)| _BV(TWEA) | _BV(TWSTO));
+ 199               	.LM19:
+ 200 0062 86B7      		in r24,86-0x20
+ 201 0064 8F70      		andi r24,lo8(15)
+ 202 0066 806D      		ori r24,lo8(-48)
+ 203 0068 86BF      		out 86-0x20,r24
+ 204               	/* epilogue: frame size=0 */
+ 205 006a 0895      		ret
+ 206               	/* epilogue end (size=1) */
+ 207               	/* function i2c_send_stop size 5 (4) */
+ 209               	.Lscope4:
+ 211               	.global	i2c_wait_for_complete
+ 213               	i2c_wait_for_complete:
+ 135:E_i2c.c       **** }
+ 136:E_i2c.c       **** 
+ 137:E_i2c.c       **** inline void i2c_wait_for_complete(void)
+ 138:E_i2c.c       **** {
+ 215               	.LM20:
+ 216               	/* prologue: frame size=0 */
+ 217               	/* prologue end (size=0) */
+ 218               	.L10:
+ 139:E_i2c.c       **** 	// wait for i2c interface to complete operation
+ 140:E_i2c.c       **** 	while( !( TWCR & _BV(TWINT)) );
+ 220               	.LM21:
+ 221 006c 06B6      		in __tmp_reg__,86-0x20
+ 222 006e 07FE      		sbrs __tmp_reg__,7
+ 223 0070 FDCF      		rjmp .L10
+ 224               	/* epilogue: frame size=0 */
+ 225 0072 0895      		ret
+ 226               	/* epilogue end (size=1) */
+ 227               	/* function i2c_wait_for_complete size 4 (3) */
+ 229               	.Lscope5:
+ 232               	.global	i2c_send_byte
+ 234               	i2c_send_byte:
+ 141:E_i2c.c       **** }
+ 142:E_i2c.c       **** 
+ 143:E_i2c.c       **** inline void i2c_send_byte(uint8_t data)
+ 144:E_i2c.c       **** {
+ 236               	.LM22:
+ 237               	/* prologue: frame size=0 */
+ 238               	/* prologue end (size=0) */
+ 145:E_i2c.c       **** 	// save data to the TWDR
+ 146:E_i2c.c       **** //	outb(TWDR, data);
+ 147:E_i2c.c       **** 	TWDR = data;
+ 240               	.LM23:
+ 241 0074 83B9      		out 35-0x20,r24
+ 148:E_i2c.c       **** 	// begin send
+ 149:E_i2c.c       **** //	outb(TWCR, (inb(TWCR)&TWCR_CMD_MASK)| _BV(TWINT));
+ 150:E_i2c.c       **** 	TWCR  = ((TWCR&TWCR_CMD_MASK) | _BV(TWINT));
+ 243               	.LM24:
+ 244 0076 86B7      		in r24,86-0x20
+ 245 0078 8F70      		andi r24,lo8(15)
+ 246 007a 8068      		ori r24,lo8(-128)
+ 247 007c 86BF      		out 86-0x20,r24
+ 248               	/* epilogue: frame size=0 */
+ 249 007e 0895      		ret
+ 250               	/* epilogue end (size=1) */
+ 251               	/* function i2c_send_byte size 6 (5) */
+ 253               	.Lscope6:
+ 256               	.global	i2c_receive_byte
+ 258               	i2c_receive_byte:
+ 151:E_i2c.c       **** }
+ 152:E_i2c.c       **** 
+ 153:E_i2c.c       **** inline void i2c_receive_byte(uint8_t ackFlag)
+ 154:E_i2c.c       **** {
+ 260               	.LM25:
+ 261               	/* prologue: frame size=0 */
+ 262               	/* prologue end (size=0) */
+ 155:E_i2c.c       **** 	// begin receive over i2c
+ 156:E_i2c.c       **** 	if( ackFlag )
+ 264               	.LM26:
+ 265 0080 8823      		tst r24
+ 266 0082 21F0      		breq .L15
+ 157:E_i2c.c       **** 	{
+ 158:E_i2c.c       **** 		// ackFlag = TRUE: ACK the recevied data
+ 159:E_i2c.c       **** //		outb(TWCR, (inb(TWCR)&TWCR_CMD_MASK)|_BV(TWINT)|_BV(TWEA));
+ 160:E_i2c.c       **** 	TWCR = ((TWCR & TWCR_CMD_MASK) | _BV(TWINT)| _BV(TWEA));
+ 268               	.LM27:
+ 269 0084 86B7      		in r24,86-0x20
+ 270 0086 8F70      		andi r24,lo8(15)
+ 271 0088 806C      		ori r24,lo8(-64)
+ 272 008a 03C0      		rjmp .L17
+ 273               	.L15:
+ 161:E_i2c.c       **** 	
+ 162:E_i2c.c       **** 	}
+ 163:E_i2c.c       **** 	else
+ 164:E_i2c.c       **** 	{
+ 165:E_i2c.c       **** 		// ackFlag = FALSE: NACK the recevied data
+ 166:E_i2c.c       **** //		outb(TWCR, (inb(TWCR)&TWCR_CMD_MASK)| _BV(TWINT));
+ 167:E_i2c.c       **** 		TWCR = ((TWCR & TWCR_CMD_MASK) | _BV(TWINT));
+ 275               	.LM28:
+ 276 008c 86B7      		in r24,86-0x20
+ 277 008e 8F70      		andi r24,lo8(15)
+ 278 0090 8068      		ori r24,lo8(-128)
+ 279               	.L17:
+ 280 0092 86BF      		out 86-0x20,r24
+ 281 0094 0895      		ret
+ 282               	/* epilogue: frame size=0 */
+ 283 0096 0895      		ret
+ 284               	/* epilogue end (size=1) */
+ 285               	/* function i2c_receive_byte size 12 (11) */
+ 287               	.Lscope7:
+ 292               	.global	i2c_master_sendni
+ 294               	i2c_master_sendni:
+ 168:E_i2c.c       **** 	}
+ 169:E_i2c.c       **** }
+ 170:E_i2c.c       **** 
+ 171:E_i2c.c       ****  
+ 172:E_i2c.c       **** 
+ 173:E_i2c.c       **** /* I2C Master send Not using interrupt
+ 174:E_i2c.c       **** 
+ 175:E_i2c.c       **** */
+ 176:E_i2c.c       **** uint8_t i2c_master_sendni(uint8_t deviceAddr, uint8_t length, uint8_t* data)
+ 177:E_i2c.c       **** {
+ 296               	.LM29:
+ 297               	/* prologue: frame size=0 */
+ 298               	/* prologue end (size=0) */
+ 299 0098 282F      		mov r18,r24
+ 300 009a FA01      		movw r30,r20
+ 178:E_i2c.c       **** 	uint8_t retval = I2C_OK;
+ 302               	.LM30:
+ 303 009c 90E0      		ldi r25,lo8(0)
+ 304               	.LBB2:
+ 305               	.LBB3:
+ 307               	.LM31:
+ 308 009e 86B7      		in r24,86-0x20
+ 309 00a0 8F70      		andi r24,lo8(15)
+ 310 00a2 806A      		ori r24,lo8(-96)
+ 311 00a4 86BF      		out 86-0x20,r24
+ 312               	.L20:
+ 313               	.LBE3:
+ 314               	.LBE2:
+ 315               	.LBB4:
+ 316               	.LBB5:
+ 318               	.LM32:
+ 319 00a6 06B6      		in __tmp_reg__,86-0x20
+ 320 00a8 07FE      		sbrs __tmp_reg__,7
+ 321 00aa FDCF      		rjmp .L20
+ 322               	.LBE5:
+ 323               	.LBE4:
+ 324               	.LBB6:
+ 326               	.LM33:
+ 327 00ac 2E7F      		andi r18,lo8(-2)
+ 328               	.LBB7:
+ 330               	.LM34:
+ 331 00ae 23B9      		out 35-0x20,r18
+ 333               	.LM35:
+ 334 00b0 86B7      		in r24,86-0x20
+ 335 00b2 8F70      		andi r24,lo8(15)
+ 336 00b4 8068      		ori r24,lo8(-128)
+ 337 00b6 86BF      		out 86-0x20,r24
+ 338               	.L25:
+ 339               	.LBE7:
+ 340               	.LBE6:
+ 341               	.LBB8:
+ 342               	.LBB9:
+ 344               	.LM36:
+ 345 00b8 06B6      		in __tmp_reg__,86-0x20
+ 346 00ba 07FE      		sbrs __tmp_reg__,7
+ 347 00bc FDCF      		rjmp .L25
+ 348               	.LBE9:
+ 349               	.LBE8:
+ 179:E_i2c.c       **** 
+ 180:E_i2c.c       ****  	// send start condition
+ 181:E_i2c.c       **** 	i2c_send_start();
+ 182:E_i2c.c       **** 	i2c_wait_for_complete();
+ 183:E_i2c.c       **** 
+ 184:E_i2c.c       **** 	// send device address with write
+ 185:E_i2c.c       **** 	i2c_send_byte( deviceAddr & 0xFE );
+ 186:E_i2c.c       **** 	i2c_wait_for_complete();
+ 187:E_i2c.c       **** 
+ 188:E_i2c.c       **** 	// check if device is present and live
+ 189:E_i2c.c       **** 	if( TWSR == TW_MT_SLA_ACK)
+ 351               	.LM37:
+ 352 00be 81B1      		in r24,33-0x20
+ 353 00c0 8831      		cpi r24,lo8(24)
+ 354 00c2 69F4      		brne .L29
+ 355               	.L45:
+ 190:E_i2c.c       **** 	{
+ 191:E_i2c.c       **** 		// send data
+ 192:E_i2c.c       **** 		while(length)
+ 193:E_i2c.c       **** 		{
+ 194:E_i2c.c       **** 			i2c_send_byte( *data++ );
+ 195:E_i2c.c       **** 			i2c_wait_for_complete();
+ 196:E_i2c.c       **** 			length--;
+ 357               	.LM38:
+ 358 00c4 6623      		tst r22
+ 359 00c6 61F0      		breq .L38
+ 360               	.LBB10:
+ 362               	.LM39:
+ 363 00c8 8191      		ld r24,Z+
+ 364               	.LBB11:
+ 366               	.LM40:
+ 367 00ca 83B9      		out 35-0x20,r24
+ 369               	.LM41:
+ 370 00cc 86B7      		in r24,86-0x20
+ 371 00ce 8F70      		andi r24,lo8(15)
+ 372 00d0 8068      		ori r24,lo8(-128)
+ 373 00d2 86BF      		out 86-0x20,r24
+ 374               	.L33:
+ 375               	.LBE11:
+ 376               	.LBE10:
+ 377               	.LBB12:
+ 378               	.LBB13:
+ 380               	.LM42:
+ 381 00d4 06B6      		in __tmp_reg__,86-0x20
+ 382 00d6 07FE      		sbrs __tmp_reg__,7
+ 383 00d8 FDCF      		rjmp .L33
+ 384               	.LBE13:
+ 385               	.LBE12:
+ 387               	.LM43:
+ 388 00da 6150      		subi r22,lo8(-(-1))
+ 389 00dc F3CF      		rjmp .L45
+ 390               	.L29:
+ 197:E_i2c.c       **** 		}
+ 198:E_i2c.c       **** 	}
+ 199:E_i2c.c       **** 	else
+ 200:E_i2c.c       **** 	{
+ 201:E_i2c.c       **** 		// device did not ACK it's address,
+ 202:E_i2c.c       **** 		// data will not be transferred
+ 203:E_i2c.c       **** 		// return error
+ 204:E_i2c.c       **** 		retval = I2C_ERROR_NODEV;
+ 392               	.LM44:
+ 393 00de 91E0      		ldi r25,lo8(1)
+ 394               	.L38:
+ 395               	.LBB14:
+ 396               	.LBB15:
+ 398               	.LM45:
+ 399 00e0 86B7      		in r24,86-0x20
+ 400 00e2 8F70      		andi r24,lo8(15)
+ 401 00e4 806D      		ori r24,lo8(-48)
+ 402 00e6 86BF      		out 86-0x20,r24
+ 403               	.L40:
+ 404               	.LBE15:
+ 405               	.LBE14:
+ 205:E_i2c.c       **** 	}
+ 206:E_i2c.c       **** 
+ 207:E_i2c.c       **** 	// transmit stop condition
+ 208:E_i2c.c       **** 	// leave with TWEA on for slave receiving
+ 209:E_i2c.c       **** 	i2c_send_stop();
+ 210:E_i2c.c       **** 	while( !(TWCR & _BV(TWSTO)) );
+ 407               	.LM46:
+ 408 00e8 06B6      		in __tmp_reg__,86-0x20
+ 409 00ea 04FE      		sbrs __tmp_reg__,4
+ 410 00ec FDCF      		rjmp .L40
+ 211:E_i2c.c       ****  
+ 212:E_i2c.c       **** 	return retval;
+ 213:E_i2c.c       **** }
+ 412               	.LM47:
+ 413 00ee 892F      		mov r24,r25
+ 414 00f0 9927      		clr r25
+ 415               	/* epilogue: frame size=0 */
+ 416 00f2 0895      		ret
+ 417               	/* epilogue end (size=1) */
+ 418               	/* function i2c_master_sendni size 46 (45) */
+ 423               	.Lscope8:
+ 428               	.global	i2c_master_receiveni
+ 430               	i2c_master_receiveni:
+ 214:E_i2c.c       **** 
+ 215:E_i2c.c       **** uint8_t i2c_master_receiveni(uint8_t deviceAddr, uint8_t length, uint8_t *data)
+ 216:E_i2c.c       **** {
+ 432               	.LM48:
+ 433               	/* prologue: frame size=0 */
+ 434               	/* prologue end (size=0) */
+ 435 00f4 282F      		mov r18,r24
+ 436 00f6 FA01      		movw r30,r20
+ 217:E_i2c.c       **** 	uint8_t retval = I2C_OK;
+ 438               	.LM49:
+ 439 00f8 90E0      		ldi r25,lo8(0)
+ 440               	.LBB16:
+ 441               	.LBB17:
+ 443               	.LM50:
+ 444 00fa 86B7      		in r24,86-0x20
+ 445 00fc 8F70      		andi r24,lo8(15)
+ 446 00fe 806A      		ori r24,lo8(-96)
+ 447 0100 86BF      		out 86-0x20,r24
+ 448               	.L48:
+ 449               	.LBE17:
+ 450               	.LBE16:
+ 451               	.LBB18:
+ 452               	.LBB19:
+ 454               	.LM51:
+ 455 0102 06B6      		in __tmp_reg__,86-0x20
+ 456 0104 07FE      		sbrs __tmp_reg__,7
+ 457 0106 FDCF      		rjmp .L48
+ 458               	.LBE19:
+ 459               	.LBE18:
+ 460               	.LBB20:
+ 462               	.LM52:
+ 463 0108 2160      		ori r18,lo8(1)
+ 464               	.LBB21:
+ 466               	.LM53:
+ 467 010a 23B9      		out 35-0x20,r18
+ 469               	.LM54:
+ 470 010c 86B7      		in r24,86-0x20
+ 471 010e 8F70      		andi r24,lo8(15)
+ 472 0110 8068      		ori r24,lo8(-128)
+ 473 0112 86BF      		out 86-0x20,r24
+ 474               	.L53:
+ 475               	.LBE21:
+ 476               	.LBE20:
+ 477               	.LBB22:
+ 478               	.LBB23:
+ 480               	.LM55:
+ 481 0114 06B6      		in __tmp_reg__,86-0x20
+ 482 0116 07FE      		sbrs __tmp_reg__,7
+ 483 0118 FDCF      		rjmp .L53
+ 484               	.LBE23:
+ 485               	.LBE22:
+ 218:E_i2c.c       **** 
+ 219:E_i2c.c       **** 	// send start condition
+ 220:E_i2c.c       **** 	i2c_send_start();
+ 221:E_i2c.c       **** 	i2c_wait_for_complete();
+ 222:E_i2c.c       **** 
+ 223:E_i2c.c       **** 	// send device address with read
+ 224:E_i2c.c       **** 	i2c_send_byte( deviceAddr | 0x01 );
+ 225:E_i2c.c       **** 	i2c_wait_for_complete();
+ 226:E_i2c.c       **** 
+ 227:E_i2c.c       **** 	// check if device is present and live
+ 228:E_i2c.c       **** 	if( TWSR == TW_MR_SLA_ACK)
+ 487               	.LM56:
+ 488 011a 81B1      		in r24,33-0x20
+ 489 011c 8034      		cpi r24,lo8(64)
+ 490 011e B9F4      		brne .L57
+ 491               	.L79:
+ 229:E_i2c.c       **** 	{
+ 230:E_i2c.c       **** 		// accept receive data and ack it
+ 231:E_i2c.c       **** 		while(length > 1)
+ 232:E_i2c.c       **** 		{
+ 233:E_i2c.c       **** 			i2c_receive_byte(TRUE);
+ 234:E_i2c.c       **** 			i2c_wait_for_complete();
+ 235:E_i2c.c       **** 	 		*data++ = TWDR;
+ 236:E_i2c.c       **** 			// decrement length
+ 237:E_i2c.c       **** 			length--;
+ 493               	.LM57:
+ 494 0120 6230      		cpi r22,lo8(2)
+ 495 0122 58F0      		brlo .L78
+ 496               	.LBB24:
+ 497               	.LBB25:
+ 499               	.LM58:
+ 500 0124 86B7      		in r24,86-0x20
+ 501 0126 8F70      		andi r24,lo8(15)
+ 502 0128 806C      		ori r24,lo8(-64)
+ 503 012a 86BF      		out 86-0x20,r24
+ 504               	.L63:
+ 505               	.LBE25:
+ 506               	.LBE24:
+ 507               	.LBB26:
+ 508               	.LBB27:
+ 510               	.LM59:
+ 511 012c 06B6      		in __tmp_reg__,86-0x20
+ 512 012e 07FE      		sbrs __tmp_reg__,7
+ 513 0130 FDCF      		rjmp .L63
+ 514               	.LBE27:
+ 515               	.LBE26:
+ 517               	.LM60:
+ 518 0132 83B1      		in r24,35-0x20
+ 519 0134 8193      		st Z+,r24
+ 521               	.LM61:
+ 522 0136 6150      		subi r22,lo8(-(-1))
+ 523 0138 F3CF      		rjmp .L79
+ 524               	.L78:
+ 525               	.LBB28:
+ 526               	.LBB29:
+ 528               	.LM62:
+ 529 013a 86B7      		in r24,86-0x20
+ 530 013c 8F70      		andi r24,lo8(15)
+ 531 013e 8068      		ori r24,lo8(-128)
+ 532 0140 86BF      		out 86-0x20,r24
+ 533               	.L71:
+ 534               	.LBE29:
+ 535               	.LBE28:
+ 536               	.LBB30:
+ 537               	.LBB31:
+ 539               	.LM63:
+ 540 0142 06B6      		in __tmp_reg__,86-0x20
+ 541 0144 07FE      		sbrs __tmp_reg__,7
+ 542 0146 FDCF      		rjmp .L71
+ 543               	.LBE31:
+ 544               	.LBE30:
+ 238:E_i2c.c       **** 		}
+ 239:E_i2c.c       **** 
+ 240:E_i2c.c       **** 		// accept receive data and nack it (last-byte signal)
+ 241:E_i2c.c       **** 		i2c_receive_byte(FALSE);
+ 242:E_i2c.c       **** 		i2c_wait_for_complete();
+ 243:E_i2c.c       **** 		*data++ = TWDR;
+ 546               	.LM64:
+ 547 0148 83B1      		in r24,35-0x20
+ 548 014a 8083      		st Z,r24
+ 549 014c 01C0      		rjmp .L75
+ 550               	.L57:
+ 244:E_i2c.c       **** 	}
+ 245:E_i2c.c       **** 	else
+ 246:E_i2c.c       **** 	{
+ 247:E_i2c.c       **** 		// device did not ACK it's address,
+ 248:E_i2c.c       **** 		// data will not be transferred
+ 249:E_i2c.c       **** 		// return error
+ 250:E_i2c.c       **** 		retval = I2C_ERROR_NODEV;
+ 552               	.LM65:
+ 553 014e 91E0      		ldi r25,lo8(1)
+ 554               	.L75:
+ 555               	.LBB32:
+ 556               	.LBB33:
+ 558               	.LM66:
+ 559 0150 86B7      		in r24,86-0x20
+ 560 0152 8F70      		andi r24,lo8(15)
+ 561 0154 806D      		ori r24,lo8(-48)
+ 562 0156 86BF      		out 86-0x20,r24
+ 563               	.LBE33:
+ 564               	.LBE32:
+ 251:E_i2c.c       **** 	}
+ 252:E_i2c.c       **** 
+ 253:E_i2c.c       **** 	// transmit stop condition
+ 254:E_i2c.c       **** 	// leave with TWEA on for slave receiving
+ 255:E_i2c.c       **** 	i2c_send_stop();
+ 256:E_i2c.c       ****  
+ 257:E_i2c.c       **** 	return retval;
+ 258:E_i2c.c       **** }
+ 566               	.LM67:
+ 567 0158 892F      		mov r24,r25
+ 568 015a 9927      		clr r25
+ 569               	/* epilogue: frame size=0 */
+ 570 015c 0895      		ret
+ 571               	/* epilogue end (size=1) */
+ 572               	/* function i2c_master_receiveni size 53 (52) */
+ 577               	.Lscope9:
+ 579               	.global	i2cGetState
+ 581               	i2cGetState:
+ 259:E_i2c.c       **** 
+ 260:E_i2c.c       **** 
+ 261:E_i2c.c       **** 
+ 262:E_i2c.c       **** eI2cStateType i2cGetState(void)
+ 263:E_i2c.c       **** {
+ 583               	.LM68:
+ 584               	/* prologue: frame size=0 */
+ 585               	/* prologue end (size=0) */
+ 264:E_i2c.c       **** 	return I2cState;
+ 587               	.LM69:
+ 588 015e 8091 0000 		lds r24,I2cState
+ 265:E_i2c.c       **** }
+ 590               	.LM70:
+ 591 0162 9927      		clr r25
+ 592               	/* epilogue: frame size=0 */
+ 593 0164 0895      		ret
+ 594               	/* epilogue end (size=1) */
+ 595               	/* function i2cGetState size 4 (3) */
+ 597               	.Lscope10:
+ 598               		.lcomm I2cState,1
+ 600               		.text
+ 602               	Letext:
+ 603               	/* File "E_i2c.c": code  180 = 0x00b4 ( 169), prologues   0, epilogues  11 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 E_i2c.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:61     .text:00000000 i2c_set_bitrate
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:107    .text:0000002a i2c_init
+                             .bss:00000000 I2cState
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:147    .text:00000048 i2c_set_localdeviceaddr
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:173    .text:00000058 i2c_send_start
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:193    .text:00000062 i2c_send_stop
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:213    .text:0000006c i2c_wait_for_complete
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:234    .text:00000074 i2c_send_byte
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:258    .text:00000080 i2c_receive_byte
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:294    .text:00000098 i2c_master_sendni
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:430    .text:000000f4 i2c_master_receiveni
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:581    .text:0000015e i2cGetState
+C:\DOCUME~1\tos\LOCALS~1\Temp/ccAdbaaa.s:602    .text:00000166 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+__udivmodhi4

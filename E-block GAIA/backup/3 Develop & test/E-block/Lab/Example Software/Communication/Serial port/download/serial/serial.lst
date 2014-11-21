@@ -1,0 +1,2237 @@
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 1
+
+
+   1               		.file	"serial.c"
+   2               		.arch atmega8
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  10               		.section	.debug_abbrev,"",@progbits
+  11               	.Ldebug_abbrev0:
+  12               		.section	.debug_info,"",@progbits
+  13               	.Ldebug_info0:
+  14               		.section	.debug_line,"",@progbits
+  15               	.Ldebug_line0:
+  16               		.text
+  17               	.Ltext0:
+  18               		.lcomm i,1
+  19               		.section	.progmem.data,"a",@progbits
+  20               		.type	__c.5, @object
+  21               		.size	__c.5, 22
+  22               	__c.5:
+  23 0000 696E 7465 		.string	"interrupt_1 display\r\n"
+  23      7272 7570 
+  23      745F 3120 
+  23      6469 7370 
+  23      6C61 790D 
+  24               		.text
+  25               	.global	__vector_2
+  26               		.type	__vector_2, @function
+  27               	__vector_2:
+  28               	.LFB3:
+  29               	.LM1:
+  30               	/* prologue: frame size=0 */
+  31 0000 1F92      		push __zero_reg__
+  32 0002 0F92      		push __tmp_reg__
+  33 0004 0FB6      		in __tmp_reg__,__SREG__
+  34 0006 0F92      		push __tmp_reg__
+  35 0008 1124      		clr __zero_reg__
+  36 000a 2F93      		push r18
+  37 000c 3F93      		push r19
+  38 000e 4F93      		push r20
+  39 0010 5F93      		push r21
+  40 0012 6F93      		push r22
+  41 0014 7F93      		push r23
+  42 0016 8F93      		push r24
+  43 0018 9F93      		push r25
+  44 001a AF93      		push r26
+  45 001c BF93      		push r27
+  46 001e EF93      		push r30
+  47 0020 FF93      		push r31
+  48               	/* prologue end (size=17) */
+  49               	.LM2:
+  50               	/* #APP */
+  51 0022 7894      		sei
+  52               	.LM3:
+  53               	/* #NOAPP */
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 2
+
+
+  54 0024 1BBE      		out 91-0x20,__zero_reg__
+  55               	.LM4:
+  56 0026 80E0      		ldi r24,lo8(__c.5)
+  57 0028 90E0      		ldi r25,hi8(__c.5)
+  58 002a 9F93      		push r25
+  59 002c 8F93      		push r24
+  60 002e 00D0      		rcall printf_P
+  61               	.LM5:
+  62 0030 80E8      		ldi r24,lo8(-128)
+  63 0032 8BBF      		out 91-0x20,r24
+  64 0034 0F90      		pop __tmp_reg__
+  65 0036 0F90      		pop __tmp_reg__
+  66               	/* epilogue: frame size=0 */
+  67 0038 FF91      		pop r31
+  68 003a EF91      		pop r30
+  69 003c BF91      		pop r27
+  70 003e AF91      		pop r26
+  71 0040 9F91      		pop r25
+  72 0042 8F91      		pop r24
+  73 0044 7F91      		pop r23
+  74 0046 6F91      		pop r22
+  75 0048 5F91      		pop r21
+  76 004a 4F91      		pop r20
+  77 004c 3F91      		pop r19
+  78 004e 2F91      		pop r18
+  79 0050 0F90      		pop __tmp_reg__
+  80 0052 0FBE      		out __SREG__,__tmp_reg__
+  81 0054 0F90      		pop __tmp_reg__
+  82 0056 1F90      		pop __zero_reg__
+  83 0058 1895      		reti
+  84               	/* epilogue end (size=17) */
+  85               	/* function __vector_2 size 46 (12) */
+  86               	.LFE3:
+  87               		.size	__vector_2, .-__vector_2
+  88               	.global	__vector_11
+  89               		.type	__vector_11, @function
+  90               	__vector_11:
+  91               	.LFB4:
+  92               	.LM6:
+  93               	/* prologue: frame size=0 */
+  94 005a 1F92      		push __zero_reg__
+  95 005c 0F92      		push __tmp_reg__
+  96 005e 0FB6      		in __tmp_reg__,__SREG__
+  97 0060 0F92      		push __tmp_reg__
+  98 0062 1124      		clr __zero_reg__
+  99 0064 8F93      		push r24
+ 100 0066 9F93      		push r25
+ 101 0068 EF93      		push r30
+ 102 006a FF93      		push r31
+ 103               	/* prologue end (size=9) */
+ 104               	.LM7:
+ 105 006c 9CB1      		in r25,44-0x20
+ 106               	.LM8:
+ 107 006e 8091 0000 		lds r24,r_in
+ 108 0072 E82F      		mov r30,r24
+ 109 0074 FF27      		clr r31
+ 110 0076 EF71      		andi r30,lo8(31)
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 3
+
+
+ 111 0078 F070      		andi r31,hi8(31)
+ 112 007a E050      		subi r30,lo8(-(rbuf))
+ 113 007c F040      		sbci r31,hi8(-(rbuf))
+ 114 007e 9083      		st Z,r25
+ 115               	.LM9:
+ 116 0080 8091 0000 		lds r24,r_in
+ 117 0084 8F5F      		subi r24,lo8(-(1))
+ 118 0086 8093 0000 		sts r_in,r24
+ 119               	/* epilogue: frame size=0 */
+ 120 008a FF91      		pop r31
+ 121 008c EF91      		pop r30
+ 122 008e 9F91      		pop r25
+ 123 0090 8F91      		pop r24
+ 124 0092 0F90      		pop __tmp_reg__
+ 125 0094 0FBE      		out __SREG__,__tmp_reg__
+ 126 0096 0F90      		pop __tmp_reg__
+ 127 0098 1F90      		pop __zero_reg__
+ 128 009a 1895      		reti
+ 129               	/* epilogue end (size=9) */
+ 130               	/* function __vector_11 size 33 (15) */
+ 131               	.LFE4:
+ 132               		.size	__vector_11, .-__vector_11
+ 133               	.global	__vector_12
+ 134               		.type	__vector_12, @function
+ 135               	__vector_12:
+ 136               	.LFB5:
+ 137               	.LM10:
+ 138               	/* prologue: frame size=0 */
+ 139 009c 1F92      		push __zero_reg__
+ 140 009e 0F92      		push __tmp_reg__
+ 141 00a0 0FB6      		in __tmp_reg__,__SREG__
+ 142 00a2 0F92      		push __tmp_reg__
+ 143 00a4 1124      		clr __zero_reg__
+ 144 00a6 8F93      		push r24
+ 145 00a8 9F93      		push r25
+ 146 00aa EF93      		push r30
+ 147 00ac FF93      		push r31
+ 148               	/* prologue end (size=9) */
+ 149               	.LM11:
+ 150 00ae 9091 0000 		lds r25,t_in
+ 151 00b2 8091 0000 		lds r24,t_out
+ 152 00b6 9817      		cp r25,r24
+ 153 00b8 81F0      		breq .L4
+ 154               	.LM12:
+ 155 00ba 8091 0000 		lds r24,t_out
+ 156 00be E82F      		mov r30,r24
+ 157 00c0 FF27      		clr r31
+ 158 00c2 EF71      		andi r30,lo8(31)
+ 159 00c4 F070      		andi r31,hi8(31)
+ 160 00c6 E050      		subi r30,lo8(-(tbuf))
+ 161 00c8 F040      		sbci r31,hi8(-(tbuf))
+ 162 00ca 8081      		ld r24,Z
+ 163 00cc 8CB9      		out 44-0x20,r24
+ 164               	.LM13:
+ 165 00ce 8091 0000 		lds r24,t_out
+ 166 00d2 8F5F      		subi r24,lo8(-(1))
+ 167 00d4 8093 0000 		sts t_out,r24
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 4
+
+
+ 168 00d8 01C0      		rjmp .L3
+ 169               	.L4:
+ 170               	.LM14:
+ 171 00da 5598      		cbi 42-0x20,5
+ 172               	.L3:
+ 173               	/* epilogue: frame size=0 */
+ 174 00dc FF91      		pop r31
+ 175 00de EF91      		pop r30
+ 176 00e0 9F91      		pop r25
+ 177 00e2 8F91      		pop r24
+ 178 00e4 0F90      		pop __tmp_reg__
+ 179 00e6 0FBE      		out __SREG__,__tmp_reg__
+ 180 00e8 0F90      		pop __tmp_reg__
+ 181 00ea 1F90      		pop __zero_reg__
+ 182 00ec 1895      		reti
+ 183               	/* epilogue end (size=9) */
+ 184               	/* function __vector_12 size 41 (23) */
+ 185               	.LFE5:
+ 186               		.size	__vector_12, .-__vector_12
+ 187               		.section	.progmem.data
+ 188               		.type	__c.4, @object
+ 189               		.size	__c.4, 27
+ 190               	__c.4:
+ 191 0016 5469 6D65 		.string	"Timer0 interrupt display\r\n"
+ 191      7230 2069 
+ 191      6E74 6572 
+ 191      7275 7074 
+ 191      2064 6973 
+ 192               		.text
+ 193               	.global	__vector_9
+ 194               		.type	__vector_9, @function
+ 195               	__vector_9:
+ 196               	.LFB6:
+ 197               	.LM15:
+ 198               	/* prologue: frame size=0 */
+ 199 00ee 1F92      		push __zero_reg__
+ 200 00f0 0F92      		push __tmp_reg__
+ 201 00f2 0FB6      		in __tmp_reg__,__SREG__
+ 202 00f4 0F92      		push __tmp_reg__
+ 203 00f6 1124      		clr __zero_reg__
+ 204 00f8 2F93      		push r18
+ 205 00fa 3F93      		push r19
+ 206 00fc 4F93      		push r20
+ 207 00fe 5F93      		push r21
+ 208 0100 6F93      		push r22
+ 209 0102 7F93      		push r23
+ 210 0104 8F93      		push r24
+ 211 0106 9F93      		push r25
+ 212 0108 AF93      		push r26
+ 213 010a BF93      		push r27
+ 214 010c EF93      		push r30
+ 215 010e FF93      		push r31
+ 216               	/* prologue end (size=17) */
+ 217               	.LM16:
+ 218 0110 8091 0000 		lds r24,i
+ 219 0114 8F5F      		subi r24,lo8(-(1))
+ 220 0116 8093 0000 		sts i,r24
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 5
+
+
+ 221               	.LM17:
+ 222 011a 8536      		cpi r24,lo8(101)
+ 223 011c 48F0      		brlo .L6
+ 224               	.LM18:
+ 225 011e 80E0      		ldi r24,lo8(__c.4)
+ 226 0120 90E0      		ldi r25,hi8(__c.4)
+ 227 0122 9F93      		push r25
+ 228 0124 8F93      		push r24
+ 229 0126 00D0      		rcall printf_P
+ 230               	.LM19:
+ 231 0128 1092 0000 		sts i,__zero_reg__
+ 232 012c 0F90      		pop __tmp_reg__
+ 233 012e 0F90      		pop __tmp_reg__
+ 234               	.L6:
+ 235               	/* epilogue: frame size=0 */
+ 236 0130 FF91      		pop r31
+ 237 0132 EF91      		pop r30
+ 238 0134 BF91      		pop r27
+ 239 0136 AF91      		pop r26
+ 240 0138 9F91      		pop r25
+ 241 013a 8F91      		pop r24
+ 242 013c 7F91      		pop r23
+ 243 013e 6F91      		pop r22
+ 244 0140 5F91      		pop r21
+ 245 0142 4F91      		pop r20
+ 246 0144 3F91      		pop r19
+ 247 0146 2F91      		pop r18
+ 248 0148 0F90      		pop __tmp_reg__
+ 249 014a 0FBE      		out __SREG__,__tmp_reg__
+ 250 014c 0F90      		pop __tmp_reg__
+ 251 014e 1F90      		pop __zero_reg__
+ 252 0150 1895      		reti
+ 253               	/* epilogue end (size=17) */
+ 254               	/* function __vector_9 size 50 (16) */
+ 255               	.LFE6:
+ 256               		.size	__vector_9, .-__vector_9
+ 257               	.global	tbuflen
+ 258               		.type	tbuflen, @function
+ 259               	tbuflen:
+ 260               	.LFB7:
+ 261               	.LM20:
+ 262               	/* prologue: frame size=0 */
+ 263               	/* prologue end (size=0) */
+ 264               	.LM21:
+ 265 0152 8091 0000 		lds r24,t_in
+ 266 0156 9091 0000 		lds r25,t_out
+ 267 015a 891B      		sub r24,r25
+ 268               	.LM22:
+ 269 015c 9927      		clr r25
+ 270               	/* epilogue: frame size=0 */
+ 271 015e 0895      		ret
+ 272               	/* epilogue end (size=1) */
+ 273               	/* function tbuflen size 7 (6) */
+ 274               	.LFE7:
+ 275               		.size	tbuflen, .-tbuflen
+ 276               	.global	UART_putchar
+ 277               		.type	UART_putchar, @function
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 6
+
+
+ 278               	UART_putchar:
+ 279               	.LFB8:
+ 280               	.LM23:
+ 281               	/* prologue: frame size=0 */
+ 282 0160 CF93      		push r28
+ 283               	/* prologue end (size=1) */
+ 284 0162 C82F      		mov r28,r24
+ 285               	.L10:
+ 286               	.LM24:
+ 287 0164 F6DF      		rcall tbuflen
+ 288 0166 20E2      		ldi r18,lo8(32)
+ 289 0168 30E0      		ldi r19,hi8(32)
+ 290 016a 281B      		sub r18,r24
+ 291 016c 3109      		sbc r19,__zero_reg__
+ 292 016e 2330      		cpi r18,3
+ 293 0170 3105      		cpc r19,__zero_reg__
+ 294 0172 C4F3      		brlt .L10
+ 295               	.LM25:
+ 296 0174 8091 0000 		lds r24,t_in
+ 297 0178 E82F      		mov r30,r24
+ 298 017a FF27      		clr r31
+ 299 017c EF71      		andi r30,lo8(31)
+ 300 017e F070      		andi r31,hi8(31)
+ 301 0180 E050      		subi r30,lo8(-(tbuf))
+ 302 0182 F040      		sbci r31,hi8(-(tbuf))
+ 303 0184 C083      		st Z,r28
+ 304               	.LM26:
+ 305 0186 8091 0000 		lds r24,t_in
+ 306 018a 8F5F      		subi r24,lo8(-(1))
+ 307 018c 8093 0000 		sts t_in,r24
+ 308               	.LM27:
+ 309 0190 559A      		sbi 42-0x20,5
+ 310               	.LM28:
+ 311 0192 80E0      		ldi r24,lo8(0)
+ 312 0194 90E0      		ldi r25,hi8(0)
+ 313               	/* epilogue: frame size=0 */
+ 314 0196 CF91      		pop r28
+ 315 0198 0895      		ret
+ 316               	/* epilogue end (size=2) */
+ 317               	/* function UART_putchar size 29 (26) */
+ 318               	.LFE8:
+ 319               		.size	UART_putchar, .-UART_putchar
+ 320               	.global	rbuflen
+ 321               		.type	rbuflen, @function
+ 322               	rbuflen:
+ 323               	.LFB9:
+ 324               	.LM29:
+ 325               	/* prologue: frame size=0 */
+ 326               	/* prologue end (size=0) */
+ 327               	.LM30:
+ 328 019a 8091 0000 		lds r24,r_in
+ 329 019e 9091 0000 		lds r25,r_out
+ 330 01a2 891B      		sub r24,r25
+ 331               	.LM31:
+ 332 01a4 9927      		clr r25
+ 333               	/* epilogue: frame size=0 */
+ 334 01a6 0895      		ret
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 7
+
+
+ 335               	/* epilogue end (size=1) */
+ 336               	/* function rbuflen size 7 (6) */
+ 337               	.LFE9:
+ 338               		.size	rbuflen, .-rbuflen
+ 339               	.global	UART_getchar
+ 340               		.type	UART_getchar, @function
+ 341               	UART_getchar:
+ 342               	.LFB10:
+ 343               	.LM32:
+ 344               	/* prologue: frame size=0 */
+ 345               	/* prologue end (size=0) */
+ 346               	.L14:
+ 347               	.LM33:
+ 348 01a8 F8DF      		rcall rbuflen
+ 349 01aa 8823      		tst r24
+ 350 01ac E9F3      		breq .L14
+ 351               	.LM34:
+ 352 01ae 8091 0000 		lds r24,r_out
+ 353 01b2 E82F      		mov r30,r24
+ 354 01b4 FF27      		clr r31
+ 355 01b6 EF71      		andi r30,lo8(31)
+ 356 01b8 F070      		andi r31,hi8(31)
+ 357 01ba E050      		subi r30,lo8(-(rbuf))
+ 358 01bc F040      		sbci r31,hi8(-(rbuf))
+ 359 01be 9081      		ld r25,Z
+ 360               	.LM35:
+ 361 01c0 8091 0000 		lds r24,r_out
+ 362 01c4 8F5F      		subi r24,lo8(-(1))
+ 363 01c6 8093 0000 		sts r_out,r24
+ 364               	.LM36:
+ 365 01ca 892F      		mov r24,r25
+ 366 01cc 9927      		clr r25
+ 367               	/* epilogue: frame size=0 */
+ 368 01ce 0895      		ret
+ 369               	/* epilogue end (size=1) */
+ 370               	/* function UART_getchar size 20 (19) */
+ 371               	.LFE10:
+ 372               		.size	UART_getchar, .-UART_getchar
+ 373               	.global	UART_first_init
+ 374               		.type	UART_first_init, @function
+ 375               	UART_first_init:
+ 376               	.LFB11:
+ 377               	.LM37:
+ 378               	/* prologue: frame size=0 */
+ 379               	/* prologue end (size=0) */
+ 380               	.LM38:
+ 381 01d0 89E1      		ldi r24,lo8(25)
+ 382 01d2 89B9      		out 41-0x20,r24
+ 383               	.LM39:
+ 384 01d4 88E9      		ldi r24,lo8(-104)
+ 385 01d6 8AB9      		out 42-0x20,r24
+ 386               	.LM40:
+ 387 01d8 40E0      		ldi r20,lo8(0)
+ 388 01da 50E0      		ldi r21,hi8(0)
+ 389 01dc 60E0      		ldi r22,lo8(pm(UART_getchar))
+ 390 01de 70E0      		ldi r23,hi8(pm(UART_getchar))
+ 391 01e0 80E0      		ldi r24,lo8(pm(UART_putchar))
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 8
+
+
+ 392 01e2 90E0      		ldi r25,hi8(pm(UART_putchar))
+ 393 01e4 00D0      		rcall fdevopen
+ 394               	.LM41:
+ 395               	/* #APP */
+ 396 01e6 7894      		sei
+ 397               	/* #NOAPP */
+ 398               	/* epilogue: frame size=0 */
+ 399 01e8 0895      		ret
+ 400               	/* epilogue end (size=1) */
+ 401               	/* function UART_first_init size 14 (13) */
+ 402               	.LFE11:
+ 403               		.size	UART_first_init, .-UART_first_init
+ 404               		.section	.progmem.data
+ 405               		.type	__c.2, @object
+ 406               		.size	__c.2, 18
+ 407               	__c.2:
+ 408 0031 456E 7465 		.string	"Enter your name\r\n"
+ 408      7220 796F 
+ 408      7572 206E 
+ 408      616D 650D 
+ 408      0A00 
+ 409               		.type	__c.3, @object
+ 410               		.size	__c.3, 22
+ 411               	__c.3:
+ 412 0043 0D0A 596F 		.string	"\r\nYour name is '%s'\r\n"
+ 412      7572 206E 
+ 412      616D 6520 
+ 412      6973 2027 
+ 412      2573 270D 
+ 413               		.data
+ 414               	.LC0:
+ 415 0000 2573 00   		.string	"%s"
+ 416               		.text
+ 417               	.global	function
+ 418               		.type	function, @function
+ 419               	function:
+ 420               	.LFB12:
+ 421               	.LM42:
+ 422               	/* prologue: frame size=20 */
+ 423 01ea 0F93      		push r16
+ 424 01ec 1F93      		push r17
+ 425 01ee CF93      		push r28
+ 426 01f0 DF93      		push r29
+ 427 01f2 CDB7      		in r28,__SP_L__
+ 428 01f4 DEB7      		in r29,__SP_H__
+ 429 01f6 6497      		sbiw r28,20
+ 430 01f8 0FB6      		in __tmp_reg__,__SREG__
+ 431 01fa F894      		cli
+ 432 01fc DEBF      		out __SP_H__,r29
+ 433 01fe 0FBE      		out __SREG__,__tmp_reg__
+ 434 0200 CDBF      		out __SP_L__,r28
+ 435               	/* prologue end (size=12) */
+ 436               	.LM43:
+ 437 0202 80E0      		ldi r24,lo8(__c.2)
+ 438 0204 90E0      		ldi r25,hi8(__c.2)
+ 439 0206 9F93      		push r25
+ 440 0208 8F93      		push r24
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 9
+
+
+ 441 020a 00D0      		rcall printf_P
+ 442               	.LM44:
+ 443 020c 0F90      		pop __tmp_reg__
+ 444 020e 0F90      		pop __tmp_reg__
+ 445               	.L18:
+ 446               	.LM45:
+ 447 0210 8E01      		movw r16,r28
+ 448 0212 0F5F      		subi r16,lo8(-(1))
+ 449 0214 1F4F      		sbci r17,hi8(-(1))
+ 450 0216 1F93      		push r17
+ 451 0218 0F93      		push r16
+ 452 021a 80E0      		ldi r24,lo8(.LC0)
+ 453 021c 90E0      		ldi r25,hi8(.LC0)
+ 454 021e 9F93      		push r25
+ 455 0220 8F93      		push r24
+ 456 0222 00D0      		rcall scanf
+ 457 0224 0F90      		pop __tmp_reg__
+ 458 0226 0F90      		pop __tmp_reg__
+ 459 0228 0F90      		pop __tmp_reg__
+ 460 022a 0F90      		pop __tmp_reg__
+ 461 022c 892B      		or r24,r25
+ 462 022e 81F3      		breq .L18
+ 463               	.LM46:
+ 464 0230 1F93      		push r17
+ 465 0232 0F93      		push r16
+ 466 0234 80E0      		ldi r24,lo8(__c.3)
+ 467 0236 90E0      		ldi r25,hi8(__c.3)
+ 468 0238 9F93      		push r25
+ 469 023a 8F93      		push r24
+ 470 023c 00D0      		rcall printf_P
+ 471 023e 0F90      		pop __tmp_reg__
+ 472 0240 0F90      		pop __tmp_reg__
+ 473 0242 0F90      		pop __tmp_reg__
+ 474 0244 0F90      		pop __tmp_reg__
+ 475               	/* epilogue: frame size=20 */
+ 476 0246 6496      		adiw r28,20
+ 477 0248 0FB6      		in __tmp_reg__,__SREG__
+ 478 024a F894      		cli
+ 479 024c DEBF      		out __SP_H__,r29
+ 480 024e 0FBE      		out __SREG__,__tmp_reg__
+ 481 0250 CDBF      		out __SP_L__,r28
+ 482 0252 DF91      		pop r29
+ 483 0254 CF91      		pop r28
+ 484 0256 1F91      		pop r17
+ 485 0258 0F91      		pop r16
+ 486 025a 0895      		ret
+ 487               	/* epilogue end (size=11) */
+ 488               	/* function function size 57 (34) */
+ 489               	.LFE12:
+ 490               		.size	function, .-function
+ 491               		.section	.progmem.data
+ 492               		.type	__c.0, @object
+ 493               		.size	__c.0, 13
+ 494               	__c.0:
+ 495 0059 456E 7465 		.string	"Enter text\r\n"
+ 495      7220 7465 
+ 495      7874 0D0A 
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 10
+
+
+ 495      00
+ 496               		.type	__c.1, @object
+ 497               		.size	__c.1, 21
+ 498               	__c.1:
+ 499 0066 0D0A 596F 		.string	"\r\nYou entered '%s'\r\n"
+ 499      7520 656E 
+ 499      7465 7265 
+ 499      6420 2725 
+ 499      7327 0D0A 
+ 500               		.text
+ 501               	.global	main
+ 502               		.type	main, @function
+ 503               	main:
+ 504               	.LFB13:
+ 505               	.LM47:
+ 506               	/* prologue: frame size=20 */
+ 507 025c C0E0      		ldi r28,lo8(__stack - 20)
+ 508 025e D0E0      		ldi r29,hi8(__stack - 20)
+ 509 0260 DEBF      		out __SP_H__,r29
+ 510 0262 CDBF      		out __SP_L__,r28
+ 511               	/* prologue end (size=4) */
+ 512               	.LM48:
+ 513 0264 88E2      		ldi r24,lo8(40)
+ 514 0266 85BF      		out 85-0x20,r24
+ 515               	.LM49:
+ 516 0268 80E8      		ldi r24,lo8(-128)
+ 517 026a 8BBF      		out 91-0x20,r24
+ 518               	.LM50:
+ 519 026c 80EF      		ldi r24,lo8(-16)
+ 520 026e 81BB      		out 49-0x20,r24
+ 521               	.LM51:
+ 522 0270 88E0      		ldi r24,lo8(8)
+ 523 0272 82BB      		out 50-0x20,r24
+ 524               	.LM52:
+ 525 0274 94E0      		ldi r25,lo8(4)
+ 526 0276 94BB      		out 52-0x20,r25
+ 527               	.LM53:
+ 528 0278 88EF      		ldi r24,lo8(-8)
+ 529 027a 85BB      		out 53-0x20,r24
+ 530               	.LM54:
+ 531 027c 95BB      		out 53-0x20,r25
+ 532               	.LM55:
+ 533 027e 85E0      		ldi r24,lo8(5)
+ 534 0280 83BF      		out 83-0x20,r24
+ 535               	.LM56:
+ 536 0282 89B7      		in r24,89-0x20
+ 537 0284 8160      		ori r24,lo8(1)
+ 538 0286 89BF      		out 89-0x20,r24
+ 539               	.LM57:
+ 540 0288 A3DF      		rcall UART_first_init
+ 541               	.L21:
+ 542               	.LM58:
+ 543 028a 80E0      		ldi r24,lo8(__c.0)
+ 544 028c 90E0      		ldi r25,hi8(__c.0)
+ 545 028e 9F93      		push r25
+ 546 0290 8F93      		push r24
+ 547 0292 00D0      		rcall printf_P
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 11
+
+
+ 548               	.LM59:
+ 549 0294 0F90      		pop __tmp_reg__
+ 550 0296 0F90      		pop __tmp_reg__
+ 551               	.L23:
+ 552 0298 8E01      		movw r16,r28
+ 553 029a 0F5F      		subi r16,lo8(-(1))
+ 554 029c 1F4F      		sbci r17,hi8(-(1))
+ 555 029e 1F93      		push r17
+ 556 02a0 0F93      		push r16
+ 557 02a2 80E0      		ldi r24,lo8(.LC0)
+ 558 02a4 90E0      		ldi r25,hi8(.LC0)
+ 559 02a6 9F93      		push r25
+ 560 02a8 8F93      		push r24
+ 561 02aa 00D0      		rcall scanf
+ 562 02ac 0F90      		pop __tmp_reg__
+ 563 02ae 0F90      		pop __tmp_reg__
+ 564 02b0 0F90      		pop __tmp_reg__
+ 565 02b2 0F90      		pop __tmp_reg__
+ 566 02b4 892B      		or r24,r25
+ 567 02b6 81F3      		breq .L23
+ 568               	.LM60:
+ 569 02b8 1F93      		push r17
+ 570 02ba 0F93      		push r16
+ 571 02bc 80E0      		ldi r24,lo8(__c.1)
+ 572 02be 90E0      		ldi r25,hi8(__c.1)
+ 573 02c0 9F93      		push r25
+ 574 02c2 8F93      		push r24
+ 575 02c4 00D0      		rcall printf_P
+ 576               	.LM61:
+ 577 02c6 0F90      		pop __tmp_reg__
+ 578 02c8 0F90      		pop __tmp_reg__
+ 579 02ca 0F90      		pop __tmp_reg__
+ 580 02cc 0F90      		pop __tmp_reg__
+ 581 02ce DDCF      		rjmp .L21
+ 582               	/* epilogue: frame size=20 */
+ 583               	/* epilogue: noreturn */
+ 584               	/* epilogue end (size=0) */
+ 585               	/* function main size 58 (54) */
+ 586               	.LFE13:
+ 587               		.size	main, .-main
+ 588               		.comm tbuf,32,1
+ 589               		.comm rbuf,32,1
+ 590               		.comm t_in,1,1
+ 591               		.comm t_out,1,1
+ 592               		.comm r_in,1,1
+ 593               		.comm r_out,1,1
+ 594               	.Letext0:
+ 595               		.section	.debug_line
+ 596 0000 3602 0000 		.long	.LELT0-.LSLT0
+ 597               	
+ 598               	.LSLT0:
+ 599 0004 0200      		.word	2
+ 600               	
+ 601 0006 B800 0000 		.long	.LELTP0-.LASLTP0
+ 602               	
+ 603               	.LASLTP0:
+ 604 000a 01        		.byte	0x1
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 12
+
+
+ 605 000b 01        		.byte	0x1
+ 606 000c F6        		.byte	0xf6
+ 607 000d F5        		.byte	0xf5
+ 608 000e 0A        		.byte	0xa
+ 609 000f 00        		.byte	0x0
+ 610 0010 01        		.byte	0x1
+ 611 0011 01        		.byte	0x1
+ 612 0012 01        		.byte	0x1
+ 613 0013 01        		.byte	0x1
+ 614 0014 00        		.byte	0x0
+ 615 0015 00        		.byte	0x0
+ 616 0016 00        		.byte	0x0
+ 617 0017 01        		.byte	0x1
+ 618 0018 433A 2F57 		.ascii	"C:/WinAVR/bin/../lib/gcc/avr/3.4.3/../../../../avr/include"
+ 618      696E 4156 
+ 618      522F 6269 
+ 618      6E2F 2E2E 
+ 618      2F6C 6962 
+ 619 0052 00        		.byte	0
+ 620 0053 433A 2F57 		.ascii	"C:/WinAVR/bin/../lib/gcc/avr/3.4.3/include"
+ 620      696E 4156 
+ 620      522F 6269 
+ 620      6E2F 2E2E 
+ 620      2F6C 6962 
+ 621 007d 00        		.byte	0
+ 622 007e 00        		.byte	0x0
+ 623 007f 7374 6469 		.string	"stdint.h"
+ 623      6E74 2E68 
+ 623      00
+ 624 0088 01        		.uleb128 0x1
+ 625 0089 00        		.uleb128 0x0
+ 626 008a 00        		.uleb128 0x0
+ 627 008b 7374 6464 		.string	"stddef.h"
+ 627      6566 2E68 
+ 627      00
+ 628 0094 02        		.uleb128 0x2
+ 629 0095 00        		.uleb128 0x0
+ 630 0096 00        		.uleb128 0x0
+ 631 0097 6176 722F 		.string	"avr/pgmspace.h"
+ 631      7067 6D73 
+ 631      7061 6365 
+ 631      2E68 00
+ 632 00a6 01        		.uleb128 0x1
+ 633 00a7 00        		.uleb128 0x0
+ 634 00a8 00        		.uleb128 0x0
+ 635 00a9 7374 6461 		.string	"stdarg.h"
+ 635      7267 2E68 
+ 635      00
+ 636 00b2 02        		.uleb128 0x2
+ 637 00b3 00        		.uleb128 0x0
+ 638 00b4 00        		.uleb128 0x0
+ 639 00b5 7365 7269 		.string	"serial.c"
+ 639      616C 2E63 
+ 639      00
+ 640 00be 00        		.uleb128 0x0
+ 641 00bf 00        		.uleb128 0x0
+ 642 00c0 00        		.uleb128 0x0
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 13
+
+
+ 643 00c1 00        		.byte	0x0
+ 644               	.LELTP0:
+ 645 00c2 00        		.byte	0x0
+ 646 00c3 03        		.uleb128 0x3
+ 647 00c4 02        		.byte	0x2
+ 648 00c5 0000      		.word	.LM1
+ 649               	
+ 650 00c7 04        		.byte	0x4
+ 651 00c8 05        		.uleb128 0x5
+ 652 00c9 43        		.byte	0x43
+ 653 00ca 00        		.byte	0x0
+ 654 00cb 03        		.uleb128 0x3
+ 655 00cc 02        		.byte	0x2
+ 656 00cd 0000      		.word	.LM2
+ 657               	
+ 658 00cf 15        		.byte	0x15
+ 659 00d0 00        		.byte	0x0
+ 660 00d1 03        		.uleb128 0x3
+ 661 00d2 02        		.byte	0x2
+ 662 00d3 0000      		.word	.LM3
+ 663               	
+ 664 00d5 15        		.byte	0x15
+ 665 00d6 00        		.byte	0x0
+ 666 00d7 03        		.uleb128 0x3
+ 667 00d8 02        		.byte	0x2
+ 668 00d9 0000      		.word	.LM4
+ 669               	
+ 670 00db 16        		.byte	0x16
+ 671 00dc 00        		.byte	0x0
+ 672 00dd 03        		.uleb128 0x3
+ 673 00de 02        		.byte	0x2
+ 674 00df 0000      		.word	.LM5
+ 675               	
+ 676 00e1 16        		.byte	0x16
+ 677 00e2 00        		.byte	0x0
+ 678 00e3 03        		.uleb128 0x3
+ 679 00e4 02        		.byte	0x2
+ 680 00e5 0000      		.word	.LM6
+ 681               	
+ 682 00e7 18        		.byte	0x18
+ 683 00e8 00        		.byte	0x0
+ 684 00e9 03        		.uleb128 0x3
+ 685 00ea 02        		.byte	0x2
+ 686 00eb 0000      		.word	.LM7
+ 687               	
+ 688 00ed 19        		.byte	0x19
+ 689 00ee 00        		.byte	0x0
+ 690 00ef 03        		.uleb128 0x3
+ 691 00f0 02        		.byte	0x2
+ 692 00f1 0000      		.word	.LM8
+ 693               	
+ 694 00f3 16        		.byte	0x16
+ 695 00f4 00        		.byte	0x0
+ 696 00f5 03        		.uleb128 0x3
+ 697 00f6 02        		.byte	0x2
+ 698 00f7 0000      		.word	.LM9
+ 699               	
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 14
+
+
+ 700 00f9 15        		.byte	0x15
+ 701 00fa 00        		.byte	0x0
+ 702 00fb 03        		.uleb128 0x3
+ 703 00fc 02        		.byte	0x2
+ 704 00fd 0000      		.word	.LM10
+ 705               	
+ 706 00ff 18        		.byte	0x18
+ 707 0100 00        		.byte	0x0
+ 708 0101 03        		.uleb128 0x3
+ 709 0102 02        		.byte	0x2
+ 710 0103 0000      		.word	.LM11
+ 711               	
+ 712 0105 17        		.byte	0x17
+ 713 0106 00        		.byte	0x0
+ 714 0107 03        		.uleb128 0x3
+ 715 0108 02        		.byte	0x2
+ 716 0109 0000      		.word	.LM12
+ 717               	
+ 718 010b 16        		.byte	0x16
+ 719 010c 00        		.byte	0x0
+ 720 010d 03        		.uleb128 0x3
+ 721 010e 02        		.byte	0x2
+ 722 010f 0000      		.word	.LM13
+ 723               	
+ 724 0111 15        		.byte	0x15
+ 725 0112 00        		.byte	0x0
+ 726 0113 03        		.uleb128 0x3
+ 727 0114 02        		.byte	0x2
+ 728 0115 0000      		.word	.LM14
+ 729               	
+ 730 0117 18        		.byte	0x18
+ 731 0118 00        		.byte	0x0
+ 732 0119 03        		.uleb128 0x3
+ 733 011a 02        		.byte	0x2
+ 734 011b 0000      		.word	.LM15
+ 735               	
+ 736 011d 19        		.byte	0x19
+ 737 011e 00        		.byte	0x0
+ 738 011f 03        		.uleb128 0x3
+ 739 0120 02        		.byte	0x2
+ 740 0121 0000      		.word	.LM16
+ 741               	
+ 742 0123 15        		.byte	0x15
+ 743 0124 00        		.byte	0x0
+ 744 0125 03        		.uleb128 0x3
+ 745 0126 02        		.byte	0x2
+ 746 0127 0000      		.word	.LM17
+ 747               	
+ 748 0129 15        		.byte	0x15
+ 749 012a 00        		.byte	0x0
+ 750 012b 03        		.uleb128 0x3
+ 751 012c 02        		.byte	0x2
+ 752 012d 0000      		.word	.LM18
+ 753               	
+ 754 012f 16        		.byte	0x16
+ 755 0130 00        		.byte	0x0
+ 756 0131 03        		.uleb128 0x3
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 15
+
+
+ 757 0132 02        		.byte	0x2
+ 758 0133 0000      		.word	.LM19
+ 759               	
+ 760 0135 15        		.byte	0x15
+ 761 0136 00        		.byte	0x0
+ 762 0137 03        		.uleb128 0x3
+ 763 0138 02        		.byte	0x2
+ 764 0139 0000      		.word	.LM20
+ 765               	
+ 766 013b 1A        		.byte	0x1a
+ 767 013c 00        		.byte	0x0
+ 768 013d 03        		.uleb128 0x3
+ 769 013e 02        		.byte	0x2
+ 770 013f 0000      		.word	.LM21
+ 771               	
+ 772 0141 15        		.byte	0x15
+ 773 0142 00        		.byte	0x0
+ 774 0143 03        		.uleb128 0x3
+ 775 0144 02        		.byte	0x2
+ 776 0145 0000      		.word	.LM22
+ 777               	
+ 778 0147 15        		.byte	0x15
+ 779 0148 00        		.byte	0x0
+ 780 0149 03        		.uleb128 0x3
+ 781 014a 02        		.byte	0x2
+ 782 014b 0000      		.word	.LM23
+ 783               	
+ 784 014d 17        		.byte	0x17
+ 785 014e 00        		.byte	0x0
+ 786 014f 03        		.uleb128 0x3
+ 787 0150 02        		.byte	0x2
+ 788 0151 0000      		.word	.LM24
+ 789               	
+ 790 0153 16        		.byte	0x16
+ 791 0154 00        		.byte	0x0
+ 792 0155 03        		.uleb128 0x3
+ 793 0156 02        		.byte	0x2
+ 794 0157 0000      		.word	.LM25
+ 795               	
+ 796 0159 17        		.byte	0x17
+ 797 015a 00        		.byte	0x0
+ 798 015b 03        		.uleb128 0x3
+ 799 015c 02        		.byte	0x2
+ 800 015d 0000      		.word	.LM26
+ 801               	
+ 802 015f 15        		.byte	0x15
+ 803 0160 00        		.byte	0x0
+ 804 0161 03        		.uleb128 0x3
+ 805 0162 02        		.byte	0x2
+ 806 0163 0000      		.word	.LM27
+ 807               	
+ 808 0165 16        		.byte	0x16
+ 809 0166 00        		.byte	0x0
+ 810 0167 03        		.uleb128 0x3
+ 811 0168 02        		.byte	0x2
+ 812 0169 0000      		.word	.LM28
+ 813               	
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 16
+
+
+ 814 016b 17        		.byte	0x17
+ 815 016c 00        		.byte	0x0
+ 816 016d 03        		.uleb128 0x3
+ 817 016e 02        		.byte	0x2
+ 818 016f 0000      		.word	.LM29
+ 819               	
+ 820 0171 17        		.byte	0x17
+ 821 0172 00        		.byte	0x0
+ 822 0173 03        		.uleb128 0x3
+ 823 0174 02        		.byte	0x2
+ 824 0175 0000      		.word	.LM30
+ 825               	
+ 826 0177 15        		.byte	0x15
+ 827 0178 00        		.byte	0x0
+ 828 0179 03        		.uleb128 0x3
+ 829 017a 02        		.byte	0x2
+ 830 017b 0000      		.word	.LM31
+ 831               	
+ 832 017d 15        		.byte	0x15
+ 833 017e 00        		.byte	0x0
+ 834 017f 03        		.uleb128 0x3
+ 835 0180 02        		.byte	0x2
+ 836 0181 0000      		.word	.LM32
+ 837               	
+ 838 0183 17        		.byte	0x17
+ 839 0184 00        		.byte	0x0
+ 840 0185 03        		.uleb128 0x3
+ 841 0186 02        		.byte	0x2
+ 842 0187 0000      		.word	.LM33
+ 843               	
+ 844 0189 17        		.byte	0x17
+ 845 018a 00        		.byte	0x0
+ 846 018b 03        		.uleb128 0x3
+ 847 018c 02        		.byte	0x2
+ 848 018d 0000      		.word	.LM34
+ 849               	
+ 850 018f 16        		.byte	0x16
+ 851 0190 00        		.byte	0x0
+ 852 0191 03        		.uleb128 0x3
+ 853 0192 02        		.byte	0x2
+ 854 0193 0000      		.word	.LM35
+ 855               	
+ 856 0195 15        		.byte	0x15
+ 857 0196 00        		.byte	0x0
+ 858 0197 03        		.uleb128 0x3
+ 859 0198 02        		.byte	0x2
+ 860 0199 0000      		.word	.LM36
+ 861               	
+ 862 019b 17        		.byte	0x17
+ 863 019c 00        		.byte	0x0
+ 864 019d 03        		.uleb128 0x3
+ 865 019e 02        		.byte	0x2
+ 866 019f 0000      		.word	.LM37
+ 867               	
+ 868 01a1 17        		.byte	0x17
+ 869 01a2 00        		.byte	0x0
+ 870 01a3 03        		.uleb128 0x3
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 17
+
+
+ 871 01a4 02        		.byte	0x2
+ 872 01a5 0000      		.word	.LM38
+ 873               	
+ 874 01a7 17        		.byte	0x17
+ 875 01a8 00        		.byte	0x0
+ 876 01a9 03        		.uleb128 0x3
+ 877 01aa 02        		.byte	0x2
+ 878 01ab 0000      		.word	.LM39
+ 879               	
+ 880 01ad 15        		.byte	0x15
+ 881 01ae 00        		.byte	0x0
+ 882 01af 03        		.uleb128 0x3
+ 883 01b0 02        		.byte	0x2
+ 884 01b1 0000      		.word	.LM40
+ 885               	
+ 886 01b3 17        		.byte	0x17
+ 887 01b4 00        		.byte	0x0
+ 888 01b5 03        		.uleb128 0x3
+ 889 01b6 02        		.byte	0x2
+ 890 01b7 0000      		.word	.LM41
+ 891               	
+ 892 01b9 15        		.byte	0x15
+ 893 01ba 00        		.byte	0x0
+ 894 01bb 03        		.uleb128 0x3
+ 895 01bc 02        		.byte	0x2
+ 896 01bd 0000      		.word	.LM42
+ 897               	
+ 898 01bf 18        		.byte	0x18
+ 899 01c0 00        		.byte	0x0
+ 900 01c1 03        		.uleb128 0x3
+ 901 01c2 02        		.byte	0x2
+ 902 01c3 0000      		.word	.LM43
+ 903               	
+ 904 01c5 16        		.byte	0x16
+ 905 01c6 00        		.byte	0x0
+ 906 01c7 03        		.uleb128 0x3
+ 907 01c8 02        		.byte	0x2
+ 908 01c9 0000      		.word	.LM44
+ 909               	
+ 910 01cb 15        		.byte	0x15
+ 911 01cc 00        		.byte	0x0
+ 912 01cd 03        		.uleb128 0x3
+ 913 01ce 02        		.byte	0x2
+ 914 01cf 0000      		.word	.LM45
+ 915               	
+ 916 01d1 01        		.byte	0x1
+ 917 01d2 00        		.byte	0x0
+ 918 01d3 03        		.uleb128 0x3
+ 919 01d4 02        		.byte	0x2
+ 920 01d5 0000      		.word	.LM46
+ 921               	
+ 922 01d7 15        		.byte	0x15
+ 923 01d8 00        		.byte	0x0
+ 924 01d9 03        		.uleb128 0x3
+ 925 01da 02        		.byte	0x2
+ 926 01db 0000      		.word	.LM47
+ 927               	
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 18
+
+
+ 928 01dd 1B        		.byte	0x1b
+ 929 01de 00        		.byte	0x0
+ 930 01df 03        		.uleb128 0x3
+ 931 01e0 02        		.byte	0x2
+ 932 01e1 0000      		.word	.LM48
+ 933               	
+ 934 01e3 16        		.byte	0x16
+ 935 01e4 00        		.byte	0x0
+ 936 01e5 03        		.uleb128 0x3
+ 937 01e6 02        		.byte	0x2
+ 938 01e7 0000      		.word	.LM49
+ 939               	
+ 940 01e9 15        		.byte	0x15
+ 941 01ea 00        		.byte	0x0
+ 942 01eb 03        		.uleb128 0x3
+ 943 01ec 02        		.byte	0x2
+ 944 01ed 0000      		.word	.LM50
+ 945               	
+ 946 01ef 17        		.byte	0x17
+ 947 01f0 00        		.byte	0x0
+ 948 01f1 03        		.uleb128 0x3
+ 949 01f2 02        		.byte	0x2
+ 950 01f3 0000      		.word	.LM51
+ 951               	
+ 952 01f5 15        		.byte	0x15
+ 953 01f6 00        		.byte	0x0
+ 954 01f7 03        		.uleb128 0x3
+ 955 01f8 02        		.byte	0x2
+ 956 01f9 0000      		.word	.LM52
+ 957               	
+ 958 01fb 15        		.byte	0x15
+ 959 01fc 00        		.byte	0x0
+ 960 01fd 03        		.uleb128 0x3
+ 961 01fe 02        		.byte	0x2
+ 962 01ff 0000      		.word	.LM53
+ 963               	
+ 964 0201 15        		.byte	0x15
+ 965 0202 00        		.byte	0x0
+ 966 0203 03        		.uleb128 0x3
+ 967 0204 02        		.byte	0x2
+ 968 0205 0000      		.word	.LM54
+ 969               	
+ 970 0207 15        		.byte	0x15
+ 971 0208 00        		.byte	0x0
+ 972 0209 03        		.uleb128 0x3
+ 973 020a 02        		.byte	0x2
+ 974 020b 0000      		.word	.LM55
+ 975               	
+ 976 020d 16        		.byte	0x16
+ 977 020e 00        		.byte	0x0
+ 978 020f 03        		.uleb128 0x3
+ 979 0210 02        		.byte	0x2
+ 980 0211 0000      		.word	.LM56
+ 981               	
+ 982 0213 15        		.byte	0x15
+ 983 0214 00        		.byte	0x0
+ 984 0215 03        		.uleb128 0x3
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 19
+
+
+ 985 0216 02        		.byte	0x2
+ 986 0217 0000      		.word	.LM57
+ 987               	
+ 988 0219 18        		.byte	0x18
+ 989 021a 00        		.byte	0x0
+ 990 021b 03        		.uleb128 0x3
+ 991 021c 02        		.byte	0x2
+ 992 021d 0000      		.word	.LM58
+ 993               	
+ 994 021f 19        		.byte	0x19
+ 995 0220 00        		.byte	0x0
+ 996 0221 03        		.uleb128 0x3
+ 997 0222 02        		.byte	0x2
+ 998 0223 0000      		.word	.LM59
+ 999               	
+ 1000 0225 16        		.byte	0x16
+ 1001 0226 00        		.byte	0x0
+ 1002 0227 03        		.uleb128 0x3
+ 1003 0228 02        		.byte	0x2
+ 1004 0229 0000      		.word	.LM60
+ 1005               	
+ 1006 022b 16        		.byte	0x16
+ 1007 022c 00        		.byte	0x0
+ 1008 022d 03        		.uleb128 0x3
+ 1009 022e 02        		.byte	0x2
+ 1010 022f 0000      		.word	.LM61
+ 1011               	
+ 1012 0231 0D        		.byte	0xd
+ 1013 0232 00        		.byte	0x0
+ 1014 0233 03        		.uleb128 0x3
+ 1015 0234 02        		.byte	0x2
+ 1016 0235 0000      		.word	.Letext0
+ 1017               	
+ 1018 0237 00        		.byte	0x0
+ 1019 0238 01        		.uleb128 0x1
+ 1020 0239 01        		.byte	0x1
+ 1021               	.LELT0:
+ 1022 023a 1600 0000 		.section	.debug_info
+ 1022      0200 1000 
+ 1022      0000 0101 
+ 1022      FB0E 0A00 
+ 1022      0101 0101 
+ 1023 0000 A702 0000 		.long	679
+ 1024               	
+ 1025 0004 0200      		.word	2
+ 1026               	
+ 1027 0006 0000 0000 		.long	.Ldebug_abbrev0
+ 1028               	
+ 1029 000a 02        		.byte	0x2
+ 1030 000b 01        		.uleb128 0x1
+ 1031 000c 0000 0000 		.long	.Ldebug_line0
+ 1032               	
+ 1033 0010 0000      		.word	.Letext0
+ 1034               	
+ 1035 0012 0000      		.word	.Ltext0
+ 1036               	
+ 1037 0014 0000 0000 		.long	.LASF33
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 20
+
+
+ 1038               	
+ 1039 0018 01        		.byte	0x1
+ 1040 0019 0000 0000 		.long	.LASF34
+ 1041               	
+ 1042 001d 0000 0000 		.long	.LASF35
+ 1043               	
+ 1044 0021 02        		.uleb128 0x2
+ 1045 0022 0000 0000 		.long	.LASF0
+ 1046               	
+ 1047 0026 01        		.byte	0x1
+ 1048 0027 06        		.byte	0x6
+ 1049 0028 03        		.uleb128 0x3
+ 1050 0029 0000 0000 		.long	.LASF36
+ 1051               	
+ 1052 002d 01        		.byte	0x1
+ 1053 002e 46        		.byte	0x46
+ 1054 002f 3300 0000 		.long	51
+ 1055               	
+ 1056 0033 02        		.uleb128 0x2
+ 1057 0034 0000 0000 		.long	.LASF1
+ 1058               	
+ 1059 0038 01        		.byte	0x1
+ 1060 0039 08        		.byte	0x8
+ 1061 003a 04        		.uleb128 0x4
+ 1062 003b 696E 7400 		.string	"int"
+ 1063 003f 02        		.byte	0x2
+ 1064 0040 05        		.byte	0x5
+ 1065 0041 02        		.uleb128 0x2
+ 1066 0042 0000 0000 		.long	.LASF2
+ 1067               	
+ 1068 0046 02        		.byte	0x2
+ 1069 0047 07        		.byte	0x7
+ 1070 0048 02        		.uleb128 0x2
+ 1071 0049 0000 0000 		.long	.LASF3
+ 1072               	
+ 1073 004d 04        		.byte	0x4
+ 1074 004e 05        		.byte	0x5
+ 1075 004f 02        		.uleb128 0x2
+ 1076 0050 0000 0000 		.long	.LASF4
+ 1077               	
+ 1078 0054 04        		.byte	0x4
+ 1079 0055 07        		.byte	0x7
+ 1080 0056 02        		.uleb128 0x2
+ 1081 0057 0000 0000 		.long	.LASF5
+ 1082               	
+ 1083 005b 08        		.byte	0x8
+ 1084 005c 05        		.byte	0x5
+ 1085 005d 02        		.uleb128 0x2
+ 1086 005e 0000 0000 		.long	.LASF6
+ 1087               	
+ 1088 0062 08        		.byte	0x8
+ 1089 0063 07        		.byte	0x7
+ 1090 0064 02        		.uleb128 0x2
+ 1091 0065 0000 0000 		.long	.LASF7
+ 1092               	
+ 1093 0069 01        		.byte	0x1
+ 1094 006a 07        		.byte	0x7
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 21
+
+
+ 1095 006b 02        		.uleb128 0x2
+ 1096 006c 0000 0000 		.long	.LASF1
+ 1097               	
+ 1098 0070 01        		.byte	0x1
+ 1099 0071 08        		.byte	0x8
+ 1100 0072 02        		.uleb128 0x2
+ 1101 0073 0000 0000 		.long	.LASF8
+ 1102               	
+ 1103 0077 01        		.byte	0x1
+ 1104 0078 05        		.byte	0x5
+ 1105 0079 02        		.uleb128 0x2
+ 1106 007a 0000 0000 		.long	.LASF1
+ 1107               	
+ 1108 007e 01        		.byte	0x1
+ 1109 007f 08        		.byte	0x8
+ 1110 0080 02        		.uleb128 0x2
+ 1111 0081 0000 0000 		.long	.LASF9
+ 1112               	
+ 1113 0085 02        		.byte	0x2
+ 1114 0086 05        		.byte	0x5
+ 1115 0087 02        		.uleb128 0x2
+ 1116 0088 0000 0000 		.long	.LASF10
+ 1117               	
+ 1118 008c 02        		.byte	0x2
+ 1119 008d 07        		.byte	0x7
+ 1120 008e 02        		.uleb128 0x2
+ 1121 008f 0000 0000 		.long	.LASF11
+ 1122               	
+ 1123 0093 04        		.byte	0x4
+ 1124 0094 05        		.byte	0x5
+ 1125 0095 02        		.uleb128 0x2
+ 1126 0096 0000 0000 		.long	.LASF12
+ 1127               	
+ 1128 009a 04        		.byte	0x4
+ 1129 009b 07        		.byte	0x7
+ 1130 009c 02        		.uleb128 0x2
+ 1131 009d 0000 0000 		.long	.LASF13
+ 1132               	
+ 1133 00a1 08        		.byte	0x8
+ 1134 00a2 05        		.byte	0x5
+ 1135 00a3 02        		.uleb128 0x2
+ 1136 00a4 0000 0000 		.long	.LASF14
+ 1137               	
+ 1138 00a8 08        		.byte	0x8
+ 1139 00a9 07        		.byte	0x7
+ 1140 00aa 05        		.uleb128 0x5
+ 1141 00ab 01        		.byte	0x1
+ 1142 00ac 0000 0000 		.long	.LASF15
+ 1143               	
+ 1144 00b0 05        		.byte	0x5
+ 1145 00b1 30        		.byte	0x30
+ 1146 00b2 01        		.byte	0x1
+ 1147 00b3 0000      		.word	.LFB3
+ 1148               	
+ 1149 00b5 0000      		.word	.LFE3
+ 1150               	
+ 1151 00b7 08        		.byte	0x8
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 22
+
+
+ 1152 00b8 90        		.byte	0x90
+ 1153 00b9 20        		.uleb128 0x20
+ 1154 00ba 93        		.byte	0x93
+ 1155 00bb 01        		.uleb128 0x1
+ 1156 00bc 90        		.byte	0x90
+ 1157 00bd 21        		.uleb128 0x21
+ 1158 00be 93        		.byte	0x93
+ 1159 00bf 01        		.uleb128 0x1
+ 1160 00c0 06        		.uleb128 0x6
+ 1161 00c1 E600 0000 		.long	230
+ 1162               	
+ 1163 00c5 01        		.byte	0x1
+ 1164 00c6 0000 0000 		.long	.LASF19
+ 1165               	
+ 1166 00ca 05        		.byte	0x5
+ 1167 00cb 3A        		.byte	0x3a
+ 1168 00cc 01        		.byte	0x1
+ 1169 00cd 0000      		.word	.LFB4
+ 1170               	
+ 1171 00cf 0000      		.word	.LFE4
+ 1172               	
+ 1173 00d1 08        		.byte	0x8
+ 1174 00d2 90        		.byte	0x90
+ 1175 00d3 20        		.uleb128 0x20
+ 1176 00d4 93        		.byte	0x93
+ 1177 00d5 01        		.uleb128 0x1
+ 1178 00d6 90        		.byte	0x90
+ 1179 00d7 21        		.uleb128 0x21
+ 1180 00d8 93        		.byte	0x93
+ 1181 00d9 01        		.uleb128 0x1
+ 1182 00da 07        		.uleb128 0x7
+ 1183 00db 6300      		.string	"c"
+ 1184 00dd 05        		.byte	0x5
+ 1185 00de 3D        		.byte	0x3d
+ 1186 00df E600 0000 		.long	230
+ 1187               	
+ 1188 00e3 01        		.byte	0x1
+ 1189 00e4 69        		.byte	0x69
+ 1190 00e5 00        		.byte	0x0
+ 1191 00e6 02        		.uleb128 0x2
+ 1192 00e7 0000 0000 		.long	.LASF7
+ 1193               	
+ 1194 00eb 01        		.byte	0x1
+ 1195 00ec 08        		.byte	0x8
+ 1196 00ed 05        		.uleb128 0x5
+ 1197 00ee 01        		.byte	0x1
+ 1198 00ef 0000 0000 		.long	.LASF16
+ 1199               	
+ 1200 00f3 05        		.byte	0x5
+ 1201 00f4 46        		.byte	0x46
+ 1202 00f5 01        		.byte	0x1
+ 1203 00f6 0000      		.word	.LFB5
+ 1204               	
+ 1205 00f8 0000      		.word	.LFE5
+ 1206               	
+ 1207 00fa 08        		.byte	0x8
+ 1208 00fb 90        		.byte	0x90
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 23
+
+
+ 1209 00fc 20        		.uleb128 0x20
+ 1210 00fd 93        		.byte	0x93
+ 1211 00fe 01        		.uleb128 0x1
+ 1212 00ff 90        		.byte	0x90
+ 1213 0100 21        		.uleb128 0x21
+ 1214 0101 93        		.byte	0x93
+ 1215 0102 01        		.uleb128 0x1
+ 1216 0103 05        		.uleb128 0x5
+ 1217 0104 01        		.byte	0x1
+ 1218 0105 0000 0000 		.long	.LASF17
+ 1219               	
+ 1220 0109 05        		.byte	0x5
+ 1221 010a 55        		.byte	0x55
+ 1222 010b 01        		.byte	0x1
+ 1223 010c 0000      		.word	.LFB6
+ 1224               	
+ 1225 010e 0000      		.word	.LFE6
+ 1226               	
+ 1227 0110 08        		.byte	0x8
+ 1228 0111 90        		.byte	0x90
+ 1229 0112 20        		.uleb128 0x20
+ 1230 0113 93        		.byte	0x93
+ 1231 0114 01        		.uleb128 0x1
+ 1232 0115 90        		.byte	0x90
+ 1233 0116 21        		.uleb128 0x21
+ 1234 0117 93        		.byte	0x93
+ 1235 0118 01        		.uleb128 0x1
+ 1236 0119 08        		.uleb128 0x8
+ 1237 011a 01        		.byte	0x1
+ 1238 011b 0000 0000 		.long	.LASF18
+ 1239               	
+ 1240 011f 05        		.byte	0x5
+ 1241 0120 60        		.byte	0x60
+ 1242 0121 01        		.byte	0x1
+ 1243 0122 E600 0000 		.long	230
+ 1244               	
+ 1245 0126 0000      		.word	.LFB7
+ 1246               	
+ 1247 0128 0000      		.word	.LFE7
+ 1248               	
+ 1249 012a 08        		.byte	0x8
+ 1250 012b 90        		.byte	0x90
+ 1251 012c 20        		.uleb128 0x20
+ 1252 012d 93        		.byte	0x93
+ 1253 012e 01        		.uleb128 0x1
+ 1254 012f 90        		.byte	0x90
+ 1255 0130 21        		.uleb128 0x21
+ 1256 0131 93        		.byte	0x93
+ 1257 0132 01        		.uleb128 0x1
+ 1258 0133 09        		.uleb128 0x9
+ 1259 0134 5D01 0000 		.long	349
+ 1260               	
+ 1261 0138 01        		.byte	0x1
+ 1262 0139 0000 0000 		.long	.LASF20
+ 1263               	
+ 1264 013d 05        		.byte	0x5
+ 1265 013e 65        		.byte	0x65
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 24
+
+
+ 1266 013f 01        		.byte	0x1
+ 1267 0140 3A00 0000 		.long	58
+ 1268               	
+ 1269 0144 0000      		.word	.LFB8
+ 1270               	
+ 1271 0146 0000      		.word	.LFE8
+ 1272               	
+ 1273 0148 08        		.byte	0x8
+ 1274 0149 90        		.byte	0x90
+ 1275 014a 20        		.uleb128 0x20
+ 1276 014b 93        		.byte	0x93
+ 1277 014c 01        		.uleb128 0x1
+ 1278 014d 90        		.byte	0x90
+ 1279 014e 21        		.uleb128 0x21
+ 1280 014f 93        		.byte	0x93
+ 1281 0150 01        		.uleb128 0x1
+ 1282 0151 0A        		.uleb128 0xa
+ 1283 0152 6300      		.string	"c"
+ 1284 0154 05        		.byte	0x5
+ 1285 0155 64        		.byte	0x64
+ 1286 0156 E600 0000 		.long	230
+ 1287               	
+ 1288 015a 01        		.byte	0x1
+ 1289 015b 6C        		.byte	0x6c
+ 1290 015c 00        		.byte	0x0
+ 1291 015d 08        		.uleb128 0x8
+ 1292 015e 01        		.byte	0x1
+ 1293 015f 0000 0000 		.long	.LASF21
+ 1294               	
+ 1295 0163 05        		.byte	0x5
+ 1296 0164 73        		.byte	0x73
+ 1297 0165 01        		.byte	0x1
+ 1298 0166 E600 0000 		.long	230
+ 1299               	
+ 1300 016a 0000      		.word	.LFB9
+ 1301               	
+ 1302 016c 0000      		.word	.LFE9
+ 1303               	
+ 1304 016e 08        		.byte	0x8
+ 1305 016f 90        		.byte	0x90
+ 1306 0170 20        		.uleb128 0x20
+ 1307 0171 93        		.byte	0x93
+ 1308 0172 01        		.uleb128 0x1
+ 1309 0173 90        		.byte	0x90
+ 1310 0174 21        		.uleb128 0x21
+ 1311 0175 93        		.byte	0x93
+ 1312 0176 01        		.uleb128 0x1
+ 1313 0177 09        		.uleb128 0x9
+ 1314 0178 A101 0000 		.long	417
+ 1315               	
+ 1316 017c 01        		.byte	0x1
+ 1317 017d 0000 0000 		.long	.LASF22
+ 1318               	
+ 1319 0181 05        		.byte	0x5
+ 1320 0182 78        		.byte	0x78
+ 1321 0183 01        		.byte	0x1
+ 1322 0184 3A00 0000 		.long	58
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 25
+
+
+ 1323               	
+ 1324 0188 0000      		.word	.LFB10
+ 1325               	
+ 1326 018a 0000      		.word	.LFE10
+ 1327               	
+ 1328 018c 08        		.byte	0x8
+ 1329 018d 90        		.byte	0x90
+ 1330 018e 20        		.uleb128 0x20
+ 1331 018f 93        		.byte	0x93
+ 1332 0190 01        		.uleb128 0x1
+ 1333 0191 90        		.byte	0x90
+ 1334 0192 21        		.uleb128 0x21
+ 1335 0193 93        		.byte	0x93
+ 1336 0194 01        		.uleb128 0x1
+ 1337 0195 07        		.uleb128 0x7
+ 1338 0196 6300      		.string	"c"
+ 1339 0198 05        		.byte	0x5
+ 1340 0199 79        		.byte	0x79
+ 1341 019a 3300 0000 		.long	51
+ 1342               	
+ 1343 019e 01        		.byte	0x1
+ 1344 019f 69        		.byte	0x69
+ 1345 01a0 00        		.byte	0x0
+ 1346 01a1 05        		.uleb128 0x5
+ 1347 01a2 01        		.byte	0x1
+ 1348 01a3 0000 0000 		.long	.LASF23
+ 1349               	
+ 1350 01a7 05        		.byte	0x5
+ 1351 01a8 84        		.byte	0x84
+ 1352 01a9 01        		.byte	0x1
+ 1353 01aa 0000      		.word	.LFB11
+ 1354               	
+ 1355 01ac 0000      		.word	.LFE11
+ 1356               	
+ 1357 01ae 08        		.byte	0x8
+ 1358 01af 90        		.byte	0x90
+ 1359 01b0 20        		.uleb128 0x20
+ 1360 01b1 93        		.byte	0x93
+ 1361 01b2 01        		.uleb128 0x1
+ 1362 01b3 90        		.byte	0x90
+ 1363 01b4 21        		.uleb128 0x21
+ 1364 01b5 93        		.byte	0x93
+ 1365 01b6 01        		.uleb128 0x1
+ 1366 01b7 06        		.uleb128 0x6
+ 1367 01b8 DE01 0000 		.long	478
+ 1368               	
+ 1369 01bc 01        		.byte	0x1
+ 1370 01bd 0000 0000 		.long	.LASF24
+ 1371               	
+ 1372 01c1 05        		.byte	0x5
+ 1373 01c2 90        		.byte	0x90
+ 1374 01c3 01        		.byte	0x1
+ 1375 01c4 0000      		.word	.LFB12
+ 1376               	
+ 1377 01c6 0000      		.word	.LFE12
+ 1378               	
+ 1379 01c8 06        		.byte	0x6
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 26
+
+
+ 1380 01c9 6C        		.byte	0x6c
+ 1381 01ca 93        		.byte	0x93
+ 1382 01cb 01        		.uleb128 0x1
+ 1383 01cc 6D        		.byte	0x6d
+ 1384 01cd 93        		.byte	0x93
+ 1385 01ce 01        		.uleb128 0x1
+ 1386 01cf 0B        		.uleb128 0xb
+ 1387 01d0 0000 0000 		.long	.LASF25
+ 1388               	
+ 1389 01d4 05        		.byte	0x5
+ 1390 01d5 91        		.byte	0x91
+ 1391 01d6 DE01 0000 		.long	478
+ 1392               	
+ 1393 01da 02        		.byte	0x2
+ 1394 01db 91        		.byte	0x91
+ 1395 01dc 01        		.sleb128 1
+ 1396 01dd 00        		.byte	0x0
+ 1397 01de 0C        		.uleb128 0xc
+ 1398 01df EE01 0000 		.long	494
+ 1399               	
+ 1400 01e3 3300 0000 		.long	51
+ 1401               	
+ 1402 01e7 0D        		.uleb128 0xd
+ 1403 01e8 EE01 0000 		.long	494
+ 1404               	
+ 1405 01ec 13        		.byte	0x13
+ 1406 01ed 00        		.byte	0x0
+ 1407 01ee 02        		.uleb128 0x2
+ 1408 01ef 0000 0000 		.long	.LASF2
+ 1409               	
+ 1410 01f3 02        		.byte	0x2
+ 1411 01f4 07        		.byte	0x7
+ 1412 01f5 09        		.uleb128 0x9
+ 1413 01f6 1E02 0000 		.long	542
+ 1414               	
+ 1415 01fa 01        		.byte	0x1
+ 1416 01fb 0000 0000 		.long	.LASF26
+ 1417               	
+ 1418 01ff 05        		.byte	0x5
+ 1419 0200 9B        		.byte	0x9b
+ 1420 0201 01        		.byte	0x1
+ 1421 0202 3A00 0000 		.long	58
+ 1422               	
+ 1423 0206 0000      		.word	.LFB13
+ 1424               	
+ 1425 0208 0000      		.word	.LFE13
+ 1426               	
+ 1427 020a 06        		.byte	0x6
+ 1428 020b 6C        		.byte	0x6c
+ 1429 020c 93        		.byte	0x93
+ 1430 020d 01        		.uleb128 0x1
+ 1431 020e 6D        		.byte	0x6d
+ 1432 020f 93        		.byte	0x93
+ 1433 0210 01        		.uleb128 0x1
+ 1434 0211 07        		.uleb128 0x7
+ 1435 0212 7300      		.string	"s"
+ 1436 0214 05        		.byte	0x5
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 27
+
+
+ 1437 0215 AB        		.byte	0xab
+ 1438 0216 DE01 0000 		.long	478
+ 1439               	
+ 1440 021a 02        		.byte	0x2
+ 1441 021b 91        		.byte	0x91
+ 1442 021c 01        		.sleb128 1
+ 1443 021d 00        		.byte	0x0
+ 1444 021e 0C        		.uleb128 0xc
+ 1445 021f 2E02 0000 		.long	558
+ 1446               	
+ 1447 0223 2E02 0000 		.long	558
+ 1448               	
+ 1449 0227 0D        		.uleb128 0xd
+ 1450 0228 EE01 0000 		.long	494
+ 1451               	
+ 1452 022c 1F        		.byte	0x1f
+ 1453 022d 00        		.byte	0x0
+ 1454 022e 0E        		.uleb128 0xe
+ 1455 022f 3300 0000 		.long	51
+ 1456               	
+ 1457 0233 0F        		.uleb128 0xf
+ 1458 0234 0000 0000 		.long	.LASF27
+ 1459               	
+ 1460 0238 05        		.byte	0x5
+ 1461 0239 21        		.byte	0x21
+ 1462 023a 4302 0000 		.long	579
+ 1463               	
+ 1464 023e 01        		.byte	0x1
+ 1465 023f 03        		.byte	0x3
+ 1466 0240 03        		.byte	0x3
+ 1467 0241 0000      		.word	tbuf
+ 1468               	
+ 1469 0243 0E        		.uleb128 0xe
+ 1470 0244 1E02 0000 		.long	542
+ 1471               	
+ 1472 0248 0F        		.uleb128 0xf
+ 1473 0249 0000 0000 		.long	.LASF28
+ 1474               	
+ 1475 024d 05        		.byte	0x5
+ 1476 024e 22        		.byte	0x22
+ 1477 024f 5802 0000 		.long	600
+ 1478               	
+ 1479 0253 01        		.byte	0x1
+ 1480 0254 03        		.byte	0x3
+ 1481 0255 03        		.byte	0x3
+ 1482 0256 0000      		.word	rbuf
+ 1483               	
+ 1484 0258 0E        		.uleb128 0xe
+ 1485 0259 1E02 0000 		.long	542
+ 1486               	
+ 1487 025d 0F        		.uleb128 0xf
+ 1488 025e 0000 0000 		.long	.LASF29
+ 1489               	
+ 1490 0262 05        		.byte	0x5
+ 1491 0263 24        		.byte	0x24
+ 1492 0264 2E02 0000 		.long	558
+ 1493               	
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 28
+
+
+ 1494 0268 01        		.byte	0x1
+ 1495 0269 03        		.byte	0x3
+ 1496 026a 03        		.byte	0x3
+ 1497 026b 0000      		.word	t_in
+ 1498               	
+ 1499 026d 0F        		.uleb128 0xf
+ 1500 026e 0000 0000 		.long	.LASF30
+ 1501               	
+ 1502 0272 05        		.byte	0x5
+ 1503 0273 25        		.byte	0x25
+ 1504 0274 2E02 0000 		.long	558
+ 1505               	
+ 1506 0278 01        		.byte	0x1
+ 1507 0279 03        		.byte	0x3
+ 1508 027a 03        		.byte	0x3
+ 1509 027b 0000      		.word	t_out
+ 1510               	
+ 1511 027d 0F        		.uleb128 0xf
+ 1512 027e 0000 0000 		.long	.LASF31
+ 1513               	
+ 1514 0282 05        		.byte	0x5
+ 1515 0283 27        		.byte	0x27
+ 1516 0284 2E02 0000 		.long	558
+ 1517               	
+ 1518 0288 01        		.byte	0x1
+ 1519 0289 03        		.byte	0x3
+ 1520 028a 03        		.byte	0x3
+ 1521 028b 0000      		.word	r_in
+ 1522               	
+ 1523 028d 0F        		.uleb128 0xf
+ 1524 028e 0000 0000 		.long	.LASF32
+ 1525               	
+ 1526 0292 05        		.byte	0x5
+ 1527 0293 28        		.byte	0x28
+ 1528 0294 2E02 0000 		.long	558
+ 1529               	
+ 1530 0298 01        		.byte	0x1
+ 1531 0299 03        		.byte	0x3
+ 1532 029a 03        		.byte	0x3
+ 1533 029b 0000      		.word	r_out
+ 1534               	
+ 1535 029d 07        		.uleb128 0x7
+ 1536 029e 6900      		.string	"i"
+ 1537 02a0 05        		.byte	0x5
+ 1538 02a1 29        		.byte	0x29
+ 1539 02a2 2800 0000 		.long	40
+ 1540               	
+ 1541 02a6 03        		.byte	0x3
+ 1542 02a7 03        		.byte	0x3
+ 1543 02a8 0000      		.word	i
+ 1544               	
+ 1545 02aa 00        		.byte	0x0
+ 1546               		.section	.debug_abbrev
+ 1547 0000 01        		.uleb128 0x1
+ 1548 0001 11        		.uleb128 0x11
+ 1549 0002 01        		.byte	0x1
+ 1550 0003 10        		.uleb128 0x10
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 29
+
+
+ 1551 0004 06        		.uleb128 0x6
+ 1552 0005 12        		.uleb128 0x12
+ 1553 0006 01        		.uleb128 0x1
+ 1554 0007 11        		.uleb128 0x11
+ 1555 0008 01        		.uleb128 0x1
+ 1556 0009 25        		.uleb128 0x25
+ 1557 000a 0E        		.uleb128 0xe
+ 1558 000b 13        		.uleb128 0x13
+ 1559 000c 0B        		.uleb128 0xb
+ 1560 000d 03        		.uleb128 0x3
+ 1561 000e 0E        		.uleb128 0xe
+ 1562 000f 1B        		.uleb128 0x1b
+ 1563 0010 0E        		.uleb128 0xe
+ 1564 0011 00        		.byte	0x0
+ 1565 0012 00        		.byte	0x0
+ 1566 0013 02        		.uleb128 0x2
+ 1567 0014 24        		.uleb128 0x24
+ 1568 0015 00        		.byte	0x0
+ 1569 0016 03        		.uleb128 0x3
+ 1570 0017 0E        		.uleb128 0xe
+ 1571 0018 0B        		.uleb128 0xb
+ 1572 0019 0B        		.uleb128 0xb
+ 1573 001a 3E        		.uleb128 0x3e
+ 1574 001b 0B        		.uleb128 0xb
+ 1575 001c 00        		.byte	0x0
+ 1576 001d 00        		.byte	0x0
+ 1577 001e 03        		.uleb128 0x3
+ 1578 001f 16        		.uleb128 0x16
+ 1579 0020 00        		.byte	0x0
+ 1580 0021 03        		.uleb128 0x3
+ 1581 0022 0E        		.uleb128 0xe
+ 1582 0023 3A        		.uleb128 0x3a
+ 1583 0024 0B        		.uleb128 0xb
+ 1584 0025 3B        		.uleb128 0x3b
+ 1585 0026 0B        		.uleb128 0xb
+ 1586 0027 49        		.uleb128 0x49
+ 1587 0028 13        		.uleb128 0x13
+ 1588 0029 00        		.byte	0x0
+ 1589 002a 00        		.byte	0x0
+ 1590 002b 04        		.uleb128 0x4
+ 1591 002c 24        		.uleb128 0x24
+ 1592 002d 00        		.byte	0x0
+ 1593 002e 03        		.uleb128 0x3
+ 1594 002f 08        		.uleb128 0x8
+ 1595 0030 0B        		.uleb128 0xb
+ 1596 0031 0B        		.uleb128 0xb
+ 1597 0032 3E        		.uleb128 0x3e
+ 1598 0033 0B        		.uleb128 0xb
+ 1599 0034 00        		.byte	0x0
+ 1600 0035 00        		.byte	0x0
+ 1601 0036 05        		.uleb128 0x5
+ 1602 0037 2E        		.uleb128 0x2e
+ 1603 0038 00        		.byte	0x0
+ 1604 0039 3F        		.uleb128 0x3f
+ 1605 003a 0C        		.uleb128 0xc
+ 1606 003b 03        		.uleb128 0x3
+ 1607 003c 0E        		.uleb128 0xe
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 30
+
+
+ 1608 003d 3A        		.uleb128 0x3a
+ 1609 003e 0B        		.uleb128 0xb
+ 1610 003f 3B        		.uleb128 0x3b
+ 1611 0040 0B        		.uleb128 0xb
+ 1612 0041 27        		.uleb128 0x27
+ 1613 0042 0C        		.uleb128 0xc
+ 1614 0043 11        		.uleb128 0x11
+ 1615 0044 01        		.uleb128 0x1
+ 1616 0045 12        		.uleb128 0x12
+ 1617 0046 01        		.uleb128 0x1
+ 1618 0047 40        		.uleb128 0x40
+ 1619 0048 0A        		.uleb128 0xa
+ 1620 0049 00        		.byte	0x0
+ 1621 004a 00        		.byte	0x0
+ 1622 004b 06        		.uleb128 0x6
+ 1623 004c 2E        		.uleb128 0x2e
+ 1624 004d 01        		.byte	0x1
+ 1625 004e 01        		.uleb128 0x1
+ 1626 004f 13        		.uleb128 0x13
+ 1627 0050 3F        		.uleb128 0x3f
+ 1628 0051 0C        		.uleb128 0xc
+ 1629 0052 03        		.uleb128 0x3
+ 1630 0053 0E        		.uleb128 0xe
+ 1631 0054 3A        		.uleb128 0x3a
+ 1632 0055 0B        		.uleb128 0xb
+ 1633 0056 3B        		.uleb128 0x3b
+ 1634 0057 0B        		.uleb128 0xb
+ 1635 0058 27        		.uleb128 0x27
+ 1636 0059 0C        		.uleb128 0xc
+ 1637 005a 11        		.uleb128 0x11
+ 1638 005b 01        		.uleb128 0x1
+ 1639 005c 12        		.uleb128 0x12
+ 1640 005d 01        		.uleb128 0x1
+ 1641 005e 40        		.uleb128 0x40
+ 1642 005f 0A        		.uleb128 0xa
+ 1643 0060 00        		.byte	0x0
+ 1644 0061 00        		.byte	0x0
+ 1645 0062 07        		.uleb128 0x7
+ 1646 0063 34        		.uleb128 0x34
+ 1647 0064 00        		.byte	0x0
+ 1648 0065 03        		.uleb128 0x3
+ 1649 0066 08        		.uleb128 0x8
+ 1650 0067 3A        		.uleb128 0x3a
+ 1651 0068 0B        		.uleb128 0xb
+ 1652 0069 3B        		.uleb128 0x3b
+ 1653 006a 0B        		.uleb128 0xb
+ 1654 006b 49        		.uleb128 0x49
+ 1655 006c 13        		.uleb128 0x13
+ 1656 006d 02        		.uleb128 0x2
+ 1657 006e 0A        		.uleb128 0xa
+ 1658 006f 00        		.byte	0x0
+ 1659 0070 00        		.byte	0x0
+ 1660 0071 08        		.uleb128 0x8
+ 1661 0072 2E        		.uleb128 0x2e
+ 1662 0073 00        		.byte	0x0
+ 1663 0074 3F        		.uleb128 0x3f
+ 1664 0075 0C        		.uleb128 0xc
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 31
+
+
+ 1665 0076 03        		.uleb128 0x3
+ 1666 0077 0E        		.uleb128 0xe
+ 1667 0078 3A        		.uleb128 0x3a
+ 1668 0079 0B        		.uleb128 0xb
+ 1669 007a 3B        		.uleb128 0x3b
+ 1670 007b 0B        		.uleb128 0xb
+ 1671 007c 27        		.uleb128 0x27
+ 1672 007d 0C        		.uleb128 0xc
+ 1673 007e 49        		.uleb128 0x49
+ 1674 007f 13        		.uleb128 0x13
+ 1675 0080 11        		.uleb128 0x11
+ 1676 0081 01        		.uleb128 0x1
+ 1677 0082 12        		.uleb128 0x12
+ 1678 0083 01        		.uleb128 0x1
+ 1679 0084 40        		.uleb128 0x40
+ 1680 0085 0A        		.uleb128 0xa
+ 1681 0086 00        		.byte	0x0
+ 1682 0087 00        		.byte	0x0
+ 1683 0088 09        		.uleb128 0x9
+ 1684 0089 2E        		.uleb128 0x2e
+ 1685 008a 01        		.byte	0x1
+ 1686 008b 01        		.uleb128 0x1
+ 1687 008c 13        		.uleb128 0x13
+ 1688 008d 3F        		.uleb128 0x3f
+ 1689 008e 0C        		.uleb128 0xc
+ 1690 008f 03        		.uleb128 0x3
+ 1691 0090 0E        		.uleb128 0xe
+ 1692 0091 3A        		.uleb128 0x3a
+ 1693 0092 0B        		.uleb128 0xb
+ 1694 0093 3B        		.uleb128 0x3b
+ 1695 0094 0B        		.uleb128 0xb
+ 1696 0095 27        		.uleb128 0x27
+ 1697 0096 0C        		.uleb128 0xc
+ 1698 0097 49        		.uleb128 0x49
+ 1699 0098 13        		.uleb128 0x13
+ 1700 0099 11        		.uleb128 0x11
+ 1701 009a 01        		.uleb128 0x1
+ 1702 009b 12        		.uleb128 0x12
+ 1703 009c 01        		.uleb128 0x1
+ 1704 009d 40        		.uleb128 0x40
+ 1705 009e 0A        		.uleb128 0xa
+ 1706 009f 00        		.byte	0x0
+ 1707 00a0 00        		.byte	0x0
+ 1708 00a1 0A        		.uleb128 0xa
+ 1709 00a2 05        		.uleb128 0x5
+ 1710 00a3 00        		.byte	0x0
+ 1711 00a4 03        		.uleb128 0x3
+ 1712 00a5 08        		.uleb128 0x8
+ 1713 00a6 3A        		.uleb128 0x3a
+ 1714 00a7 0B        		.uleb128 0xb
+ 1715 00a8 3B        		.uleb128 0x3b
+ 1716 00a9 0B        		.uleb128 0xb
+ 1717 00aa 49        		.uleb128 0x49
+ 1718 00ab 13        		.uleb128 0x13
+ 1719 00ac 02        		.uleb128 0x2
+ 1720 00ad 0A        		.uleb128 0xa
+ 1721 00ae 00        		.byte	0x0
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 32
+
+
+ 1722 00af 00        		.byte	0x0
+ 1723 00b0 0B        		.uleb128 0xb
+ 1724 00b1 34        		.uleb128 0x34
+ 1725 00b2 00        		.byte	0x0
+ 1726 00b3 03        		.uleb128 0x3
+ 1727 00b4 0E        		.uleb128 0xe
+ 1728 00b5 3A        		.uleb128 0x3a
+ 1729 00b6 0B        		.uleb128 0xb
+ 1730 00b7 3B        		.uleb128 0x3b
+ 1731 00b8 0B        		.uleb128 0xb
+ 1732 00b9 49        		.uleb128 0x49
+ 1733 00ba 13        		.uleb128 0x13
+ 1734 00bb 02        		.uleb128 0x2
+ 1735 00bc 0A        		.uleb128 0xa
+ 1736 00bd 00        		.byte	0x0
+ 1737 00be 00        		.byte	0x0
+ 1738 00bf 0C        		.uleb128 0xc
+ 1739 00c0 01        		.uleb128 0x1
+ 1740 00c1 01        		.byte	0x1
+ 1741 00c2 01        		.uleb128 0x1
+ 1742 00c3 13        		.uleb128 0x13
+ 1743 00c4 49        		.uleb128 0x49
+ 1744 00c5 13        		.uleb128 0x13
+ 1745 00c6 00        		.byte	0x0
+ 1746 00c7 00        		.byte	0x0
+ 1747 00c8 0D        		.uleb128 0xd
+ 1748 00c9 21        		.uleb128 0x21
+ 1749 00ca 00        		.byte	0x0
+ 1750 00cb 49        		.uleb128 0x49
+ 1751 00cc 13        		.uleb128 0x13
+ 1752 00cd 2F        		.uleb128 0x2f
+ 1753 00ce 0B        		.uleb128 0xb
+ 1754 00cf 00        		.byte	0x0
+ 1755 00d0 00        		.byte	0x0
+ 1756 00d1 0E        		.uleb128 0xe
+ 1757 00d2 35        		.uleb128 0x35
+ 1758 00d3 00        		.byte	0x0
+ 1759 00d4 49        		.uleb128 0x49
+ 1760 00d5 13        		.uleb128 0x13
+ 1761 00d6 00        		.byte	0x0
+ 1762 00d7 00        		.byte	0x0
+ 1763 00d8 0F        		.uleb128 0xf
+ 1764 00d9 34        		.uleb128 0x34
+ 1765 00da 00        		.byte	0x0
+ 1766 00db 03        		.uleb128 0x3
+ 1767 00dc 0E        		.uleb128 0xe
+ 1768 00dd 3A        		.uleb128 0x3a
+ 1769 00de 0B        		.uleb128 0xb
+ 1770 00df 3B        		.uleb128 0x3b
+ 1771 00e0 0B        		.uleb128 0xb
+ 1772 00e1 49        		.uleb128 0x49
+ 1773 00e2 13        		.uleb128 0x13
+ 1774 00e3 3F        		.uleb128 0x3f
+ 1775 00e4 0C        		.uleb128 0xc
+ 1776 00e5 02        		.uleb128 0x2
+ 1777 00e6 0A        		.uleb128 0xa
+ 1778 00e7 00        		.byte	0x0
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 33
+
+
+ 1779 00e8 00        		.byte	0x0
+ 1780 00e9 00        		.byte	0x0
+ 1781               		.section	.debug_pubnames,"",@progbits
+ 1782 0000 E800 0000 		.long	232
+ 1783               	
+ 1784 0004 0200      		.word	2
+ 1785               	
+ 1786 0006 0000 0000 		.long	.Ldebug_info0
+ 1787               	
+ 1788 000a AB02 0000 		.long	683
+ 1789               	
+ 1790 000e AA00 0000 		.long	170
+ 1791               	
+ 1792 0012 5F5F 7665 		.string	"__vector_2"
+ 1792      6374 6F72 
+ 1792      5F32 00
+ 1793 001d C000 0000 		.long	192
+ 1794               	
+ 1795 0021 5F5F 7665 		.string	"__vector_11"
+ 1795      6374 6F72 
+ 1795      5F31 3100 
+ 1796 002d ED00 0000 		.long	237
+ 1797               	
+ 1798 0031 5F5F 7665 		.string	"__vector_12"
+ 1798      6374 6F72 
+ 1798      5F31 3200 
+ 1799 003d 0301 0000 		.long	259
+ 1800               	
+ 1801 0041 5F5F 7665 		.string	"__vector_9"
+ 1801      6374 6F72 
+ 1801      5F39 00
+ 1802 004c 1901 0000 		.long	281
+ 1803               	
+ 1804 0050 7462 7566 		.string	"tbuflen"
+ 1804      6C65 6E00 
+ 1805 0058 3301 0000 		.long	307
+ 1806               	
+ 1807 005c 5541 5254 		.string	"UART_putchar"
+ 1807      5F70 7574 
+ 1807      6368 6172 
+ 1807      00
+ 1808 0069 5D01 0000 		.long	349
+ 1809               	
+ 1810 006d 7262 7566 		.string	"rbuflen"
+ 1810      6C65 6E00 
+ 1811 0075 7701 0000 		.long	375
+ 1812               	
+ 1813 0079 5541 5254 		.string	"UART_getchar"
+ 1813      5F67 6574 
+ 1813      6368 6172 
+ 1813      00
+ 1814 0086 A101 0000 		.long	417
+ 1815               	
+ 1816 008a 5541 5254 		.string	"UART_first_init"
+ 1816      5F66 6972 
+ 1816      7374 5F69 
+ 1816      6E69 7400 
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 34
+
+
+ 1817 009a B701 0000 		.long	439
+ 1818               	
+ 1819 009e 6675 6E63 		.string	"function"
+ 1819      7469 6F6E 
+ 1819      00
+ 1820 00a7 F501 0000 		.long	501
+ 1821               	
+ 1822 00ab 6D61 696E 		.string	"main"
+ 1822      00
+ 1823 00b0 3302 0000 		.long	563
+ 1824               	
+ 1825 00b4 7462 7566 		.string	"tbuf"
+ 1825      00
+ 1826 00b9 4802 0000 		.long	584
+ 1827               	
+ 1828 00bd 7262 7566 		.string	"rbuf"
+ 1828      00
+ 1829 00c2 5D02 0000 		.long	605
+ 1830               	
+ 1831 00c6 745F 696E 		.string	"t_in"
+ 1831      00
+ 1832 00cb 6D02 0000 		.long	621
+ 1833               	
+ 1834 00cf 745F 6F75 		.string	"t_out"
+ 1834      7400 
+ 1835 00d5 7D02 0000 		.long	637
+ 1836               	
+ 1837 00d9 725F 696E 		.string	"r_in"
+ 1837      00
+ 1838 00de 8D02 0000 		.long	653
+ 1839               	
+ 1840 00e2 725F 6F75 		.string	"r_out"
+ 1840      7400 
+ 1841 00e8 0000 0000 		.long	0
+ 1842               	
+ 1843               		.section	.debug_aranges,"",@progbits
+ 1844 0000 1000 0000 		.long	16
+ 1845               	
+ 1846 0004 0200      		.word	2
+ 1847               	
+ 1848 0006 0000 0000 		.long	.Ldebug_info0
+ 1849               	
+ 1850 000a 02        		.byte	0x2
+ 1851 000b 00        		.byte	0x0
+ 1852 000c 0000      		.word	.Ltext0
+ 1853               	
+ 1854 000e D002      		.word	.Letext0-.Ltext0
+ 1855               	
+ 1856 0010 0000      		.word	0
+ 1857               	
+ 1858 0012 0000      		.word	0
+ 1859               	
+ 1860               		.section	.debug_str,"MS",@progbits,1
+ 1861               	.LASF7:
+ 1862 0000 6368 6172 		.string	"char"
+ 1862      00
+ 1863               	.LASF35:
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 35
+
+
+ 1864 0005 643A 5C64 		.ascii	"d:\\datum\\e-block\\3 develop & test"
+ 1864      6174 756D 
+ 1864      5C65 2D62 
+ 1864      6C6F 636B 
+ 1864      5C33 2064 
+ 1865 0026 5C63 6F64 		.string	"\\code\\example software\\communication\\serial port\\download\\serial"
+ 1865      655C 6578 
+ 1865      616D 706C 
+ 1865      6520 736F 
+ 1865      6674 7761 
+ 1866               	.LASF31:
+ 1867 0067 725F 696E 		.string	"r_in"
+ 1867      00
+ 1868               	.LASF18:
+ 1869 006c 7462 7566 		.string	"tbuflen"
+ 1869      6C65 6E00 
+ 1870               	.LASF29:
+ 1871 0074 745F 696E 		.string	"t_in"
+ 1871      00
+ 1872               	.LASF14:
+ 1873 0079 7569 6E74 		.string	"uint64_t"
+ 1873      3634 5F74 
+ 1873      00
+ 1874               	.LASF8:
+ 1875 0082 696E 7438 		.string	"int8_t"
+ 1875      5F74 00
+ 1876               	.LASF19:
+ 1877 0089 5F5F 7665 		.string	"__vector_11"
+ 1877      6374 6F72 
+ 1877      5F31 3100 
+ 1878               	.LASF16:
+ 1879 0095 5F5F 7665 		.string	"__vector_12"
+ 1879      6374 6F72 
+ 1879      5F31 3200 
+ 1880               	.LASF20:
+ 1881 00a1 5541 5254 		.string	"UART_putchar"
+ 1881      5F70 7574 
+ 1881      6368 6172 
+ 1881      00
+ 1882               	.LASF1:
+ 1883 00ae 756E 7369 		.string	"unsigned char"
+ 1883      676E 6564 
+ 1883      2063 6861 
+ 1883      7200 
+ 1884               	.LASF11:
+ 1885 00bc 696E 7433 		.string	"int32_t"
+ 1885      325F 7400 
+ 1886               	.LASF30:
+ 1887 00c4 745F 6F75 		.string	"t_out"
+ 1887      7400 
+ 1888               	.LASF4:
+ 1889 00ca 6C6F 6E67 		.string	"long unsigned int"
+ 1889      2075 6E73 
+ 1889      6967 6E65 
+ 1889      6420 696E 
+ 1889      7400 
+ 1890               	.LASF34:
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 36
+
+
+ 1891 00dc 7365 7269 		.string	"serial.c"
+ 1891      616C 2E63 
+ 1891      00
+ 1892               	.LASF27:
+ 1893 00e5 7462 7566 		.string	"tbuf"
+ 1893      00
+ 1894               	.LASF33:
+ 1895 00ea 474E 5520 		.string	"GNU C 3.4.3"
+ 1895      4320 332E 
+ 1895      342E 3300 
+ 1896               	.LASF22:
+ 1897 00f6 5541 5254 		.string	"UART_getchar"
+ 1897      5F67 6574 
+ 1897      6368 6172 
+ 1897      00
+ 1898               	.LASF28:
+ 1899 0103 7262 7566 		.string	"rbuf"
+ 1899      00
+ 1900               	.LASF26:
+ 1901 0108 6D61 696E 		.string	"main"
+ 1901      00
+ 1902               	.LASF2:
+ 1903 010d 756E 7369 		.string	"unsigned int"
+ 1903      676E 6564 
+ 1903      2069 6E74 
+ 1903      00
+ 1904               	.LASF6:
+ 1905 011a 6C6F 6E67 		.string	"long long unsigned int"
+ 1905      206C 6F6E 
+ 1905      6720 756E 
+ 1905      7369 676E 
+ 1905      6564 2069 
+ 1906               	.LASF36:
+ 1907 0131 7569 6E74 		.string	"uint8_t"
+ 1907      385F 7400 
+ 1908               	.LASF9:
+ 1909 0139 696E 7431 		.string	"int16_t"
+ 1909      365F 7400 
+ 1910               	.LASF13:
+ 1911 0141 696E 7436 		.string	"int64_t"
+ 1911      345F 7400 
+ 1912               	.LASF5:
+ 1913 0149 6C6F 6E67 		.string	"long long int"
+ 1913      206C 6F6E 
+ 1913      6720 696E 
+ 1913      7400 
+ 1914               	.LASF25:
+ 1915 0157 6E61 6D65 		.string	"name"
+ 1915      00
+ 1916               	.LASF10:
+ 1917 015c 7569 6E74 		.string	"uint16_t"
+ 1917      3136 5F74 
+ 1917      00
+ 1918               	.LASF15:
+ 1919 0165 5F5F 7665 		.string	"__vector_2"
+ 1919      6374 6F72 
+ 1919      5F32 00
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 37
+
+
+ 1920               	.LASF23:
+ 1921 0170 5541 5254 		.string	"UART_first_init"
+ 1921      5F66 6972 
+ 1921      7374 5F69 
+ 1921      6E69 7400 
+ 1922               	.LASF32:
+ 1923 0180 725F 6F75 		.string	"r_out"
+ 1923      7400 
+ 1924               	.LASF12:
+ 1925 0186 7569 6E74 		.string	"uint32_t"
+ 1925      3332 5F74 
+ 1925      00
+ 1926               	.LASF3:
+ 1927 018f 6C6F 6E67 		.string	"long int"
+ 1927      2069 6E74 
+ 1927      00
+ 1928               	.LASF17:
+ 1929 0198 5F5F 7665 		.string	"__vector_9"
+ 1929      6374 6F72 
+ 1929      5F39 00
+ 1930               	.LASF0:
+ 1931 01a3 7369 676E 		.string	"signed char"
+ 1931      6564 2063 
+ 1931      6861 7200 
+ 1932               	.LASF21:
+ 1933 01af 7262 7566 		.string	"rbuflen"
+ 1933      6C65 6E00 
+ 1934               	.LASF24:
+ 1935 01b7 6675 6E63 		.string	"function"
+ 1935      7469 6F6E 
+ 1935      00
+ 1936               	/* File "serial.c": code  362 = 0x016a ( 224), prologues  69, epilogues  69 */
+GAS LISTING C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s 			page 38
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 serial.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+                             .bss:00000000 i
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:22     .progmem.data:00000000 __c.5
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:27     .text:00000000 __vector_2
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:90     .text:0000005a __vector_11
+                            *COM*:00000001 r_in
+                            *COM*:00000020 rbuf
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:135    .text:0000009c __vector_12
+                            *COM*:00000001 t_in
+                            *COM*:00000001 t_out
+                            *COM*:00000020 tbuf
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:190    .progmem.data:00000016 __c.4
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:195    .text:000000ee __vector_9
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:259    .text:00000152 tbuflen
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:278    .text:00000160 UART_putchar
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:322    .text:0000019a rbuflen
+                            *COM*:00000001 r_out
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:341    .text:000001a8 UART_getchar
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:375    .text:000001d0 UART_first_init
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:407    .progmem.data:00000031 __c.2
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:411    .progmem.data:00000043 __c.3
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:419    .text:000001ea function
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:494    .progmem.data:00000059 __c.0
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:498    .progmem.data:00000066 __c.1
+C:\DOCUME~1\NARONG~1\LOCALS~1\Temp/ccCUaaaa.s:503    .text:0000025c main
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
+printf_P
+fdevopen
+scanf
+__stack

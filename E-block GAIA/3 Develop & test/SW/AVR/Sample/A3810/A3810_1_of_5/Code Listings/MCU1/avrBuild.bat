@@ -1,0 +1,5 @@
+cd "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\"
+D:
+del "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.map"
+del "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.lst"
+"D:\Program Files\Atmel\AVR Tools\AvrAssembler\avrasm32.exe" -fI "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\AVCXMega8515.asm" -o "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.hex" -d "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.obj" -e "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.eep" -I "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1" -I "D:\Program Files\Atmel\AVR Tools\AvrAssembler\AppNotes" -w  -m "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.map" -l "D:\Documents and Settings\Misiek\My Documents\CircuitCellar Entry\Code\MCU1\mcu1.lst"

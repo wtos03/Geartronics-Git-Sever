@@ -1,0 +1,1004 @@
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 1
+
+
+   1               		.file	"avr_io.c"
+   2               		.arch at90s8515
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               	_PC_ = 2
+   9               		.stabs	"C:\\Projects\\avr_io/",100,0,0,.Ltext0
+  10               		.stabs	"avr_io.c",100,0,0,.Ltext0
+  11               		.text
+  12               	.Ltext0:
+  13               		.stabs	"gcc2_compiled.",60,0,0,0
+  14               		.stabs	"int:t(0,1)=r(0,1);-32768;32767;",128,0,0,0
+  15               		.stabs	"char:t(0,2)=r(0,2);0;127;",128,0,0,0
+  16               		.stabs	"long int:t(0,3)=@s32;r(0,3);0020000000000;0017777777777;",128,0,0,0
+  17               		.stabs	"unsigned int:t(0,4)=r(0,4);0000000000000;0000000177777;",128,0,0,0
+  18               		.stabs	"long unsigned int:t(0,5)=@s32;r(0,5);0000000000000;0037777777777;",128,0,0,0
+  19               		.stabs	"long long int:t(0,6)=@s64;r(0,6);01000000000000000000000;0777777777777777777777;",128,0,0,
+  20               		.stabs	"long long unsigned int:t(0,7)=@s64;r(0,7);0000000000000;01777777777777777777777;",128,0,0,
+  21               		.stabs	"short int:t(0,8)=r(0,8);-32768;32767;",128,0,0,0
+  22               		.stabs	"short unsigned int:t(0,9)=r(0,9);0000000000000;0000000177777;",128,0,0,0
+  23               		.stabs	"signed char:t(0,10)=@s8;r(0,10);-128;127;",128,0,0,0
+  24               		.stabs	"unsigned char:t(0,11)=@s8;r(0,11);0;255;",128,0,0,0
+  25               		.stabs	"float:t(0,12)=r(0,1);4;0;",128,0,0,0
+  26               		.stabs	"double:t(0,13)=r(0,1);4;0;",128,0,0,0
+  27               		.stabs	"long double:t(0,14)=r(0,1);4;0;",128,0,0,0
+  28               		.stabs	"complex int:t(0,15)=s4real:(0,1),0,16;imag:(0,1),16,16;;",128,0,0,0
+  29               		.stabs	"complex float:t(0,16)=r(0,16);8;0;",128,0,0,0
+  30               		.stabs	"complex double:t(0,17)=r(0,17);8;0;",128,0,0,0
+  31               		.stabs	"complex long double:t(0,18)=r(0,18);8;0;",128,0,0,0
+  32               		.stabs	"__builtin_va_list:t(0,19)=*(0,20)=(0,20)",128,0,0,0
+  33               		.stabs	"_Bool:t(0,21)=@s8;-16;",128,0,0,0
+  34               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/io.h",130,0,0,0
+  35               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/io-avr.h",130,0,0,0
+  36               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/io8515.h",130,0,0,0
+  37               		.stabn	162,0,0,0
+  38               		.stabn	162,0,0,0
+  39               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/iomacros.h",130,0,0,0
+  40               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/inttypes.h",130,0,0,0
+  41               		.stabs	"int8_t:t(5,1)=(0,10)",128,0,24,0
+  42               		.stabs	"uint8_t:t(5,2)=(0,11)",128,0,25,0
+  43               		.stabs	"int16_t:t(5,3)=(0,1)",128,0,27,0
+  44               		.stabs	"uint16_t:t(5,4)=(0,4)",128,0,28,0
+  45               		.stabs	"int32_t:t(5,5)=(0,3)",128,0,30,0
+  46               		.stabs	"uint32_t:t(5,6)=(0,5)",128,0,31,0
+  47               		.stabs	"int64_t:t(5,7)=(0,6)",128,0,33,0
+  48               		.stabs	"uint64_t:t(5,8)=(0,7)",128,0,34,0
+  49               		.stabs	"intptr_t:t(5,9)=(5,3)",128,0,36,0
+  50               		.stabs	"uintptr_t:t(5,10)=(5,4)",128,0,37,0
+  51               		.stabn	162,0,0,0
+  52               		.stabn	162,0,0,0
+  53               		.stabn	162,0,0,0
+  54               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/interrupt.h",130,0,0,0
+  55               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/io.h",130,0,0,0
+  56               		.stabn	162,0,0,0
+  57               		.stabn	162,0,0,0
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 2
+
+
+  58               		.stabs	"C:/DOSPROG/AVRGCC/avr/include/sig-avr.h",130,0,0,0
+  59               		.stabn	162,0,0,0
+  60               		.stabs	"misc.h",130,0,0,0
+  61               		.stabs	"BYTE:t(9,1)=(0,11)",128,0,6,0
+  62               		.stabs	"SBYTE:t(9,2)=(0,2)",128,0,7,0
+  63               		.stabs	"WORD16:t(9,3)=(0,4)",128,0,8,0
+  64               		.stabs	"SWORD16:t(9,4)=(0,1)",128,0,9,0
+  65               		.stabs	"WORD32:t(9,5)=(0,5)",128,0,10,0
+  66               		.stabs	"SWORD32:t(9,6)=(0,3)",128,0,11,0
+  67               		.stabn	162,0,0,0
+  68               		.stabs	"avr_io.h",130,0,0,0
+  69               		.stabs	" :T(10,1)=eCMD_WRITE_REG:87,CMD_READ_REG:82,CMD_GET_ERROR:69,;",128,0,0,0
+  70               		.stabs	"Commands:t(10,2)=(10,1)",128,0,23,0
+  71               		.stabs	" :T(10,3)=eERROR_NONE:0,ERROR_START_FRAME:1,ERROR_END_FRAME:2,ERROR_INVALID_CMD:3,ERROR_RX
+  72               		.stabs	"Errors:t(10,4)=(10,3)",128,0,32,0
+  73               		.stabs	" :T(10,5)=ePARSE_STATE_STX:0,PARSE_STATE_COMMAND:1,PARSE_STATE_REGISTER:2,PARSE_STATE_DATA
+  74               		.stabs	"ParseStates:t(10,6)=(10,5)",128,0,41,0
+  75               		.stabn	162,0,0,0
+  76               		.stabs	"main:F(0,1)",36,0,62,main
+  77               	.global	main
+  78               		.type	main,@function
+  79               	main:
+   1:avr_io.c      **** //AVR_IO
+   2:avr_io.c      **** //Control the AVR from a remote host.  One of its main uses is to add analog and digital I/O
+   3:avr_io.c      **** //to a host that has none (such as a PC) by reading and writing the port register.
+   4:avr_io.c      **** // Command packets are sent by the host with the following formats:
+   5:avr_io.c      **** //
+   6:avr_io.c      **** // Commands
+   7:avr_io.c      **** // 1. STX 0x57 register data  ETX         Write data to register
+   8:avr_io.c      **** // 2. STX 0x52 register x     ETX         Read byte from register, byte is returned by UART
+   9:avr_io.c      **** // 3. STX 0x45 x        x     ETX         Send the current error, byte is returned by UART
+  10:avr_io.c      **** // x = don't care, but there must be a byte in that location.
+  11:avr_io.c      **** //
+  12:avr_io.c      **** // An error number is saved when an error occurs:
+  13:avr_io.c      **** // Errors
+  14:avr_io.c      **** // 0 no error
+  15:avr_io.c      **** // 1 expected STX
+  16:avr_io.c      **** // 2 expected ETX
+  17:avr_io.c      **** // 3 invalid/unknown command
+  18:avr_io.c      **** // 4 receive timeout
+  19:avr_io.c      **** //
+  20:avr_io.c      **** // Upon receiving a byte, a 5msec timer is active.  The next byte must arrive before the timer
+  21:avr_io.c      **** // expires, else error 4 is set.  This is a recovery mechanism in case the host does not
+  22:avr_io.c      **** // finish sending the command packet.
+  23:avr_io.c      **** //
+  24:avr_io.c      **** // Upon detection of any error, the command packet is ignored and the parse engine starts
+  25:avr_io.c      **** // looking for the STX character.
+  26:avr_io.c      **** //
+  27:avr_io.c      **** // Development: Originally written for AVRGCC to run on the STK200
+  28:avr_io.c      **** // Steven R. Nickels  2002/10/04
+  29:avr_io.c      **** 
+  30:avr_io.c      **** 
+  31:avr_io.c      **** #include <io.h>
+  32:avr_io.c      **** #include <interrupt.h>
+  33:avr_io.c      **** #include <sig-avr.h>
+  34:avr_io.c      **** 
+  35:avr_io.c      **** #include "misc.h"
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 3
+
+
+  36:avr_io.c      **** #include "avr_io.h"
+  37:avr_io.c      **** 
+  38:avr_io.c      **** 
+  39:avr_io.c      **** //Globals
+  40:avr_io.c      **** BYTE rx_timeout;
+  41:avr_io.c      **** BYTE rx_buffer[16];
+  42:avr_io.c      **** BYTE rx_in;
+  43:avr_io.c      **** BYTE rx_out;
+  44:avr_io.c      **** BYTE tx_buffer[10];
+  45:avr_io.c      **** BYTE tx_numbytes;
+  46:avr_io.c      **** BYTE tx_empty;
+  47:avr_io.c      **** 
+  48:avr_io.c      **** Commands command;
+  49:avr_io.c      **** Errors error;
+  50:avr_io.c      **** BYTE reg;
+  51:avr_io.c      **** BYTE data;
+  52:avr_io.c      **** ParseStates parse_state;
+  53:avr_io.c      **** 
+  54:avr_io.c      **** 
+  55:avr_io.c      **** //Prototypes
+  56:avr_io.c      **** void DoCommand( void );
+  57:avr_io.c      **** void Error( Errors error_num );
+  58:avr_io.c      **** void UartSend( void );
+  59:avr_io.c      **** 
+  60:avr_io.c      **** 
+  61:avr_io.c      **** int main( void )
+  62:avr_io.c      **** {
+  80               		.stabn 68,0,62,.LM1-main
+  81               	.LM1:
+  82               	/* prologue: frame size=0 */
+  83 0000 C0E0      		ldi r28,lo8(__stack - 0)
+  84 0002 D0E0      		ldi r29,hi8(__stack - 0)
+  85 0004 DEBF      		out __SP_H__,r29
+  86 0006 CDBF      		out __SP_L__,r28
+  87               	/* prologue end (size=4) */
+  63:avr_io.c      ****   //Initialization - set globals
+  64:avr_io.c      **** 	rx_timeout = FALSE;
+  88               		.stabn 68,0,64,.LM2-main
+  89               	.LM2:
+  90 0008 1092 0000 		sts rx_timeout,__zero_reg__
+  65:avr_io.c      ****   rx_in = 0;
+  91               		.stabn 68,0,65,.LM3-main
+  92               	.LM3:
+  93 000c 1092 0000 		sts rx_in,__zero_reg__
+  66:avr_io.c      ****   rx_out = 0;
+  94               		.stabn 68,0,66,.LM4-main
+  95               	.LM4:
+  96 0010 1092 0000 		sts rx_out,__zero_reg__
+  67:avr_io.c      ****   tx_empty = TRUE;
+  97               		.stabn 68,0,67,.LM5-main
+  98               	.LM5:
+  99 0014 81E0      		ldi r24,lo8(1)
+ 100 0016 8093 0000 		sts tx_empty,r24
+  68:avr_io.c      **** 	tx_numbytes = 1;
+ 101               		.stabn 68,0,68,.LM6-main
+ 102               	.LM6:
+ 103 001a 8093 0000 		sts tx_numbytes,r24
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 4
+
+
+  69:avr_io.c      **** 	parse_state = PARSE_STATE_STX;
+ 104               		.stabn 68,0,69,.LM7-main
+ 105               	.LM7:
+ 106 001e 1092 0000 		sts (parse_state)+1,__zero_reg__
+ 107 0022 1092 0000 		sts parse_state,__zero_reg__
+  70:avr_io.c      **** 	error = ERROR_NONE;
+ 108               		.stabn 68,0,70,.LM8-main
+ 109               	.LM8:
+ 110 0026 1092 0000 		sts (error)+1,__zero_reg__
+ 111 002a 1092 0000 		sts error,__zero_reg__
+  71:avr_io.c      **** 
+  72:avr_io.c      ****   //Init the uart
+  73:avr_io.c      ****   outp((1<<RXCIE)|(1<<TXCIE)|(1<<RXEN)|(1<<TXEN),UCR);        																		//Enable RxD/TxD an
+ 112               		.stabn 68,0,73,.LM9-main
+ 113               	.LM9:
+ 114 002e 88ED      		ldi r24,lo8(-40)
+ 115               	/* #APP */
+ 116 0030 8AB9      		out 10,r24
+  74:avr_io.c      ****   outp((BYTE)UART_BAUD_SELECT, UBRR);                          																		//Set baud
+ 117               		.stabn 68,0,74,.LM10-main
+ 118               	.LM10:
+ 119               	/* #NOAPP */
+ 120 0032 8CE0      		ldi r24,lo8(12)
+ 121               	/* #APP */
+ 122 0034 89B9      		out 9,r24
+  75:avr_io.c      **** 
+  76:avr_io.c      **** 	//Init timer 5msec (used for byte receive timeout)
+  77:avr_io.c      ****   outp( (1<<TOIE0), TIMSK );
+ 123               		.stabn 68,0,77,.LM11-main
+ 124               	.LM11:
+ 125               	/* #NOAPP */
+ 126 0036 82E0      		ldi r24,lo8(2)
+ 127               	/* #APP */
+ 128 0038 89BF      		out 57,r24
+  78:avr_io.c      ****   outp( 4, TCCR0 );																																								//4MHz/256 = 64us, 64us * x = 5ms, x = 7
+ 129               		.stabn 68,0,78,.LM12-main
+ 130               	.LM12:
+ 131               	/* #NOAPP */
+ 132 003a 84E0      		ldi r24,lo8(4)
+ 133               	/* #APP */
+ 134 003c 83BF      		out 51,r24
+  79:avr_io.c      **** 
+  80:avr_io.c      ****   //Enable Interrupts
+  81:avr_io.c      ****   sei();                                    																											//Enable interrupts
+ 135               		.stabn 68,0,81,.LM13-main
+ 136               	.LM13:
+ 137 003e 7894      		sei
+  82:avr_io.c      **** 
+  83:avr_io.c      **** 	//Send ':' - this informs the host that we're up and run'n
+  84:avr_io.c      ****   outp( 0x3A, UDR );																																							//Let the host know we're up and running
+ 138               		.stabn 68,0,84,.LM14-main
+ 139               	.LM14:
+ 140               	/* #NOAPP */
+ 141 0040 8AE3      		ldi r24,lo8(58)
+ 142               	/* #APP */
+ 143 0042 8CB9      		out 12,r24
+ 144               	/* #NOAPP */
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 5
+
+
+ 145               	.L39:
+  85:avr_io.c      **** 
+  86:avr_io.c      **** 	//while forever
+  87:avr_io.c      ****   for( ;; )
+  88:avr_io.c      ****   {
+  89:avr_io.c      **** 		//Check receive timeout
+  90:avr_io.c      **** 		if( rx_timeout == TRUE )
+ 146               		.stabn 68,0,90,.LM15-main
+ 147               	.LM15:
+ 148 0044 8091 0000 		lds r24,rx_timeout
+ 149 0048 8130      		cpi r24,lo8(1)
+ 150 004a 79F4      		brne .L42
+  91:avr_io.c      **** 		{
+  92:avr_io.c      **** 			if( parse_state != PARSE_STATE_STX )									//We timeout after ETX, but we should not generate 
+ 151               		.stabn 68,0,92,.LM16-main
+ 152               	.LM16:
+ 153 004c 8091 0000 		lds r24,parse_state
+ 154 0050 9091 0000 		lds r25,(parse_state)+1
+ 155 0054 892B      		or r24,r25
+ 156 0056 39F0      		breq .L43
+  93:avr_io.c      **** 			{
+  94:avr_io.c      **** 				Error( ERROR_RX_TIMEOUT );		
+ 157               		.stabn 68,0,94,.LM17-main
+ 158               	.LM17:
+ 159 0058 84E0      		ldi r24,lo8(4)
+ 160 005a 90E0      		ldi r25,hi8(4)
+ 161 005c AAD0      		rcall Error
+  95:avr_io.c      **** 				parse_state = PARSE_STATE_STX;
+ 162               		.stabn 68,0,95,.LM18-main
+ 163               	.LM18:
+ 164 005e 1092 0000 		sts (parse_state)+1,__zero_reg__
+ 165 0062 1092 0000 		sts parse_state,__zero_reg__
+ 166               	.L43:
+  96:avr_io.c      **** 			}
+  97:avr_io.c      **** 			rx_timeout = FALSE;
+ 167               		.stabn 68,0,97,.LM19-main
+ 168               	.LM19:
+ 169 0066 1092 0000 		sts rx_timeout,__zero_reg__
+ 170               	.L42:
+  98:avr_io.c      **** 		}
+  99:avr_io.c      **** 
+ 100:avr_io.c      **** 		//If data is in the receive buffer
+ 101:avr_io.c      ****     if( rx_in != rx_out )
+ 171               		.stabn 68,0,101,.LM20-main
+ 172               	.LM20:
+ 173 006a 9091 0000 		lds r25,rx_in
+ 174 006e 8091 0000 		lds r24,rx_out
+ 175 0072 9817      		cp r25,r24
+ 176 0074 39F3      		breq .L39
+ 102:avr_io.c      ****     {
+ 103:avr_io.c      ****       switch( parse_state )
+ 177               		.stabn 68,0,103,.LM21-main
+ 178               	.LM21:
+ 179 0076 8091 0000 		lds r24,parse_state
+ 180 007a 9091 0000 		lds r25,(parse_state)+1
+ 181 007e 8230      		cpi r24,2
+ 182 0080 9105      		cpc r25,__zero_reg__
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 6
+
+
+ 183 0082 51F1      		breq .L50
+ 184 0084 8330      		cpi r24,3
+ 185 0086 9105      		cpc r25,__zero_reg__
+ 186 0088 28F4      		brsh .L57
+ 187 008a 0097      		sbiw r24,0
+ 188 008c 49F0      		breq .L46
+ 189 008e 0197      		sbiw r24,1
+ 190 0090 A9F0      		breq .L49
+ 191 0092 50C0      		rjmp .L55
+ 192               	.L57:
+ 193 0094 8330      		cpi r24,3
+ 194 0096 9105      		cpc r25,__zero_reg__
+ 195 0098 51F1      		breq .L51
+ 196 009a 0497      		sbiw r24,4
+ 197 009c E1F1      		breq .L52
+ 198 009e 4AC0      		rjmp .L55
+ 199               	.L46:
+ 104:avr_io.c      ****       {
+ 105:avr_io.c      ****         case PARSE_STATE_STX:
+ 106:avr_io.c      ****           if( rx_buffer[rx_out] == STX )
+ 200               		.stabn 68,0,106,.LM22-main
+ 201               	.LM22:
+ 202 00a0 8091 0000 		lds r24,rx_out
+ 203 00a4 9927      		clr r25
+ 204 00a6 F92F      		mov r31,r25
+ 205 00a8 E82F      		mov r30,r24
+ 206 00aa E050      		subi r30,lo8(-(rx_buffer))
+ 207 00ac F040      		sbci r31,hi8(-(rx_buffer))
+ 208 00ae 8081      		ld r24,Z
+ 209 00b0 8230      		cpi r24,lo8(2)
+ 210 00b2 39F1      		breq .L58
+ 107:avr_io.c      ****           {
+ 108:avr_io.c      ****             ++parse_state;
+ 109:avr_io.c      ****           }
+ 110:avr_io.c      ****           else
+ 111:avr_io.c      ****           {
+ 112:avr_io.c      ****           	Error( ERROR_START_FRAME );											//Stay in the PARSE_STATE_STX state
+ 211               		.stabn 68,0,112,.LM23-main
+ 212               	.LM23:
+ 213 00b4 81E0      		ldi r24,lo8(1)
+ 214 00b6 90E0      		ldi r25,hi8(1)
+ 215 00b8 7CD0      		rcall Error
+ 113:avr_io.c      ****           }
+ 114:avr_io.c      ****           break;
+ 216               		.stabn 68,0,114,.LM24-main
+ 217               	.LM24:
+ 218 00ba 40C0      		rjmp .L45
+ 219               	.L49:
+ 115:avr_io.c      **** 
+ 116:avr_io.c      ****         case PARSE_STATE_COMMAND:
+ 117:avr_io.c      ****           command = rx_buffer[rx_out];
+ 220               		.stabn 68,0,117,.LM25-main
+ 221               	.LM25:
+ 222 00bc 8091 0000 		lds r24,rx_out
+ 223 00c0 9927      		clr r25
+ 224 00c2 F92F      		mov r31,r25
+ 225 00c4 E82F      		mov r30,r24
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 7
+
+
+ 226 00c6 E050      		subi r30,lo8(-(rx_buffer))
+ 227 00c8 F040      		sbci r31,hi8(-(rx_buffer))
+ 228 00ca 8081      		ld r24,Z
+ 229 00cc 9927      		clr r25
+ 230 00ce 9093 0000 		sts (command)+1,r25
+ 231 00d2 8093 0000 		sts command,r24
+ 118:avr_io.c      ****           ++parse_state;
+ 119:avr_io.c      ****           break;
+ 232               		.stabn 68,0,119,.LM26-main
+ 233               	.LM26:
+ 234 00d6 15C0      		rjmp .L58
+ 235               	.L50:
+ 120:avr_io.c      ****           
+ 121:avr_io.c      ****         case PARSE_STATE_REGISTER:
+ 122:avr_io.c      ****         	reg = rx_buffer[rx_out];
+ 236               		.stabn 68,0,122,.LM27-main
+ 237               	.LM27:
+ 238 00d8 8091 0000 		lds r24,rx_out
+ 239 00dc 9927      		clr r25
+ 240 00de F92F      		mov r31,r25
+ 241 00e0 E82F      		mov r30,r24
+ 242 00e2 E050      		subi r30,lo8(-(rx_buffer))
+ 243 00e4 F040      		sbci r31,hi8(-(rx_buffer))
+ 244 00e6 8081      		ld r24,Z
+ 245 00e8 8093 0000 		sts reg,r24
+ 123:avr_io.c      ****           ++parse_state;
+ 124:avr_io.c      ****           break;
+ 246               		.stabn 68,0,124,.LM28-main
+ 247               	.LM28:
+ 248 00ec 0AC0      		rjmp .L58
+ 249               	.L51:
+ 125:avr_io.c      ****           
+ 126:avr_io.c      ****         case PARSE_STATE_DATA:
+ 127:avr_io.c      ****           data = rx_buffer[rx_out];
+ 250               		.stabn 68,0,127,.LM29-main
+ 251               	.LM29:
+ 252 00ee 8091 0000 		lds r24,rx_out
+ 253 00f2 9927      		clr r25
+ 254 00f4 F92F      		mov r31,r25
+ 255 00f6 E82F      		mov r30,r24
+ 256 00f8 E050      		subi r30,lo8(-(rx_buffer))
+ 257 00fa F040      		sbci r31,hi8(-(rx_buffer))
+ 258 00fc 8081      		ld r24,Z
+ 259 00fe 8093 0000 		sts data,r24
+ 128:avr_io.c      ****           ++parse_state;
+ 260               		.stabn 68,0,128,.LM30-main
+ 261               	.LM30:
+ 262               	.L58:
+ 263 0102 8091 0000 		lds r24,parse_state
+ 264 0106 9091 0000 		lds r25,(parse_state)+1
+ 265 010a 0196      		adiw r24,1
+ 266 010c 9093 0000 		sts (parse_state)+1,r25
+ 267 0110 8093 0000 		sts parse_state,r24
+ 129:avr_io.c      ****           break;
+ 268               		.stabn 68,0,129,.LM31-main
+ 269               	.LM31:
+ 270 0114 13C0      		rjmp .L45
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 8
+
+
+ 271               	.L52:
+ 130:avr_io.c      ****           
+ 131:avr_io.c      ****         case PARSE_STATE_ETX:
+ 132:avr_io.c      ****           if( rx_buffer[rx_out] == ETX )
+ 272               		.stabn 68,0,132,.LM32-main
+ 273               	.LM32:
+ 274 0116 8091 0000 		lds r24,rx_out
+ 275 011a 9927      		clr r25
+ 276 011c F92F      		mov r31,r25
+ 277 011e E82F      		mov r30,r24
+ 278 0120 E050      		subi r30,lo8(-(rx_buffer))
+ 279 0122 F040      		sbci r31,hi8(-(rx_buffer))
+ 280 0124 8081      		ld r24,Z
+ 281 0126 8330      		cpi r24,lo8(3)
+ 282 0128 11F4      		brne .L53
+ 133:avr_io.c      ****           {
+ 134:avr_io.c      ****           	DoCommand();
+ 283               		.stabn 68,0,134,.LM33-main
+ 284               	.LM33:
+ 285 012a 10D0      		rcall DoCommand
+ 286 012c 03C0      		rjmp .L55
+ 287               	.L53:
+ 135:avr_io.c      ****           }
+ 136:avr_io.c      ****           else
+ 137:avr_io.c      ****           {
+ 138:avr_io.c      ****           	Error( ERROR_END_FRAME );
+ 288               		.stabn 68,0,138,.LM34-main
+ 289               	.LM34:
+ 290 012e 82E0      		ldi r24,lo8(2)
+ 291 0130 90E0      		ldi r25,hi8(2)
+ 292 0132 3FD0      		rcall Error
+ 293               	.L55:
+ 139:avr_io.c      ****           }
+ 140:avr_io.c      **** 					//fall into default
+ 141:avr_io.c      **** 
+ 142:avr_io.c      ****         default:
+ 143:avr_io.c      ****           parse_state = PARSE_STATE_STX;
+ 294               		.stabn 68,0,143,.LM35-main
+ 295               	.LM35:
+ 296 0134 1092 0000 		sts (parse_state)+1,__zero_reg__
+ 297 0138 1092 0000 		sts parse_state,__zero_reg__
+ 298               	.L45:
+ 144:avr_io.c      ****           break;
+ 145:avr_io.c      ****       }
+ 146:avr_io.c      ****       ++rx_out;
+ 299               		.stabn 68,0,146,.LM36-main
+ 300               	.LM36:
+ 301 013c 8091 0000 		lds r24,rx_out
+ 302 0140 8F5F      		subi r24,lo8(-(1))
+ 147:avr_io.c      ****       rx_out &= 0x0F;																				//WARNINIG, this only works if the size of rx_out is a fac
+ 303               		.stabn 68,0,147,.LM37-main
+ 304               	.LM37:
+ 305 0142 8F70      		andi r24,lo8(15)
+ 306 0144 8093 0000 		sts rx_out,r24
+ 307               		.stabn 68,0,87,.LM38-main
+ 308               	.LM38:
+ 309 0148 7DCF      		rjmp .L39
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 9
+
+
+ 148:avr_io.c      ****     }
+ 149:avr_io.c      ****   }            
+ 150:avr_io.c      **** }
+ 310               		.stabn 68,0,150,.LM39-main
+ 311               	.LM39:
+ 312               	/* epilogue: frame size=0 */
+ 313               	__stop_progIi__:
+ 314 014a FFCF      		rjmp __stop_progIi__
+ 315               	/* epilogue end (size=1) */
+ 316               	/* function main size 174 (169) */
+ 317               	.Lfe1:
+ 318               		.size	main,.Lfe1-main
+ 319               	.Lscope0:
+ 320               		.stabs	"",36,0,0,.Lscope0-main
+ 321               		.stabs	"DoCommand:F(0,20)",36,0,157,DoCommand
+ 322               	.global	DoCommand
+ 323               		.type	DoCommand,@function
+ 324               	DoCommand:
+ 151:avr_io.c      **** 
+ 152:avr_io.c      **** 
+ 153:avr_io.c      **** /*******************************************************
+ 154:avr_io.c      ****  DoCommand
+ 155:avr_io.c      **** *******************************************************/
+ 156:avr_io.c      **** void DoCommand( void )
+ 157:avr_io.c      **** {
+ 325               		.stabn 68,0,157,.LM40-DoCommand
+ 326               	.LM40:
+ 327               	/* prologue: frame size=0 */
+ 328               	/* prologue end (size=0) */
+ 158:avr_io.c      **** 	//Write register
+ 159:avr_io.c      **** 	if( command == CMD_WRITE_REG )
+ 329               		.stabn 68,0,159,.LM41-DoCommand
+ 330               	.LM41:
+ 331 014c 8091 0000 		lds r24,command
+ 332 0150 9091 0000 		lds r25,(command)+1
+ 333 0154 8735      		cpi r24,87
+ 334 0156 9105      		cpc r25,__zero_reg__
+ 335 0158 41F4      		brne .L60
+ 160:avr_io.c      ****   {
+ 161:avr_io.c      ****  		outp( data, reg );
+ 336               		.stabn 68,0,161,.LM42-DoCommand
+ 337               	.LM42:
+ 338 015a 8091 0000 		lds r24,reg
+ 339 015e E82F      		mov r30,r24
+ 340 0160 FF27      		clr r31
+ 341 0162 8091 0000 		lds r24,data
+ 342 0166 80A3      		std Z+32,r24
+ 162:avr_io.c      ****  		
+ 163:avr_io.c      ****  		Error( ERROR_NONE );
+ 164:avr_io.c      ****     return;
+ 343               		.stabn 68,0,164,.LM43-DoCommand
+ 344               	.LM43:
+ 345 0168 0FC0      		rjmp .L70
+ 346               	.L60:
+ 165:avr_io.c      ****   }
+ 166:avr_io.c      **** 	  
+ 167:avr_io.c      **** 	//Read register
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 10
+
+
+ 168:avr_io.c      **** 	if( command == CMD_READ_REG )
+ 347               		.stabn 68,0,168,.LM44-DoCommand
+ 348               	.LM44:
+ 349 016a 8091 0000 		lds r24,command
+ 350 016e 9091 0000 		lds r25,(command)+1
+ 351 0172 8235      		cpi r24,82
+ 352 0174 9105      		cpc r25,__zero_reg__
+ 353 0176 61F4      		brne .L66
+ 169:avr_io.c      ****   {
+ 170:avr_io.c      ****   	tx_buffer[0] = inp( reg );
+ 354               		.stabn 68,0,170,.LM45-DoCommand
+ 355               	.LM45:
+ 356               	.LBB2:
+ 357               	.LBE2:
+ 358 0178 8091 0000 		lds r24,reg
+ 359 017c E82F      		mov r30,r24
+ 360 017e FF27      		clr r31
+ 361 0180 80A1      		ldd r24,Z+32
+ 362 0182 8093 0000 		sts tx_buffer,r24
+ 171:avr_io.c      ****     UartSend();
+ 363               		.stabn 68,0,171,.LM46-DoCommand
+ 364               	.LM46:
+ 365 0186 1ED0      		rcall UartSend
+ 172:avr_io.c      ****     
+ 173:avr_io.c      ****     Error( ERROR_NONE );
+ 366               		.stabn 68,0,173,.LM47-DoCommand
+ 367               	.LM47:
+ 368               	.L70:
+ 369 0188 80E0      		ldi r24,lo8(0)
+ 370 018a 90E0      		ldi r25,hi8(0)
+ 371 018c 12D0      		rcall Error
+ 174:avr_io.c      ****     return;
+ 372               		.stabn 68,0,174,.LM48-DoCommand
+ 373               	.LM48:
+ 374 018e 10C0      		rjmp .L59
+ 375               	.L66:
+ 175:avr_io.c      ****   }
+ 176:avr_io.c      ****   
+ 177:avr_io.c      **** 	//Return the error
+ 178:avr_io.c      ****   if( command == CMD_GET_ERROR )
+ 376               		.stabn 68,0,178,.LM49-DoCommand
+ 377               	.LM49:
+ 378 0190 8091 0000 		lds r24,command
+ 379 0194 9091 0000 		lds r25,(command)+1
+ 380 0198 8534      		cpi r24,69
+ 381 019a 9105      		cpc r25,__zero_reg__
+ 382 019c 31F4      		brne .L69
+ 179:avr_io.c      ****   {
+ 180:avr_io.c      **** 		tx_buffer[0] = error;
+ 383               		.stabn 68,0,180,.LM50-DoCommand
+ 384               	.LM50:
+ 385 019e 8091 0000 		lds r24,error
+ 386 01a2 8093 0000 		sts tx_buffer,r24
+ 181:avr_io.c      **** 		UartSend();
+ 387               		.stabn 68,0,181,.LM51-DoCommand
+ 388               	.LM51:
+ 389 01a6 0ED0      		rcall UartSend
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 11
+
+
+ 182:avr_io.c      ****     return;
+ 390               		.stabn 68,0,182,.LM52-DoCommand
+ 391               	.LM52:
+ 392 01a8 03C0      		rjmp .L59
+ 393               	.L69:
+ 183:avr_io.c      **** 	}
+ 184:avr_io.c      **** 
+ 185:avr_io.c      **** 	//If we got here, then the command is not valid
+ 186:avr_io.c      **** 	Error( ERROR_INVALID_CMD );
+ 394               		.stabn 68,0,186,.LM53-DoCommand
+ 395               	.LM53:
+ 396 01aa 83E0      		ldi r24,lo8(3)
+ 397 01ac 90E0      		ldi r25,hi8(3)
+ 398 01ae 01D0      		rcall Error
+ 187:avr_io.c      **** }
+ 399               		.stabn 68,0,187,.LM54-DoCommand
+ 400               	.LM54:
+ 401               	.L59:
+ 402               	/* epilogue: frame size=0 */
+ 403 01b0 0895      		ret
+ 404               	/* epilogue end (size=1) */
+ 405               	/* function DoCommand size 51 (50) */
+ 406               	.Lfe2:
+ 407               		.size	DoCommand,.Lfe2-DoCommand
+ 408               	.Lscope1:
+ 409               		.stabs	"",36,0,0,.Lscope1-DoCommand
+ 410               		.stabs	"Error:F(0,20)",36,0,195,Error
+ 411               		.stabs	"error_num:P(10,4)",64,0,194,24
+ 412               	.global	Error
+ 413               		.type	Error,@function
+ 414               	Error:
+ 188:avr_io.c      **** 
+ 189:avr_io.c      **** 
+ 190:avr_io.c      **** /*******************************************************
+ 191:avr_io.c      ****  Error
+ 192:avr_io.c      ****  Records the current error, resets the parse state.
+ 193:avr_io.c      **** *******************************************************/
+ 194:avr_io.c      **** void Error( Errors error_num )
+ 195:avr_io.c      **** {
+ 415               		.stabn 68,0,195,.LM55-Error
+ 416               	.LM55:
+ 417               	/* prologue: frame size=0 */
+ 418               	/* prologue end (size=0) */
+ 196:avr_io.c      **** 	error = error_num;
+ 419               		.stabn 68,0,196,.LM56-Error
+ 420               	.LM56:
+ 421 01b2 9093 0000 		sts (error)+1,r25
+ 422 01b6 8093 0000 		sts error,r24
+ 197:avr_io.c      **** 	
+ 198:avr_io.c      **** 	parse_state = PARSE_STATE_STX;
+ 423               		.stabn 68,0,198,.LM57-Error
+ 424               	.LM57:
+ 425 01ba 1092 0000 		sts (parse_state)+1,__zero_reg__
+ 426 01be 1092 0000 		sts parse_state,__zero_reg__
+ 199:avr_io.c      **** }
+ 427               		.stabn 68,0,199,.LM58-Error
+ 428               	.LM58:
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 12
+
+
+ 429               	/* epilogue: frame size=0 */
+ 430 01c2 0895      		ret
+ 431               	/* epilogue end (size=1) */
+ 432               	/* function Error size 9 (8) */
+ 433               	.Lfe3:
+ 434               		.size	Error,.Lfe3-Error
+ 435               	.Lscope2:
+ 436               		.stabs	"",36,0,0,.Lscope2-Error
+ 437               		.stabs	"UartSend:F(0,20)",36,0,211,UartSend
+ 438               	.global	UartSend
+ 439               		.type	UartSend,@function
+ 440               	UartSend:
+ 200:avr_io.c      **** 
+ 201:avr_io.c      **** 
+ 202:avr_io.c      **** /*******************************************************
+ 203:avr_io.c      ****  UartSend
+ 204:avr_io.c      ****  Sends a stream of bytes out the serial port
+ 205:avr_io.c      ****  The bytes must be in the tx_buffer array and the
+ 206:avr_io.c      ****  number of bytes must be set in tx_numbytes.
+ 207:avr_io.c      ****  The variable tx_empty must be initialized to 1 at
+ 208:avr_io.c      ****  startup.
+ 209:avr_io.c      **** *******************************************************/
+ 210:avr_io.c      **** void UartSend( void )
+ 211:avr_io.c      **** {
+ 441               		.stabn 68,0,211,.LM59-UartSend
+ 442               	.LM59:
+ 443               	/* prologue: frame size=0 */
+ 444               	/* prologue end (size=0) */
+ 445               	.LBB3:
+ 212:avr_io.c      ****   BYTE i;
+ 213:avr_io.c      **** 
+ 214:avr_io.c      ****   for( i = 0; i < tx_numbytes; i++ )
+ 446               		.stabn 68,0,214,.LM60-UartSend
+ 447               	.LM60:
+ 448 01c4 20E0      		ldi r18,lo8(0)
+ 449 01c6 8091 0000 		lds r24,tx_numbytes
+ 450 01ca 2817      		cp r18,r24
+ 451 01cc B0F4      		brsh .L74
+ 452 01ce 40E0      		ldi r20,lo8(tx_buffer)
+ 453 01d0 50E0      		ldi r21,hi8(tx_buffer)
+ 454 01d2 382F      		mov r19,r24
+ 455 01d4 9091 0000 		lds r25,tx_empty
+ 456               	.L76:
+ 215:avr_io.c      ****   {
+ 216:avr_io.c      ****     while( tx_empty == 0 )
+ 457               		.stabn 68,0,216,.LM61-UartSend
+ 458               	.LM61:
+ 459 01d8 9923      		tst r25
+ 460 01da 19F4      		brne .L78
+ 461 01dc 892F      		mov r24,r25
+ 462               	.L77:
+ 463 01de 8823      		tst r24
+ 464 01e0 F1F3      		breq .L77
+ 465               	.L78:
+ 217:avr_io.c      ****     {
+ 218:avr_io.c      ****       ;
+ 219:avr_io.c      ****     }
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 13
+
+
+ 220:avr_io.c      ****     tx_empty = 0;
+ 466               		.stabn 68,0,220,.LM62-UartSend
+ 467               	.LM62:
+ 468 01e2 90E0      		ldi r25,lo8(0)
+ 221:avr_io.c      ****     outp( tx_buffer[i], UDR );
+ 469               		.stabn 68,0,221,.LM63-UartSend
+ 470               	.LM63:
+ 471 01e4 F52F      		mov r31,r21
+ 472 01e6 E42F      		mov r30,r20
+ 473 01e8 E20F      		add r30,r18
+ 474 01ea F11D      		adc r31,__zero_reg__
+ 475 01ec 8081      		ld r24,Z
+ 476               	/* #APP */
+ 477 01ee 8CB9      		out 12,r24
+ 478               		.stabn 68,0,214,.LM64-UartSend
+ 479               	.LM64:
+ 480               	/* #NOAPP */
+ 481 01f0 2F5F      		subi r18,lo8(-(1))
+ 482 01f2 2317      		cp r18,r19
+ 483 01f4 88F3      		brlo .L76
+ 484 01f6 9093 0000 		sts tx_empty,r25
+ 485               	.L74:
+ 486               	.LBE3:
+ 222:avr_io.c      ****   }
+ 223:avr_io.c      **** }
+ 487               		.stabn 68,0,223,.LM65-UartSend
+ 488               	.LM65:
+ 489               	/* epilogue: frame size=0 */
+ 490 01fa 0895      		ret
+ 491               	/* epilogue end (size=1) */
+ 492               	/* function UartSend size 29 (28) */
+ 493               	.Lfe4:
+ 494               		.size	UartSend,.Lfe4-UartSend
+ 495               		.stabs	"i:r(9,1)",64,0,212,18
+ 496               		.stabn	192,0,0,.LBB3-UartSend
+ 497               		.stabn	224,0,0,.LBE3-UartSend
+ 498               	.Lscope3:
+ 499               		.stabs	"",36,0,0,.Lscope3-UartSend
+ 500               		.stabs	"_uart_trans_:F(0,20)",36,0,230,_uart_trans_
+ 501               	.global	_uart_trans_
+ 502               		.type	_uart_trans_,@function
+ 503               	_uart_trans_:
+ 224:avr_io.c      **** 
+ 225:avr_io.c      **** 
+ 226:avr_io.c      **** /*******************************************************
+ 227:avr_io.c      ****  ISR - UART has sent a byte and is ready for another.
+ 228:avr_io.c      **** *******************************************************/
+ 229:avr_io.c      **** SIGNAL(SIG_UART_TRANS)      
+ 230:avr_io.c      **** {
+ 504               		.stabn 68,0,230,.LM66-_uart_trans_
+ 505               	.LM66:
+ 506               	/* prologue: frame size=0 */
+ 507 01fc 1F92      		push __zero_reg__
+ 508 01fe 0F92      		push __tmp_reg__
+ 509 0200 0FB6      		in __tmp_reg__,__SREG__
+ 510 0202 0F92      		push __tmp_reg__
+ 511 0204 1124      		clr __zero_reg__
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 14
+
+
+ 512 0206 8F93      		push r24
+ 513               	/* prologue end (size=6) */
+ 231:avr_io.c      ****   tx_empty = 1;
+ 514               		.stabn 68,0,231,.LM67-_uart_trans_
+ 515               	.LM67:
+ 516 0208 81E0      		ldi r24,lo8(1)
+ 517 020a 8093 0000 		sts tx_empty,r24
+ 232:avr_io.c      **** }
+ 518               		.stabn 68,0,232,.LM68-_uart_trans_
+ 519               	.LM68:
+ 520               	/* epilogue: frame size=0 */
+ 521 020e 8F91      		pop r24
+ 522 0210 0F90      		pop __tmp_reg__
+ 523 0212 0FBE      		out __SREG__,__tmp_reg__
+ 524 0214 0F90      		pop __tmp_reg__
+ 525 0216 1F90      		pop __zero_reg__
+ 526 0218 1895      		reti
+ 527               	/* epilogue end (size=6) */
+ 528               	/* function _uart_trans_ size 15 (3) */
+ 529               	.Lfe5:
+ 530               		.size	_uart_trans_,.Lfe5-_uart_trans_
+ 531               	.Lscope4:
+ 532               		.stabs	"",36,0,0,.Lscope4-_uart_trans_
+ 533               		.stabs	"_uart_recv_:F(0,20)",36,0,240,_uart_recv_
+ 534               	.global	_uart_recv_
+ 535               		.type	_uart_recv_,@function
+ 536               	_uart_recv_:
+ 233:avr_io.c      **** 
+ 234:avr_io.c      **** 
+ 235:avr_io.c      **** /*******************************************************
+ 236:avr_io.c      ****  ISR - byte received in UART
+ 237:avr_io.c      ****  Received bytes are placed into rx_buffer
+ 238:avr_io.c      **** *******************************************************/
+ 239:avr_io.c      **** SIGNAL(SIG_UART_RECV)      
+ 240:avr_io.c      **** {
+ 537               		.stabn 68,0,240,.LM69-_uart_recv_
+ 538               	.LM69:
+ 539               	/* prologue: frame size=0 */
+ 540 021a 1F92      		push __zero_reg__
+ 541 021c 0F92      		push __tmp_reg__
+ 542 021e 0FB6      		in __tmp_reg__,__SREG__
+ 543 0220 0F92      		push __tmp_reg__
+ 544 0222 1124      		clr __zero_reg__
+ 545 0224 2F93      		push r18
+ 546 0226 8F93      		push r24
+ 547 0228 9F93      		push r25
+ 548 022a EF93      		push r30
+ 549 022c FF93      		push r31
+ 550               	/* prologue end (size=10) */
+ 241:avr_io.c      ****   rx_buffer[rx_in] = inp( UDR );
+ 551               		.stabn 68,0,241,.LM70-_uart_recv_
+ 552               	.LM70:
+ 553 022e 2091 0000 		lds r18,rx_in
+ 554 0232 80E0      		ldi r24,lo8(rx_buffer)
+ 555 0234 90E0      		ldi r25,hi8(rx_buffer)
+ 556 0236 F92F      		mov r31,r25
+ 557 0238 E82F      		mov r30,r24
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 15
+
+
+ 558 023a E20F      		add r30,r18
+ 559 023c F11D      		adc r31,__zero_reg__
+ 560               	.LBB4:
+ 561               	/* #APP */
+ 562 023e 8CB1      		in r24,12
+ 563               	/* #NOAPP */
+ 564               	.LBE4:
+ 565 0240 8083      		st Z,r24
+ 242:avr_io.c      ****   rx_in++;
+ 566               		.stabn 68,0,242,.LM71-_uart_recv_
+ 567               	.LM71:
+ 568 0242 822F      		mov r24,r18
+ 569 0244 8F5F      		subi r24,lo8(-(1))
+ 243:avr_io.c      ****   rx_in &= 0x0F;																						//This only works if the size of rx_buffer is a factor of 2
+ 570               		.stabn 68,0,243,.LM72-_uart_recv_
+ 571               	.LM72:
+ 572 0246 8F70      		andi r24,lo8(15)
+ 573 0248 8093 0000 		sts rx_in,r24
+ 244:avr_io.c      **** 
+ 245:avr_io.c      ****   outp( RX_TIMEOUT_CNT, TCNT0 );														//Reset receive timeout
+ 574               		.stabn 68,0,245,.LM73-_uart_recv_
+ 575               	.LM73:
+ 576 024c 82EB      		ldi r24,lo8(-78)
+ 577               	/* #APP */
+ 578 024e 82BF      		out 50,r24
+ 246:avr_io.c      **** }
+ 579               		.stabn 68,0,246,.LM74-_uart_recv_
+ 580               	.LM74:
+ 581               	/* #NOAPP */
+ 582               	/* epilogue: frame size=0 */
+ 583 0250 FF91      		pop r31
+ 584 0252 EF91      		pop r30
+ 585 0254 9F91      		pop r25
+ 586 0256 8F91      		pop r24
+ 587 0258 2F91      		pop r18
+ 588 025a 0F90      		pop __tmp_reg__
+ 589 025c 0FBE      		out __SREG__,__tmp_reg__
+ 590 025e 0F90      		pop __tmp_reg__
+ 591 0260 1F90      		pop __zero_reg__
+ 592 0262 1895      		reti
+ 593               	/* epilogue end (size=10) */
+ 594               	/* function _uart_recv_ size 39 (19) */
+ 595               	.Lfe6:
+ 596               		.size	_uart_recv_,.Lfe6-_uart_recv_
+ 597               		.stabs	"__t:r(5,2)",64,0,241,24
+ 598               		.stabn	192,0,0,.LBB4-_uart_recv_
+ 599               		.stabn	224,0,0,.LBE4-_uart_recv_
+ 600               	.Lscope5:
+ 601               		.stabs	"",36,0,0,.Lscope5-_uart_recv_
+ 602               		.stabs	"_overflow0_:F(0,20)",36,0,253,_overflow0_
+ 603               	.global	_overflow0_
+ 604               		.type	_overflow0_,@function
+ 605               	_overflow0_:
+ 247:avr_io.c      **** 
+ 248:avr_io.c      **** 
+ 249:avr_io.c      **** /*******************************************************
+ 250:avr_io.c      ****  ISR - receive timeout
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 16
+
+
+ 251:avr_io.c      **** *******************************************************/
+ 252:avr_io.c      **** SIGNAL(SIG_OVERFLOW0)
+ 253:avr_io.c      **** {
+ 606               		.stabn 68,0,253,.LM75-_overflow0_
+ 607               	.LM75:
+ 608               	/* prologue: frame size=0 */
+ 609 0264 1F92      		push __zero_reg__
+ 610 0266 0F92      		push __tmp_reg__
+ 611 0268 0FB6      		in __tmp_reg__,__SREG__
+ 612 026a 0F92      		push __tmp_reg__
+ 613 026c 1124      		clr __zero_reg__
+ 614 026e 8F93      		push r24
+ 615               	/* prologue end (size=6) */
+ 254:avr_io.c      **** 	rx_timeout = TRUE;
+ 616               		.stabn 68,0,254,.LM76-_overflow0_
+ 617               	.LM76:
+ 618 0270 81E0      		ldi r24,lo8(1)
+ 619 0272 8093 0000 		sts rx_timeout,r24
+ 255:avr_io.c      **** }
+ 620               		.stabn 68,0,255,.LM77-_overflow0_
+ 621               	.LM77:
+ 622               	/* epilogue: frame size=0 */
+ 623 0276 8F91      		pop r24
+ 624 0278 0F90      		pop __tmp_reg__
+ 625 027a 0FBE      		out __SREG__,__tmp_reg__
+ 626 027c 0F90      		pop __tmp_reg__
+ 627 027e 1F90      		pop __zero_reg__
+ 628 0280 1895      		reti
+ 629               	/* epilogue end (size=6) */
+ 630               	/* function _overflow0_ size 15 (3) */
+ 631               	.Lfe7:
+ 632               		.size	_overflow0_,.Lfe7-_overflow0_
+ 633               	.Lscope6:
+ 634               		.stabs	"",36,0,0,.Lscope6-_overflow0_
+ 635               		.stabs	"rx_timeout:G(9,1)",32,0,40,0
+ 636               		.comm rx_timeout,1,1
+ 637               		.stabs	"rx_buffer:G(0,22)=ar(0,23)=r(0,23);0000000000000;0000000177777;;0;15;(9,1)",32,0,41,0
+ 638               		.comm rx_buffer,16,1
+ 639               		.stabs	"rx_in:G(9,1)",32,0,42,0
+ 640               		.comm rx_in,1,1
+ 641               		.stabs	"rx_out:G(9,1)",32,0,43,0
+ 642               		.comm rx_out,1,1
+ 643               		.stabs	"tx_buffer:G(0,24)=ar(0,23);0;9;(9,1)",32,0,44,0
+ 644               		.comm tx_buffer,10,1
+ 645               		.stabs	"tx_numbytes:G(9,1)",32,0,45,0
+ 646               		.comm tx_numbytes,1,1
+ 647               		.stabs	"tx_empty:G(9,1)",32,0,46,0
+ 648               		.comm tx_empty,1,1
+ 649               		.stabs	"command:G(10,2)",32,0,48,0
+ 650               		.comm command,2,1
+ 651               		.stabs	"error:G(10,4)",32,0,49,0
+ 652               		.comm error,2,1
+ 653               		.stabs	"reg:G(9,1)",32,0,50,0
+ 654               		.comm reg,1,1
+ 655               		.stabs	"data:G(9,1)",32,0,51,0
+ 656               		.comm data,1,1
+ 657               		.stabs	"parse_state:G(10,6)",32,0,52,0
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 17
+
+
+ 658               		.comm parse_state,2,1
+ 659               		.text
+ 660               		.stabs "",100,0,0,Letext
+ 661               	Letext:
+ 662               	/* File avr_io.c: code  332 = 0x014c ( 280), prologues  26, epilogues  26 */
+GAS LISTING C:\WINDOWS\TEMP\ccrPGigb.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 avr_io.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+                            *ABS*:00000002 _PC_
+C:\WINDOWS\TEMP\ccrPGigb.s:79     .text:00000000 main
+                            *COM*:00000001 rx_timeout
+                            *COM*:00000001 rx_in
+                            *COM*:00000001 rx_out
+                            *COM*:00000001 tx_empty
+                            *COM*:00000001 tx_numbytes
+                            *COM*:00000002 parse_state
+                            *COM*:00000002 error
+C:\WINDOWS\TEMP\ccrPGigb.s:414    .text:000001b2 Error
+                            *COM*:00000010 rx_buffer
+                            *COM*:00000002 command
+                            *COM*:00000001 reg
+                            *COM*:00000001 data
+C:\WINDOWS\TEMP\ccrPGigb.s:324    .text:0000014c DoCommand
+C:\WINDOWS\TEMP\ccrPGigb.s:313    .text:0000014a __stop_progIi__
+                            *COM*:0000000a tx_buffer
+C:\WINDOWS\TEMP\ccrPGigb.s:440    .text:000001c4 UartSend
+C:\WINDOWS\TEMP\ccrPGigb.s:503    .text:000001fc _uart_trans_
+C:\WINDOWS\TEMP\ccrPGigb.s:536    .text:0000021a _uart_recv_
+C:\WINDOWS\TEMP\ccrPGigb.s:605    .text:00000264 _overflow0_
+C:\WINDOWS\TEMP\ccrPGigb.s:661    .text:00000282 Letext
+                            *ABS*:00000000 *ABS*
+
+UNDEFINED SYMBOLS
+__stack

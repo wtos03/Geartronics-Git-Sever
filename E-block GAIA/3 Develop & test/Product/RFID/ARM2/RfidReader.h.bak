@@ -1,0 +1,19 @@
+#ifndef RFID_READER_H_
+#define RFID_READER_H_
+
+int countBitRFID;
+int start;
+int datacomplete;
+int datanow;
+
+
+extern void irq_EINT1(void)__irq;
+extern void irq_EINT3(void)__irq;
+extern void init_EINT1(void);
+extern void init_EINT3(void);
+extern void initRFID(void);
+extern int checkcorrectdata(void);
+extern int dataRFID(void);
+extern int readRFID(void);
+
+#endif

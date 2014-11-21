@@ -1,0 +1,1973 @@
+From: <Saved by Microsoft Internet Explorer 5>
+Subject: WinAVR User Manual - 20070525
+Date: Thu, 19 Jul 2007 12:47:16 +0700
+MIME-Version: 1.0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: file://C:\WinAVR-20070525\WinAVR-user-manual.html
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.2180
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" =
+"http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xml:lang=3D"en" =
+xmlns=3D"http://www.w3.org/1999/xhtml"><HEAD><TITLE>WinAVR User Manual - =
+20070525</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DUTF-8">
+<META content=3D"MSHTML 6.00.2900.2180" name=3DGENERATOR>
+<STYLE type=3Dtext/css>P {
+=09
+}
+LI {
+=09
+}
+DT {
+=09
+}
+DD {
+=09
+}
+DIV {
+=09
+}
+PRE {
+=09
+}
+H1 {
+=09
+}
+H2 {
+=09
+}
+H3 {
+=09
+}
+H4 {
+=09
+}
+H5 {
+=09
+}
+H6 {
+=09
+}
+BODY {
+	MARGIN: 1em 5%
+}
+A {
+	COLOR: blue
+}
+A:visited {
+	COLOR: fuchsia
+}
+EM {
+	FONT-STYLE: italic
+}
+STRONG {
+	FONT-WEIGHT: bold
+}
+TT {
+	COLOR: navy
+}
+H1 {
+	MARGIN-TOP: 1.2em; MARGIN-BOTTOM: 0.5em; COLOR: #527bbd; LINE-HEIGHT: =
+1.3; FONT-FAMILY: sans-serif
+}
+H2 {
+	MARGIN-TOP: 1.2em; MARGIN-BOTTOM: 0.5em; COLOR: #527bbd; LINE-HEIGHT: =
+1.3; FONT-FAMILY: sans-serif
+}
+H3 {
+	MARGIN-TOP: 1.2em; MARGIN-BOTTOM: 0.5em; COLOR: #527bbd; LINE-HEIGHT: =
+1.3; FONT-FAMILY: sans-serif
+}
+H4 {
+	MARGIN-TOP: 1.2em; MARGIN-BOTTOM: 0.5em; COLOR: #527bbd; LINE-HEIGHT: =
+1.3; FONT-FAMILY: sans-serif
+}
+H5 {
+	MARGIN-TOP: 1.2em; MARGIN-BOTTOM: 0.5em; COLOR: #527bbd; LINE-HEIGHT: =
+1.3; FONT-FAMILY: sans-serif
+}
+H6 {
+	MARGIN-TOP: 1.2em; MARGIN-BOTTOM: 0.5em; COLOR: #527bbd; LINE-HEIGHT: =
+1.3; FONT-FAMILY: sans-serif
+}
+H1 {
+	BORDER-BOTTOM: silver 2px solid
+}
+H2 {
+	PADDING-TOP: 0.5em; BORDER-BOTTOM: silver 2px solid
+}
+DIV.sectionbody {
+	MARGIN-LEFT: 0px; FONT-FAMILY: serif
+}
+HR {
+	BORDER-RIGHT: silver 1px solid; BORDER-TOP: silver 1px solid; =
+BORDER-LEFT: silver 1px solid; BORDER-BOTTOM: silver 1px solid
+}
+P {
+	MARGIN-TOP: 0.5em; MARGIN-BOTTOM: 0.5em
+}
+PRE {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: =
+0px; PADDING-TOP: 0px
+}
+SPAN#author {
+	FONT-WEIGHT: bold; FONT-SIZE: 1.2em; COLOR: #527bbd; FONT-FAMILY: =
+sans-serif
+}
+SPAN#email {
+=09
+}
+SPAN#revision {
+	FONT-FAMILY: sans-serif
+}
+DIV#footer {
+	BORDER-TOP: silver 2px solid; MARGIN-TOP: 4em; FONT-SIZE: small; =
+PADDING-TOP: 0.5em; FONT-FAMILY: sans-serif
+}
+DIV#footer-text {
+	FLOAT: left; PADDING-BOTTOM: 0.5em
+}
+DIV#footer-badges {
+	FLOAT: right; PADDING-BOTTOM: 0.5em
+}
+DIV#preamble {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.tableblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.imageblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.exampleblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.verseblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.quoteblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.literalblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.listingblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.sidebarblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.admonitionblock {
+	MARGIN-TOP: 1.5em; MARGIN-BOTTOM: 1.5em; MARGIN-RIGHT: 10%
+}
+DIV.admonitionblock {
+	MARGIN-TOP: 2.5em; MARGIN-BOTTOM: 2.5em
+}
+DIV.content {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; =
+PADDING-TOP: 0px
+}
+DIV.title {
+	MARGIN-TOP: 1em; FONT-WEIGHT: bold; MARGIN-BOTTOM: 0.5em; FONT-FAMILY: =
+sans-serif; TEXT-ALIGN: left
+}
+CAPTION.title {
+	MARGIN-TOP: 1em; FONT-WEIGHT: bold; MARGIN-BOTTOM: 0.5em; FONT-FAMILY: =
+sans-serif; TEXT-ALIGN: left
+}
+UNKNOWN {
+	MARGIN-TOP: 0px
+}
+TD DIV.title:unknown {
+	MARGIN-TOP: 0em
+}
+DIV.content DIV.title:unknown {
+	MARGIN-TOP: 0em
+}
+UNKNOWN {
+	MARGIN-TOP: 0em
+}
+UNKNOWN {
+	BORDER-RIGHT: silver 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: =
+silver 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: #ffffee; =
+PADDING-BOTTOM: 0.5em; BORDER-LEFT: silver 1px solid; PADDING-TOP: =
+0.5em; BORDER-BOTTOM: silver 1px solid
+}
+UNKNOWN {
+	BORDER-RIGHT: silver 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: =
+silver 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: #f4f4f4; =
+PADDING-BOTTOM: 0.5em; BORDER-LEFT: silver 1px solid; PADDING-TOP: =
+0.5em; BORDER-BOTTOM: silver 1px solid
+}
+UNKNOWN {
+	PADDING-LEFT: 2em
+}
+DIV.attribution {
+	TEXT-ALIGN: right
+}
+UNKNOWN {
+	TEXT-ALIGN: left
+}
+DIV.admonitionblock .icon {
+	PADDING-RIGHT: 0.5em; FONT-WEIGHT: bold; FONT-SIZE: 1.1em; =
+VERTICAL-ALIGN: top; COLOR: #527bbd; TEXT-DECORATION: underline
+}
+DIV.admonitionblock TD.content {
+	PADDING-LEFT: 0.5em; BORDER-LEFT: silver 2px solid
+}
+UNKNOWN {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; =
+BORDER-LEFT: silver 2px solid; PADDING-TOP: 0.5em
+}
+DIV.verseblock DIV.content {
+	WHITE-SPACE: pre
+}
+DIV.imageblock DIV.content {
+	PADDING-LEFT: 0px
+}
+DIV.imageblock IMG {
+	BORDER-RIGHT: silver 1px solid; BORDER-TOP: silver 1px solid; =
+BORDER-LEFT: silver 1px solid; BORDER-BOTTOM: silver 1px solid
+}
+SPAN.image IMG {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: =
+none; BORDER-BOTTOM-STYLE: none
+}
+DL {
+	MARGIN-TOP: 0.8em; MARGIN-BOTTOM: 0.8em
+}
+DT {
+	MARGIN-TOP: 0.5em; MARGIN-BOTTOM: 0px; FONT-STYLE: italic
+}
+UNKNOWN {
+	MARGIN-TOP: 0px
+}
+UL {
+	LIST-STYLE-POSITION: outside
+}
+OL {
+	LIST-STYLE-POSITION: outside
+}
+OL.olist2 {
+	LIST-STYLE-TYPE: lower-alpha
+}
+UNKNOWN {
+	BORDER-RIGHT: #527bbd 3px solid; BORDER-TOP: #527bbd 3px solid; =
+BORDER-LEFT: #527bbd 3px solid; BORDER-BOTTOM: #527bbd 3px solid
+}
+THEAD {
+	FONT-WEIGHT: bold; FONT-FAMILY: sans-serif
+}
+TFOOT {
+	FONT-WEIGHT: bold
+}
+DIV.hlist {
+	MARGIN-TOP: 0.8em; MARGIN-BOTTOM: 0.8em
+}
+TD.hlist1 {
+	PADDING-RIGHT: 0.8em; VERTICAL-ALIGN: top; FONT-STYLE: italic
+}
+TD.hlist2 {
+	VERTICAL-ALIGN: top
+}
+
+@media Print   =20
+{
+DIV#footer-badges {
+	DISPLAY: none
+}
+    }
+DIV.sidebar-content {
+	BORDER-RIGHT: silver 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: =
+silver 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: #ffffee; =
+PADDING-BOTTOM: 0.5em; BORDER-LEFT: silver 1px solid; PADDING-TOP: =
+0.5em; BORDER-BOTTOM: silver 1px solid
+}
+DIV.sidebar-title {
+	MARGIN-TOP: 0em; FONT-WEIGHT: bold; MARGIN-BOTTOM: 0.5em; FONT-FAMILY: =
+sans-serif
+}
+DIV.image-title {
+	MARGIN-TOP: 0em; FONT-WEIGHT: bold; MARGIN-BOTTOM: 0.5em; FONT-FAMILY: =
+sans-serif
+}
+DIV.listingblock DIV.content {
+	BORDER-RIGHT: silver 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: =
+silver 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: #f4f4f4; =
+PADDING-BOTTOM: 0.5em; BORDER-LEFT: silver 1px solid; PADDING-TOP: =
+0.5em; BORDER-BOTTOM: silver 1px solid
+}
+DIV.quoteblock-content {
+	PADDING-LEFT: 2em
+}
+DIV.exampleblock-content {
+	PADDING-LEFT: 0.5em; BORDER-LEFT: silver 2px solid
+}
+</STYLE>
+</HEAD>
+<BODY>
+<DIV id=3Dheader>
+<H1>WinAVR User Manual - 20070525</H1><SPAN id=3Dauthor>Eric B.=20
+Weddington</SPAN><BR><SPAN id=3Demail><TT>&lt;<A=20
+href=3D"mailto:arcanum@users.sf.net">arcanum@users.sf.net</A>&gt;</TT></S=
+PAN><BR></DIV>
+<DIV id=3Dpreamble>
+<DIV class=3Dsectionbody>
+<P>WinAVR is a suite of executable, open source software development =
+tools for=20
+the Atmel AVR series of RISC microprocessors hosted on the Windows =
+platform. It=20
+includes the GNU GCC compiler for C and C++.</P></DIV></DIV>
+<H2>1.0 What's New</H2>
+<DIV class=3Dsectionbody>
+<P>Below is just a sample of what's new.</P>
+<UL>
+  <LI>
+  <P>Installer Changes </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>The installer has been changed and =
+simplified. It no longer does automatic
+uninstallation of the previous version. However, all the registry keys =
+and
+installation path is tied to the WinAVR version number, which should =
+allow
+future multiple toolchain installations to =
+coexist.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>GCC 4.1.2 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>New version. There have been many bugs =
+fixed, thanks to Anatoly Sokolov.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>avr-libc 1.4.6 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>New version. Bugs fixed, user manual =
+expanded.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>GDB/Insight 6.5 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>GDB is now a native Win32 executable! No =
+longer linked to Cygwin!</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Added support for these devices: </P>
+  <UL>
+    <LI>
+    <P>AT90USB82 </P>
+    <LI>
+    <P>AT90USB162 </P>
+    <LI>
+    <P>ATmega325P </P>
+    <LI>
+    <P>ATmega3250P </P>
+    <LI>
+    <P>ATmega329P </P>
+    <LI>
+    <P>ATmega3290P </P>
+    <LI>
+    <P>AT90PWM1 </P>
+    <LI>
+    <P>ATmega16HVA </P>
+    <LI>
+    <P>ATmega8HVA </P></LI></UL>
+  <LI>
+  <P>LibUSB-Win32 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>LibUSB-Win32 drivers are included for =
+the Atmel JTAG ICE mkII and the
+AVRISP mkII. However, these drivers will not work with the Jungo drivers
+that are installed by AVR Studio; they are mutually exclusive. If you =
+want
+to have avrdude or avarice connect to these devices, then install these
+drivers.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>SRecord 1.31 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>New version.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>SimulAVR 0.1.2.2 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>New version.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Programmers Notepad 2.0.7.667-devel </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>New version.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Updates to the WinAVR Makefile Template and MFile. =
+</P></LI></UL></DIV>
+<H2>2.0 WinAVR Installation</H2>
+<DIV class=3Dsectionbody>
+<P>This section describes various information and notes about the =
+installation=20
+of WinAVR.</P>
+<H3>2.1 Manifest</H3>
+<OL>
+  <LI>
+  <P>GNU Binutils 2.17 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>Binary utilities for AVR target =
+(including assembler, linker, etc.).</TT></PRE></DIV></DIV>
+  <LI>
+  <P>GNU Compiler Collection (GCC) 4.1.2 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>C language and C++ language compiler for =
+AVR target. There are
+caveats for using the C++ compiler. See the installed avr-libc
+User Manual in the &lt;InstallDir&gt;\doc =
+directory.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>avr-libc 1.4.6 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>C Standard Library for =
+AVR.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>AVRDUDE 5.3.1 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>avrdude is an open source programmer =
+software that is user extensible.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>GNU Debugger (GDB) / Insight 6.5 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>GDB is a command-line debugger. Insight =
+is GDB with a GUI!</TT></PRE></DIV></DIV>
+  <LI>
+  <P>AVaRICE 2.6 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>avarice is a program for interfacing the =
+Atmel JTAG ICE to GDB and users
+can debug their AVR. Use it in conjunction with =
+GDB.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>SimulAVR 0.1.2.2 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>simulavr is used in conjunction with GDB =
+to provide AVR simulation.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>SRecord 1.31 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>SRecord is a collection of powerful =
+tools for manipulating EPROM load files.
+It reads and writes numerous EPROM file formats, and can perform many
+different manipulations.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>MFile </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>An automatic makefile generator for AVR =
+GCC.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Programmers Notepad 2.0.7.667-devel </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>Programming editor and IDE. This editor =
+includes the Scintilla editor
+component.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>LibUSB 0.1.10.1 and device drivers </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>This is a USB library that is linked =
+into AVRDUDE and AVaRICE to allow them
+to connect to the Atmel JTAG ICE mkII and the Atmel AVRISP mkII. Drivers
+for these devices are also included.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Cygwin DLLs </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>Certain DLLs from the Cygwin project are =
+required for specific included
+packages. See the Build Notes section for which packages require which =
+DLL.</TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>NOTE: Not all executables require these =
+Cygwin DLLs.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Many native Win32 GNU programs and utilities including make and =
+bash. </P>
+  <LI>
+  <P>Tofrodos 1.6 </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>A command-line text file line-ending =
+convertor.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>A Makefile Template for you to use in your projects. </P>
+  <LI>
+  <P>Documentation for the various projects. </P>
+  <LI>
+  <P>Source code patches used to build the various projects. =
+</P></LI></OL>
+<H3>2.2 Layout</H3>
+<P>Listed below are some directories you might want to know about.</P>
+<P><TT>&lt;install&gt;</TT> =3D The directory where you installed =
+WinAVR.</P>
+<DL>
+  <DT><STRONG><TT>&lt;install&gt;\bin</TT></STRONG>=20
+  <DD>
+  <P>The AVR software development programs. This directory should be in =
+your=20
+  <TT>PATH</TT> environment variable. This includes: </P>
+  <UL>
+    <LI>
+    <P>GNU Binutils </P>
+    <LI>
+    <P>GCC </P>
+    <LI>
+    <P>avrdude </P>
+    <LI>
+    <P>avrdude-gui </P>
+    <LI>
+    <P>GNU Debugger (GDB) </P>
+    <LI>
+    <P>Insight </P>
+    <LI>
+    <P>AVaRICE </P>
+    <LI>
+    <P>SimulAVR </P>
+    <LI>
+    <P>SRecord </P>
+    <LI>
+    <P>Various required DLLs </P></LI></UL>
+  <DT><STRONG><TT>&lt;install&gt;\utils\bin</TT></STRONG>=20
+  <DD>
+  <P>A collection of Unix programs built for the Windows platform. The =
+programs=20
+  make and sh (bash) reside here. This directory should be in your PATH=20
+  environment variable. </P>
+  <DT><STRONG><TT>&lt;install&gt;\avr\lib</TT></STRONG>=20
+  <DD>
+  <P>avr-libc libraries, startup files, linker scripts, and stuff. </P>
+  <DT><STRONG><TT>&lt;install&gt;\avr\include</TT></STRONG>=20
+  <DD>
+  <P>avr-libc header files. This is where, for example, #include=20
+  &lt;string.h&gt; comes from. </P>
+  <DT><STRONG><TT>&lt;install&gt;\avr\include\avr</TT></STRONG>=20
+  <DD>
+  <P>avr-libc header files specific to the AVR microprocessor. This is =
+where,=20
+  for example, #include &lt;avr/io.h&gt; comes from. </P>
+  <DT><STRONG><TT>&lt;install&gt;\lib</TT></STRONG>=20
+  <DD>
+  <P>GCC libraries, other libraries,headers and stuff. </P>
+  <DT><STRONG><TT>&lt;install&gt;\libexec</TT></STRONG>=20
+  <DD>
+  <P>GCC program components </P>
+  <DT><STRONG><TT>&lt;install&gt;\doc</TT></STRONG>=20
+  <DD>
+  <P>Various documentation. Before asking, RTFM! :-) </P>
+  <DT><STRONG><TT>&lt;install&gt;\examples</TT></STRONG>=20
+  <DD>
+  <P>Example projects with source code. Have fun! </P>
+  <DT><STRONG><TT>&lt;install&gt;\sample</TT></STRONG>=20
+  <DD>
+  <P>Sample makefile (see below). Batch files to use in compiling from =
+AVR=20
+  Studio 3.x (see below). </P>
+  <DT><STRONG><TT>&lt;install&gt;\pn</TT></STRONG>=20
+  <DD>
+  <P>Programmers Notepad </P>
+  <DT><STRONG><TT>&lt;install&gt;\mfile</TT></STRONG>=20
+  <DD>
+  <P>MFile </P>
+  <DT><STRONG><TT>&lt;install&gt;\source</TT></STRONG>=20
+  <DD>
+  <P>Documentation on where to find the source code for the various =
+projects and=20
+  source code patches that were used to build the tools. </P>
+  <DT><STRONG><TT>&lt;install&gt;\utils\bin</TT></STRONG>=20
+  <DD>
+  <P>Utility programs, mainly from Unix-land that are used in building =
+the=20
+  software, such as the shell (sh.exe), make.exe, and other programs =
+called from=20
+  a Makefile. </P>
+  <DT><STRONG><TT>&lt;install&gt;\utils\libusb\bin</TT></STRONG>=20
+  <DD>
+  <P>LibUSB programs and drivers. </P></DD></DL>
+<H3>2.3 <TT>PATH</TT> Environment Variable</H3>
+<P>There are two directories in WinAVR that contain executable programs. =
+If=20
+<TT>&lt;install&gt;</TT> is your install directory then these two =
+directories=20
+are:</P>
+<P><TT>&lt;install&gt;\bin</TT><BR><TT>&lt;install&gt;\utils\bin</TT></P>=
+
+<P>The <TT>&lt;install&gt;\bin</TT> directory contains the software =
+development=20
+toolset proper. This includes GNU binutils, GCC, and other programs.</P>
+<P>The <TT>&lt;install&gt;\utils\bin</TT> contains many miscellaneous =
+Unix or=20
+GNU programs that are built for Windows. This includes sh (bash) and =
+make among=20
+a host of other things.</P>
+<P>For your operating system to easily locate these directories, they =
+must be=20
+put at the <STRONG>beginning</STRONG> of the <TT>PATH</TT> environment =
+variable.=20
+WinAVR can do this automatically upon installation, if you selected this =
+option.=20
+The reason for putting these directories at the beginning of the =
+<TT>PATH</TT>=20
+environment variable is for the correct make program to be called. There =
+have=20
+been reports from users that have Borland tools installed and the =
+Borland make=20
+program is started rather than GNU make correctly started.</P>
+<P>These programs are put into two seperate directories in case you want =
+to use=20
+a different set of utility programs than the set that comes with =
+WinAVR.</P>
+<P>If you do not wish to use the utilities that comes with WinAVR, =
+remove the=20
+<TT>&lt;install&gt;\utils\bin</TT> directory from your PATH environment=20
+variable.</P>
+<P>For Windows 95 and 98 users, see the autoexec.bat file in the root =
+drive=20
+where your OS is installed. This is usually in C:\.</P>
+<P>For all other Windows users, the WinAVR installer modifies this =
+registry key:=20
+<TT>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session=20
+Manager\Environment\Path</TT></P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Important</DIV></TD>
+    <TD class=3Dcontent>On Windows NT/2K/XP you must have Administrator=20
+      priviledges for the installer to automatically put these =
+directories in=20
+      your <TT>PATH</TT> environment =
+variable.</TD></TR></TBODY></TABLE></DIV>
+<H3>2.4 Registry Keys</H3>
+<P>WinAVR installs a minimal amount of registry keys. These keys are =
+installed=20
+to inform of the installation path, the uninstaller, and for GCC to find =
+other=20
+parts of the compiler as needed. Below are the specific keys that are=20
+installed.</P>
+<UL>
+  <LI>
+  <P>Installation Location:: This registry key will be added to provide =
+the=20
+  location of the WinAVR installation: </P>
+  <DIV class=3Dliteralblock>
+  <DIV =
+class=3Dcontent><PRE><TT>`HKEY_LOCAL_MACHINE\SOFTWARE\WinAVR\{VERSION}`</=
+TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>with {VERSION} being replaced by the =
+version number of WinAVR. Formerly,
+the key above without {VERSION} was equal to the install =
+location.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>GCC Component Paths:: There are some keys that are installed that =
+are used=20
+  to help GCC find installed component programs: </P>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>`HKEY_LOCAL_MACHINE\Software\Free =
+Software Foundation\WinAVR-{VERSION}\GCC`</TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>`HKEY_LOCAL_MACHINE\Software\Free =
+Software Foundation\WinAVR-{VERSION}\BINUTILS`</TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>`HKEY_LOCAL_MACHINE\Software\Free =
+Software Foundation\WinAVR-{VERSION}\G++`</TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>with {VERSION} being replaced by the =
+version number of WinAVR.
+Each of these keys points to the WinAVR install location for that =
+version
+of WinAVR.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>PATH Environment Variable:: The registry key: </P>
+  <DIV class=3Dliteralblock>
+  <DIV =
+class=3Dcontent><PRE><TT>`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Con=
+trol\Session Manager\Environment\Path`</TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>may be modified (if selected at =
+installation time) to add two directories to the
+PATH environment variable.</TT></PRE></DIV></DIV>
+  <LI>
+  <P>Uninstaller:: There are several registry keys written under: </P>
+  <DIV class=3Dliteralblock>
+  <DIV =
+class=3Dcontent><PRE><TT>`HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\C=
+urrentVersion\Uninstall\WinAVR-{VERSION}`</TT></PRE></DIV></DIV>
+  <DIV class=3Dliteralblock>
+  <DIV class=3Dcontent><PRE><TT>with {VERSION} being replaced by the =
+version number of WinAVR.
+These registry keys are used to register the uninstaller with =
+Windows.</TT></PRE></DIV></DIV></LI></UL>
+<H3>2.5 LibUSB-Win32</H3>
+<P>LibUSB-Win32 is a USB library that is linked into AVRDUDE and AVaRICE =
+to=20
+allow them to connect to the Atmel JTAG ICE mkII and the Atmel AVRISP =
+mkII.=20
+Drivers for these devices are also included. LibUSB is installed =
+under:</P>
+<P><TT>&lt;install&gt;\utils\libusb\bin</TT></P>
+<P>The drivers for the JTAG ICE mkII and the AVRISP mkII are also =
+located in the=20
+above directory.</P>
+<P>To install the LibUSB-Win32 drivers (when AVR Studio is not =
+installed): -=20
+Plug in your Atmel device (JTAG ICE mkII or AVRISP mkII). - When Windows =
+asks to=20
+locate drivers for this device, select "Install from a list or specific=20
+location". Press Next. - Uncheck the checkbox, "Search removable media". =
+- Check=20
+the checkbox "Include this location in the search" and select the =
+location of=20
+the drivers in the directory specified above. Press Next. The driver =
+will then=20
+be installed.</P>
+<P>AVR Studio can install and use the USB drivers from Jungo (which is =
+included=20
+as part of the AVR Studio installation). However, the Jungo drivers and =
+the=20
+LibUSB-Win32 drivers are mutually exclusive; if one set is installed the =
+other=20
+set will not work.</P>
+<P>You can uninstall the driver by plugging in the device (and making =
+sure it is=20
+powered on), use the Device Manager to find and select the device (under =
+Jungo=20
+or LibUSB-Win32, depending on which driver is installed), right click =
+and select=20
+"Uninstall". Then, install the other driver according to the correct=20
+procedures.</P>
+<P>LibUSB also has a "filter" driver that is available, however, using =
+this is=20
+not recommended by the LibUSB author.</P></DIV>
+<H2>3.0 Toolset Background</H2>
+<DIV class=3Dsectionbody>
+<P>WinAVR is a collection of executable software development tools for =
+the Atmel=20
+AVR processor hosted on Windows.</P>
+<P>These software development tools include:</P>
+<UL>
+  <LI>
+  <P>Compilers </P>
+  <LI>
+  <P>Assembler </P>
+  <LI>
+  <P>Linker </P>
+  <LI>
+  <P>Librarian </P>
+  <LI>
+  <P>File converter </P>
+  <LI>
+  <P>Other file utilities </P>
+  <LI>
+  <P>C Library </P>
+  <LI>
+  <P>Programmer software </P>
+  <LI>
+  <P>Debugger </P>
+  <LI>
+  <P>In-Circuit Emulator software </P>
+  <LI>
+  <P>Editor / IDE </P>
+  <LI>
+  <P>Many support utilities </P></LI></UL>
+<H3>3.1 The Toolset and Open Source</H3>
+<P>Each of the tools included in WinAVR is Open Source and/or Free =
+Software.=20
+Each tool has it's own project, usually hosted on <A=20
+href=3D"http://sourceforge.net/">SourceForge</A> or <A=20
+href=3D"http://savannah.gnu.org/">Savannah</A>, with their own project =
+maintainers=20
+and developers who all volunteer their time and energy to creating these =
+tools.=20
+Look in the Links section below to find out the websites of each of =
+these=20
+projects.</P>
+<P>Especially note many of these programs come from the Unix and Linux=20
+platforms. These programs have been ported to the Windows platform but =
+generally=20
+behave for a Unix-like environment. If you are not used to a Unix-like=20
+environment it can possibly be frustrating. Read as much documentation =
+as you=20
+can. Look at examples. Search the Internet. Many links are also provided =
+in this=20
+manual.</P>
+<P>Also remember that this software is updated and improved continually =
+by many=20
+people who volunteer their precious time to provide some of the best =
+software=20
+for absolutely no cost or obligation to you. Volunteers are always =
+welcome in=20
+furthering any of these projects!</P>
+<H3>3.2 Compiler</H3>
+<P>The compiler in WinAVR is the GNU Compiler Collection, or <A=20
+href=3D"http://gcc.gnu.org/">GCC</A>. This compiler is incredibly =
+flexible and can=20
+be hosted on many platforms, it can target many different different =
+processors /=20
+operating systems (back-ends), and can be configured for multiple =
+different=20
+languages (front-ends).</P>
+<P>The GCC included in WinAVR is targeted for the AVR processor, is =
+built to=20
+execute on the Windows platform, and is configured to compile C, or =
+C++.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Caution</DIV></TD>
+    <TD class=3Dcontent>There are caveats on using C++. See the avr-libc =
+
+  FAQ.</TD></TR></TBODY></TABLE></DIV>
+<P>Because this GCC is targeted for the AVR, the main executable that is =
+created=20
+is prefixed with the target name: <TT>avr-gcc.exe</TT>. It is also =
+referred to=20
+as AVR GCC.</P>
+<P><TT>avr-gcc</TT> is just a "driver" program only. The compiler itself =
+is=20
+called <TT>cc1.exe</TT> for C, or <TT>cc1plus.exe</TT> for C++. Also, =
+the=20
+preprocessor <TT>cpp.exe</TT> will usually automatically be prepended =
+with the=20
+target name: <TT>avr-cpp.exe</TT>. The actual set of component programs =
+called=20
+is usually derived from the suffix of each source code file being =
+processed.</P>
+<P>GCC compiles a high-level computer language into assembly, and that =
+is all.=20
+It cannot work alone. GCC is coupled with another project, GNU Binutils, =
+which=20
+provides the assembler, linker, librarian and more. Since GCC is just a =
+"driver"=20
+program, it can automatically call the assembler and linker directly to =
+build=20
+the final program.</P>
+<H3>3.3 Assembler, Linker, Librarian and More</H3>
+<P><A href=3D"http://sources.redhat.com/binutils/">GNU Binutils</A> is a =
+
+collection of binary utilities. This also includes the assembler, as. =
+Sometimes=20
+you will see it referenced as GNU as or gas. Binutils includes the =
+linker, ld;=20
+the librarian or archiver, ar. There are many other programs included =
+that=20
+provide various functionality.</P>
+<P>Note that while the assembler uses the same mnemonics as proposed by =
+Atmel,=20
+the "glue" (pseudo-ops, operators, expression syntax) is derived from =
+the common=20
+assembler syntax used in Unix assemblers, so it is not directly =
+compatible to=20
+Atmel assembler source files.</P>
+<P>Binutils is configured for the AVR target and each of the programs is =
+
+prefixed with the target name. So you have programs such as:</P>
+<DL>
+  <DT><TT>avr-as</TT>=20
+  <DD>
+  <P>The Assembler. </P>
+  <DT><TT>avr-ld</TT>=20
+  <DD>
+  <P>The Linker. </P>
+  <DT><TT>avr-ar</TT>=20
+  <DD>
+  <P>Create, modify, and extract from archives (libraries). </P>
+  <DT><TT>avr-ranlib</TT>=20
+  <DD>
+  <P>Generate index to archive (library) contents. </P>
+  <DT><TT>avr-objcopy</TT>=20
+  <DD>
+  <P>Copy and translate object files. </P>
+  <DT><TT>avr-objdump</TT>=20
+  <DD>
+  <P>Display information from object files including disassembly. </P>
+  <DT><TT>avr-size</TT>=20
+  <DD>
+  <P>List section sizes and total size. </P>
+  <DT><TT>avr-nm</TT>=20
+  <DD>
+  <P>List symbols from object files. </P>
+  <DT><TT>avr-strings</TT>=20
+  <DD>
+  <P>List printable strings from files. </P>
+  <DT><TT>avr-strip</TT>=20
+  <DD>
+  <P>Discard symbols. </P>
+  <DT><TT>avr-readelf</TT>=20
+  <DD>
+  <P>Display the contents of ELF format files. </P>
+  <DT><TT>avr-addr2line</TT>=20
+  <DD>
+  <P>Convert addresses to file and line. </P>
+  <DT><TT>avr-c++filt</TT>=20
+  <DD>
+  <P>Filter to demangle encoded C++ symbols. </P></DD></DL>
+<P>See the binutils user manual for more information on what each =
+program can=20
+do.</P>
+<H3>3.4 C Library</H3>
+<P><A href=3D"http://www.nongnu.org/avr-libc/">avr-libc</A> is the =
+Standard C=20
+Library for AVR GCC. It contains many of the standard C routines, and =
+many=20
+non-standard routines that are specific and useful for the AVR =
+processor.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Note</DIV></TD>
+    <TD class=3Dcontent>The actual library is currently split into two =
+main=20
+      parts, libc.a and libm.a, where the latter contains mathematical =
+functions=20
+      (everything mentioned in &lt;math.h&gt;, and a bit more). Thus it =
+is a=20
+      good idea to always include the <TT>-lm</TT> linker option. The =
+WinAVR=20
+      Makefile Template automatically includes the <TT>-lm</TT> linker =
+option.=20
+      Also, there are additional libraries which allow a customization =
+of the=20
+      printf and scanf function =
+families.</TD></TR></TBODY></TABLE></DIV>
+<P>avr-libc also contains the most documentation on how to use (and =
+build) the=20
+entire toolset, including code examples. The avr-libc user manual also =
+contains=20
+the FAQ on using the toolset.</P>
+<H3>3.5 Making Your Software</H3>
+<P>There is one program that brings all of this together. This program =
+is=20
+<TT>GNU make</TT>. The <TT>make</TT> program reads and interprets a =
+makefile. A=20
+makefile is a text file that you write that lists and controls how =
+something is=20
+made. It is most often used to control how software is made.</P>
+<P>Each of these programs are Command Line Interface (CLI) tools. They =
+are=20
+controlled by parameters or switches that are added to the command line. =
+Or, in=20
+the case of make, by text files that are written and used as input.</P>
+<P>Most commercial software development toolsets have an Integrated =
+Development=20
+Environment (IDE). This consists of a graphical user-interface (GUI) =
+that=20
+contains a programming editor and graphical front-ends to compiler, =
+assembler,=20
+linker, standard C library, and librarian programs. These front-ends =
+consist of=20
+dialog boxes which allow you to set build options and a way of creating =
+a list=20
+of files that are in a "project". These graphical front-ends hide and=20
+encapsulate the real command-line compiler, assembler, linker, and =
+standard=20
+library that are in the background of any software development =
+toolset.</P>
+<P>WinAVR is a collection of open-source, software development tools =
+from=20
+various projects. WinAVR does not have a complete graphical IDE like a=20
+commerical toolset, yet. Because of this, learning to build software =
+under GCC=20
+means that it would be best to learn how to use the <TT>make</TT> =
+program and=20
+learn how to write makefiles. Learn the common flags that are used to =
+control=20
+GCC which in turn can control <TT>gas</TT> and <TT>ld</TT>. You can =
+learn a lot=20
+by looking at the Makefile Template that comes with WinAVR and looking =
+up all=20
+the programs and flags in the included user manuals.</P>
+<H3>3.6 Programming</H3>
+<P>After creating your software, you'll want to program your device. You =
+can do=20
+this by using the program <TT>avrdude</TT> which can interface with =
+various=20
+hardware devices to program your processor.</P>
+<P><TT>avrdude</TT> is a very flexible package. All the information =
+about AVR=20
+processors and various hardware programmers is stored in a text =
+database. This=20
+database can be modified by any user to add new hardware or to add an =
+AVR=20
+processor if it is not already listed.</P>
+<H3>3.7 Debugging</H3>
+<P>Debugging encompasses both simulation and emulation. Both are =
+available in=20
+WinAVR.</P>
+<P>The GNU Debugger (<TT>GDB</TT>) is the main package that can be used =
+for=20
+general debugging. <TT>GDB</TT> is a command-line program only. =
+<TT>Insight</TT>=20
+is GDB plus a GUI written in Tcl/Tk. Both <TT>GDB</TT> and =
+<TT>Insight</TT> are=20
+configured for the AVR and the main executables are prefixed with the =
+target=20
+name: <TT>avr-gdb</TT>, and <TT>avr-insight</TT>. There is now also a =
+"text=20
+mode" GUI for GDB: <TT>avr-gdbtui</TT>.</P>
+<P>To do emulation with the JTAG ICE, GDB / Insight requires a "helper" =
+program=20
+called <TT>avarice</TT> which is also included.</P>
+<P>To do simulation, GDB / Insight requires a different "helper" program =
+called=20
+<TT>simulavr</TT> which is also included.</P>
+<P>There are also alternatives for simulation. Atmel offers a free =
+package=20
+called <TT>AVR Studio</TT> which can also do simulation. The latest =
+version of=20
+<TT>AVR Studio</TT> is 4.13. Note that <TT>AVR Studio</TT> is currently =
+free to=20
+the public, but it is not Open Source.</P>
+<P>See the section, 5.0 Debugging, Simulating, and Emulating, for =
+detailed=20
+information on debugging.</P></DIV>
+<H2>4.0 Setting Up a Project</H2>
+<DIV class=3Dsectionbody>
+<H3>4.1 Where's the GUI / IDE?</H3>
+<P>You won't find a typical GUI / IDE like you might be used to with =
+other=20
+commercial cross-compilers, or like native compilers on Windows. Each of =
+the=20
+tools in WinAVR are from their own projects. In this case, an editor or =
+IDE is=20
+just another component in the toolset. And, everybody has their own =
+favourite=20
+they want to use. WinAVR allows flexibility.</P>
+<P>WinAVR comes with an editor / IDE called Programmers Notepad. This is =
+an Open=20
+Source editor with some IDE capabilites. Because the compiler and =
+associated=20
+utilities are all command-line driven, you are free to use whatever =
+editor / IDE=20
+you want to provided it can call command-line programs. See below for =
+more=20
+information on Programmers Notepad.</P>
+<P>There is current work going on to continually improve the IDE =
+capabilities of=20
+Programmers Notepad. Let us know if you're interested in volunteering to =
+help on=20
+these projects.</P>
+<H3>4.2 Programmers Notepad</H3>
+<P><A href=3D"http://www.pnotepad.org/">Programmers Notepad (PN)</A> is =
+an Open=20
+Source editor with some IDE features. Version 2.x is is a complete =
+rewrite of=20
+version 1. Many new features are still being added.</P>
+<P>PN contains the Open Source <A =
+href=3D"http://www.scintilla.org/">Scintilla</A>=20
+editor component as the basis for its editor.</P>
+<P>PN can call any command-line tool and capture it's output. This is =
+ideal for=20
+calling the make utility, which executes your makefile, which in turn =
+calls the=20
+compiler, linker, and other utilities used to build your software. PN =
+will then=20
+capture the output and display it in a window. You can also click on any =
+GCC=20
+warning or error and PN will automatically open the file and go to the =
+line=20
+where the warning or error occurred.</P>
+<P>To set up tools, go to the Tools menu up top, select Options, then =
+select=20
+Tools on the left side menu. The best Scheme to add tools is under =
+"(None -=20
+Global Tools)". After you add your tool, it will appear in the Main Menu =
+under=20
+Tools.</P>
+<H3>4.3 Make, Makefiles, and the Makefile Template</H3>
+<P>make is a program that is widely used to build software. make reads =
+and=20
+executes makefiles, which are descriptions of how to build something. =
+Makefiles=20
+typical do things such as group files together, set lists of compiler =
+and linker=20
+flags, list rules of how to compile source code to object code, how to =
+link=20
+object files, how to convert files from one type to another, and many =
+other=20
+things.</P>
+<P>When you set up your project, add a makefile to control how to build =
+your=20
+software. When you use Programmers Notepad, or other IDE, set it up to =
+call make=20
+and have it execute your project's makefile.</P>
+<P>A Makefile Template is included in WinAVR, which provides a lot of=20
+functionality already written for you. You can can copy it to your =
+project's=20
+directory and easily modify it to fit your project. This Makefile =
+Template can=20
+be found in the <TT>&lt;install&gt;\sample</TT> directory.</P>
+<P>WinAVR also includes the <A =
+href=3D"http://www.sax.de/~joerg/mfile/">MFile</A>=20
+utility. MFile is a automatic makefile generator for AVR GCC written in =
+Tcl/Tk=20
+and can run on various platforms including Windows, FreeBSD, Linux, etc. =
+You can=20
+use this utility to help you quickly generate a makefile for your =
+project based=20
+on some simple menu input. MFile for the Windows platform uses the =
+WinAVR=20
+Makefile Template for it's template.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Note</DIV></TD>
+    <TD class=3Dcontent>I HIGHLY RECOMMEND THAT YOU BECOME FAMILIAR WITH =
+THE=20
+      MAKE PROGRAM AND WRITING MAKEFILES! PLEASE READ THE MAKE USER=20
+  MANUAL!</TD></TR></TBODY></TABLE></DIV>
+<P>For more information on the make program and writing makefiles, see =
+the make=20
+user manual that is included or see Links below for GNU Manuals=20
+Online.</P></DIV>
+<H2>5.0 Debugging, Simulating, and Emulating</H2>
+<DIV class=3Dsectionbody>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Note</DIV></TD>
+    <TD class=3Dcontent>The term "debugging" is a generic term and can =
+mean=20
+      either simulation or emulation =
+below.</TD></TR></TBODY></TABLE></DIV>
+<P>There are several different ways to go about debugging, simulating, =
+and=20
+emulating. Each solution has their own requirements and may involve =
+various=20
+tradeoffs.</P>
+<P>There are open source applications that can be used for simulation =
+and=20
+emulation, and they are included with WinAVR. Use <TT>GDB</TT> or=20
+<TT>Insight</TT>, with the <TT>simulavr</TT> back-end for simulating, or =
+with=20
+the <TT>avarice</TT> back-end to emulate using the Atmel JTAG ICE.</P>
+<P>There is a free application from Atmel that can be used for =
+simulation or=20
+emulation: AVR Studio. The latest version as of this writing is 4.11. =
+AVR Studio=20
+can be downloaded from the Atmel web site.</P>
+<P>There are also a number of commercial simulators, such as VMLab or =
+Proteus=20
+VSM.</P>
+<P>In general, debugging is dependent upon:</P>
+<OL>
+  <LI>
+  <P>The application used to debug. </P>
+  <LI>
+  <P>The file format used. </P>
+  <LI>
+  <P>The type of debugging information generated in the object code.=20
+</P></LI></OL>
+<P>Many times the application that is being used, determines the file =
+format,=20
+and the type of debugging information that needs to be generated.</P>
+<P>This version of the compiler can generate both =
+<STRONG>DWARF2</STRONG> and=20
+<STRONG>stabs</STRONG> debugging information.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Note</DIV></TD>
+    <TD class=3Dcontent>The compiler will currently default to =
+generating DWARF2=20
+      debugging info.</TD></TR></TBODY></TABLE></DIV>
+<P>If you are using the WinAVR Makefile Template, or using MFile, there =
+is a=20
+line in the makefile that controls the type of debug information that is =
+
+generated:</P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>DEBUG =3D dwarf-2</TT></PRE></DIV></DIV>
+<P>To generate stabs information change this line to:</P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>DEBUG =3D stabs</TT></PRE></DIV></DIV>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Tip</DIV></TD>
+    <TD class=3Dcontent>MFile can change this setting automatically =
+through a=20
+      menu option.</TD></TR></TBODY></TABLE></DIV>
+<P>This line in the makefile changes the <TT>-g</TT> compiler switch =
+that is=20
+sent to GCC. See the GCC user manual for more information.</P>
+<P>The compiler will build your software and automatically output an ELF =
+
+file.</P>
+<H3>5.1 GDB/Insight + simulavr or avarice</H3>
+<P>The GNU Debugger (GDB) can be used, with other programs, to simulate =
+or=20
+emulate your AVR program. Insight is GDB with a GUI (written in Tcl/Tk). =
+Insight=20
+also has a console window which provides the traditional command-line =
+interface=20
+to GDB. The terms <EM>GDB</EM> and <EM>Insight</EM> will be used=20
+interchangably.</P>
+<P>Use <TT>avarice</TT> with GDB for use with your JTAG In-Circuit =
+Emulator=20
+(ICE).</P>
+<P>Use <TT>simulavr</TT> with GDB for simulation.</P>
+<P>See each of the package's documentation for more information on =
+usage.</P>
+<DIV class=3Dtitle>Requirements</DIV>
+<P>File Format: ELF<BR>Debugging Information: DWARF-2 (preferred) or =
+stabs</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Tip</DIV></TD>
+    <TD class=3Dcontent>There is a <A=20
+      href=3D"http://winavr.sourceforge.net/document.html">tutorial on =
+how to use=20
+      GDB and avarice</A> at the WinAVR web =
+site.</TD></TR></TBODY></TABLE></DIV>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Tip</DIV></TD>
+    <TD class=3Dcontent>If you use <TT>avarice</TT>, when you specify a =
+serial=20
+      port to use with the =E2=80=94jtag flag, you must specify it in =
+the form=20
+  of:</TD></TR></TBODY></TABLE></DIV>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>--jtag /dev/comX</TT></PRE></DIV></DIV>
+<P>where <STRONG>X</STRONG> is the COM port number you are using. This =
+is due to=20
+the fact that avarice is linked to the Cygwin DLL, which requires a =
+Unix-type=20
+format for the COM port number.</P>
+<H3>5.2 AVR Studio</H3>
+<P>AVR Studio 4.10 and above has a new parser component that can read =
+ELF files=20
+natively. These ELF files must contain DWARF2 debugging information.</P>
+<DIV class=3Dtitle>Requirements (for AVR Studio version 4.10 and =
+greater)</DIV>
+<P>File Format: ELF<BR>Debugging Information: DWARF-2</P>
+<H3>5.3 Commercial Simulators</H3>
+<P>Certain commercial simulators have more requirements to use their =
+products.=20
+Namely, you must compile your software with the <TT>stabs</TT> debugging =
+
+information, and you must convert your ELF file to either the=20
+<STRONG>COFF</STRONG> format or to the <STRONG>Atmel Extended =
+COFF</STRONG>=20
+format.</P>
+<DIV class=3Dtitle>Requirements (dependent upon application used)</DIV>
+<P>File Format: COFF / Atmel Extended COFF<BR>Debugging Information: =
+stabs</P>
+<P>The GNU Binutils program objcopy (avr-objcopy) has been patched where =
+it can=20
+now convert from ELF to either of these formats. Note that the converter =
+is a=20
+beta release.</P>
+<P>The usage of avr-objcopy to convert ELF/stabs debugging information =
+into AVR=20
+COFF debugging information is (long lines wrapped with backslashes):</P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>avr-objcopy \
+        --debugging \
+        -O $(FORMAT) \
+        --change-section-address .data-0x800000 \
+        --change-section-address .bss-0x800000 \
+        --change-section-address .noinit-0x800000 \
+        --change-section-address .eeprom-0x810000 \
+        $(filename).elf $(filename).cof</TT></PRE></DIV></DIV>
+<P>where <TT>$(FORMAT)</TT> should either be <TT>coff-avr</TT> (COFF =
+format that=20
+matches the older Atmel AVR COFF documentation, as understood by AVR =
+Studio 3,=20
+early versions of AVR Studio 4, and also by VMLab), or =
+<TT>coff-ext-avr</TT>=20
+(current AVR Extended COFF specification, as understood by AVR Studio =
+4.07+;=20
+adds long filenames and structure debugging).</P>
+<P>There might be some warnings when you run the above, like</P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>Warning: file {standard input} not found =
+in symbol table, ignoring
+Warning: ignoring function __vectors() outside any compilation unit
+Warning: ignoring function __bad_interrupt() outside any compilation =
+unit</TT></PRE></DIV></DIV>
+<P>Perhaps more of them if your avr-libc has been installed with =
+debugging=20
+symbols (the default WinAVR installation strips debugging symbols from =
+the=20
+installed library files). There should be no other warning normally.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Note</DIV></TD>
+    <TD class=3Dcontent>The avr-objcopy usage describe above is in the =
+Makefile=20
+      Template that is included with WinAVR and in the MFile template. =
+You=20
+      should only have to call <EM>make coff</EM> to convert to AVR =
+COFF, or=20
+      call <EM>make extcoff</EM> to convert to AVR Extended=20
+COFF.</TD></TR></TBODY></TABLE></DIV>
+<P>As Atmel has now moved towards the ELF file format with DWARF-2 =
+debugging=20
+information, the (E)COFF conversion is deprecated. Thus, there is =
+currently no=20
+ongoing development on the COFF converter. There are a few known bugs in =
+it, in=20
+particular it is known that using forward struct references can crash =
+the=20
+converter. Unfortunately, fixing this bug would be close to a whole =
+rewrite of=20
+it. As a workaround, just avoid forward struct references.</P>
+<P>Instead of writing:</P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>typedef struct foo *foo_p;
+struct foo {
+    foo_p next;
+    int something;
+};</TT></PRE></DIV></DIV>
+<P>reorder it to:</P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>struct foo {
+    struct foo *next;
+    int something;
+};
+typedef struct foo *foo_p;</TT></PRE></DIV></DIV>
+<P>That strategy is known to work around that particular bug.</P></DIV>
+<H2>6.0 Useful Additions</H2>
+<DIV class=3Dsectionbody>
+<H3>6.1 Operating Systems</H3>
+<P>While an Operating System, or RTOS, isn't necessary to write software =
+for the=20
+AVR, there may be times when it is desirable. Below, are some links for =
+free or=20
+open source operating systems / kernels for the AVR. Note that this may =
+not be a=20
+complete list.</P>
+<DL>
+  <DT><A href=3D"http://www.barello.net/avrx/">AvrX</A>=20
+  <DD>
+  <P>AvrX is a Real-Time Multitasking Kernel. </P>
+  <DT><A href=3D"http://www.ethernut.de/en/">EtherNut - Nut/OS</A>=20
+  <DD>
+  <P>Ethernut is an Open Source Hardware and Software Project for =
+building=20
+  Embedded Ethernet Devices. It contains Nut/OS which is an =
+intentionally simple=20
+  RTOS for the ATmega128, which provides a minimum of services to run =
+Nut/Net,=20
+  the TCP/IP stack. </P>
+  <DT><A href=3D"http://www.freertos.org/">FreeRTOS</A>=20
+  <DD>
+  <P>FreeRTOS is a portable, open source, mini Real Time Scheduler (or =
+mini RTOS=20
+  kernel). </P>
+  <DT><A href=3D"http://webs.cs.berkeley.edu/tos/">TinyOS</A>=20
+  <DD>
+  <P>TinyOS is a component-based runtime environment designed to provide =
+support=20
+  for deeply embedded systems which require concurrency intensive =
+operations=20
+  while constrained by minimal hardware resources. </P>
+  <DT><A href=3D"http://www.sics.se/~adam/contiki/">Contiki</A>=20
+  <DD>
+  <P>Contiki is an Internet-enabled operating system and desktop =
+environment for=20
+  a number of smallish systems. </P>
+  <DT><A href=3D"http://www.shift-right.com/xmk/index.html">XMK - =
+eXtreme Minimal=20
+  Kernel</A>=20
+  <DD>
+  <P>XMK is a preemptive multitasking scheduler/kernel for 8bit=20
+  microcontrollers. Its goal is to provide a bare bones RTOS with a =
+small enough=20
+  footprint (RAM+ROM) to run on 8bit microcontrollers. </P>
+  <DT><A href=3D"http://picoos.sourceforge.net/">pico OS</A>=20
+  <DD>
+  <P>pico OS is a highly configurable and very fast real time operating =
+system=20
+  (RTOS). It targets a wide range of architectures, from very small 8 =
+bit=20
+  processors and microcontrollers up to very huge platforms. An AVR port =
+is=20
+  available. </P>
+  <DT><A href=3D"http://usmartx.sourceforge.net/">uSmartX</A>=20
+  <DD>
+  <P>uSmartX is a non-preemptive, multitasking, priority based RTOS. It =
+features=20
+  mechanisms for inter-task communication and basic task and time =
+control=20
+  functions. </P>
+  <DT><A=20
+  =
+href=3D"http://www.avrfreaks.net/index.php?module=3DFreaks%20Academy&amp;=
+func=3DviewItem&amp;item_type=3Dproject&amp;item_id=3D725">Super=20
+  Simple Tasker (SST)</A>=20
+  <DD>
+  <P>This is an implementation of a lightweight scheduler so called =
+"Super=20
+  Simple Tasker" - SST. The idea is taken from the Robert Ward's article =
+-=20
+  "Practical Real-Time Techniques"=20
+  http://www.quantum-leaps.com/resources/Ward03.pdf. The SST allows to=20
+  significantly reduce needs for precious RAM and ROM and still allows =
+to keep a=20
+  real time characteristic of the scheduler (e.g. tasks prioritization =
+and=20
+  preemption). </P></DD></DL>
+<H3>6.2 Other</H3>
+<P>Here are some links to free or open source components that may be =
+useful.</P>
+<DL>
+  <DT><A href=3D"http://www.sics.se/~adam/uip/">uIP - TCP/IP Stack for =
+Embedded=20
+  Microcontrollers</A>=20
+  <DD>
+  <P>uIP is an implementation of the TCP/IP protocol stack intended for =
+small=20
+  8-bit and 16-bit microcontrollers. It provides the necessary protocols =
+for=20
+  Internet communication, with a very small code footprint and RAM =
+requirements=20
+  - the uIP code size is on the order of a few kilobytes and RAM usage =
+is on the=20
+  order of a few hundred bytes. </P>
+  <DT><A=20
+  =
+href=3D"http://libtom.org/?page=3Dfeatures&amp;newsitems=3D5&amp;whatfile=
+=3Dcrypt">LibTomCrypt</A>=20
+
+  <DD>
+  <P>LibTomCrypt is a fairly comprehensive, modular and portable =
+cryptographic=20
+  toolkit that provides developers with a vast array of well known =
+published=20
+  block ciphers, one-way hash functions, chaining modes, pseudo-random =
+number=20
+  generators, public key cryptography and a plethora of other routines.=20
+  LibTomCrypt has been designed from the ground up to be very simple to =
+use. It=20
+  has a modular and standard API that allows new ciphers, hashes and =
+PRNGs to be=20
+  added or removed without change to the overall end application. It =
+features=20
+  easy to use functions and a complete user manual which has many source =
+snippet=20
+  examples. LibTomCrypt is free for all purposes under the public =
+domain. This=20
+  includes commercial use, redistribution and even branching. [Editor's =
+Note:=20
+  This package was reported to have been able to build for AVR, but it's =
+not=20
+  completely verified.] </P>
+  <DT><A href=3D"http://www.sics.se/~adam/pt/">Protothreads</A>=20
+  <DD>
+  <P>Protothreads are extremely lightweight stackless threads designed =
+for=20
+  severely memory constrained systems such as small embedded systems or =
+sensor=20
+  network nodes. Protothreads provide linear code execution for =
+event-driven=20
+  systems implemented in C. Protothreads can be used with or without an=20
+  underlying operating system. </P></DD></DL></DIV>
+<H2>7.0 Finding Help</H2>
+<DIV class=3Dsectionbody>
+<P>WinAVR is a packaged collection of software devlopment tools built =
+from open=20
+source projects.</P>
+<P>There is a large community of people who use these tools. There are a =
+number=20
+of these people who volunteer their time to help other people with =
+problems or=20
+questions. And then there are other people who also volunteer their time =
+to=20
+contribute to these open source projects.</P>
+<P>The main places to find help is the Documenation and Online Sources. =
+Please=20
+try and find the answer in the documentation first before asking for =
+help=20
+online.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Tip</DIV></TD>
+    <TD class=3Dcontent>If you need to ask for help online, please read =
+this=20
+      first: <A =
+href=3D"http://catb.org/~esr/faqs/smart-questions.html">How To Ask=20
+      Questions The Smart Way</A></TD></TR></TBODY></TABLE></DIV>
+<H3>7.1 Documentation</H3>
+<P>The first and best place to find help is in the documentation! WinAVR =
+
+includes the user manuals for many of the software tools that are =
+shipped in the=20
+package.</P>
+<P>The documentation for any particular package may come in different =
+formats=20
+depending upon what is available from that package and available space =
+in the=20
+WinAVR installation. The different documentation formats that you'll =
+find in=20
+WinAVR are:</P>
+<OL>
+  <LI>
+  <P>HTML - Hyper Text Markup Language. Requires a web browser to view. =
+</P>
+  <LI>
+  <P>PDF - Portable Document Format. Requires a PDF viewer such as =
+Acrobat.=20
+  </P></LI></OL>
+<P>Additionally many user manuals can also be found online, especially =
+packages=20
+that are part of the GNU project. You can find links to many of these in =
+the=20
+Links section below.</P>
+<P>For packages that have HTML, and PDF documentation, look in your=20
+<TT>&lt;install&gt;\doc</TT> directory.</P>
+<P>WinAVR installs on your desktop two shortcuts. One is to the HTML=20
+documentation on avr-libc that is installed locally. The other shortcut =
+is to=20
+the GNU Manuals online (which requires Internet connection).</P>
+<H3>7.2 Online Sources</H3>
+<P>I'll say it again:</P>
+<P>Please try and find the answer in the documentation first before =
+asking for=20
+help online.</P>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Tip</DIV></TD>
+    <TD class=3Dcontent>If you need to ask for help online, please read =
+this=20
+      first: <A =
+href=3D"http://catb.org/~esr/faqs/smart-questions.html">How To Ask=20
+      Questions The Smart Way</A></TD></TR></TBODY></TABLE></DIV>
+<P>Help for the AVR software development toolset (and specifically AVR =
+GCC) can=20
+be found at:</P>
+<DL>
+  <DT><A href=3D"http://www.avrfreaks.net/">AVR Freaks</A>=20
+  <DD>
+  <P>All AVR, all the time! This site has several forums including a =
+general AVR=20
+  Forum and an AVR GCC Forum specifically for discussion of the GCC =
+compiler for=20
+  the AVR. They also have an Academy which contains user's projects. =
+This gives=20
+  you access to a lot of sample code, libraries, and various AVR =
+projects. </P>
+  <DT><A href=3D"http://savannah.nongnu.org/mail/?group=3Davr">avr-gcc =
+mailing=20
+  list</A>=20
+  <DD>
+  <P>The avr-gcc list is intended as a forum for dicussion about the =
+following:=20
+  Bugs, Programming technique, Installation and distributions, Hints and =
+tips,=20
+  Other avr-gcc related stuff. Note that all of the developers of the =
+toolset=20
+  are subscribed to this list! </P>
+  <DT><A =
+href=3D"http://www.mikrocontroller.net/">Mikrocontroller.net</A>=20
+  <DD>
+  <P>For native German speakers. They have a forum for the AVR GCC =
+compiler.=20
+  </P></DD></DL>
+<P>Help for other projects and tools included in WinAVR can usually be =
+found at=20
+the individual project's web page which usually includes links to their =
+mailing=20
+lists.</P>
+<P>If you need help, do not contact the WinAVR developers personally! =
+Use these=20
+web sites and mailing lists first!</P></DIV>
+<H2>8.0 Toolset Bugs</H2>
+<DIV class=3Dsectionbody>
+<P>You can fill out a relevant tracker on the <A=20
+href=3D"http://sourceforge.net/projects/winavr/">WinAVR SourceForge =
+project=20
+page</A>, if you have one of the following:</P>
+<UL>
+  <LI>
+  <P>a bug in the packaging </P>
+  <LI>
+  <P>a bug in the installation </P>
+  <LI>
+  <P>any suggestions for a new tool to be added </P>
+  <LI>
+  <P>any suggestions for improvements to the overall package =
+</P></LI></UL>
+<DIV class=3Dadmonitionblock>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD class=3Dicon>
+      <DIV class=3Dtitle>Important</DIV></TD>
+    <TD class=3Dcontent>IF THERE ARE BUGS IN THE SOFTWARE TOOLS =
+THEMSELVES, THE=20
+      MAINTAINERS OF THE INDIVIDUAL SOFTWARE PROJECTS SHOULD BE NOTIFIED =
+IN THE=20
+      APPROPRIATE MANNER, NOT ME, OR THE WINAVR=20
+PROJECT!!!!</TD></TR></TBODY></TABLE></DIV>
+<P>Generally, if you encounter a bug with a library routine or a bug =
+with a=20
+specifc AVR processor or header file, notify the avr-libc project first =
+(see=20
+Links below). They will let you know if the bug is truly in the avr-libc =
+
+project, or if it should be passed on to the GCC project. If the bug is =
+in GCC,=20
+go to their web page (see Links below) on how to report bugs to GCC.</P>
+<P>For bugs with Programmer's Notepad 2, see it's SourceForge web site =
+(see=20
+Links) to issue a Bug Tracker, or email it's author (see Credits).</P>
+<P>For bugs with avrdude, see it's Project page (see Links).</P>
+<P>For bugs with simulavr, see it's Project page (see Links).</P>
+<P>For bugs with avarice, see it's Project page (see Links).</P>
+<P>For bugs with GDB, see it's web page (see Links).</P>
+<P>For bugs with Insight, see it's web page (see Links).</P>
+<P>For bugs with SRecord, see it's Home page (see Links).</P></DIV>
+<H2>9.0 WinAVR FAQ</H2>
+<DIV class=3Dsectionbody>
+<P>This FAQ is specific to the WinAVR package and installation. For a=20
+programming issues, see the avr-libc FAQ in the avr-libc documentation =
+included=20
+in the WinAVR package or the <A=20
+href=3D"http://www.nongnu.org/avr-libc/user-manual/">avr-libc user =
+manual=20
+online</A>.</P>
+<P>#1) <EM>When I run a program, why do I get the error "You have =
+multiple=20
+copies of cygwin1.dll on your system."?</EM></P>
+<P>Certain packages in WinAVR are built with Cygwin and are linked to =
+their=20
+emulation library: cygwin1.dll. If you also have Cygwin installed =
+seperately,=20
+these programs will find the cygwin1.dll that is shipped and included =
+with=20
+WinAVR, and will also find the cygwin1.dll in your Cygwin installation. =
+If these=20
+versions are different, you will get this error.</P>
+<P>WinAVR must ship the cygwin1.dll file to support it's packages, as =
+most=20
+people do not have Cygwin installed on their system and it's not fair to =
+ask=20
+people to install such a huge package as a prerequisite.</P>
+<P>Unfortunately, the <A href=3D"http://cygwin.com/faq.html">Cygwin =
+FAQ</A> says=20
+that the only way around this is to remove other copies of cygwin1.dll. =
+This=20
+would mean either uninstalling Cygwin so the WinAVR programs work, or =
+perhaps=20
+renaming the cygwin1.dll found in the <TT>&lt;install&gt;\bin</TT> =
+directory so=20
+the WinAVR programs will use the cygwin1.dll that is in the Cygwin =
+installation.=20
+However, if you do the latter, note that the version of cygwin1.dll you =
+have in=20
+your Cygwin installation is probably different than the version of =
+cygwin1.dll=20
+that was used to build the WinAVR programs. In this case, use at your =
+own=20
+risk.</P>
+<P>#2) <EM>I have any of the following warnings when I create a COFF =
+file, what=20
+should I do?</EM></P>
+<DIV class=3Dlistingblock>
+<DIV class=3Dcontent><PRE><TT>Warning: file {standard input} not found =
+in symbol table, ignoring
+Warning: ignoring function __vectors() outside any compilation unit
+Warning: ignoring function __bad_interrupt() outside any compilation =
+unit
+Discarding local symbol outside any compilation unit: =
+.__do_copy_data_start
+Discarding local symbol outside any compilation unit: =
+.__do_copy_data_loop</TT></PRE></DIV></DIV>
+<P>Nothing. These warnings can be ignored.</P>
+<P>#3) <EM>I use WinAVR with AVR Studio. I get an error when avr-objcopy =
+is=20
+creating the load file for the EEPROM. It says there are no sections to =
+be=20
+copied.</EM></P>
+<P>avr-objcopy is a part of GNU Binutils. In GNU Binutils 2.17 or later, =
+the=20
+objcopy program was changed to return an error when there are no =
+sections to be=20
+copied. This is different than previous versions of the objcopy program. =
+This is=20
+not really an error, as it is ok if there are no sections to be =
+copied.</P>
+<P>The Makefile has to be aware of this new behaviour and to not accept =
+this as=20
+a real error. Use the WinAVR Makefile Template as the basis of your =
+Makefile, or=20
+use AVR Studio 4.13 (soon to be released, if not already) which has =
+changed how=20
+it generates its internal Makefile on GCC projects to correctly account =
+for=20
+this.</P></DIV>
+<H2>10.0 WinAVR Project</H2>
+<DIV class=3Dsectionbody>
+<H3>10.1 Build Notes</H3>
+<P>The contained packages are built either in the Cygwin environment, or =
+the=20
+MinGW environment. Some, but not all, packages are dependendent upon one =
+or more=20
+Cygwin DLLs, which are included in WinAVR.</P>
+<OL>
+  <LI>
+  <P>GNU Binutils: MinGW. </P>
+  <LI>
+  <P>GCC: MinGW. </P>
+  <LI>
+  <P>avr-libc: MinGW. </P>
+  <LI>
+  <P>avrdude: Cygwin. </P>
+  <LI>
+  <P>GDB/Insight: MinGW. </P>
+  <LI>
+  <P>AVaRICE: Cygwin. Requires: cygwin1.dll, </P>
+  <LI>
+  <P>SimulAVR: Cygwin. Requires: cygwin1.dll. </P>
+  <LI>
+  <P>SRecord: MinGW. </P></LI></OL>
+<P>DLL Versions:</P>
+<UL>
+  <LI>
+  <P>cygwin1.dll: 1.5.23-2 </P></LI></UL>
+<P>Programmer's Notepad 2 was built by the author, Simon Steele (see =
+Credits).=20
+Tofrodos was built by the author, Christopher Heng (see Credits).</P>
+<H3>10.2 Credits</H3>
+<P>Thank you to everyone who uses WinAVR!</P>
+<UL>
+  <LI>
+  <P>WinAVR software devleopment toolset distribution built by =
+</P></LI></UL>
+<P>Eric B. Weddington<BR><A=20
+href=3D"mailto:arcanum@users.sourceforge.net">email</A></P>
+<P>One person cannot do all of this alone. There are many, many people =
+involved=20
+in making this package what it is. I am deeply indebted to those people. =
+Below=20
+is an attempt at a list of credits. Any omissions are my fault and =
+corrections=20
+are solicited.</P>
+<UL>
+  <LI>
+  <P>Very Special Thanks to Joerg Wunsch for helping this project in=20
+  innummerable ways including writing the AVR COFF patch for binutils; =
+patches=20
+  for GCC to help with debugging and binary constants; being the =
+resident guru=20
+  on AVR Freaks; writing portions of this manual; reviewing all of my =
+wacky=20
+  ideas; building SRecord; getting me in contact with the right people =
+at the=20
+  right time ;-) ; spending the time to take me on a beautiful hike near =
+his=20
+  home town; and for tolerating me over the years. I don't know why he =
+does it,=20
+  but I am eternally grateful. :-) </P>
+  <LI>
+  <P>Very Special Thanks to major contributers to the AVR toolset: Denis =
+
+  Chertykov, Marek Michalkiewicz, Theodore (Ted) A. Roth, Joerg Wunsch, =
+Michael=20
+  Stumpf, Reiner Patommel, Brian S. Dean, Scott Finneran, David Gay, =
+Jason Kyle,=20
+  Bjoern Haase, Anatoly Sokolov, Dmitry Xmelkov. </P>
+  <LI>
+  <P>Thanks to Brian Dessent and Dave Murphy (wintermute) for help in =
+getting=20
+  the toolchain to work on Windows Vista. Thanks to Dave Murphy for the =
+patch=20
+  for Insight. </P>
+  <LI>
+  <P>Very Special Thanks to Bjoern Haase for taking the time and effort =
+to put=20
+  together the patches to add support for the ATmega256x devices and for =
+the=20
+  last minute phone call with Joerg to resolve the last problem! </P>
+  <LI>
+  <P>Very Special Thanks to Colin O'Flynn for writing a tutorial on how =
+to=20
+  install and configure WinAVR, writing a tutorial on how to use =
+Insight, for=20
+  testing WinAVR, all around assistance, and helping on avrdude. </P>
+  <LI>
+  <P>Very Special Thanks to Torleif Sandnes for all his help in getting =
+WinAVR=20
+  to work in AVR Studio in all its various ways. </P>
+  <LI>
+  <P>Thanks to SourceForge for hosting the WinAVR project. </P>
+  <LI>
+  <P>Very Special Thanks to Simon Steele for permission to include =
+Programmers=20
+  Notepad in WinAVR. Programmer's Notepad is written and built by Simon =
+Steele.=20
+  </P>
+  <LI>
+  <P>Native Win32 Unix programs from: </P>
+  <UL>
+    <LI>
+    <P>Karl M. Syring=20
+    &lt;http://www.weihenstephan.de/~syring/win32/UnxUtils.html&gt; </P>
+    <LI>
+    <P>http://www.morpheus.demon.co.uk/ (bison and flex) </P>
+    <LI>
+    <P><A href=3D"http://www.mingw.org/">MinGW</A> </P></LI></UL>
+  <LI>
+  <P>Tofrodos 1.6 is written and built by Chistopher Heng </P>
+  <LI>
+  <P>Thanks to the following people for additional material for the =
+Makefile=20
+  Template: Tim Henigan, Peter Fleury, Joerg Wunsch, Reiner Patommel, =
+Sander=20
+  Pool, Frederik Rouleau, Markus Pfaff, and Carlos Lamas. </P>
+  <LI>
+  <P>Special Thanks to Markus Assfalg for all his input in doing AVR =
+COFF=20
+  pre-alpha tests and to Svenn-Ivar Svendsen from Atmel Norway, who =
+willingly=20
+  answered questions regarding Atmel's COFF specs. </P>
+  <LI>
+  <P>Very Special Thanks to Torleif Sandness of Atmel, the principal =
+developer=20
+  of Atmel's ELF parser for AVR Studio, for really pioneering that area. =
+</P>
+  <LI>
+  <P>Thanks to members of the AVR COFF Alpha Testing team, which =
+include:=20
+  Wallace White, Markus Assfalg, Volkmar Dierkes, Marc Wetzel, Andrew =
+Ghali,=20
+  Omer Sinan KAYA, Eric Weddington. </P>
+  <LI>
+  <P>Thanks to Atmel and to Advanced Micro Tools (AMTools), makers of =
+the VMLAB=20
+  debugger tool, for assistance in the endeavour of writing the AVR COFF =
+patch.=20
+  </P>
+  <LI>
+  <P>Special thanks to Nick Moore for designing the WinAVR logos! </P>
+  <LI>
+  <P>Special thanks to <A href=3D"http://www.tulsawebdev.com/">Brian =
+Brill</A> for=20
+  helping to move around some large files for the first release; to Ted =
+Roth for=20
+  hosting the first WinAVR release on the avr-libc web site. </P>
+  <LI>
+  <P>Very Special Thanks to <STRONG>Ted Roth</STRONG> and <STRONG>Joerg=20
+  Wunsch</STRONG> for putting up with me when I was starting out. </P>
+  <LI>
+  <P>And a Very Special Thank You to Atmel Corporation. </P></LI></UL>
+<H3>10.3 TODO / Open Projects</H3>
+<UL>
+  <LI>
+  <P>Add AVR-Ada to WinAVR. No, really, it'll happen. </P>
+  <LI>
+  <P>avarice needs a native Win32 port (no dependency on Cygwin DLL). =
+</P>
+  <LI>
+  <P>simulavr needs a native Win32 port. </P>
+  <LI>
+  <P>Much more=E2=80=A6 </P></LI></UL>
+<P>Stay tuned=E2=80=A6. ;-)</P></DIV>
+<H2>11.0 Links</H2>
+<DIV class=3Dsectionbody>
+<P><A href=3D"http://sourceforge.net/projects/winavr">WinAVR =
+Project</A><BR><A=20
+href=3D"http://winavr.sourceforge.net/">WinAVR Home Page</A></P>
+<P><A href=3D"http://sourceforge.net/">SourceForge</A></P>
+<P><A href=3D"http://www.avrfreaks.net/">AVR Freaks</A></P>
+<P><A href=3D"http://savannah.nongnu.org/mail/?group=3Davr">avr-gcc =
+mailing=20
+list</A><BR><A =
+href=3D"http://savannah.nongnu.org/mail/?group=3Davr">avr-chat=20
+mailing list</A></P>
+<P><A href=3D"http://www.atmel.com/">Atmel</A><BR><A=20
+href=3D"http://www.atmel.com/products/avr/">Atmel AVR =
+microcontrollers</A><BR><A=20
+href=3D"http://www.atmel.com/dyn/products/tools.asp?family_id=3D607">Atme=
+l's AVR=20
+Tools and Software</A><BR><A =
+href=3D"http://www.atmel.no/beta_ware/">Atmel=20
+Norway's AVR Tools Beta Site</A></P>
+<P><A href=3D"http://www.gnu.org/">GNU Project</A></P>
+<P><A href=3D"http://www.gnu.org/manual/">GNU Manuals Online</A></P>
+<P><A href=3D"http://sources.redhat.com/binutils/">GNU Binutils</A></P>
+<P><A href=3D"http://www.gnu.org/software/gcc/">GNU Compiler Collection=20
+(GCC)</A></P>
+<P><A href=3D"http://www.gnu.org/software/gcc/onlinedocs/">GCC Manuals=20
+Online</A></P>
+<P><A =
+href=3D"http://savannah.nongnu.org/projects/avr-libc/">avr-libc</A></P>
+<P><A =
+href=3D"http://savannah.nongnu.org/projects/avrdude/">avrdude</A></P>
+<P><A =
+href=3D"http://sourceforge.net/projects/avrdude-gui">avrdude-gui</A></P>
+<P><A href=3D"http://savannah.nongnu.org/projects/uisp/">uisp</A></P>
+<P><A href=3D"http://sources.redhat.com/gdb/">GNU Debugger (GDB)</A></P>
+<P><A href=3D"http://sources.redhat.com/insight/">Insight</A></P>
+<P><A href=3D"http://sourceforge.net/projects/avarice">avarice</A></P>
+<P><A =
+href=3D"http://savannah.nongnu.org/projects/simulavr/">simulavr</A></P>
+<P><A href=3D"http://avr-ada.sourceforge.net/">AVR-Ada</A></P>
+<P><A href=3D"http://www.sax.de/~joerg/mfile/">MFile</A></P>
+<P><A href=3D"http://www.pnotepad.org/">Programmers Notepad</A><BR><A=20
+href=3D"http://www.scintilla.org/">Scintilla</A></P>
+<P><A href=3D"http://srecord.sourceforge.net/">SRecord</A></P>
+<P><A href=3D"http://libusb-win32.sourceforge.net/">LibUSB-Win32</A></P>
+<P><A =
+href=3D"http://reality.sgiweb.org/davea/dwarf.html">dwarfdump</A></P>
+<P><A =
+href=3D"http://www.cs.utah.edu/~regehr/stacktool/">stacktool</A></P>
+<P><A href=3D"http://www.barello.net/avrx/">AvrX</A></P>
+<P><A href=3D"http://www.ethernut.de/en/">EtherNut - Nut/OS</A></P>
+<P><A href=3D"http://www.freertos.org/">FreeRTOS</A></P>
+<P><A href=3D"http://webs.cs.berkeley.edu/tos/">TinyOS</A></P>
+<P><A href=3D"http://www.sics.se/~adam/contiki/">Contiki</A></P>
+<P><A href=3D"http://sourceforge.net/projects/xmk">XMK - eXtreme Minimal =
+
+Kernel</A></P>
+<P><A href=3D"http://picoos.sourceforge.net/">Pico OS</A></P>
+<P><A href=3D"http://usmartx.sourceforge.net/">uSmartX</A></P>
+<P><A=20
+href=3D"http://libtom.org/?page=3Dfeatures&amp;newsitems=3D5&amp;whatfile=
+=3Dcrypt">LibTomCrypt</A></P>
+<P><A href=3D"http://www.sics.se/~adam/uip/">uIP - TCP/IP Stack for =
+Embedded=20
+Microcontrollers</A></P>
+<P><A href=3D"http://www.sics.se/~adam/pt/">Protothreads</A></P>
+<P><A href=3D"http://www.thefreecountry.com/">Tofrodos</A></P>
+<P><A href=3D"http://www.gnu.org/software/make/">GNU Make</A></P>
+<P><A href=3D"http://www.mingw.org/">MinGW</A></P>
+<P><A href=3D"http://www.cygwin.com/">Cygwin</A></P>
+<P><A href=3D"http://savannah.nongnu.org/projects/freeice">Free =
+ICE</A></P>
+<P><A =
+href=3D"http://sourceforge.net/projects/thmonkeeproject/">Pymite</A></P>
+<P><A href=3D"http://sourceforge.net/projects/nanovm">NanoVM</A></P>
+<P><A href=3D"http://www.catb.org/~esr/jargon/">Jargon</A></P></DIV>
+<DIV id=3Dfooter>
+<DIV id=3Dfooter-text>Last updated 15-May-2007 17:21:09 MDT=20
+</DIV></DIV></BODY></HTML>

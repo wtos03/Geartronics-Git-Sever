@@ -1,0 +1,1009 @@
+
+io.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000004f6  00000000  00000000  00000094  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000004  00800060  000004f6  0000058a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000007  00800064  00800064  0000058e  2**0
+                  ALLOC
+  3 .noinit       00000000  0080006b  0080006b  0000058e  2**0
+                  CONTENTS
+  4 .eeprom       00000000  00810000  00810000  0000058e  2**0
+                  CONTENTS
+  5 .stab         00001464  00000000  00000000  00000590  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  6 .stabstr      000009a2  00000000  00000000  000019f4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54 <__ctors_end>
+   4:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+   8:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+   c:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  10:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  14:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  18:	0c 94 f1 00 	jmp	0x1e2 <__vector_6>
+  1c:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  20:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  24:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  28:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  2c:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  30:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  34:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  38:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  3c:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  40:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  44:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  48:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  4c:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+  50:	0c 94 45 00 	jmp	0x8a <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_copy_data>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	e6 ef       	ldi	r30, 0xF6	; 246
+  68:	f4 e0       	ldi	r31, 0x04	; 4
+  6a:	02 c0       	rjmp	.+4      	; 0x70 <.do_copy_data_start>
+
+0000006c <.do_copy_data_loop>:
+  6c:	05 90       	lpm	r0, Z+
+  6e:	0d 92       	st	X+, r0
+
+00000070 <.do_copy_data_start>:
+  70:	a4 36       	cpi	r26, 0x64	; 100
+  72:	b1 07       	cpc	r27, r17
+  74:	d9 f7       	brne	.-10     	; 0x6c <.do_copy_data_loop>
+
+00000076 <__do_clear_bss>:
+  76:	10 e0       	ldi	r17, 0x00	; 0
+  78:	a4 e6       	ldi	r26, 0x64	; 100
+  7a:	b0 e0       	ldi	r27, 0x00	; 0
+  7c:	01 c0       	rjmp	.+2      	; 0x80 <.do_clear_bss_start>
+
+0000007e <.do_clear_bss_loop>:
+  7e:	1d 92       	st	X+, r1
+
+00000080 <.do_clear_bss_start>:
+  80:	ab 36       	cpi	r26, 0x6B	; 107
+  82:	b1 07       	cpc	r27, r17
+  84:	e1 f7       	brne	.-8      	; 0x7e <.do_clear_bss_loop>
+  86:	0c 94 24 01 	jmp	0x248 <main>
+
+0000008a <__bad_interrupt>:
+  8a:	0c 94 00 00 	jmp	0x0 <__vectors>
+
+0000008e <delay>:
+
+void delay ( uint16_t  time)
+{
+   uint16_t i;
+   for (i = 0 ; i < time; i++);
+  8e:	20 e0       	ldi	r18, 0x00	; 0
+  90:	30 e0       	ldi	r19, 0x00	; 0
+  92:	28 17       	cp	r18, r24
+  94:	39 07       	cpc	r19, r25
+  96:	18 f4       	brcc	.+6      	; 0x9e <delay+0x10>
+  98:	2f 5f       	subi	r18, 0xFF	; 255
+  9a:	3f 4f       	sbci	r19, 0xFF	; 255
+  9c:	fa cf       	rjmp	.-12     	; 0x92 <delay+0x4>
+  9e:	08 95       	ret
+
+000000a0 <remote_decode>:
+
+}
+
+
+/* This subroutine will handle IR remote decode by getting remote code from Interrupt handle for input capture
+and will response  to each remote key. For other applications user can modified here for different remote active
+However this routine support Sony remote control only
+   global effect   g_irint;
+*/
+
+uint8_t remote_decode ( uint16_t ircode)
+{ 
+  uint16_t pwm;
+  uint8_t speed, found = 1;
+  a0:	31 e0       	ldi	r19, 0x01	; 1
+  speed = 10;
+  a2:	2a e0       	ldi	r18, 0x0A	; 10
+  switch ( ircode)
+  a4:	48 e0       	ldi	r20, 0x08	; 8
+  a6:	80 31       	cpi	r24, 0x10	; 16
+  a8:	94 07       	cpc	r25, r20
+  aa:	09 f4       	brne	.+2      	; 0xae <remote_decode+0xe>
+  ac:	63 c0       	rjmp	.+198    	; 0x174 <remote_decode+0xd4>
+  ae:	48 e0       	ldi	r20, 0x08	; 8
+  b0:	81 31       	cpi	r24, 0x11	; 17
+  b2:	94 07       	cpc	r25, r20
+  b4:	80 f5       	brcc	.+96     	; 0x116 <remote_decode+0x76>
+  b6:	42 e0       	ldi	r20, 0x02	; 2
+  b8:	80 31       	cpi	r24, 0x10	; 16
+  ba:	94 07       	cpc	r25, r20
+  bc:	09 f4       	brne	.+2      	; 0xc0 <remote_decode+0x20>
+  be:	60 c0       	rjmp	.+192    	; 0x180 <remote_decode+0xe0>
+  c0:	42 e0       	ldi	r20, 0x02	; 2
+  c2:	81 31       	cpi	r24, 0x11	; 17
+  c4:	94 07       	cpc	r25, r20
+  c6:	80 f4       	brcc	.+32     	; 0xe8 <remote_decode+0x48>
+  c8:	80 39       	cpi	r24, 0x90	; 144
+  ca:	91 05       	cpc	r25, r1
+  cc:	09 f4       	brne	.+2      	; 0xd0 <remote_decode+0x30>
+  ce:	65 c0       	rjmp	.+202    	; 0x19a <remote_decode+0xfa>
+  d0:	81 39       	cpi	r24, 0x91	; 145
+  d2:	91 05       	cpc	r25, r1
+  d4:	20 f4       	brcc	.+8      	; 0xde <remote_decode+0x3e>
+  d6:	40 97       	sbiw	r24, 0x10	; 16
+  d8:	09 f4       	brne	.+2      	; 0xdc <remote_decode+0x3c>
+  da:	4a c0       	rjmp	.+148    	; 0x170 <remote_decode+0xd0>
+  dc:	71 c0       	rjmp	.+226    	; 0x1c0 <remote_decode+0x120>
+  de:	80 51       	subi	r24, 0x10	; 16
+  e0:	91 40       	sbci	r25, 0x01	; 1
+  e2:	09 f4       	brne	.+2      	; 0xe6 <remote_decode+0x46>
+  e4:	73 c0       	rjmp	.+230    	; 0x1cc <remote_decode+0x12c>
+  e6:	6c c0       	rjmp	.+216    	; 0x1c0 <remote_decode+0x120>
+  e8:	44 e0       	ldi	r20, 0x04	; 4
+  ea:	80 31       	cpi	r24, 0x10	; 16
+  ec:	94 07       	cpc	r25, r20
+  ee:	09 f4       	brne	.+2      	; 0xf2 <remote_decode+0x52>
+  f0:	43 c0       	rjmp	.+134    	; 0x178 <remote_decode+0xd8>
+  f2:	44 e0       	ldi	r20, 0x04	; 4
+  f4:	81 31       	cpi	r24, 0x11	; 17
+  f6:	94 07       	cpc	r25, r20
+  f8:	28 f4       	brcc	.+10     	; 0x104 <remote_decode+0x64>
+  fa:	80 59       	subi	r24, 0x90	; 144
+  fc:	92 40       	sbci	r25, 0x02	; 2
+  fe:	09 f4       	brne	.+2      	; 0x102 <remote_decode+0x62>
+ 100:	65 c0       	rjmp	.+202    	; 0x1cc <remote_decode+0x12c>
+ 102:	5e c0       	rjmp	.+188    	; 0x1c0 <remote_decode+0x120>
+ 104:	44 e0       	ldi	r20, 0x04	; 4
+ 106:	80 39       	cpi	r24, 0x90	; 144
+ 108:	94 07       	cpc	r25, r20
+ 10a:	09 f4       	brne	.+2      	; 0x10e <remote_decode+0x6e>
+ 10c:	4d c0       	rjmp	.+154    	; 0x1a8 <remote_decode+0x108>
+ 10e:	80 51       	subi	r24, 0x10	; 16
+ 110:	96 40       	sbci	r25, 0x06	; 6
+ 112:	d1 f1       	breq	.+116    	; 0x188 <remote_decode+0xe8>
+ 114:	55 c0       	rjmp	.+170    	; 0x1c0 <remote_decode+0x120>
+ 116:	4a e0       	ldi	r20, 0x0A	; 10
+ 118:	80 35       	cpi	r24, 0x50	; 80
+ 11a:	94 07       	cpc	r25, r20
+ 11c:	09 f4       	brne	.+2      	; 0x120 <remote_decode+0x80>
+ 11e:	56 c0       	rjmp	.+172    	; 0x1cc <remote_decode+0x12c>
+ 120:	4a e0       	ldi	r20, 0x0A	; 10
+ 122:	81 35       	cpi	r24, 0x51	; 81
+ 124:	94 07       	cpc	r25, r20
+ 126:	80 f4       	brcc	.+32     	; 0x148 <remote_decode+0xa8>
+ 128:	49 e0       	ldi	r20, 0x09	; 9
+ 12a:	80 31       	cpi	r24, 0x10	; 16
+ 12c:	94 07       	cpc	r25, r20
+ 12e:	81 f1       	breq	.+96     	; 0x190 <remote_decode+0xf0>
+ 130:	49 e0       	ldi	r20, 0x09	; 9
+ 132:	81 31       	cpi	r24, 0x11	; 17
+ 134:	94 07       	cpc	r25, r20
+ 136:	20 f4       	brcc	.+8      	; 0x140 <remote_decode+0xa0>
+ 138:	80 59       	subi	r24, 0x90	; 144
+ 13a:	98 40       	sbci	r25, 0x08	; 8
+ 13c:	89 f1       	breq	.+98     	; 0x1a0 <remote_decode+0x100>
+ 13e:	40 c0       	rjmp	.+128    	; 0x1c0 <remote_decode+0x120>
+ 140:	80 51       	subi	r24, 0x10	; 16
+ 142:	9a 40       	sbci	r25, 0x0A	; 10
+ 144:	f9 f0       	breq	.+62     	; 0x184 <remote_decode+0xe4>
+ 146:	3c c0       	rjmp	.+120    	; 0x1c0 <remote_decode+0x120>
+ 148:	4c e0       	ldi	r20, 0x0C	; 12
+ 14a:	80 31       	cpi	r24, 0x10	; 16
+ 14c:	94 07       	cpc	r25, r20
+ 14e:	b1 f0       	breq	.+44     	; 0x17c <remote_decode+0xdc>
+ 150:	4c e0       	ldi	r20, 0x0C	; 12
+ 152:	81 31       	cpi	r24, 0x11	; 17
+ 154:	94 07       	cpc	r25, r20
+ 156:	20 f4       	brcc	.+8      	; 0x160 <remote_decode+0xc0>
+ 158:	80 59       	subi	r24, 0x90	; 144
+ 15a:	9a 40       	sbci	r25, 0x0A	; 10
+ 15c:	b9 f1       	breq	.+110    	; 0x1cc <remote_decode+0x12c>
+ 15e:	30 c0       	rjmp	.+96     	; 0x1c0 <remote_decode+0x120>
+ 160:	4c e0       	ldi	r20, 0x0C	; 12
+ 162:	80 39       	cpi	r24, 0x90	; 144
+ 164:	94 07       	cpc	r25, r20
+ 166:	31 f1       	breq	.+76     	; 0x1b4 <remote_decode+0x114>
+ 168:	80 51       	subi	r24, 0x10	; 16
+ 16a:	9e 40       	sbci	r25, 0x0E	; 14
+ 16c:	79 f0       	breq	.+30     	; 0x18c <remote_decode+0xec>
+ 16e:	28 c0       	rjmp	.+80     	; 0x1c0 <remote_decode+0x120>
+	   {
+	    case IR_TV_1:	
+			speed = 2;
+ 170:	22 e0       	ldi	r18, 0x02	; 2
+			 break;
+ 172:	2c c0       	rjmp	.+88     	; 0x1cc <remote_decode+0x12c>
+		case IR_TV_2:
+			speed = 3;
+ 174:	23 e0       	ldi	r18, 0x03	; 3
+			 break;
+ 176:	2a c0       	rjmp	.+84     	; 0x1cc <remote_decode+0x12c>
+	    case IR_TV_3:
+			speed = 4;
+ 178:	24 e0       	ldi	r18, 0x04	; 4
+			 break;
+ 17a:	28 c0       	rjmp	.+80     	; 0x1cc <remote_decode+0x12c>
+		case IR_TV_4:
+			speed = 5;
+ 17c:	25 e0       	ldi	r18, 0x05	; 5
+			 break;
+ 17e:	26 c0       	rjmp	.+76     	; 0x1cc <remote_decode+0x12c>
+	    case IR_TV_5:
+			speed = 6;
+ 180:	26 e0       	ldi	r18, 0x06	; 6
+			 break;
+ 182:	24 c0       	rjmp	.+72     	; 0x1cc <remote_decode+0x12c>
+		case IR_TV_6:
+			speed = 7;
+ 184:	27 e0       	ldi	r18, 0x07	; 7
+			 break;
+ 186:	22 c0       	rjmp	.+68     	; 0x1cc <remote_decode+0x12c>
+	    case IR_TV_7:
+			speed = 8;
+ 188:	28 e0       	ldi	r18, 0x08	; 8
+			break;
+ 18a:	20 c0       	rjmp	.+64     	; 0x1cc <remote_decode+0x12c>
+		case IR_TV_8:
+			speed = 9;
+ 18c:	29 e0       	ldi	r18, 0x09	; 9
+			break;
+ 18e:	1e c0       	rjmp	.+60     	; 0x1cc <remote_decode+0x12c>
+	    case IR_TV_9:
+			speed = 10;
+			break;
+		case IR_TV_0:
+			g_mode1  = MOTOR_STOP;
+ 190:	10 92 65 00 	sts	0x0065, r1
+			g_mode2  = MOTOR_STOP;
+ 194:	10 92 64 00 	sts	0x0064, r1
+			break;
+ 198:	19 c0       	rjmp	.+50     	; 0x1cc <remote_decode+0x12c>
+		case IR_TV_CHUP:							
+        	g_mode1 = MOTOR_FORWARD;		
+ 19a:	30 93 65 00 	sts	0x0065, r19
+ 19e:	0d c0       	rjmp	.+26     	; 0x1ba <remote_decode+0x11a>
+			g_mode2 = MOTOR_FORWARD;
+			break;
+		case IR_TV_CHDOWN:							
+			g_mode1 = MOTOR_BACKWARD;
+ 1a0:	82 e0       	ldi	r24, 0x02	; 2
+ 1a2:	80 93 65 00 	sts	0x0065, r24
+ 1a6:	03 c0       	rjmp	.+6      	; 0x1ae <remote_decode+0x10e>
+			g_mode2 = MOTOR_BACKWARD;
+			break;
+		case IR_TV_TVMUTE:
+			break;
+		case  IR_TV_TVPOWER:
+		  	break;
+		case   IR_TV_TVAV:
+		    break;
+		case  IR_TV_VOLUP:
+            g_mode1 = MOTOR_FORWARD;		
+ 1a8:	30 93 65 00 	sts	0x0065, r19
+			g_mode2 = MOTOR_BACKWARD;
+ 1ac:	82 e0       	ldi	r24, 0x02	; 2
+ 1ae:	80 93 64 00 	sts	0x0064, r24
+			break;
+ 1b2:	0c c0       	rjmp	.+24     	; 0x1cc <remote_decode+0x12c>
+		case  IR_TV_VOLDOWN:                 			
+			g_mode1 = MOTOR_BACKWARD;
+ 1b4:	82 e0       	ldi	r24, 0x02	; 2
+ 1b6:	80 93 65 00 	sts	0x0065, r24
+			g_mode2 = MOTOR_FORWARD;
+ 1ba:	30 93 64 00 	sts	0x0064, r19
+			break;
+ 1be:	06 c0       	rjmp	.+12     	; 0x1cc <remote_decode+0x12c>
+		default:
+			found = 0;
+ 1c0:	30 e0       	ldi	r19, 0x00	; 0
+			g_mode1  = MOTOR_STOP;
+ 1c2:	30 93 65 00 	sts	0x0065, r19
+			g_mode2  = MOTOR_STOP;
+ 1c6:	30 93 64 00 	sts	0x0064, r19
+ 1ca:	08 c0       	rjmp	.+16     	; 0x1dc <remote_decode+0x13c>
+			break;
+ 	   }
+       if (found)
+	   {	pwm = (speed * 100);             // Start from +  speed*2^4
+ 1cc:	84 e6       	ldi	r24, 0x64	; 100
+ 1ce:	28 9f       	mul	r18, r24
+ 1d0:	c0 01       	movw	r24, r0
+ 1d2:	11 24       	eor	r1, r1
+			OCR1A = pwm;
+ 1d4:	9b bd       	out	0x2b, r25	; 43
+ 1d6:	8a bd       	out	0x2a, r24	; 42
+			OCR1B = pwm;
+ 1d8:	99 bd       	out	0x29, r25	; 41
+ 1da:	88 bd       	out	0x28, r24	; 40
+		}	
+	   return found;
+
+}
+ 1dc:	83 2f       	mov	r24, r19
+ 1de:	99 27       	eor	r25, r25
+ 1e0:	08 95       	ret
+
+000001e2 <__vector_6>:
+
+
+ 
+ 
+/* Interrupt handle for Input Capture
+This routine will detect/ process the Sony IR remote command. Protocol using Sony remote control
+INPUT   :  Infrared signal from  ICP pin
+		   Command table 
+		  
+
+OUTPUT 	: g_num  Number of message to display
+		: g_control.display_mode   Display mode of message
+		: g_start_bit
+		
+
+*/
+SIGNAL(SIG_INPUT_CAPTURE1)
+{
+ 1e2:	1f 92       	push	r1
+ 1e4:	0f 92       	push	r0
+ 1e6:	0f b6       	in	r0, 0x3f	; 63
+ 1e8:	0f 92       	push	r0
+ 1ea:	11 24       	eor	r1, r1
+ 1ec:	2f 93       	push	r18
+ 1ee:	3f 93       	push	r19
+ 1f0:	4f 93       	push	r20
+ 1f2:	5f 93       	push	r21
+ 1f4:	6f 93       	push	r22
+ 1f6:	7f 93       	push	r23
+ 1f8:	8f 93       	push	r24
+ 1fa:	9f 93       	push	r25
+ 1fc:	af 93       	push	r26
+ 1fe:	bf 93       	push	r27
+ 200:	ef 93       	push	r30
+ 202:	ff 93       	push	r31
+	uint16_t  ir_code;
+    ir_code = ICR1;
+ 204:	26 b5       	in	r18, 0x26	; 38
+ 206:	37 b5       	in	r19, 0x27	; 39
+	cli(); 
+ 208:	f8 94       	cli
+
+    TCCR1B  |= _BV(ICES1);	     // Rising edge
+ 20a:	8e b5       	in	r24, 0x2e	; 46
+ 20c:	80 64       	ori	r24, 0x40	; 64
+ 20e:	8e bd       	out	0x2e, r24	; 46
+ 	ir_code  = sony_ir_decode(ir_code);  
+ 210:	c9 01       	movw	r24, r18
+ 212:	0e 94 3a 02 	call	0x474 <sony_ir_decode>
+
+	if (ir_code)
+ 216:	00 97       	sbiw	r24, 0x00	; 0
+ 218:	29 f0       	breq	.+10     	; 0x224 <__vector_6+0x42>
+	{       //End code dispatch command    
+ 
+		remote_decode (ir_code);
+ 21a:	0e 94 50 00 	call	0xa0 <remote_decode>
+// Return to falling edge for Start		
+		TCCR1B  &= ~(_BV(ICES1));
+ 21e:	8e b5       	in	r24, 0x2e	; 46
+ 220:	8f 7b       	andi	r24, 0xBF	; 191
+ 222:	8e bd       	out	0x2e, r24	; 46
+
+//Note if  SELFTEST is selected g_irint = 0;
+	} 
+    sei();
+ 224:	78 94       	sei
+ 226:	ff 91       	pop	r31
+ 228:	ef 91       	pop	r30
+ 22a:	bf 91       	pop	r27
+ 22c:	af 91       	pop	r26
+ 22e:	9f 91       	pop	r25
+ 230:	8f 91       	pop	r24
+ 232:	7f 91       	pop	r23
+ 234:	6f 91       	pop	r22
+ 236:	5f 91       	pop	r21
+ 238:	4f 91       	pop	r20
+ 23a:	3f 91       	pop	r19
+ 23c:	2f 91       	pop	r18
+ 23e:	0f 90       	pop	r0
+ 240:	0f be       	out	0x3f, r0	; 63
+ 242:	0f 90       	pop	r0
+ 244:	1f 90       	pop	r1
+ 246:	18 95       	reti
+
+00000248 <main>:
+ 
+}
+
+
+void main()
+{
+ 248:	cc e5       	ldi	r28, 0x5C	; 92
+ 24a:	d8 e0       	ldi	r29, 0x08	; 8
+ 24c:	de bf       	out	0x3e, r29	; 62
+ 24e:	cd bf       	out	0x3d, r28	; 61
+  uint8_t sw1,sw2;
+  uint16_t k;
+  int8_t d1,d2;
+  uint8_t show[3] = {0,'f','b'};
+ 250:	6e 01       	movw	r12, r28
+ 252:	08 94       	sec
+ 254:	c1 1c       	adc	r12, r1
+ 256:	d1 1c       	adc	r13, r1
+ 258:	d6 01       	movw	r26, r12
+ 25a:	e0 e6       	ldi	r30, 0x60	; 96
+ 25c:	f0 e0       	ldi	r31, 0x00	; 0
+ 25e:	83 e0       	ldi	r24, 0x03	; 3
+ 260:	01 90       	ld	r0, Z+
+ 262:	0d 92       	st	X+, r0
+ 264:	81 50       	subi	r24, 0x01	; 1
+ 266:	e1 f7       	brne	.-8      	; 0x260 <main+0x18>
+  
+  
+//  enum {MOTOR_STOP,MOTOR_FORWARD,MOTOR_BACKWARD,MOTOR_BRAKE};
+  d7segment_init();
+ 268:	0e 94 e4 01 	call	0x3c8 <d7segment_init>
+  init_ir();
+ 26c:	0e 94 31 02 	call	0x462 <init_ir>
+  init_motor();
+ 270:	0e 94 ee 01 	call	0x3dc <init_motor>
+  sei();
+ 274:	78 94       	sei
+  d1 = 0;
+ 276:	ff 24       	eor	r15, r15
+  d2 = 0;
+ 278:	ef 2c       	mov	r14, r15
+  
+  while (1)
+  {
+   sw1 = _7SEGMENT_SW1_IN_PORT & _7SEGMENT_SW1; 
+ 27a:	80 b3       	in	r24, 0x10	; 16
+   
+   if (!sw1) // SW1  Press
+ 27c:	98 2f       	mov	r25, r24
+ 27e:	98 70       	andi	r25, 0x08	; 8
+ 280:	83 fd       	sbrc	r24, 3
+ 282:	11 c0       	rjmp	.+34     	; 0x2a6 <main+0x5e>
+    {   	
+		d1++;
+ 284:	e3 94       	inc	r14
+	     if (d1 > MOTOR_BACKWARD)
+ 286:	82 e0       	ldi	r24, 0x02	; 2
+ 288:	8e 15       	cp	r24, r14
+ 28a:	0c f4       	brge	.+2      	; 0x28e <main+0x46>
+			d1 = MOTOR_STOP;
+ 28c:	e9 2e       	mov	r14, r25
+ 28e:	03 ef       	ldi	r16, 0xF3	; 243
+ 290:	11 e0       	ldi	r17, 0x01	; 1
+		for (k = 0; k < 500 ;k++)                         // Delay for key bounce
+				delay(6000);						
+ 292:	80 e7       	ldi	r24, 0x70	; 112
+ 294:	97 e1       	ldi	r25, 0x17	; 23
+ 296:	0e 94 47 00 	call	0x8e <delay>
+ 29a:	01 50       	subi	r16, 0x01	; 1
+ 29c:	10 40       	sbci	r17, 0x00	; 0
+ 29e:	17 ff       	sbrs	r17, 7
+ 2a0:	f8 cf       	rjmp	.-16     	; 0x292 <main+0x4a>
+		g_mode1 = d1;
+ 2a2:	e0 92 65 00 	sts	0x0065, r14
+
+	}
+   
+   sw2 = _7SEGMENT_SW2_IN_PORT & _7SEGMENT_SW2; 
+ 2a6:	83 b3       	in	r24, 0x13	; 19
+   if (!sw2) // SW2 Press
+ 2a8:	98 2f       	mov	r25, r24
+ 2aa:	94 70       	andi	r25, 0x04	; 4
+ 2ac:	82 fd       	sbrc	r24, 2
+ 2ae:	11 c0       	rjmp	.+34     	; 0x2d2 <main+0x8a>
+   {
+        d2++;
+ 2b0:	f3 94       	inc	r15
+		if (d2 > MOTOR_BACKWARD)
+ 2b2:	82 e0       	ldi	r24, 0x02	; 2
+ 2b4:	8f 15       	cp	r24, r15
+ 2b6:	0c f4       	brge	.+2      	; 0x2ba <main+0x72>
+			d2 = MOTOR_STOP;
+ 2b8:	f9 2e       	mov	r15, r25
+ 2ba:	03 ef       	ldi	r16, 0xF3	; 243
+ 2bc:	11 e0       	ldi	r17, 0x01	; 1
+ 		for (k = 0; k < 500 ;k++)                         // Delay for key bounce		
+ 				delay(6000);
+ 2be:	80 e7       	ldi	r24, 0x70	; 112
+ 2c0:	97 e1       	ldi	r25, 0x17	; 23
+ 2c2:	0e 94 47 00 	call	0x8e <delay>
+ 2c6:	01 50       	subi	r16, 0x01	; 1
+ 2c8:	10 40       	sbci	r17, 0x00	; 0
+ 2ca:	17 ff       	sbrs	r17, 7
+ 2cc:	f8 cf       	rjmp	.-16     	; 0x2be <main+0x76>
+		g_mode2 = d2;
+ 2ce:	f0 92 64 00 	sts	0x0064, r15
+	
+   }
+
+  	motor_control(1, g_mode1);
+ 2d2:	60 91 65 00 	lds	r22, 0x0065
+ 2d6:	81 e0       	ldi	r24, 0x01	; 1
+ 2d8:	0e 94 00 02 	call	0x400 <motor_control>
+	motor_control(2, g_mode2);
+ 2dc:	60 91 64 00 	lds	r22, 0x0064
+ 2e0:	82 e0       	ldi	r24, 0x02	; 2
+ 2e2:	0e 94 00 02 	call	0x400 <motor_control>
+	
+//  		for (k = 0; k < 10 ;k++)                         // Delay for key bounce
+//			delay (30000);
+//		motor_control (1, MOTOR_STOP);
+
+   	d7segment_display(show[g_mode1],1);
+ 2e6:	80 91 65 00 	lds	r24, 0x0065
+ 2ea:	f6 01       	movw	r30, r12
+ 2ec:	e8 0f       	add	r30, r24
+ 2ee:	f1 1d       	adc	r31, r1
+ 2f0:	61 e0       	ldi	r22, 0x01	; 1
+ 2f2:	80 81       	ld	r24, Z
+ 2f4:	0e 94 8e 01 	call	0x31c <d7segment_display>
+ 			delay(12000);
+ 2f8:	80 ee       	ldi	r24, 0xE0	; 224
+ 2fa:	9e e2       	ldi	r25, 0x2E	; 46
+ 2fc:	0e 94 47 00 	call	0x8e <delay>
+	d7segment_display(show[g_mode2],2);
+ 300:	80 91 64 00 	lds	r24, 0x0064
+ 304:	f6 01       	movw	r30, r12
+ 306:	e8 0f       	add	r30, r24
+ 308:	f1 1d       	adc	r31, r1
+ 30a:	62 e0       	ldi	r22, 0x02	; 2
+ 30c:	80 81       	ld	r24, Z
+ 30e:	0e 94 8e 01 	call	0x31c <d7segment_display>
+ 			delay(12000);
+ 312:	80 ee       	ldi	r24, 0xE0	; 224
+ 314:	9e e2       	ldi	r25, 0x2E	; 46
+ 316:	0e 94 47 00 	call	0x8e <delay>
+ 31a:	af cf       	rjmp	.-162    	; 0x27a <main+0x32>
+
+0000031c <d7segment_display>:
+#include "Dual_7Segment.h"
+
+void d7segment_display( int8_t num, uint8_t digit)
+{
+ switch (num)
+ 31c:	99 27       	eor	r25, r25
+ 31e:	87 fd       	sbrc	r24, 7
+ 320:	90 95       	com	r25
+ 322:	86 30       	cpi	r24, 0x06	; 6
+ 324:	91 05       	cpc	r25, r1
+ 326:	09 f4       	brne	.+2      	; 0x32a <d7segment_display+0xe>
+ 328:	41 c0       	rjmp	.+130    	; 0x3ac <d7segment_display+0x90>
+ 32a:	87 30       	cpi	r24, 0x07	; 7
+ 32c:	91 05       	cpc	r25, r1
+ 32e:	8c f4       	brge	.+34     	; 0x352 <d7segment_display+0x36>
+ 330:	82 30       	cpi	r24, 0x02	; 2
+ 332:	91 05       	cpc	r25, r1
+ 334:	59 f1       	breq	.+86     	; 0x38c <d7segment_display+0x70>
+ 336:	83 30       	cpi	r24, 0x03	; 3
+ 338:	91 05       	cpc	r25, r1
+ 33a:	2c f4       	brge	.+10     	; 0x346 <d7segment_display+0x2a>
+ 33c:	00 97       	sbiw	r24, 0x00	; 0
+ 33e:	11 f1       	breq	.+68     	; 0x384 <d7segment_display+0x68>
+ 340:	01 97       	sbiw	r24, 0x01	; 1
+ 342:	11 f1       	breq	.+68     	; 0x388 <d7segment_display+0x6c>
+ 344:	37 c0       	rjmp	.+110    	; 0x3b4 <d7segment_display+0x98>
+ 346:	84 30       	cpi	r24, 0x04	; 4
+ 348:	91 05       	cpc	r25, r1
+ 34a:	21 f1       	breq	.+72     	; 0x394 <d7segment_display+0x78>
+ 34c:	05 97       	sbiw	r24, 0x05	; 5
+ 34e:	24 f5       	brge	.+72     	; 0x398 <d7segment_display+0x7c>
+ 350:	1f c0       	rjmp	.+62     	; 0x390 <d7segment_display+0x74>
+ 352:	89 30       	cpi	r24, 0x09	; 9
+ 354:	91 05       	cpc	r25, r1
+ 356:	31 f1       	breq	.+76     	; 0x3a4 <d7segment_display+0x88>
+ 358:	8a 30       	cpi	r24, 0x0A	; 10
+ 35a:	91 05       	cpc	r25, r1
+ 35c:	34 f4       	brge	.+12     	; 0x36a <d7segment_display+0x4e>
+ 35e:	87 30       	cpi	r24, 0x07	; 7
+ 360:	91 05       	cpc	r25, r1
+ 362:	e1 f0       	breq	.+56     	; 0x39c <d7segment_display+0x80>
+ 364:	08 97       	sbiw	r24, 0x08	; 8
+ 366:	e1 f0       	breq	.+56     	; 0x3a0 <d7segment_display+0x84>
+ 368:	25 c0       	rjmp	.+74     	; 0x3b4 <d7segment_display+0x98>
+ 36a:	82 36       	cpi	r24, 0x62	; 98
+ 36c:	91 05       	cpc	r25, r1
+ 36e:	f1 f0       	breq	.+60     	; 0x3ac <d7segment_display+0x90>
+ 370:	83 36       	cpi	r24, 0x63	; 99
+ 372:	91 05       	cpc	r25, r1
+ 374:	1c f4       	brge	.+6      	; 0x37c <d7segment_display+0x60>
+ 376:	0a 97       	sbiw	r24, 0x0a	; 10
+ 378:	d9 f0       	breq	.+54     	; 0x3b0 <d7segment_display+0x94>
+ 37a:	1c c0       	rjmp	.+56     	; 0x3b4 <d7segment_display+0x98>
+ 37c:	86 36       	cpi	r24, 0x66	; 102
+ 37e:	91 05       	cpc	r25, r1
+ 380:	99 f0       	breq	.+38     	; 0x3a8 <d7segment_display+0x8c>
+ 382:	18 c0       	rjmp	.+48     	; 0x3b4 <d7segment_display+0x98>
+ {
+	case 0:
+		_7SEGMENT_PORT = _7SEGMENT_0;
+ 384:	8f e3       	ldi	r24, 0x3F	; 63
+ 386:	15 c0       	rjmp	.+42     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 1:
+		_7SEGMENT_PORT = _7SEGMENT_1;
+ 388:	86 e0       	ldi	r24, 0x06	; 6
+ 38a:	13 c0       	rjmp	.+38     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 2:
+		_7SEGMENT_PORT = _7SEGMENT_2;
+ 38c:	8b e5       	ldi	r24, 0x5B	; 91
+ 38e:	11 c0       	rjmp	.+34     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 3:
+		_7SEGMENT_PORT = _7SEGMENT_3;
+ 390:	8f e4       	ldi	r24, 0x4F	; 79
+ 392:	0f c0       	rjmp	.+30     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 4:
+		_7SEGMENT_PORT = _7SEGMENT_4;
+ 394:	86 e6       	ldi	r24, 0x66	; 102
+ 396:	0d c0       	rjmp	.+26     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 5:
+		_7SEGMENT_PORT = _7SEGMENT_5;
+ 398:	8d e6       	ldi	r24, 0x6D	; 109
+ 39a:	0b c0       	rjmp	.+22     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 6:
+		_7SEGMENT_PORT = _7SEGMENT_6;
+		break;
+	case 7:
+		_7SEGMENT_PORT = _7SEGMENT_7;
+ 39c:	87 e0       	ldi	r24, 0x07	; 7
+ 39e:	09 c0       	rjmp	.+18     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 8:
+		_7SEGMENT_PORT = _7SEGMENT_8;
+ 3a0:	8f e7       	ldi	r24, 0x7F	; 127
+ 3a2:	07 c0       	rjmp	.+14     	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 9:
+		_7SEGMENT_PORT = _7SEGMENT_9;
+ 3a4:	87 e6       	ldi	r24, 0x67	; 103
+ 3a6:	05 c0       	rjmp	.+10     	; 0x3b2 <d7segment_display+0x96>
+	    break;
+	case 'f':
+	    _7SEGMENT_PORT = _7SEGMENT_C_F;
+ 3a8:	81 e7       	ldi	r24, 0x71	; 113
+ 3aa:	03 c0       	rjmp	.+6      	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case 'b':
+	    _7SEGMENT_PORT = _7SEGMENT_C_B;
+ 3ac:	8c e7       	ldi	r24, 0x7C	; 124
+ 3ae:	01 c0       	rjmp	.+2      	; 0x3b2 <d7segment_display+0x96>
+		break;
+	case DOT:
+		_7SEGMENT_PORT = _7SEGMENT_DOT;
+ 3b0:	80 e8       	ldi	r24, 0x80	; 128
+ 3b2:	88 bb       	out	0x18, r24	; 24
+		break;
+ 
+ }
+// Out digit
+	 
+    if ( digit == 1 )
+ 3b4:	61 30       	cpi	r22, 0x01	; 1
+ 3b6:	19 f4       	brne	.+6      	; 0x3be <d7segment_display+0xa2>
+	{  // ON Digit 1 OFF  ( 1 Off  0 On)
+		_7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT1);
+ 3b8:	ab 98       	cbi	0x15, 3	; 21
+	   // OFF Digit 2 
+	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT2;
+ 3ba:	ac 9a       	sbi	0x15, 4	; 21
+ 3bc:	08 95       	ret
+	}
+	if ( digit == 2 )
+ 3be:	62 30       	cpi	r22, 0x02	; 2
+ 3c0:	11 f4       	brne	.+4      	; 0x3c6 <d7segment_display+0xaa>
+	{  // ON Digit 2 OFF  ( 1 Off  0 On)
+		_7SEGMENT_DIGIT_PORT &= ~(_7SEGMENT_DIGIT2);
+ 3c2:	ac 98       	cbi	0x15, 4	; 21
+	   // OFF Digit 1
+	   _7SEGMENT_DIGIT_PORT |= _7SEGMENT_DIGIT1;
+ 3c4:	ab 9a       	sbi	0x15, 3	; 21
+ 3c6:	08 95       	ret
+
+000003c8 <d7segment_init>:
+	}	
+
+}	
+
+
+/* Initial 7 Segments. Set port to output before use 
+*/
+void d7segment_init (void)
+{
+// Set direction for output for 7 Segment
+	_7SEGMENT_DIGIT_DIR   = 0xFF;
+ 3c8:	8f ef       	ldi	r24, 0xFF	; 255
+ 3ca:	87 bb       	out	0x17, r24	; 23
+	_7SEGMENT_PORT_DIR	  |= _7SEGMENT_DIGIT1 | _7SEGMENT_DIGIT2;
+ 3cc:	84 b3       	in	r24, 0x14	; 20
+ 3ce:	88 61       	ori	r24, 0x18	; 24
+ 3d0:	84 bb       	out	0x14, r24	; 20
+ 
+// Set direction for input for SW 
+	_7SEGMENT_SW1_DIR	&=  ~(_7SEGMENT_SW1);
+ 3d2:	8b 98       	cbi	0x11, 3	; 17
+	_7SEGMENT_SW2_DIR	&=  ~(_7SEGMENT_SW2);
+ 3d4:	a2 98       	cbi	0x14, 2	; 20
+
+// Enable pull up
+    _7SEGMENT_SW1_PORT   |= _7SEGMENT_SW1;
+ 3d6:	93 9a       	sbi	0x12, 3	; 18
+    _7SEGMENT_SW2_PORT   |= _7SEGMENT_SW2;
+ 3d8:	aa 9a       	sbi	0x15, 2	; 21
+ 3da:	08 95       	ret
+
+000003dc <init_motor>:
+{
+ // Initial for PWM Motor control for 16 timer for OC1A and OC1B
+// 8 bit fast PWM set OC1A OC1B on comapare match
+
+    TCCR1A |= _BV(WGM10) |_BV(WGM11) | _BV(COM1B1)|_BV(COM1A1);
+ 3dc:	8f b5       	in	r24, 0x2f	; 47
+ 3de:	83 6a       	ori	r24, 0xA3	; 163
+ 3e0:	8f bd       	out	0x2f, r24	; 47
+    TCCR1B |= _BV(WGM12) | _BV(CS12) | _BV(CS10);   // Clk /1024
+ 3e2:	8e b5       	in	r24, 0x2e	; 46
+ 3e4:	8d 60       	ori	r24, 0x0D	; 13
+ 3e6:	8e bd       	out	0x2e, r24	; 46
+	OCR1A = 0x00FF;
+ 3e8:	8f ef       	ldi	r24, 0xFF	; 255
+ 3ea:	90 e0       	ldi	r25, 0x00	; 0
+ 3ec:	9b bd       	out	0x2b, r25	; 43
+ 3ee:	8a bd       	out	0x2a, r24	; 42
+	OCR1B = 0x00FF;
+ 3f0:	99 bd       	out	0x29, r25	; 41
+ 3f2:	88 bd       	out	0x28, r24	; 40
+
+//    OCR1A = 0;
+//	OCR1B = 0;
+    MOTOR_DIRECTION_DIR  |= 	MOTORA_1 | MOTORA_2 | MOTORB_1 | MOTORB_2;
+ 3f4:	8a b3       	in	r24, 0x1a	; 26
+ 3f6:	80 6f       	ori	r24, 0xF0	; 240
+ 3f8:	8a bb       	out	0x1a, r24	; 26
+	MOTOR_ENABLE12_DIR	 |= 	MOTOR_ENABLE12;
+ 3fa:	8d 9a       	sbi	0x11, 5	; 17
+	MOTOR_ENABLE34_DIR	 |=  	MOTOR_ENABLE34;		
+ 3fc:	8c 9a       	sbi	0x11, 4	; 17
+ 3fe:	08 95       	ret
+
+00000400 <motor_control>:
+  
+}
+
+
+// speed from 1 - 10
+
+void  motor_control (uint8_t port, uint8_t direction) 
+{
+ 400:	38 2f       	mov	r19, r24
+ 402:	86 2f       	mov	r24, r22
+  
+   uint8_t  controlA,controlB;
+   
+   switch (direction)
+ 404:	99 27       	eor	r25, r25
+ 406:	81 30       	cpi	r24, 0x01	; 1
+ 408:	91 05       	cpc	r25, r1
+ 40a:	49 f0       	breq	.+18     	; 0x41e <motor_control+0x1e>
+ 40c:	82 30       	cpi	r24, 0x02	; 2
+ 40e:	91 05       	cpc	r25, r1
+ 410:	74 f0       	brlt	.+28     	; 0x42e <motor_control+0x2e>
+ 412:	82 30       	cpi	r24, 0x02	; 2
+ 414:	91 05       	cpc	r25, r1
+ 416:	31 f0       	breq	.+12     	; 0x424 <motor_control+0x24>
+ 418:	03 97       	sbiw	r24, 0x03	; 3
+ 41a:	39 f0       	breq	.+14     	; 0x42a <motor_control+0x2a>
+ 41c:	08 c0       	rjmp	.+16     	; 0x42e <motor_control+0x2e>
+   {
+     case MOTOR_FORWARD:
+	    controlA = 0;
+ 41e:	20 e0       	ldi	r18, 0x00	; 0
+		controlB = 0xFF;
+ 420:	9f ef       	ldi	r25, 0xFF	; 255
+		break;
+ 422:	07 c0       	rjmp	.+14     	; 0x432 <motor_control+0x32>
+	 case MOTOR_BACKWARD:
+        controlA = 0xFF;
+ 424:	2f ef       	ldi	r18, 0xFF	; 255
+		controlB = 0;
+ 426:	90 e0       	ldi	r25, 0x00	; 0
+		break;
+ 428:	04 c0       	rjmp	.+8      	; 0x432 <motor_control+0x32>
+	 case MOTOR_STOP:
+	    controlA = 0;
+		controlB = 0;
+		break;
+	case MOTOR_BRAKE:
+	    controlA = 0xFF;
+ 42a:	9f ef       	ldi	r25, 0xFF	; 255
+ 42c:	01 c0       	rjmp	.+2      	; 0x430 <motor_control+0x30>
+		controlB = 0xFF;
+		break;
+	default:
+	    controlA = 0;
+ 42e:	90 e0       	ldi	r25, 0x00	; 0
+		controlB = 0;
+ 430:	29 2f       	mov	r18, r25
+   }
+ if (port == 1)
+ 432:	31 30       	cpi	r19, 0x01	; 1
+ 434:	51 f4       	brne	.+20     	; 0x44a <motor_control+0x4a>
+   {
+//      MOTOR_ENABLE12_CONTROL  |= MOTOR_ENABLE12;
+	  MOTOR_DIRECTION_CONTROL &= ~(MOTORA_1 | MOTORA_2); 
+ 436:	8b b3       	in	r24, 0x1b	; 27
+ 438:	8f 7c       	andi	r24, 0xCF	; 207
+ 43a:	8b bb       	out	0x1b, r24	; 27
+	  MOTOR_DIRECTION_CONTROL |= ((MOTORA_1 & controlA ) | (MOTORA_2 & controlB));
+ 43c:	20 71       	andi	r18, 0x10	; 16
+ 43e:	90 72       	andi	r25, 0x20	; 32
+ 440:	29 2b       	or	r18, r25
+ 442:	8b b3       	in	r24, 0x1b	; 27
+ 444:	82 2b       	or	r24, r18
+ 446:	8b bb       	out	0x1b, r24	; 27
+ 448:	08 95       	ret
+  }
+  if (port == 2)
+ 44a:	32 30       	cpi	r19, 0x02	; 2
+ 44c:	49 f4       	brne	.+18     	; 0x460 <motor_control+0x60>
+   {
+// 	  MOTOR_ENABLE34_CONTROL  |= MOTOR_ENABLE34;
+	  MOTOR_DIRECTION_CONTROL &= ~(MOTORB_1 | MOTORB_2); 
+ 44e:	8b b3       	in	r24, 0x1b	; 27
+ 450:	8f 73       	andi	r24, 0x3F	; 63
+ 452:	8b bb       	out	0x1b, r24	; 27
+  	  MOTOR_DIRECTION_CONTROL |= ((MOTORB_1 & controlA ) | (MOTORB_2 & controlB));
+ 454:	20 74       	andi	r18, 0x40	; 64
+ 456:	90 78       	andi	r25, 0x80	; 128
+ 458:	29 2b       	or	r18, r25
+ 45a:	8b b3       	in	r24, 0x1b	; 27
+ 45c:	82 2b       	or	r24, r18
+ 45e:	8b bb       	out	0x1b, r24	; 27
+ 460:	08 95       	ret
+
+00000462 <init_ir>:
+
+void init_ir()
+{
+ //Set Direction
+    IR_DDR_PORT &= ~IR_ICP; 
+ 462:	8e 98       	cbi	0x11, 6	; 17
+	
+	TCCR1B  |= ( _BV(ICNC1) | _BV(CS12) | _BV(CS10));			// Time 1 input to clock/1024 input capture on falling edge  noise cancel
+ 464:	8e b5       	in	r24, 0x2e	; 46
+ 466:	85 68       	ori	r24, 0x85	; 133
+ 468:	8e bd       	out	0x2e, r24	; 46
+	TIMSK   |= _BV(TICIE1);   								// Enable input capture enable 
+ 46a:	89 b7       	in	r24, 0x39	; 57
+ 46c:	80 62       	ori	r24, 0x20	; 32
+ 46e:	89 bf       	out	0x39, r24	; 57
+	sei();
+ 470:	78 94       	sei
+ 472:	08 95       	ret
+
+00000474 <sony_ir_decode>:
+}
+/*  Decode for Sony remote TV IR 
+			Input  Input capturn counter 16 bit register
+		   Output  0  = no code detect
+				   ir_decode  = detect IR code 
+				   
+	Algorithm
+		Calculate pulse width by substract ICP counter. from pulse width 
+		can determine whether it is  START BIT 		 =  XX
+									  BIT1 			 =  XX
+		until 12 bits then return ir code							  
+									 
+*/
+
+uint16_t sony_ir_decode ( uint16_t capture_counter)
+{
+ 474:	bc 01       	movw	r22, r24
+  static 	uint16_t  	prev_capture_counter = 0;
+  static 	uint8_t   	stop_bit = 0;
+  static	uint16_t	ir_code = 0;
+ 			uint16_t	width  = 0;	  
+
+      if ( capture_counter > prev_capture_counter)
+ 476:	80 91 66 00 	lds	r24, 0x0066
+ 47a:	90 91 67 00 	lds	r25, 0x0067
+ 47e:	9b 01       	movw	r18, r22
+ 480:	28 1b       	sub	r18, r24
+ 482:	39 0b       	sbc	r19, r25
+			width = capture_counter - prev_capture_counter;
+	  else
+			width = capture_counter+(MAX_INT16 - prev_capture_counter);
+//Check for start bit
+     if ( width > IR_TV_PULSE_WIDTH)
+ 484:	2a 30       	cpi	r18, 0x0A	; 10
+ 486:	31 05       	cpc	r19, r1
+ 488:	20 f1       	brcs	.+72     	; 0x4d2 <sony_ir_decode+0x5e>
+	 {
+		  if (width > IR_TV_START_BIT)  			//  Found Start bit 
+ 48a:	26 32       	cpi	r18, 0x26	; 38
+ 48c:	31 05       	cpc	r19, r1
+ 48e:	58 f0       	brcs	.+22     	; 0x4a6 <sony_ir_decode+0x32>
+			    {
+				  stop_bit = 0;
+ 490:	10 92 68 00 	sts	0x0068, r1
+				  prev_capture_counter = 0;
+ 494:	10 92 67 00 	sts	0x0067, r1
+ 498:	10 92 66 00 	sts	0x0066, r1
+				  ir_code = 0;     			// New code
+ 49c:	10 92 6a 00 	sts	0x006A, r1
+ 4a0:	10 92 69 00 	sts	0x0069, r1
+ 4a4:	16 c0       	rjmp	.+44     	; 0x4d2 <sony_ir_decode+0x5e>
+ 4a6:	80 91 69 00 	lds	r24, 0x0069
+ 4aa:	90 91 6a 00 	lds	r25, 0x006A
+ 4ae:	40 91 68 00 	lds	r20, 0x0068
+				}
+		  else if (width > IR_TV_BIT1)	  		// bit 1 (3T)
+ 4b2:	2a 31       	cpi	r18, 0x1A	; 26
+ 4b4:	31 05       	cpc	r19, r1
+ 4b6:	20 f0       	brcs	.+8      	; 0x4c0 <sony_ir_decode+0x4c>
+				{
+				   ir_code <<= 1;    			//Shift right
+ 4b8:	88 0f       	add	r24, r24
+ 4ba:	99 1f       	adc	r25, r25
+				   ir_code  |= 1;    			// Or 1
+ 4bc:	81 60       	ori	r24, 0x01	; 1
+ 4be:	02 c0       	rjmp	.+4      	; 0x4c4 <sony_ir_decode+0x50>
+				    stop_bit++;
+				}
+		        else 	  // bit 0
+				{
+					ir_code  <<=  1;  //Shift right
+ 4c0:	88 0f       	add	r24, r24
+ 4c2:	99 1f       	adc	r25, r25
+ 4c4:	90 93 6a 00 	sts	0x006A, r25
+ 4c8:	80 93 69 00 	sts	0x0069, r24
+					stop_bit++;
+ 4cc:	4f 5f       	subi	r20, 0xFF	; 255
+ 4ce:	40 93 68 00 	sts	0x0068, r20
+				}
+	}
+	prev_capture_counter = capture_counter;
+ 4d2:	70 93 67 00 	sts	0x0067, r23
+ 4d6:	60 93 66 00 	sts	0x0066, r22
+	if (stop_bit == IR_TV_STOP_BIT)
+ 4da:	80 91 68 00 	lds	r24, 0x0068
+ 4de:	8c 30       	cpi	r24, 0x0C	; 12
+ 4e0:	39 f4       	brne	.+14     	; 0x4f0 <sony_ir_decode+0x7c>
+	{       //End code dispatch command
+  	    stop_bit = 0;
+ 4e2:	10 92 68 00 	sts	0x0068, r1
+
+		return ir_code;
+ 4e6:	80 91 69 00 	lds	r24, 0x0069
+ 4ea:	90 91 6a 00 	lds	r25, 0x006A
+ 4ee:	08 95       	ret
+			
+//Note if  SELFTEST is selected g_irint = 0;
+	}   
+	else
+		return 0;		// No code detect yet
+ 4f0:	80 e0       	ldi	r24, 0x00	; 0
+ 4f2:	90 e0       	ldi	r25, 0x00	; 0
+}
+ 4f4:	08 95       	ret

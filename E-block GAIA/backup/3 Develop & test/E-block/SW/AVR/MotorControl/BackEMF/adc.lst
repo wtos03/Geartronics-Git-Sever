@@ -1,0 +1,217 @@
+   1               		.file	"adc.c"
+   2               		.arch atmega32
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  11               		.text
+  12               	.Ltext0:
+  57               	.global	adc_init
+  59               	adc_init:
+   1:adc.c         **** /*
+   2:adc.c         ****  
+   3:adc.c         **** 
+   4:adc.c         ****  Module 				:   ADC
+   5:adc.c         ****  Description 			:   ADC Module
+   6:adc.c         ****  Original written for 	:   ATMEGA32
+   7:adc.c         ****  CPU port/tested		:   CPU/Microcontroller
+   8:adc.c         ****  Hardware use			:   
+   9:adc.c         ****  Port use				:   ADC
+  10:adc.c         ****  Memory	FLASH			:   XXX
+  11:adc.c         **** 		RAM				:   XXX
+  12:adc.c         **** 		EEPROM			:   XXX
+  13:adc.c         ****  Document				:   Document describe algorithm
+  14:adc.c         ****  Written by 			:   Wichai / wichai@geartronics.net
+  15:adc.c         ****  Date					:  15/07/2007
+  16:adc.c         ****   
+  17:adc.c         ****  Update History
+  18:adc.c         ****  
+  19:adc.c         ****  Date			By 					Comments
+  20:adc.c         ****  ----			--					---------
+  21:adc.c         **** */ 
+  22:adc.c         **** 
+  23:adc.c         **** 
+  24:adc.c         **** #include "cpu.h"
+  25:adc.c         **** #include "E_uart.h"
+  26:adc.c         **** 
+  27:adc.c         **** 
+  28:adc.c         **** /* Initialize for ADC
+  29:adc.c         **** ADCSRA 
+  30:adc.c         **** 	   Bit			Name			Purpose
+  31:adc.c         **** 		7			ADEN			ADC Enable bit
+  32:adc.c         **** 		6			ADSC			ADC Start conversion bit
+  33:adc.c         **** 		5			ADATE			ADC Auto trigger Enable (Advance need to set ADTS in SFIOR
+  34:adc.c         **** 		4			ADIF			ADC Interrupt Flag
+  35:adc.c         **** 		3			ADIE			ADC Interrupt Mask bit
+  36:adc.c         **** 		2- 0       ADPS0-2			ADC Prescaler select bits
+  37:adc.c         ****                     Use 111 for 128 for 16 Mhz   Freq should be 50 KHz - 200 Khz
+  38:adc.c         **** 					
+  39:adc.c         **** 	INPUT : Voltage reference for ADC
+  40:adc.c         **** 	        0 = AREF pin
+  41:adc.c         **** 			1 = AVCC
+  42:adc.c         **** 			3 = Internal 2.56 v
+  43:adc.c         **** ADMUX 
+  44:adc.c         ****       Bit 5   left or right adjust bit in ADLAR
+  45:adc.c         **** */
+  46:adc.c         **** void adc_init(uint8_t voltage)
+  47:adc.c         **** {
+  61               	.LM1:
+  62               	/* prologue: frame size=0 */
+  63               	/* prologue end (size=0) */
+  48:adc.c         ****     ADCSRA = 0xC7 | (1<< ADEN);
+  65               	.LM2:
+  66 0000 97EC      		ldi r25,lo8(-57)
+  67 0002 96B9      		out 38-0x20,r25
+  49:adc.c         **** 	
+  50:adc.c         **** // Set voltage reference 	
+  51:adc.c         **** 	ADMUX  =  voltage << 6;
+  69               	.LM3:
+  70 0004 8295      		swap r24
+  71 0006 880F      		lsl r24
+  72 0008 880F      		lsl r24
+  73 000a 807C      		andi r24,0xc0
+  74 000c 87B9      		out 39-0x20,r24
+  52:adc.c         **** 
+  53:adc.c         **** // Set input for ADC pin
+  54:adc.c         ****     DDRA    &= 0xF0;	
+  76               	.LM4:
+  77 000e 8AB3      		in r24,58-0x20
+  78 0010 807F      		andi r24,lo8(-16)
+  79 0012 8ABB      		out 58-0x20,r24
+  80               	/* epilogue: frame size=0 */
+  81 0014 0895      		ret
+  82               	/* epilogue end (size=1) */
+  83               	/* function adc_init size 11 (10) */
+  85               	.Lscope0:
+  88               	.global	adc_enable_int
+  90               	adc_enable_int:
+  55:adc.c         **** 
+  56:adc.c         **** }
+  57:adc.c         **** 
+  58:adc.c         **** /*
+  59:adc.c         ****   Input mode = 0  Disable
+  60:adc.c         ****         mode > 0  Enable
+  61:adc.c         **** 
+  62:adc.c         **** 
+  63:adc.c         **** */
+  64:adc.c         **** void  adc_enable_int (uint8_t mode)
+  65:adc.c         **** {
+  92               	.LM5:
+  93               	/* prologue: frame size=0 */
+  94               	/* prologue end (size=0) */
+  66:adc.c         ****     if (mode)
+  96               	.LM6:
+  97 0016 8823      		tst r24
+  98 0018 19F0      		breq .L3
+  67:adc.c         **** 	{
+  68:adc.c         **** 		ADCSRA  |= ( (1 << ADEN) | (1 << ADIE) | (1<< ADSC));
+ 100               	.LM7:
+ 101 001a 86B1      		in r24,38-0x20
+ 102 001c 886C      		ori r24,lo8(-56)
+ 103 001e 02C0      		rjmp .L5
+ 104               	.L3:
+  69:adc.c         ****     }
+  70:adc.c         **** 	else
+  71:adc.c         **** 	{
+  72:adc.c         **** 		ADCSRA  &= ~((1 << ADIE) | (1<< ADSC));
+ 106               	.LM8:
+ 107 0020 86B1      		in r24,38-0x20
+ 108 0022 877B      		andi r24,lo8(-73)
+ 109               	.L5:
+ 110 0024 86B9      		out 38-0x20,r24
+ 111 0026 0895      		ret
+ 112               	/* epilogue: frame size=0 */
+ 113 0028 0895      		ret
+ 114               	/* epilogue end (size=1) */
+ 115               	/* function adc_enable_int size 10 (9) */
+ 117               	.Lscope1:
+ 120               	.global	read_adc
+ 122               	read_adc:
+  73:adc.c         **** 	}
+  74:adc.c         **** }
+  75:adc.c         **** 
+  76:adc.c         **** 
+  77:adc.c         **** /*
+  78:adc.c         **** Read adc value		
+  79:adc.c         **** 	
+  80:adc.c         **** 	INPUT :  channel  to read adc  ( See table for Differential INput and Gain)
+  81:adc.c         ****     Polling mode 
+  82:adc.c         **** */
+  83:adc.c         **** 
+  84:adc.c         **** int16_t read_adc(uint8_t channel)
+  85:adc.c         **** {
+ 124               	.LM9:
+ 125               	/* prologue: frame size=0 */
+ 126               	/* prologue end (size=0) */
+  86:adc.c         ****   int16_t  value;
+  87:adc.c         ****   
+  88:adc.c         ****  
+  89:adc.c         **** // Before that need to clear ADATE and ADEN
+  90:adc.c         ****     ADCSRA &= ~((1 << ADEN) | (1<< ADATE));
+ 128               	.LM10:
+ 129 002a 96B1      		in r25,38-0x20
+ 130 002c 9F75      		andi r25,lo8(95)
+ 131 002e 96B9      		out 38-0x20,r25
+  91:adc.c         **** 
+  92:adc.c         **** // Set channel
+  93:adc.c         ****     ADMUX |= channel;
+ 133               	.LM11:
+ 134 0030 97B1      		in r25,39-0x20
+ 135 0032 982B      		or r25,r24
+ 136 0034 97B9      		out 39-0x20,r25
+  94:adc.c         **** 	
+  95:adc.c         **** // Enable conversion
+  96:adc.c         **** 	ADCSRA |= (1<<ADEN);
+ 138               	.LM12:
+ 139 0036 379A      		sbi 38-0x20,7
+  97:adc.c         **** // Start conversion
+  98:adc.c         ****  
+  99:adc.c         ****     
+ 100:adc.c         **** // Check whether conversion is complete
+ 101:adc.c         ****  
+ 102:adc.c         ****     ADCSRA |= (1<<ADSC);         // do single conversion
+ 141               	.LM13:
+ 142 0038 369A      		sbi 38-0x20,6
+ 143               	.L7:
+ 103:adc.c         ****     while(!(ADCSRA & 0x10));    // wait for conversion done, ADIF flag active
+ 145               	.LM14:
+ 146 003a 349B      		sbis 38-0x20,4
+ 147 003c FECF      		rjmp .L7
+ 104:adc.c         **** 
+ 105:adc.c         **** //Read value
+ 106:adc.c         **** //      value = ADCL;            // read out ADCL register
+ 107:adc.c         **** //      value += (ADCH << 8);    // read out ADCH register        
+ 108:adc.c         **** 	value = ADCW;
+ 149               	.LM15:
+ 150 003e 84B1      		in r24,36-0x20
+ 151 0040 95B1      		in r25,(36)+1-0x20
+ 109:adc.c         **** // Stop conversion
+ 110:adc.c         ****     ADCSRA &= ~(1 << ADEN);
+ 153               	.LM16:
+ 154 0042 3798      		cbi 38-0x20,7
+ 155               	/* epilogue: frame size=0 */
+ 156 0044 0895      		ret
+ 157               	/* epilogue end (size=1) */
+ 158               	/* function read_adc size 14 (13) */
+ 163               	.Lscope2:
+ 164               		.text
+ 166               	Letext:
+ 167               	/* File "adc.c": code   35 = 0x0023 (  32), prologues   0, epilogues   3 */
+DEFINED SYMBOLS
+                            *ABS*:00000000 adc.c
+                            *ABS*:0000003f __SREG__
+                            *ABS*:0000003e __SP_H__
+                            *ABS*:0000003d __SP_L__
+                            *ABS*:00000000 __tmp_reg__
+                            *ABS*:00000001 __zero_reg__
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Laaaa.s:59     .text:00000000 adc_init
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Laaaa.s:90     .text:00000016 adc_enable_int
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Laaaa.s:122    .text:0000002a read_adc
+C:\DOCUME~1\tos\LOCALS~1\Temp/cc2Laaaa.s:166    .text:00000046 Letext
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss

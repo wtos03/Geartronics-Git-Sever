@@ -1,0 +1,2 @@
+1) Becareful IDC-10 footprint hole too small when Update Schematic to PCB. THe IDC will
+change again. Need to reapply IDC-10  library for next route
