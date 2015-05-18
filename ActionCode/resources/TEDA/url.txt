@@ -1,0 +1,11 @@
+Reader Extensions
+-------------------
+http://livecycle.dev.etda.or.th:8080/ReaderExtensions/
+
+=============================================
+Webservice
+-----------
+http://10.2.31.70:8080/CMRWebservice/services/GetProvince?wsdl
+http://10.2.31.70:8080/CMRWebservice/services/GetDistrict?wsdl
+http://10.2.31.70:8080/CMRWebservice/services/GetDistrict?wsdl
+http://10.2.36.113:8080/CMRWebservice/services/GetCountry?wsdl

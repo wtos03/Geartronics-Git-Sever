@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xfa generator="AdobeLiveCycleDesigner_V11.0.1.20130830.1.901444" APIVersion="3.6.13235.0"?>
+<xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/" timeStamp="2014-09-14T12:00:55Z" uuid="0efc60c5-28c1-4e38-853d-0adc57276342">
+<template xmlns="http://www.xfa.org/schema/xfa-template/3.3/">
+   <?formServer defaultPDFRenderFormat acrobat10.0static?>
+   <?formServer allowRenderCaching 0?>
+   <?formServer formModel both?>
+   <subform name="provinces" locale="th_TH" layout="tb">
+      <pageSet>
+         <pageArea>
+            <contentArea x="7.14mm" y="44.196mm" w="197.3mm" h="238.76mm" name="ContentArea1"/>
+            <medium stock="a4" short="210mm" long="297mm"/>
+            <?templateDesigner expand 1?></pageArea>
+         <?templateDesigner expand 1?></pageSet>
+      <subform name="OrgInfo">
+         <bind match="none"/>
+         <field name="OrgName" w="76.2mm" h="6.35mm" x="0mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="11.1773mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>บริษัท</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <field name="i_Address" w="76.2mm" h="6.35mm" y="6.35mm" x="0mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="11.1773mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>ที่อยู่</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <field name="PrimaryThoro" w="30.48mm" h="6.35mm" x="11.176mm" y="12.7mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="7.94mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>ถนน</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <field name="RegionLev2" y="19.05mm" x="11.176mm" w="30.48mm" h="6.35mm">
+            <ui>
+               <choiceList textEntry="1">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </choiceList>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <para vAlign="middle"/>
+            <caption reserve="12.6423mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>อำเภอ/เขต</text>
+               </value>
+            </caption>
+            <bindItems connection="DistrictWS" ref="!connectionData.DistrictWS.Body.listDistrictResponse.listDistrictReturn[*]" labelRef="districtname" valueRef="districtcode"/>
+            <connect connection="DistrictWS" usage="exportOnly" ref="!connectionData.DistrictWS.Body.listDistrict.provincename"/>
+         </field>
+         <field name="RegionLev3" w="34.798mm" h="6.35mm" x="41.402mm" y="12.7mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="14.02mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>ตำบล/แขวง</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <field name="RegionLev1" y="19.05mm" x="41.402mm" w="34.798mm" h="6.35mm">
+            <ui>
+               <choiceList textEntry="1">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </choiceList>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <para vAlign="middle"/>
+            <caption reserve="9.26mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>จังหวัด</text>
+               </value>
+            </caption>
+            <bindItems connection="ProvinceWS" ref="!connectionData.ProvinceWS.Body.listProvinceResponse.listProvinceReturn[*]" labelRef="provincename" valueRef="provincecode"/>
+         </field>
+         <field name="Postcode" y="25.4mm" x="11.176mm" w="32.766mm" h="6.35mm" locale="en_US">
+            <ui>
+               <numericEdit hScrollPolicy="off">
+                  <border hand="right">
+                     <edge/>
+                  </border>
+                  <margin/>
+                  <comb numberOfCells="5"/>
+               </numericEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <para vAlign="middle"/>
+            <caption reserve="14.82mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>รหัสไปรษณีย์</text>
+               </value>
+            </caption>
+            <format>
+               <picture>num{zzzzzzzzzzzz9}</picture>
+            </format>
+         </field>
+         <field name="CountryName" y="25.4mm" x="43.688mm" w="32.512mm" h="6.35mm">
+            <ui>
+               <choiceList textEntry="1">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </choiceList>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <para vAlign="middle"/>
+            <caption reserve="9.26mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>ประเทศ</text>
+               </value>
+            </caption>
+            <bindItems connection="CountryWS" ref="!connectionData.CountryWS.Body.listcountryResponse.listcountryReturn[*]" labelRef="countryname" valueRef="countrycode"/>
+         </field>
+         <field name="i_Email" w="76.2mm" h="6.35mm" y="31.75mm" x="0mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="11.38mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>อีเมล์</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <field name="i_Telephone" w="76.2mm" h="6.35mm" y="38.1mm" x="0mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="11.1773mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>โทรศัพท์</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <field name="i_Fax" w="76.2mm" h="6.35mm" y="44.45mm" x="0mm">
+            <ui>
+               <textEdit hScrollPolicy="off">
+                  <border>
+                     <edge presence="hidden"/>
+                     <edge presence="hidden"/>
+                     <edge/>
+                     <edge presence="hidden"/>
+                  </border>
+                  <margin/>
+               </textEdit>
+            </ui>
+            <font typeface="TH SarabunPSK"/>
+            <margin topInset="0mm" bottomInset="0mm" leftInset="0mm" rightInset="0mm"/>
+            <caption reserve="11.1773mm">
+               <font size="12pt" typeface="TH SarabunPSK" baselineShift="0pt"/>
+               <para vAlign="middle" spaceAbove="0pt" spaceBelow="0pt" textIndent="0pt" marginLeft="0pt" marginRight="0pt"/>
+               <value>
+                  <text>แฟกซ์</text>
+               </value>
+            </caption>
+            <para vAlign="middle"/>
+         </field>
+         <?templateDesigner isFragment yes?>
+         <?templateDesigner fragmentTitle OrgInfo?>
+         <?templateDesigner expand 1?>
+         <event activity="ready" ref="$form" name="event__form_ready">
+            <script contentType="application/x-javascript">xfa.connectionSet.ProvinceWS.execute(0);
+xfa.connectionSet.CountryWS.execute(0);
+xfa.connectionSet.DistrictWS.execute(0);
+
+</script>
+         </event>
+      </subform>
+      <?templateDesigner Hyphenation excludeInitialCap:1, excludeAllCaps:1, wordCharCnt:7, remainCharCnt:3, pushCharCnt:3?>
+      <?templateDesigner expand 1?>
+      <?renderCache.subset "TH SarabunPSK" 0 0 UTF-16 2 164 001000D600D700DC00DD00E000E800E900EA00EB00EC00EE00EF00F000F300F400F500F600F700F800FA00FC00FD00FE00FF010001020105010601070109010A010E01110112011301150119011E01600164?>
+   </subform>
+   <?originalXFAVersion http://www.xfa.org/schema/xfa-template/3.3/?>
+   <?templateDesigner DefaultLanguage JavaScript?>
+   <?templateDesigner DefaultRunAt client?>
+   <?PDFPrintOptions embedViewerPrefs 0?>
+   <?PDFPrintOptions embedPrintOnFormOpen 0?>
+   <?PDFPrintOptions scalingPrefs 0?>
+   <?PDFPrintOptions enforceScalingPrefs 0?>
+   <?PDFPrintOptions paperSource 0?>
+   <?PDFPrintOptions duplexMode 0?>
+   <?templateDesigner DefaultPreviewType interactive?>
+   <?templateDesigner DefaultPreviewPagination simplex?>
+   <?templateDesigner XDPPreviewFormat 19?>
+   <?templateDesigner DefaultPreviewDataFileName ..\Lesson06\province.xml?>
+   <?templateDesigner DefaultCaptionFontSettings face:Myriad Pro;size:10;weight:normal;style:normal?>
+   <?templateDesigner DefaultValueFontSettings face:Myriad Pro;size:10;weight:normal;style:normal?>
+   <?templateDesigner SaveTaggedPDF 1?>
+   <?templateDesigner SavePDFWithEmbeddedFonts 1?>
+   <?templateDesigner FormTargetVersion 33?>
+   <?templateDesigner Zoom 80?>
+   <?templateDesigner Rulers horizontal:1, vertical:1, guidelines:1, crosshairs:0?></template>
+<config xmlns="http://www.xfa.org/schema/xci/3.0/">
+   <agent name="designer">
+      <!--  [0..n]  -->
+      <destination>pdf</destination>
+      <pdf>
+         <!--  [0..n]  -->
+         <fontInfo/>
+      </pdf>
+   </agent>
+   <present>
+      <!--  [0..n]  -->
+      <destination>pdf</destination>
+      <pdf>
+         <!--  [0..n]  -->
+         <fontInfo/>
+         <version>1.7</version>
+         <adobeExtensionLevel>8</adobeExtensionLevel>
+      </pdf>
+      <common>
+         <data>
+            <xsl>
+               <uri/>
+            </xsl>
+            <outputXSL>
+               <uri/>
+            </outputXSL>
+         </data>
+      </common>
+      <xdp>
+         <packets>*</packets>
+      </xdp>
+   </present>
+   <psMap>
+      <font typeface="TH SarabunPSK" psName="THSarabunPSK" weight="normal" posture="normal"/>
+      <font typeface="TH SarabunPSK" psName="THSarabunPSK-Bold" weight="bold" posture="normal"/>
+   </psMap>
+</config>
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.2-c001 63.139439, 2011/06/07-10:39:26        ">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description xmlns:xmp="http://ns.adobe.com/xap/1.0/" rdf:about="">
+         <xmp:MetadataDate>2014-09-14T12:00:55Z</xmp:MetadataDate>
+         <xmp:CreatorTool>Adobe LiveCycle Designer 11.0</xmp:CreatorTool>
+      </rdf:Description>
+      <rdf:Description xmlns:pdf="http://ns.adobe.com/pdf/1.3/" rdf:about="">
+         <pdf:Producer>Adobe LiveCycle Designer 11.0</pdf:Producer>
+      </rdf:Description>
+      <rdf:Description xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" rdf:about="">
+         <xmpMM:DocumentID>uuid:0efc60c5-28c1-4e38-853d-0adc57276342</xmpMM:DocumentID>
+      </rdf:Description>
+      <rdf:Description xmlns:lcd="http://ns.adobe.com/livecycle/designer/" xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about="">
+         <lcd:fragmentCatalog>
+            <rdf:Seq>
+               <rdf:li rdf:parseType="Resource">
+                  <dc:title>
+                     <rdf:Alt>
+                        <rdf:li xml:lang="x-default">OrgInfo</rdf:li>
+                     </rdf:Alt>
+                  </dc:title>
+                  <dc:description>
+                     <rdf:Alt>
+                        <rdf:li xml:lang="x-default"/>
+                     </rdf:Alt>
+                  </dc:description>
+                  <dc:identifier>$template.provinces.OrgInfo</dc:identifier>
+                  <lcd:fragmentRole>Subform</lcd:fragmentRole>
+               </rdf:li>
+            </rdf:Seq>
+         </lcd:fragmentCatalog>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta>
+<localeSet xmlns="http://www.xfa.org/schema/xfa-locale-set/2.7/">
+   <locale name="th_TH" desc="Thai (Thailand)">
+      <calendarSymbols name="gregorian">
+         <monthNames>
+            <month>มกราคม</month>
+            <month>กุมภาพันธ์</month>
+            <month>มีนาคม</month>
+            <month>เมษายน</month>
+            <month>พฤษภาคม</month>
+            <month>มิถุนายน</month>
+            <month>กรกฎาคม</month>
+            <month>สิงหาคม</month>
+            <month>กันยายน</month>
+            <month>ตุลาคม</month>
+            <month>พฤศจิกายน</month>
+            <month>ธันวาคม</month>
+         </monthNames>
+         <monthNames abbr="1">
+            <month>ม.ค.</month>
+            <month>ก.พ.</month>
+            <month>มี.ค.</month>
+            <month>เม.ย.</month>
+            <month>พ.ค.</month>
+            <month>มิ.ย.</month>
+            <month>ก.ค.</month>
+            <month>ส.ค.</month>
+            <month>ก.ย.</month>
+            <month>ต.ค.</month>
+            <month>พ.ย.</month>
+            <month>ธ.ค.</month>
+         </monthNames>
+         <dayNames>
+            <day>วันอาทิตย์</day>
+            <day>วันจันทร์</day>
+            <day>วันอังคาร</day>
+            <day>วันพุธ</day>
+            <day>วันพฤหัสบดี</day>
+            <day>วันศุกร์</day>
+            <day>วันเสาร์</day>
+         </dayNames>
+         <dayNames abbr="1">
+            <day>อา.</day>
+            <day>จ.</day>
+            <day>อ.</day>
+            <day>พ.</day>
+            <day>พฤ.</day>
+            <day>ศ.</day>
+            <day>ส.</day>
+         </dayNames>
+         <meridiemNames>
+            <meridiem>ก่อนเที่ยง</meridiem>
+            <meridiem>หลังเที่ยง</meridiem>
+         </meridiemNames>
+         <eraNames>
+            <era>ปีก่อนคริสต์กาลที่</era>
+            <era>ค.ศ.</era>
+         </eraNames>
+      </calendarSymbols>
+      <datePatterns>
+         <datePattern name="full">EEEE'ที่ 'D MMMM G YYYY</datePattern>
+         <datePattern name="long">D MMMM YYYY</datePattern>
+         <datePattern name="med">D MMM YYYY</datePattern>
+         <datePattern name="short">D/M/YYYY</datePattern>
+      </datePatterns>
+      <timePatterns>
+         <timePattern name="full">H' นาฬิกา 'M' นาที 'SS' วินาที'</timePattern>
+         <timePattern name="long">H' นาฬิกา 'M' นาที'</timePattern>
+         <timePattern name="med">H:MM:SS</timePattern>
+         <timePattern name="short">H:MM</timePattern>
+      </timePatterns>
+      <dateTimeSymbols>GanjkHmsSEDFwWxhKzZ</dateTimeSymbols>
+      <numberPatterns>
+         <numberPattern name="numeric">z,zz9.zzz</numberPattern>
+         <numberPattern name="currency">$z,zz9.99</numberPattern>
+         <numberPattern name="percent">z,zz9%</numberPattern>
+      </numberPatterns>
+      <numberSymbols>
+         <numberSymbol name="decimal">.</numberSymbol>
+         <numberSymbol name="grouping">,</numberSymbol>
+         <numberSymbol name="percent">%</numberSymbol>
+         <numberSymbol name="minus">-</numberSymbol>
+         <numberSymbol name="zero">0</numberSymbol>
+      </numberSymbols>
+      <currencySymbols>
+         <currencySymbol name="symbol">฿</currencySymbol>
+         <currencySymbol name="isoname">THB</currencySymbol>
+         <currencySymbol name="decimal">.</currencySymbol>
+      </currencySymbols>
+      <typefaces>
+         <typeface name="Adobe Thai"/>
+         <typeface name="Myriad Pro"/>
+         <typeface name="Minion Pro"/>
+         <typeface name="Courier Std"/>
+         <typeface name="Adobe Pi Std"/>
+         <typeface name="Adobe Hebrew"/>
+         <typeface name="Adobe Arabic"/>
+         <typeface name="Kozuka Gothic Pro-VI M"/>
+         <typeface name="Kozuka Mincho Pro-VI R"/>
+         <typeface name="Adobe Ming Std L"/>
+         <typeface name="Adobe Song Std L"/>
+         <typeface name="Adobe Myungjo Std M"/>
+      </typefaces>
+   </locale>
+   <locale name="en_US" desc="English (United States)">
+      <calendarSymbols name="gregorian">
+         <monthNames>
+            <month>January</month>
+            <month>February</month>
+            <month>March</month>
+            <month>April</month>
+            <month>May</month>
+            <month>June</month>
+            <month>July</month>
+            <month>August</month>
+            <month>September</month>
+            <month>October</month>
+            <month>November</month>
+            <month>December</month>
+         </monthNames>
+         <monthNames abbr="1">
+            <month>Jan</month>
+            <month>Feb</month>
+            <month>Mar</month>
+            <month>Apr</month>
+            <month>May</month>
+            <month>Jun</month>
+            <month>Jul</month>
+            <month>Aug</month>
+            <month>Sep</month>
+            <month>Oct</month>
+            <month>Nov</month>
+            <month>Dec</month>
+         </monthNames>
+         <dayNames>
+            <day>Sunday</day>
+            <day>Monday</day>
+            <day>Tuesday</day>
+            <day>Wednesday</day>
+            <day>Thursday</day>
+            <day>Friday</day>
+            <day>Saturday</day>
+         </dayNames>
+         <dayNames abbr="1">
+            <day>Sun</day>
+            <day>Mon</day>
+            <day>Tue</day>
+            <day>Wed</day>
+            <day>Thu</day>
+            <day>Fri</day>
+            <day>Sat</day>
+         </dayNames>
+         <meridiemNames>
+            <meridiem>AM</meridiem>
+            <meridiem>PM</meridiem>
+         </meridiemNames>
+         <eraNames>
+            <era>BC</era>
+            <era>AD</era>
+         </eraNames>
+      </calendarSymbols>
+      <datePatterns>
+         <datePattern name="full">EEEE, MMMM D, YYYY</datePattern>
+         <datePattern name="long">MMMM D, YYYY</datePattern>
+         <datePattern name="med">MMM D, YYYY</datePattern>
+         <datePattern name="short">M/D/YY</datePattern>
+      </datePatterns>
+      <timePatterns>
+         <timePattern name="full">h:MM:SS A Z</timePattern>
+         <timePattern name="long">h:MM:SS A Z</timePattern>
+         <timePattern name="med">h:MM:SS A</timePattern>
+         <timePattern name="short">h:MM A</timePattern>
+      </timePatterns>
+      <dateTimeSymbols>GyMdkHmsSEDFwWahKzZ</dateTimeSymbols>
+      <numberPatterns>
+         <numberPattern name="numeric">z,zz9.zzz</numberPattern>
+         <numberPattern name="currency">$z,zz9.99|($z,zz9.99)</numberPattern>
+         <numberPattern name="percent">z,zz9%</numberPattern>
+      </numberPatterns>
+      <numberSymbols>
+         <numberSymbol name="decimal">.</numberSymbol>
+         <numberSymbol name="grouping">,</numberSymbol>
+         <numberSymbol name="percent">%</numberSymbol>
+         <numberSymbol name="minus">-</numberSymbol>
+         <numberSymbol name="zero">0</numberSymbol>
+      </numberSymbols>
+      <currencySymbols>
+         <currencySymbol name="symbol">$</currencySymbol>
+         <currencySymbol name="isoname">USD</currencySymbol>
+         <currencySymbol name="decimal">.</currencySymbol>
+      </currencySymbols>
+      <typefaces>
+         <typeface name="Myriad Pro"/>
+         <typeface name="Minion Pro"/>
+         <typeface name="Courier Std"/>
+         <typeface name="Adobe Pi Std"/>
+         <typeface name="Adobe Hebrew"/>
+         <typeface name="Adobe Arabic"/>
+         <typeface name="Adobe Thai"/>
+         <typeface name="Kozuka Gothic Pro-VI M"/>
+         <typeface name="Kozuka Mincho Pro-VI R"/>
+         <typeface name="Adobe Ming Std L"/>
+         <typeface name="Adobe Song Std L"/>
+         <typeface name="Adobe Myungjo Std M"/>
+      </typefaces>
+   </locale>
+</localeSet>
+<connectionSet xmlns="http://www.xfa.org/schema/xfa-connection-set/2.8/">
+   <wsdlConnection name="ProvinceWS" dataDescription="ProvinceWSlistProvinceRequestDD">
+      <soapAddress>http://localhost:8080/CMRWebservice/services/GetProvince</soapAddress>
+      <wsdlAddress>http://localhost:8080/CMRWebservice/services/GetProvince?wsdl</wsdlAddress>
+      <soapAction/>
+      <operation input="listProvinceRequest" output="listProvinceResponse">listProvince</operation>
+      <?templateDesigner fileDigest shaHash="1Y7fOcGsgf3MEds/L18WKMrcnIc="?>
+      <?templateDesigner allowParameterizedSoapAddress 0?></wsdlConnection>
+   <wsdlConnection name="CountryWS" dataDescription="CountryWSlistcountryRequestDD">
+      <soapAddress>http://localhost:8080/CMRWebservice/services/GetCountry</soapAddress>
+      <wsdlAddress>http://localhost:8080/CMRWebservice/services/GetCountry?wsdl</wsdlAddress>
+      <soapAction/>
+      <operation input="listcountryRequest" output="listcountryResponse">listcountry</operation>
+      <?templateDesigner fileDigest shaHash="QWbL9V1QHUmw3smIEHJViMpMWYs="?>
+      <?templateDesigner allowParameterizedSoapAddress 0?></wsdlConnection>
+   <wsdlConnection name="DistrictWS" dataDescription="DistrictWSlistDistrictRequestDD">
+      <soapAddress>http://localhost:8080/CMRWebservice/services/GetDistrict</soapAddress>
+      <wsdlAddress>http://localhost:8080/CMRWebservice/services/GetDistrict?wsdl</wsdlAddress>
+      <soapAction/>
+      <operation input="listDistrictRequest" output="listDistrictResponse">listDistrict</operation>
+      <?templateDesigner fileDigest shaHash="+RvT8UNvXW3eawiR03mx96JHLGw="?>
+      <?templateDesigner allowParameterizedSoapAddress 0?></wsdlConnection>
+</connectionSet>
+<xfa:datasets xmlns:xfa="http://www.xfa.org/schema/xfa-data/1.0/">
+   <xfa:data xfa:dataNode="dataGroup"/>
+   <dd:dataDescription xmlns:dd="http://ns.adobe.com/data-description/" dd:name="ProvinceWSlistProvinceRequestDD">
+      <ProvinceWS>
+         <soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <impl:listProvince xmlns:impl="http://cmr.ws.etda" dd:dataNode="dataGroup"/>
+         </soap:Body>
+      </ProvinceWS>
+   </dd:dataDescription>
+   <dd:dataDescription xmlns:dd="http://ns.adobe.com/data-description/" dd:name="CountryWSlistcountryRequestDD">
+      <CountryWS>
+         <soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <impl:listcountry xmlns:impl="http://cmr.ws.etda" dd:dataNode="dataGroup"/>
+         </soap:Body>
+      </CountryWS>
+   </dd:dataDescription>
+   <dd:dataDescription xmlns:dd="http://ns.adobe.com/data-description/" dd:name="DistrictWSlistDistrictRequestDD">
+      <DistrictWS>
+         <soap:Body xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <impl:listDistrict xmlns:impl="http://cmr.ws.etda">
+               <impl:provincecode/>
+               <impl:provincename/>
+            </impl:listDistrict>
+         </soap:Body>
+      </DistrictWS>
+   </dd:dataDescription>
+</xfa:datasets></xdp:xdp>
